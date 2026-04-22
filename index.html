@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Creative Drawing Board for Toddlers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* Header */
+        .header {
+            height: 50px;
+            background: linear-gradient(180deg, #FF9A9E 0%, #FECFEF 100%);
+            border-bottom: 3px solid #495057;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 1.4rem;
+            color: #495057;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        .bubbles-btn {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 80px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .bubbles-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .bubbles-btn.active {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            box-shadow: 3px 3px 0 #495057, inset 0 0 0 3px white;
+        }
+
+        /* Canvas Container */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        #bubbleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .canvas-container.bubble-mode #bubbleCanvas {
+            pointer-events: auto;
+        }
+
+        /* Color Palette */
+        .color-palette {
+            height: 60px;
+            background: linear-gradient(180deg, #FFF8E7 0%, #FFE4EC 100%);
+            border-top: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .color-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #495057;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            flex-shrink: 0;
+        }
+
+        .color-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .color-btn.selected {
+            box-shadow: 0 0 0 3px #495057, 0 0 0 6px white, 3px 3px 0 #495057;
+        }
+
+        /* Tools */
+        .tools {
+            height: 60px;
+            background: linear-gradient(180deg, #FFE4EC 0%, #FFF8E7 100%);
+            border-top: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+        }
+
+        .size-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .size-label {
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .size-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 3px solid #495057;
+            background: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .size-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .size-btn.selected {
+            background: #FFE066;
+        }
+
+        .size-dot {
+            border-radius: 50%;
+            background: #495057;
+        }
+
+        .tool-btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 3px solid #495057;
+            background: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+            font-family: inherit;
+            min-width: 70px;
+            min-height: 44px;
+        }
+
+        .tool-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .tool-btn.selected {
+            background: #FFE066;
+        }
+
+        .tool-btn.brush-btn.selected {
+            background: #69DB7C;
+        }
+
+        .tool-btn.eraser-btn.selected {
+            background: #74C0FC;
+        }
+
+        .spacer {
+            flex: 1;
+        }
+
+        .clear-btn {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .clear-btn:active {
+            background: #fa5252;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFade 0.5s ease-out forwards;
+        }
+
+        @keyframes particleFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">Creative Drawing Board</div>
+        <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
+    </header>
+
+    <div class="canvas-container" id="canvasContainer">
+        <canvas id="drawingCanvas"></canvas>
+        <canvas id="bubbleCanvas"></canvas>
+    </div>
+
+    <div class="color-palette" id="colorPalette">
+        <!-- Colors injected by JS -->
+    </div>
+
+    <div class="tools">
+        <div class="size-selector">
+            <span class="size-label">Size:</span>
+            <button class="size-btn selected" data-size="4" title="Small">
+                <span class="size-dot" style="width: 8px; height: 8px;"></span>
+            </button>
+            <button class="size-btn" data-size="12" title="Medium">
+                <span class="size-dot" style="width: 16px; height: 16px;"></span>
+            </button>
+            <button class="size-btn" data-size="24" title="Large">
+                <span class="size-dot" style="width: 24px; height: 24px;"></span>
+            </button>
+        </div>
+        <button class="tool-btn brush-btn selected" id="brushBtn">Brush</button>
+        <button class="tool-btn eraser-btn" id="eraserBtn">Eraser</button>
+        <div class="spacer"></div>
+        <button class="tool-btn clear-btn" id="clearBtn">Clear</button>
+    </div>
+
+    <script>
+        // Color palette
+        const COLORS = [
+            { name: 'Red', hex: '#FF6B6B' },
+            { name: 'Orange', hex: '#FFA94D' },
+            { name: 'Yellow', hex: '#FFE066' },
+            { name: 'Green', hex: '#69DB7C' },
+            { name: 'Blue', hex: '#74C0FC' },
+            { name: 'Purple', hex: '#B197FC' },
+            { name: 'Pink', hex: '#F783AC' },
+            { name: 'Brown', hex: '#E5997F' },
+            { name: 'Black', hex: '#495057' },
+            { name: 'White', hex: '#FFFFFF' }
+        ];
+
+        // State
+        let currentColor = COLORS[0].hex;
+        let currentSize = 4;
+        let currentTool = 'brush';
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let bubbleMode = false;
+        let bubbles = [];
+        let particles = [];
+        let bubbleSpawnInterval = null;
+
+        // Elements
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const bubbleCanvas = document.getElementById('bubbleCanvas');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const colorPalette = document.getElementById('colorPalette');
+        const bubblesBtn = document.getElementById('bubblesBtn');
+        const brushBtn = document.getElementById('brushBtn');
+        const eraserBtn = document.getElementById('eraserBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+
+        // Audio Context
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playPopSound() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playBubblePopSound() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playWhooshSound() {
+            initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.3;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+            }
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2000, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3);
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            source.start();
+        }
+
+        // Initialize color palette
+        function initColorPalette() {
+            COLORS.forEach((color, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'color-btn' + (index === 0 ? ' selected' : '');
+                btn.style.backgroundColor = color.hex;
+                btn.dataset.color = color.hex;
+                btn.title = color.name;
+                btn.addEventListener('click', () => selectColor(color.hex));
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    initAudio();
+                    selectColor(color.hex);
+                    playPopSound();
+                });
+                colorPalette.appendChild(btn);
+            });
+        }
+
+        function selectColor(color) {
+            currentColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.color === color);
+            });
+        }
+
+        // Canvas setup
+        function resizeCanvas() {
+            const rect = canvasContainer.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            drawingCanvas.width = rect.width * dpr;
+            drawingCanvas.height = rect.height * dpr;
+            drawingCanvas.style.width = rect.width + 'px';
+            drawingCanvas.style.height = rect.height + 'px';
+            
+            bubbleCanvas.width = rect.width * dpr;
+            bubbleCanvas.height = rect.height * dpr;
+            bubbleCanvas.style.width = rect.width + 'px';
+            bubbleCanvas.height = rect.height + 'px';
+            
+            const ctx = drawingCanvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        // Drawing functions
+        function getPos(e) {
+            const rect = drawingCanvas.getBoundingClientRect();
+            if (e.touches && e.touches.length > 0) {
+                return {
+                    x: e.touches[0].clientX - rect.left,
+                    y: e.touches[0].clientY - rect.top
+                };
+            }
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            if (bubbleMode) return;
+            isDrawing = true;
+            const pos = getPos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function draw(e) {
+            if (!isDrawing || bubbleMode) return;
+            e.preventDefault();
+            
+            const pos = getPos(e);
+            const ctx = drawingCanvas.getContext('2d');
+            
+            ctx.beginPath();
+            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        // Bubble mode
+        function toggleBubbleMode() {
+            initAudio();
+            playPopSound();
+            bubbleMode = !bubbleMode;
+            bubblesBtn.classList.toggle('active', bubbleMode);
+            canvasContainer.classList.toggle('bubble-mode', bubbleMode);
+            
+            if (bubbleMode) {
+                bubbleCtx = bubbleCanvas.getContext('2d');
+                bubbleCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+                startBubbleSpawning();
+                requestAnimationFrame(animateBubbles);
+            } else {
+                stopBubbleSpawning();
+                bubbles = [];
+                const ctx = bubbleCanvas.getContext('2d');
+                ctx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
+            }
+        }
+
+        function startBubbleSpawning() {
+            bubbleSpawnInterval = setInterval(spawnBubble, 500);
+        }
+
+        function stopBubbleSpawning() {
+            if (bubbleSpawnInterval) {
+                clearInterval(bubbleSpawnInterval);
+                bubbleSpawnInterval = null;
+            }
+        }
+
+        let bubbleCtx;
+        const BUBBLE_COLORS = ['#FF6B6B', '#FFA94D', '#FFE066', '#69DB7C', '#74C0FC', '#B197FC', '#F783AC'];
+
+        function spawnBubble() {
+            const rect = canvasContainer.getBoundingClientRect();
+            const bubble = {
+                x: Math.random() * rect.width,
+                y: rect.height + 50,
+                radius: 20 + Math.random() * 40,
+                color: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
+                wobbleOffset: Math.random() * Math.PI * 2,
+                wobbleSpeed: 0.5 + Math.random() * 0.5,
+                riseSpeed: 0.5 + Math.random() * 1,
+                opacity: 0.7 + Math.random() * 0.3
+            };
+            bubbles.push(bubble);
+        }
+
+        function animateBubbles() {
+            if (!bubbleMode) return;
+            
+            const ctx = bubbleCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvasContainer.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            
+            // Draw and update bubbles
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                
+                // Update position
+                b.y -= b.riseSpeed;
+                b.wobbleOffset += 0.02;
+                const wobble = Math.sin(b.wobbleOffset) * 0.5;
+                
+                // Remove if off screen
+                if (b.y + b.radius < 0) {
+                    bubbles.splice(i, 1);
+                    continue;
+                }
+                
+                // Draw bubble
+                ctx.save();
+                ctx.globalAlpha = b.opacity;
+                
+                // Bubble gradient
+                const gradient = ctx.createRadialGradient(
+                    b.x - b.radius * 0.3, b.y - b.radius * 0.3, 0,
+                    b.x, b.y, b.radius
+                );
+                gradient.addColorStop(0, 'rgba(255,255,255,0.8)');
+                gradient.addColorStop(0.5, b.color + '99');
+                gradient.addColorStop(1, b.color + '44');
+                
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // Highlight
+                ctx.beginPath();
+                ctx.arc(b.x - b.radius * 0.3, b.y - b.radius * 0.3, b.radius * 0.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.fill();
+                
+                ctx.restore();
+            }
+            
+            // Draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                p.radius *= 0.95;
+                
+                if (p.life <= 0 || p.radius < 1) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                
+                ctx.save();
+                ctx.globalAlpha = p.life;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+            }
+            
+            requestAnimationFrame(animateBubbles);
+        }
+
+        function handleBubbleClick(e) {
+            if (!bubbleMode) return;
+            
+            const rect = bubbleCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Check if clicked on a bubble
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                const dx = x - b.x;
+                const dy = y - b.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < b.radius) {
+                    // Pop bubble
+                    playBubblePopSound();
+                    createParticles(b.x, b.y, b.color, b.radius);
+                    bubbles.splice(i, 1);
+                    return;
+                }
+            }
+        }
+
+        function createParticles(x, y, color, size) {
+            const count = 8;
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 / count) * i;
+                const speed = 2 + Math.random() * 3;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    radius: 4 + Math.random() * 4,
+                    color: color,
+                    life: 1
+                });
+            }
+        }
+
+        // Clear canvas with animation
+        function clearCanvas() {
+            initAudio();
+            playWhooshSound();
+            
+            const ctx = drawingCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            let opacity = 0;
+            
+            function fadeOut() {
+                opacity += 0.05;
+                ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+                ctx.fillRect(0, 0, rect.width, rect.height);
+                
+                if (opacity < 1) {
+                    requestAnimationFrame(fadeOut);
+                } else {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, rect.width, rect.height);
+                }
+            }
+            
+            fadeOut();
+        }
+
+        // Tool selection
+        function selectTool(tool) {
+            currentTool = tool;
+            brushBtn.classList.toggle('selected', tool === 'brush');
+            eraserBtn.classList.toggle('selected', tool === 'eraser');
+        }
+
+        function selectSize(size) {
+            currentSize = size;
+            sizeBtns.forEach(btn => {
+                btn.classList.toggle('selected', parseInt(btn.dataset.size) === size);
+            });
+        }
+
+        // Event listeners
+        function initEventListeners() {
+            // Mouse events
+            drawingCanvas.addEventListener('mousedown', startDrawing);
+            drawingCanvas.addEventListener('mousemove', draw);
+            drawingCanvas.addEventListener('mouseup', stopDrawing);
+            drawingCanvas.addEventListener('mouseleave', stopDrawing);
+            
+            // Touch events
+            drawingCanvas.addEventListener('touchstart', startDrawing, { passive: false });
+            drawingCanvas.addEventListener('touchmove', draw, { passive: false });
+            drawingCanvas.addEventListener('touchend', stopDrawing);
+            
+            // Bubble canvas click
+            bubbleCanvas.addEventListener('click', handleBubbleClick);
+            
+            // Buttons
+            bubblesBtn.addEventListener('click', toggleBubbleMode);
+            brushBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('brush'); });
+            eraserBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('eraser'); });
+            clearBtn.addEventListener('click', clearCanvas);
+            
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    initAudio();
+                    playPopSound();
+                    selectSize(parseInt(btn.dataset.size));
+                });
+            });
+            
+            // Resize
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Initialize canvas with white background
+            const ctx = drawingCanvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+
+        // Initialize
+        function init() {
+            initColorPalette();
+            resizeCanvas();
+            initEventListeners();
+            
+            // Set initial canvas background
+            const ctx = drawingCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, rect.width, rect.height);
+        }
+
+        init();
+    </script>
+</body>
+</html>
