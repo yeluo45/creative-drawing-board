@@ -1492,6 +1492,140 @@
             font-size: 0.7rem;
             text-align: center;
             padding: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tracing-item-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .tracing-item-meta {
+            font-size: 0.6rem;
+            color: #666;
+        }
+
+        .panel-item.tracing-item.mastered {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+        }
+
+        .mastered-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tracing-category-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 8px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .tracing-category-tab {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #E0E0E0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .tracing-category-tab.selected {
+            background: #69DB7C;
+            color: white;
+        }
+
+        .tracing-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.95);
+            border-bottom: 2px solid #495057;
+            font-size: 0.9rem;
+        }
+
+        .tracing-progress-bar {
+            flex: 1;
+            height: 16px;
+            background: #E0E0E0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #495057;
+        }
+
+        .tracing-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #69DB7C 0%, #28a745 100%);
+            transition: width 0.3s ease;
+        }
+
+        .mark-mastered-btn {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #FFE066;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        .mark-mastered-btn:hover {
+            background: #ffd43b;
+        }
+
+        .mark-mastered-btn.mastered {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Dot Connect Category Tabs */
+        .dot-connect-category-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 8px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .dot-category-tab {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #E0E0E0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .dot-category-tab.selected {
+            background: #74C0FC;
+            color: white;
         }
 
         /* Coloring Game Overlay */
@@ -3882,13 +4016,30 @@
                 <div></div>
             </div>
             <div class="game-content">
+                <div class="dot-connect-category-tabs" id="dotCategoryTabs">
+                    <button class="dot-category-tab selected" data-category="all">全部</button>
+                    <button class="dot-category-tab" data-category="basic">基础</button>
+                    <button class="dot-category-tab" data-category="fruit">水果</button>
+                    <button class="dot-category-tab" data-category="animal">动物</button>
+                    <button class="dot-category-tab" data-category="vehicle">交通</button>
+                    <button class="dot-category-tab" data-category="nature">自然</button>
+                </div>
                 <div class="dot-connect-template-panel" id="dotTemplatePanel">
-                    <button class="dot-template-btn selected" data-template="star">小星星</button>
-                    <button class="dot-template-btn" data-template="house">小房子</button>
-                    <button class="dot-template-btn" data-template="cat">小猫</button>
-                    <button class="dot-template-btn" data-template="fish">小鱼</button>
-                    <button class="dot-template-btn" data-template="rabbit">小兔子</button>
-                    <button class="dot-template-btn" data-template="car">小汽车</button>
+                    <button class="dot-template-btn selected" data-template="star" data-category="basic">小星星</button>
+                    <button class="dot-template-btn" data-template="house" data-category="basic">小房子</button>
+                    <button class="dot-template-btn" data-template="cat" data-category="animal">小猫</button>
+                    <button class="dot-template-btn" data-template="fish" data-category="animal">小鱼</button>
+                    <button class="dot-template-btn" data-template="rabbit" data-category="animal">小兔子</button>
+                    <button class="dot-template-btn" data-template="car" data-category="vehicle">小汽车</button>
+                    <button class="dot-template-btn" data-template="apple" data-category="fruit">苹果</button>
+                    <button class="dot-template-btn" data-template="banana" data-category="fruit">香蕉</button>
+                    <button class="dot-template-btn" data-template="grape" data-category="fruit">葡萄</button>
+                    <button class="dot-template-btn" data-template="dog" data-category="animal">小狗</button>
+                    <button class="dot-template-btn" data-template="bird" data-category="animal">小鸟</button>
+                    <button class="dot-template-btn" data-template="airplane" data-category="vehicle">飞机</button>
+                    <button class="dot-template-btn" data-template="sun" data-category="nature">太阳</button>
+                    <button class="dot-template-btn" data-template="tree" data-category="nature">大树</button>
+                    <button class="dot-template-btn" data-template="flower" data-category="nature">花朵</button>
                 </div>
                 <div class="dot-connect-area">
                     <div class="dot-canvas-wrap" id="dotCanvasWrap">
@@ -3973,11 +4124,25 @@
         <!-- Tracing Panel -->
         <div class="panel" id="tracingPanel">
             <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="tracing-category-tabs" id="tracingCategoryTabs">
+                <button class="tracing-category-tab selected" data-category="all">全部</button>
+                <button class="tracing-category-tab" data-category="number">数字</button>
+                <button class="tracing-category-tab" data-category="letter">字母</button>
+                <button class="tracing-category-tab" data-category="chinese">汉字</button>
+                <button class="tracing-category-tab" data-category="object">物品</button>
+                <button class="tracing-category-tab" data-category="vehicle">交通</button>
+                <button class="tracing-category-tab" data-category="recommended">推荐路径</button>
+            </div>
+            <div class="tracing-progress" id="tracingProgress">
+                <span>✏️ 描红进度：已掌握 <span id="tracingMasteredCount">0</span>/50</span>
+                <div class="tracing-progress-bar"><div class="tracing-progress-fill" id="tracingProgressFill"></div></div>
+            </div>
             <div class="panel-grid" id="tracingGrid"></div>
             <div class="panel-nav">
                 <button class="panel-nav-btn" onclick="prevTracing()">◀ Prev</button>
                 <button class="panel-nav-btn" onclick="toggleTracingVisibility()">👁 Show/Hide</button>
                 <button class="panel-nav-btn" onclick="clearTracingLines()">Clear Lines</button>
+                <button class="panel-nav-btn" onclick="markTracingMastered()">✓ 掌握</button>
                 <button class="panel-nav-btn" onclick="nextTracing()">Next ▶</button>
             </div>
         </div>
@@ -4725,242 +4890,65 @@
             });
         }
 
-        // Tracing templates (8 templates with path data)
+        // Tracing templates (50 templates with path data) - V15 expanded
+        // Categories: number, letter, chinese, object, vehicle
         const TRACING_TEMPLATES = [
-            { 
-                id: 'apple', name: 'Apple', 
-                paths: [
-                    { type: 'arc', x: 50, y: 55, r: 30, start: 0, end: Math.PI * 2 },
-                    { type: 'move', x: 50, y: 25 },
-                    { type: 'bezier', x1: 50, y1: 15, x2: 60, y2: 10, x: 65, y: 20 },
-                    { type: 'move', x: 50, y: 25 },
-                    { type: 'bezier', x1: 50, y1: 15, x2: 40, y2: 10, x: 35, y: 20 }
-                ]
-            },
-            { 
-                id: 'banana', name: 'Banana',
-                paths: [
-                    { type: 'move', x: 20, y: 70 },
-                    { type: 'bezier', x1: 30, y1: 30, x2: 70, y2: 30, x: 80, y: 70 },
-                    { type: 'bezier', x1: 75, y1: 35, x2: 40, y2: 35, x: 25, y: 70 }
-                ]
-            },
-            { 
-                id: 'fish', name: 'Fish',
-                paths: [
-                    { type: 'move', x: 15, y: 50 },
-                    { type: 'bezier', x1: 15, y1: 25, x2: 50, y2: 25, x: 60, y: 50 },
-                    { type: 'bezier', x1: 50, y1: 25, x2: 85, y2: 25, x: 85, y: 50 },
-                    { type: 'bezier', x1: 85, y1: 25, x2: 50, y2: 75, x: 60, y: 50 },
-                    { type: 'bezier', x1: 50, y1: 75, x2: 15, y2: 75, x: 15, y: 50 },
-                    { type: 'move', x: 85, y: 50 },
-                    { type: 'line', x: 95, y: 35 },
-                    { type: 'move', x: 85, y: 50 },
-                    { type: 'line', x: 95, y: 65 }
-                ]
-            },
-            { 
-                id: 'bird', name: 'Bird',
-                paths: [
-                    { type: 'move', x: 30, y: 40 },
-                    { type: 'arc', x: 50, y: 45, r: 20, start: 0, end: Math.PI * 2 },
-                    { type: 'move', x: 50, y: 25 },
-                    { type: 'line', x: 50, y: 15 },
-                    { type: 'move', x: 50, y: 15 },
-                    { type: 'bezier', x1: 45, y1: 10, x2: 40, y2: 5, x: 35, y: 10 },
-                    { type: 'move', x: 38, y: 40 },
-                    { type: 'line', x: 25, y: 35 },
-                    { type: 'move', x: 62, y: 40 },
-                    { type: 'line', x: 75, y: 35 },
-                    { type: 'move', x: 50, y: 65 },
-                    { type: 'line', x: 45, y: 80 },
-                    { type: 'move', x: 50, y: 65 },
-                    { type: 'line', x: 55, y: 80 }
-                ]
-            },
-            { 
-                id: 'house', name: 'House',
-                paths: [
-                    { type: 'move', x: 20, y: 55 },
-                    { type: 'line', x: 50, y: 30 },
-                    { type: 'line', x: 80, y: 55 },
-                    { type: 'line', x: 80, y: 85 },
-                    { type: 'line', x: 20, y: 85 },
-                    { type: 'line', x: 20, y: 55 },
-                    { type: 'move', x: 40, y: 85 },
-                    { type: 'line', x: 40, y: 65 },
-                    { type: 'line', x: 60, y: 65 },
-                    { type: 'line', x: 60, y: 85 },
-                    { type: 'rect', x: 25, y: 60, w: 12, h: 12 }
-                ]
-            },
-            { 
-                id: 'car', name: 'Car',
-                paths: [
-                    { type: 'move', x: 10, y: 55 },
-                    { type: 'line', x: 25, y: 55 },
-                    { type: 'line', x: 30, y: 40 },
-                    { type: 'line', x: 70, y: 40 },
-                    { type: 'line', x: 75, y: 55 },
-                    { type: 'line', x: 90, y: 55 },
-                    { type: 'arc', x: 25, y: 55, r: 12, start: Math.PI, end: 0 },
-                    { type: 'arc', x: 75, y: 55, r: 12, start: Math.PI, end: 0 }
-                ]
-            },
-            { 
-                id: 'sun', name: 'Sun',
-                paths: [
-                    { type: 'arc', x: 50, y: 50, r: 20, start: 0, end: Math.PI * 2 },
-                    { type: 'move', x: 50, y: 20 },
-                    { type: 'line', x: 50, y: 10 },
-                    { type: 'move', x: 50, y: 80 },
-                    { type: 'line', x: 50, y: 90 },
-                    { type: 'move', x: 20, y: 50 },
-                    { type: 'line', x: 10, y: 50 },
-                    { type: 'move', x: 80, y: 50 },
-                    { type: 'line', x: 90, y: 50 },
-                    { type: 'move', x: 28, y: 28 },
-                    { type: 'line', x: 20, y: 20 },
-                    { type: 'move', x: 72, y: 72 },
-                    { type: 'line', x: 80, y: 80 },
-                    { type: 'move', x: 72, y: 28 },
-                    { type: 'line', x: 80, y: 20 },
-                    { type: 'move', x: 28, y: 72 },
-                    { type: 'line', x: 20, y: 80 }
-                ]
-            },
-            { 
-                id: 'flower', name: 'Flower',
-                paths: [
-                    { type: 'arc', x: 50, y: 40, r: 10, start: 0, end: Math.PI * 2 },
-                    { type: 'move', x: 50, y: 30 },
-                    { type: 'ellipse', cx: 50, cy: 20, rx: 8, ry: 15 },
-                    { type: 'move', x: 50, y: 50 },
-                    { type: 'ellipse', cx: 50, cy: 60, rx: 8, ry: 15 },
-                    { type: 'move', x: 40, y: 40 },
-                    { type: 'ellipse', cx: 32, cy: 40, rx: 15, ry: 8 },
-                    { type: 'move', x: 60, y: 40 },
-                    { type: 'ellipse', cx: 68, cy: 40, rx: 15, ry: 8 },
-                    { type: 'move', x: 50, y: 70 },
-                    { type: 'line', x: 50, y: 90 }
-                ]
-            },
-            {
-                id: 'num1', name: 'Number 1',
-                paths: [
-                    { type: 'move', x: 45, y: 20 },
-                    { type: 'line', x: 45, y: 80 },
-                    { type: 'move', x: 35, y: 30 },
-                    { type: 'line', x: 45, y: 20 },
-                    { type: 'line', x: 55, y: 30 }
-                ]
-            },
-            {
-                id: 'num2', name: 'Number 2',
-                paths: [
-                    { type: 'move', x: 25, y: 25 },
-                    { type: 'bezier', x1: 25, y1: 50, x2: 50, y2: 50, x: 75, y: 80 },
-                    { type: 'line', x: 25, y: 80 },
-                    { type: 'move', x: 25, y: 25 },
-                    { type: 'line', x: 75, y: 25 }
-                ]
-            },
-            {
-                id: 'num3', name: 'Number 3',
-                paths: [
-                    { type: 'move', x: 25, y: 25 },
-                    { type: 'bezier', x1: 25, y1: 52, x2: 75, y2: 52, x: 75, y: 80 },
-                    { type: 'bezier', x1: 75, y1: 52, x2: 25, y2: 52, x: 25, y: 80 }
-                ]
-            },
-            {
-                id: 'num4', name: 'Number 4',
-                paths: [
-                    { type: 'move', x: 65, y: 20 },
-                    { type: 'line', x: 20, y: 55 },
-                    { type: 'line', x: 80, y: 55 },
-                    { type: 'move', x: 65, y: 20 },
-                    { type: 'line', x: 65, y: 80 }
-                ]
-            },
-            {
-                id: 'num5', name: 'Number 5',
-                paths: [
-                    { type: 'move', x: 70, y: 25 },
-                    { type: 'line', x: 30, y: 25 },
-                    { type: 'line', x: 30, y: 50 },
-                    { type: 'bezier', x1: 30, y1: 50, x2: 75, y2: 50, x: 75, y: 80 },
-                    { type: 'line', x: 75, y: 50 },
-                    { type: 'line', x: 30, y: 50 }
-                ]
-            },
-            {
-                id: 'da', name: 'Da (Big)',
-                paths: [
-                    { type: 'move', x: 20, y: 20 },
-                    { type: 'line', x: 20, y: 80 },
-                    { type: 'move', x: 20, y: 50 },
-                    { type: 'line', x: 80, y: 50 }
-                ]
-            },
-            {
-                id: 'xiao', name: 'Xiao (Small)',
-                paths: [
-                    { type: 'move', x: 30, y: 20 },
-                    { type: 'line', x: 70, y: 80 },
-                    { type: 'move', x: 70, y: 20 },
-                    { type: 'line', x: 30, y: 80 }
-                ]
-            },
-            {
-                id: 'shang', name: 'Shang (Up)',
-                paths: [
-                    { type: 'move', x: 50, y: 80 },
-                    { type: 'line', x: 50, y: 20 },
-                    { type: 'move', x: 30, y: 50 },
-                    { type: 'line', x: 70, y: 50 }
-                ]
-            },
-            {
-                id: 'xia', name: 'Xia (Down)',
-                paths: [
-                    { type: 'move', x: 50, y: 20 },
-                    { type: 'line', x: 50, y: 80 },
-                    { type: 'move', x: 30, y: 35 },
-                    { type: 'line', x: 70, y: 35 }
-                ]
-            },
-            {
-                id: 'letterO', name: 'Letter O',
-                paths: [
-                    { type: 'arc', x: 50, y: 50, r: 30, start: 0, end: Math.PI * 2 }
-                ]
-            },
-            {
-                id: 'letterX', name: 'Letter X',
-                paths: [
-                    { type: 'move', x: 25, y: 20 },
-                    { type: 'line', x: 75, y: 80 },
-                    { type: 'move', x: 75, y: 20 },
-                    { type: 'line', x: 25, y: 80 }
-                ]
-            },
-            {
-                id: 'star_letter', name: 'Star',
-                paths: [
-                    { type: 'move', x: 50, y: 10 },
-                    { type: 'line', x: 61, y: 38 },
-                    { type: 'line', x: 90, y: 38 },
-                    { type: 'line', x: 68, y: 58 },
-                    { type: 'line', x: 79, y: 90 },
-                    { type: 'line', x: 50, y: 70 },
-                    { type: 'line', x: 21, y: 90 },
-                    { type: 'line', x: 32, y: 58 },
-                    { type: 'line', x: 10, y: 38 },
-                    { type: 'line', x: 39, y: 38 },
-                    { type: 'line', x: 50, y: 10 }
-                ]
-            }
+            // === NUMBER TEMPLATES (0-9) ===
+            { id: 'num_0', name: '数字 0', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'arc', x: 50, y: 50, r: 30, start: 0, end: Math.PI * 2 }] },
+            { id: 'num_1', name: '数字 1', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 45, y: 25 }, { type: 'line', x: 45, y: 80 }, { type: 'move', x: 35, y: 35 }, { type: 'line', x: 45, y: 25 }, { type: 'line', x: 55, y: 35 }] },
+            { id: 'num_2', name: '数字 2', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 30 }, { type: 'bezier', x1: 25, y1: 55, x2: 75, y2: 55, x: 75, y: 80 }, { type: 'line', x: 25, y: 80 }, { type: 'move', x: 25, y: 30 }, { type: 'line', x: 75, y: 30 }] },
+            { id: 'num_3', name: '数字 3', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 30 }, { type: 'bezier', x1: 25, y1: 55, x2: 75, y2: 55, x: 75, y: 80 }, { type: 'bezier', x1: 75, y1: 55, x2: 25, y2: 55, x: 25, y: 80 }] },
+            { id: 'num_4', name: '数字 4', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 65, y: 25 }, { type: 'line', x: 20, y: 55 }, { type: 'line', x: 80, y: 55 }, { type: 'move', x: 65, y: 25 }, { type: 'line', x: 65, y: 80 }] },
+            { id: 'num_5', name: '数字 5', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 70, y: 25 }, { type: 'line', x: 30, y: 25 }, { type: 'line', x: 30, y: 50 }, { type: 'bezier', x1: 30, y1: 50, x2: 75, y2: 50, x: 75, y: 80 }, { type: 'line', x: 75, y: 50 }, { type: 'line', x: 30, y: 50 }] },
+            { id: 'num_6', name: '数字 6', category: 'number', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 70, y: 25 }, { type: 'line', x: 30, y: 50 }, { type: 'arc', x: 50, y: 65, r: 20, start: Math.PI, end: 0 }, { type: 'bezier', x1: 70, y1: 50, x2: 30, y2: 50, x: 30, y: 80 }] },
+            { id: 'num_7', name: '数字 7', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 25 }, { type: 'line', x: 75, y: 25 }, { type: 'line', x: 45, y: 80 }] },
+            { id: 'num_8', name: '数字 8', category: 'number', difficulty: 'medium', ageGroup: '4-5', paths: [{ type: 'move', x: 50, y: 50 }, { type: 'arc', x: 50, y: 35, r: 15, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 50 }, { type: 'arc', x: 50, y: 68, r: 15, start: Math.PI, end: 0 }] },
+            { id: 'num_9', name: '数字 9', category: 'number', difficulty: 'medium', ageGroup: '4-5', paths: [{ type: 'arc', x: 50, y: 35, r: 20, start: Math.PI, end: 0 }, { type: 'line', x: 70, y: 55 }, { type: 'line', x: 50, y: 80 }] },
+            // === LETTER TEMPLATES (A-Z) ===
+            { id: 'letter_A', name: '字母 A', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 50, y: 20 }, { type: 'line', x: 20, y: 80 }, { type: 'move', x: 50, y: 20 }, { type: 'line', x: 80, y: 80 }, { type: 'move', x: 30, y: 55 }, { type: 'line', x: 70, y: 55 }] },
+            { id: 'letter_B', name: '字母 B', category: 'letter', difficulty: 'medium', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 25, y: 80 }, { type: 'move', x: 25, y: 20 }, { type: 'bezier', x1: 70, y1: 20, x2: 70, y2: 50, x: 25, y: 50 }, { type: 'move', x: 25, y: 50 }, { type: 'bezier', x1: 75, y1: 50, x2: 75, y2: 80, x: 25, y: 80 }] },
+            { id: 'letter_C', name: '字母 C', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 75, y: 30 }, { type: 'bezier', x1: 75, y1: 20, x2: 25, y2: 20, x: 25, y: 80 }, { type: 'bezier', x1: 25, y1: 80, x2: 75, y2: 80, x: 75, y: 70 }] },
+            { id: 'letter_D', name: '字母 D', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 25, y: 80 }, { type: 'bezier', x1: 25, y1: 80, x2: 75, y2: 80, x: 75, y: 50 }, { type: 'bezier', x1: 75, y1: 20, x2: 25, y2: 20, x: 25, y: 20 }] },
+            { id: 'letter_E', name: '字母 E', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 25, y: 80 }, { type: 'line', x: 75, y: 80 }, { type: 'move', x: 25, y: 50 }, { type: 'line', x: 65, y: 50 }, { type: 'move', x: 25, y: 20 }, { type: 'line', x: 75, y: 20 }] },
+            { id: 'letter_X', name: '字母 X', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 75, y: 80 }, { type: 'move', x: 75, y: 20 }, { type: 'line', x: 25, y: 80 }] },
+            { id: 'letter_Y', name: '字母 Y', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 50, y: 50 }, { type: 'move', x: 75, y: 20 }, { type: 'line', x: 50, y: 50 }, { type: 'line', x: 50, y: 80 }] },
+            { id: 'letter_Z', name: '字母 Z', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 75, y: 20 }, { type: 'line', x: 25, y: 80 }, { type: 'line', x: 75, y: 80 }] },
+            // === CHINESE CHARACTER TEMPLATES ===
+            { id: 'char_人', name: '人', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 50, y: 15 }, { type: 'line', x: 25, y: 85 }, { type: 'move', x: 50, y: 15 }, { type: 'line', x: 75, y: 85 }] },
+            { id: 'char_口', name: '口', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 30, y: 25 }, { type: 'line', x: 30, y: 75 }, { type: 'line', x: 70, y: 75 }, { type: 'line', x: 70, y: 25 }, { type: 'line', x: 30, y: 25 }] },
+            { id: 'char_手', name: '手', category: 'chinese', difficulty: 'medium', ageGroup: '5-6', paths: [{ type: 'move', x: 20, y: 30 }, { type: 'line', x: 80, y: 30 }, { type: 'move', x: 25, y: 30 }, { type: 'line', x: 25, y: 80 }, { type: 'line', x: 75, y: 80 }, { type: 'move', x: 35, y: 55 }, { type: 'line', x: 65, y: 55 }, { type: 'move', x: 45, y: 30 }, { type: 'line', x: 45, y: 55 }, { type: 'move', x: 55, y: 30 }, { type: 'line', x: 55, y: 55 }] },
+            { id: 'char_日', name: '日', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 30, y: 20 }, { type: 'line', x: 30, y: 80 }, { type: 'line', x: 70, y: 80 }, { type: 'line', x: 70, y: 20 }, { type: 'line', x: 30, y: 20 }, { type: 'move', x: 30, y: 50 }, { type: 'line', x: 70, y: 50 }] },
+            { id: 'char_月', name: '月', category: 'chinese', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 35, y: 20 }, { type: 'line', x: 35, y: 80 }, { type: 'bezier', x1: 35, y1: 80, x2: 70, y2: 80, x: 70, y: 50 }, { type: 'bezier', x1: 70, y1: 20, x2: 35, y2: 20, x: 35, y: 20 }] },
+            // === OBJECT TEMPLATES ===
+            { id: 'obj_bed', name: '床', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 15, y: 35 }, { type: 'line', x: 85, y: 35 }, { type: 'line', x: 85, y: 75 }, { type: 'line', x: 15, y: 75 }, { type: 'line', x: 15, y: 35 }, { type: 'move', x: 25, y: 35 }, { type: 'line', x: 25, y: 55 }, { type: 'line', x: 40, y: 55 }, { type: 'line', x: 40, y: 35 }] },
+            { id: 'obj_chair', name: '椅子', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 40 }, { type: 'line', x: 75, y: 40 }, { type: 'line', x: 75, y: 75 }, { type: 'line', x: 25, y: 75 }, { type: 'line', x: 25, y: 40 }, { type: 'move', x: 25, y: 40 }, { type: 'line', x: 25, y: 20 }, { type: 'line', x: 75, y: 20 }] },
+            { id: 'obj_clock', name: '时钟', category: 'object', difficulty: 'medium', ageGroup: '4-5', paths: [{ type: 'arc', x: 50, y: 50, r: 35, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 50 }, { type: 'line', x: 50, y: 25 }, { type: 'move', x: 50, y: 50 }, { type: 'line', x: 70, y: 50 }] },
+            { id: 'obj_tree', name: '大树', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 45, y: 40 }, { type: 'line', x: 45, y: 85 }, { type: 'line', x: 55, y: 85 }, { type: 'line', x: 55, y: 40 }, { type: 'move', x: 50, y: 40 }, { type: 'arc', x: 50, y: 30, r: 25, start: Math.PI, end: 0 }] },
+            { id: 'obj_flower', name: '花朵', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'arc', x: 50, y: 45, r: 12, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 33 }, { type: 'ellipse', cx: 50, cy: 22, rx: 8, ry: 14 }, { type: 'move', x: 50, y: 57 }, { type: 'ellipse', cx: 50, cy: 68, rx: 8, ry: 14 }, { type: 'move', x: 38, y: 45 }, { type: 'ellipse', cx: 28, cy: 45, rx: 14, ry: 8 }, { type: 'move', x: 62, y: 45 }, { type: 'ellipse', cx: 72, cy: 45, rx: 14, ry: 8 }, { type: 'move', x: 50, y: 57 }, { type: 'line', x: 50, y: 85 }] },
+            // === VEHICLE TEMPLATES ===
+            { id: 'vehicle_bike', name: '自行车', category: 'vehicle', difficulty: 'medium', ageGroup: '5-6', paths: [{ type: 'arc', x: 25, y: 70, r: 15, start: 0, end: Math.PI * 2 }, { type: 'arc', x: 75, y: 70, r: 15, start: 0, end: Math.PI * 2 }, { type: 'move', x: 25, y: 70 }, { type: 'line', x: 50, y: 40 }, { type: 'line', x: 75, y: 70 }, { type: 'move', x: 50, y: 40 }, { type: 'line', x: 50, y: 25 }, { type: 'line', x: 60, y: 25 }] },
+            { id: 'vehicle_boat', name: '小船', category: 'vehicle', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 15, y: 55 }, { type: 'bezier', x1: 15, y1: 80, x2: 85, y2: 80, x: 85, y: 55 }, { type: 'line', x: 75, y: 55 }, { type: 'line', x: 50, y: 35 }, { type: 'line', x: 25, y: 55 }, { type: 'move', x: 50, y: 35 }, { type: 'line', x: 50, y: 20 }, { type: 'move', x: 50, y: 20 }, { type: 'line', x: 75, y: 30 }] },
+            // === ORIGINAL 20 TEMPLATES (preserved with new metadata) ===
+            { id: 'apple', name: 'Apple', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'arc', x: 50, y: 55, r: 30, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 25 }, { type: 'bezier', x1: 50, y1: 15, x2: 60, y2: 10, x: 65, y: 20 }, { type: 'move', x: 50, y: 25 }, { type: 'bezier', x1: 50, y1: 15, x2: 40, y2: 10, x: 35, y: 20 }] },
+            { id: 'banana', name: 'Banana', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 20, y: 70 }, { type: 'bezier', x1: 30, y1: 30, x2: 70, y2: 30, x: 80, y: 70 }, { type: 'bezier', x1: 75, y1: 35, x2: 40, y2: 35, x: 25, y: 70 }] },
+            { id: 'fish', name: 'Fish', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 15, y: 50 }, { type: 'bezier', x1: 15, y1: 25, x2: 50, y2: 25, x: 60, y: 50 }, { type: 'bezier', x1: 50, y1: 25, x2: 85, y2: 25, x: 85, y: 50 }, { type: 'bezier', x1: 85, y1: 25, x2: 50, y2: 75, x: 60, y: 50 }, { type: 'bezier', x1: 50, y1: 75, x2: 15, y2: 75, x: 15, y: 50 }, { type: 'move', x: 85, y: 50 }, { type: 'line', x: 95, y: 35 }, { type: 'move', x: 85, y: 50 }, { type: 'line', x: 95, y: 65 }] },
+            { id: 'bird', name: 'Bird', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 30, y: 40 }, { type: 'arc', x: 50, y: 45, r: 20, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 25 }, { type: 'line', x: 50, y: 15 }, { type: 'move', x: 50, y: 15 }, { type: 'bezier', x1: 45, y1: 10, x2: 40, y2: 5, x: 35, y: 10 }, { type: 'move', x: 38, y: 40 }, { type: 'line', x: 25, y: 35 }, { type: 'move', x: 62, y: 40 }, { type: 'line', x: 75, y: 35 }, { type: 'move', x: 50, y: 65 }, { type: 'line', x: 45, y: 80 }, { type: 'move', x: 50, y: 65 }, { type: 'line', x: 55, y: 80 }] },
+            { id: 'house', name: 'House', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 20, y: 55 }, { type: 'line', x: 50, y: 30 }, { type: 'line', x: 80, y: 55 }, { type: 'line', x: 80, y: 85 }, { type: 'line', x: 20, y: 85 }, { type: 'line', x: 20, y: 55 }, { type: 'move', x: 40, y: 85 }, { type: 'line', x: 40, y: 65 }, { type: 'line', x: 60, y: 65 }, { type: 'line', x: 60, y: 85 }, { type: 'rect', x: 25, y: 60, w: 12, h: 12 }] },
+            { id: 'car', name: 'Car', category: 'vehicle', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 10, y: 55 }, { type: 'line', x: 25, y: 55 }, { type: 'line', x: 30, y: 40 }, { type: 'line', x: 70, y: 40 }, { type: 'line', x: 75, y: 55 }, { type: 'line', x: 90, y: 55 }, { type: 'arc', x: 25, y: 55, r: 12, start: Math.PI, end: 0 }, { type: 'arc', x: 75, y: 55, r: 12, start: Math.PI, end: 0 }] },
+            { id: 'sun', name: 'Sun', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'arc', x: 50, y: 50, r: 20, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 20 }, { type: 'line', x: 50, y: 10 }, { type: 'move', x: 50, y: 80 }, { type: 'line', x: 50, y: 90 }, { type: 'move', x: 20, y: 50 }, { type: 'line', x: 10, y: 50 }, { type: 'move', x: 80, y: 50 }, { type: 'line', x: 90, y: 50 }, { type: 'move', x: 28, y: 28 }, { type: 'line', x: 20, y: 20 }, { type: 'move', x: 72, y: 72 }, { type: 'line', x: 80, y: 80 }, { type: 'move', x: 72, y: 28 }, { type: 'line', x: 80, y: 20 }, { type: 'move', x: 28, y: 72 }, { type: 'line', x: 20, y: 80 }] },
+            { id: 'flower', name: 'Flower', category: 'object', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'arc', x: 50, y: 40, r: 10, start: 0, end: Math.PI * 2 }, { type: 'move', x: 50, y: 30 }, { type: 'ellipse', cx: 50, cy: 20, rx: 8, ry: 15 }, { type: 'move', x: 50, y: 50 }, { type: 'ellipse', cx: 50, cy: 60, rx: 8, ry: 15 }, { type: 'move', x: 40, y: 40 }, { type: 'ellipse', cx: 32, cy: 40, rx: 15, ry: 8 }, { type: 'move', x: 60, y: 40 }, { type: 'ellipse', cx: 68, cy: 40, rx: 15, ry: 8 }, { type: 'move', x: 50, y: 70 }, { type: 'line', x: 50, y: 90 }] },
+            { id: 'num1_old', name: 'Number 1', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 45, y: 20 }, { type: 'line', x: 45, y: 80 }, { type: 'move', x: 35, y: 30 }, { type: 'line', x: 45, y: 20 }, { type: 'line', x: 55, y: 30 }] },
+            { id: 'num2_old', name: 'Number 2', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 25 }, { type: 'bezier', x1: 25, y1: 50, x2: 50, y2: 50, x: 75, y: 80 }, { type: 'line', x: 25, y: 80 }, { type: 'move', x: 25, y: 25 }, { type: 'line', x: 75, y: 25 }] },
+            { id: 'num3_old', name: 'Number 3', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 25, y: 25 }, { type: 'bezier', x1: 25, y1: 52, x2: 75, y2: 52, x: 75, y: 80 }, { type: 'bezier', x1: 75, y1: 52, x2: 25, y2: 52, x: 25, y: 80 }] },
+            { id: 'num4_old', name: 'Number 4', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 65, y: 20 }, { type: 'line', x: 20, y: 55 }, { type: 'line', x: 80, y: 55 }, { type: 'move', x: 65, y: 20 }, { type: 'line', x: 65, y: 80 }] },
+            { id: 'num5_old', name: 'Number 5', category: 'number', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 70, y: 25 }, { type: 'line', x: 30, y: 25 }, { type: 'line', x: 30, y: 50 }, { type: 'bezier', x1: 30, y1: 50, x2: 75, y2: 50, x: 75, y: 80 }, { type: 'line', x: 75, y: 50 }, { type: 'line', x: 30, y: 50 }] },
+            { id: 'da', name: 'Da (Big)', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 20, y: 20 }, { type: 'line', x: 20, y: 80 }, { type: 'move', x: 20, y: 50 }, { type: 'line', x: 80, y: 50 }] },
+            { id: 'xiao', name: 'Xiao (Small)', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 30, y: 20 }, { type: 'line', x: 70, y: 80 }, { type: 'move', x: 70, y: 20 }, { type: 'line', x: 30, y: 80 }] },
+            { id: 'shang', name: 'Shang (Up)', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 50, y: 80 }, { type: 'line', x: 50, y: 20 }, { type: 'move', x: 30, y: 50 }, { type: 'line', x: 70, y: 50 }] },
+            { id: 'xia', name: 'Xia (Down)', category: 'chinese', difficulty: 'easy', ageGroup: '3-4', paths: [{ type: 'move', x: 50, y: 20 }, { type: 'line', x: 50, y: 80 }, { type: 'move', x: 30, y: 35 }, { type: 'line', x: 70, y: 35 }] },
+            { id: 'letterO', name: 'Letter O', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'arc', x: 50, y: 50, r: 30, start: 0, end: Math.PI * 2 }] },
+            { id: 'letterX_old', name: 'Letter X', category: 'letter', difficulty: 'easy', ageGroup: '4-5', paths: [{ type: 'move', x: 25, y: 20 }, { type: 'line', x: 75, y: 80 }, { type: 'move', x: 75, y: 20 }, { type: 'line', x: 25, y: 80 }] },
+            { id: 'star_letter', name: 'Star', category: 'object', difficulty: 'medium', ageGroup: '4-5', paths: [{ type: 'move', x: 50, y: 10 }, { type: 'line', x: 61, y: 38 }, { type: 'line', x: 90, y: 38 }, { type: 'line', x: 68, y: 58 }, { type: 'line', x: 79, y: 90 }, { type: 'line', x: 50, y: 70 }, { type: 'line', x: 21, y: 90 }, { type: 'line', x: 32, y: 58 }, { type: 'line', x: 10, y: 38 }, { type: 'line', x: 39, y: 38 }, { type: 'line', x: 50, y: 10 }] }
         ];
 
         // Backgrounds
@@ -6697,15 +6685,102 @@
         }
 
         // ===== M2: Tracing =====
+        let tracingCategory = 'all';
+        let tracingMastered = new Set(JSON.parse(localStorage.getItem('tracing_mastered') || '[]'));
+
+        function updateTracingProgress() {
+            const progressFill = document.getElementById('tracingProgressFill');
+            const progressCount = document.getElementById('tracingMasteredCount');
+            if (progressFill && progressCount) {
+                const total = TRACING_TEMPLATES.length;
+                const mastered = tracingMastered.size;
+                const percent = total > 0 ? (mastered / total) * 100 : 0;
+                progressFill.style.width = percent + '%';
+                progressCount.textContent = mastered;
+            }
+        }
+
+        function getRecommendedOrder() {
+            // Recommended order: numbers 0-9, letters A-Z, simple Chinese chars
+            const order = [];
+            // Numbers 0-9 first
+            for (let i = 0; i <= 9; i++) {
+                const idx = TRACING_TEMPLATES.findIndex(t => t.id === 'num_' + i);
+                if (idx >= 0) order.push(idx);
+            }
+            // Letters A, B, C, D, E, X, Y, Z
+            ['letter_A', 'letter_B', 'letter_C', 'letter_D', 'letter_E', 'letter_X', 'letter_Y', 'letter_Z'].forEach(id => {
+                const idx = TRACING_TEMPLATES.findIndex(t => t.id === id);
+                if (idx >= 0) order.push(idx);
+            });
+            // Simple Chinese chars
+            ['char_人', 'char_口', 'char_日', 'char_月', 'char_手'].forEach(id => {
+                const idx = TRACING_TEMPLATES.findIndex(t => t.id === id);
+                if (idx >= 0) order.push(idx);
+            });
+            return order;
+        }
+
+        function getFilteredTracingIndices() {
+            if (tracingCategory === 'all') {
+                return TRACING_TEMPLATES.map((_, i) => i);
+            } else if (tracingCategory === 'recommended') {
+                return getRecommendedOrder();
+            } else {
+                return TRACING_TEMPLATES.map((t, i) => t.category === tracingCategory ? i : -1).filter(i => i >= 0);
+            }
+        }
+
         function initTracingPanel() {
+            // Setup category tabs
+            document.querySelectorAll('.tracing-category-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tracing-category-tab').forEach(t => t.classList.remove('selected'));
+                    tab.classList.add('selected');
+                    tracingCategory = tab.dataset.category;
+                    renderTracingGrid();
+                    playSound(playBtnClick);
+                });
+            });
+
+            updateTracingProgress();
+            renderTracingGrid();
+        }
+
+        function renderTracingGrid() {
             const grid = document.getElementById('tracingGrid');
-            TRACING_TEMPLATES.forEach((template, index) => {
+            grid.innerHTML = '';
+
+            const filteredIndices = getFilteredTracingIndices();
+
+            filteredIndices.forEach(index => {
+                const template = TRACING_TEMPLATES[index];
                 const item = document.createElement('div');
-                item.className = 'panel-item tracing-item';
-                item.innerHTML = `<span>${template.name}</span>`;
+                const isMastered = tracingMastered.has(template.id);
+                const diffStars = template.difficulty === 'easy' ? '🐣' : template.difficulty === 'medium' ? '🐥' : '🔥';
+                item.className = 'panel-item tracing-item' + (isMastered ? ' mastered' : '');
+                item.innerHTML = `
+                    <span class="tracing-item-name">${template.name}</span>
+                    <span class="tracing-item-meta">${diffStars} ${template.ageGroup}岁</span>
+                    ${isMastered ? '<span class="mastered-badge">✓</span>' : ''}
+                `;
                 item.addEventListener('click', () => selectTracing(index));
                 grid.appendChild(item);
             });
+        }
+
+        function markTracingMastered() {
+            if (currentTracing < 0) return;
+            const template = TRACING_TEMPLATES[currentTracing];
+            if (tracingMastered.has(template.id)) {
+                tracingMastered.delete(template.id);
+            } else {
+                tracingMastered.add(template.id);
+            }
+            localStorage.setItem('tracing_mastered', JSON.stringify([...tracingMastered]));
+            updateTracingProgress();
+            renderTracingGrid();
+            playSound(playBtnClick);
         }
 
         function selectTracing(index) {
@@ -11677,10 +11752,11 @@
         let dotTouching = false;
         let dotRevealedImage = null;
 
-        // Dot templates
+        // Dot templates - V15 expanded to 15 templates
         const dotTemplates = {
             star: {
                 name: '小星星',
+                category: 'basic',
                 points: [
                     {x: 0.5, y: 0.1},  // 1 - top
                     {x: 0.6, y: 0.35}, // 2 - right upper
@@ -11697,6 +11773,7 @@
             },
             house: {
                 name: '小房子',
+                category: 'basic',
                 points: [
                     {x: 0.5, y: 0.1},  // 1 - roof top
                     {x: 0.85, y: 0.45}, // 2 - right roof
@@ -11712,6 +11789,7 @@
             },
             cat: {
                 name: '小猫',
+                category: 'animal',
                 points: [
                     {x: 0.5, y: 0.15},  // 1 - head top
                     {x: 0.65, y: 0.25}, // 2 - right ear top
@@ -11722,14 +11800,13 @@
                     {x: 0.3, y: 0.7},   // 7 - chin left
                     {x: 0.25, y: 0.55}, // 8 - left cheek
                     {x: 0.3, y: 0.4},   // 9 - left head
-                    {x: 0.35, y: 0.25}, // 10 - left ear top
-                    {x: 0.4, y: 0.05},  // 11 - tail start
-                    {x: 0.9, y: 0.15}   // 12 - tail end
+                    {x: 0.35, y: 0.25}  // 10 - left ear top
                 ],
-                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="80" ry="70" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="80,140 60,80 110,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="220,140 240,80 190,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><circle cx="120" cy="190" r="12" fill="#495057"/><circle cx="180" cy="190" r="12" fill="#495057"/><circle cx="125" cy="185" r="4" fill="white"/><circle cx="185" cy="185" r="4" fill="white"/><ellipse cx="150" cy="220" rx="10" ry="8" fill="#FF6B6B"/><path d="M140,230 Q150,240 160,230" stroke="#495057" stroke-width="3" fill="none"/><path d="M240,120 Q280,100 270,160" stroke="#9775FA" stroke-width="10" fill="none" stroke-linecap="round"/></svg>')
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="80" ry="70" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="80,140 60,80 110,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="220,140 240,80 190,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><circle cx="120" cy="190" r="12" fill="#495057"/><circle cx="180" cy="190" r="12" fill="#495057"/><circle cx="125" cy="185" r="4" fill="white"/><circle cx="185" cy="185" r="4" fill="white"/><ellipse cx="150" cy="220" rx="10" ry="8" fill="#FF6B6B"/><path d="M140,230 Q150,240 160,230" stroke="#495057" stroke-width="3" fill="none"/></svg>')
             },
             fish: {
                 name: '小鱼',
+                category: 'animal',
                 points: [
                     {x: 0.15, y: 0.5},  // 1 - mouth
                     {x: 0.35, y: 0.3}, // 2 - head top
@@ -11749,6 +11826,7 @@
             },
             rabbit: {
                 name: '小兔子',
+                category: 'animal',
                 points: [
                     {x: 0.5, y: 0.2},  // 1 - head top
                     {x: 0.65, y: 0.25}, // 2 - right ear top
@@ -11766,10 +11844,11 @@
                     {x: 0.85, y: 0.35}, // 14 - front paw
                     {x: 0.75, y: 0.9}   // 15 - back foot
                 ],
-                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="90" ry="70" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="10" ry="45" fill="#FFB3B3"/><ellipse cx="190" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="190" cy="80" rx="10" ry="45" fill="#FFB3B3"/><circle cx="120" cy="180" r="10" fill="#495057"/><circle cx="180" cy="180" r="10" fill="#495057"/><circle cx="123" cy="177" r="3" fill="white"/><circle cx="183" cy="177" r="3" fill="white"/><ellipse cx="150" cy="210" rx="12" ry="8" fill="#FFB3B3"/><circle cx="100" cy="220" r="15" fill="#FFB3B3" opacity="0.5"/><circle cx="200" cy="220" r="15" fill="#FFB3B3" opacity="0.5"/></svg>')
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="90" ry="70" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="10" ry="45" fill="#FFB3B3"/><ellipse cx="190" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="190" cy="80" rx="10" ry="45" fill="#FFB3B3"/><circle cx="120" cy="180" r="10" fill="#495057"/><circle cx="180" cy="180" r="10" fill="#495057"/><circle cx="123" cy="177" r="3" fill="white"/><circle cx="183" cy="177" r="3" fill="white"/><ellipse cx="150" cy="210" rx="12" ry="8" fill="#FFB3B3"/></svg>')
             },
             car: {
                 name: '小汽车',
+                category: 'vehicle',
                 points: [
                     {x: 0.1, y: 0.6},   // 1 - front bottom
                     {x: 0.1, y: 0.4},   // 2 - front top
@@ -11787,6 +11866,164 @@
                     {x: 0.5, y: 0.35}   // 14 - mirror
                 ],
                 image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect x="20" y="150" width="260" height="80" rx="10" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><path d="M60,150 L100,80 L200,80 L240,150" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><rect x="110" y="90" width="80" height="55" fill="#74C0FC" stroke="#495057" stroke-width="2"/><circle cx="80" cy="230" r="30" fill="#495057"/><circle cx="80" cy="230" r="15" fill="#868e96"/><circle cx="220" cy="230" r="30" fill="#495057"/><circle cx="220" cy="230" r="15" fill="#868e96"/><rect x="250" y="160" width="25" height="15" fill="#FFE066" stroke="#495057" stroke-width="2"/><rect x="25" y="165" width="20" height="12" fill="#FFE066" stroke="#495057" stroke-width="2"/></svg>')
+            },
+            // V15 NEW TEMPLATES
+            apple: {
+                name: '苹果',
+                category: 'fruit',
+                points: [
+                    {x: 0.5, y: 0.2},   // 1 - top stem
+                    {x: 0.55, y: 0.35}, // 2 - right upper
+                    {x: 0.7, y: 0.45},  // 3 - right mid
+                    {x: 0.75, y: 0.6},  // 4 - right lower
+                    {x: 0.6, y: 0.8},   // 5 - bottom right
+                    {x: 0.4, y: 0.85},  // 6 - bottom left
+                    {x: 0.25, y: 0.6},  // 7 - left lower
+                    {x: 0.3, y: 0.45},  // 8 - left mid
+                    {x: 0.45, y: 0.35}  // 9 - left upper
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="180" rx="90" ry="85" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><rect x="140" y="60" width="15" height="40" fill="#8B4513"/><ellipse cx="180" cy="80" rx="25" ry="15" fill="#69DB7C" transform="rotate(30 180 80)"/><circle cx="120" cy="160" r="10" fill="rgba(255,255,255,0.3)"/></svg>')
+            },
+            banana: {
+                name: '香蕉',
+                category: 'fruit',
+                points: [
+                    {x: 0.2, y: 0.7},   // 1 - left bottom
+                    {x: 0.3, y: 0.4},   // 2 - left mid
+                    {x: 0.5, y: 0.2},   // 3 - top
+                    {x: 0.7, y: 0.3},   // 4 - right upper
+                    {x: 0.85, y: 0.6},  // 5 - right tip
+                    {x: 0.75, y: 0.75}  // 6 - bottom
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><path d="M60,220 Q80,100 150,80 Q220,60 250,150 Q230,240 150,220 Q80,210 60,220Z" fill="#FFE066" stroke="#E5997F" stroke-width="4"/><path d="M70,200 Q90,120 150,100" stroke="#E5997F" stroke-width="2" fill="none"/></svg>')
+            },
+            grape: {
+                name: '葡萄',
+                category: 'fruit',
+                points: [
+                    {x: 0.5, y: 0.15},  // 1 - stem top
+                    {x: 0.55, y: 0.25}, // 2 - right upper
+                    {x: 0.65, y: 0.35}, // 3 - right mid
+                    {x: 0.7, y: 0.5},   // 4 - right lower
+                    {x: 0.6, y: 0.65},  // 5 - bottom right
+                    {x: 0.45, y: 0.75}, // 6 - bottom center
+                    {x: 0.3, y: 0.65},  // 7 - bottom left
+                    {x: 0.2, y: 0.5},   // 8 - left lower
+                    {x: 0.25, y: 0.35},  // 9 - left mid
+                    {x: 0.35, y: 0.25}   // 10 - left upper
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><circle cx="120" cy="120" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><circle cx="180" cy="120" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><circle cx="150" cy="170" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><circle cx="105" cy="175" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><circle cx="195" cy="175" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><circle cx="150" cy="225" r="35" fill="#B197FC" stroke="#495057" stroke-width="3"/><rect x="140" y="55" width="15" height="35" fill="#8B4513"/><ellipse cx="175" cy="65" rx="20" ry="12" fill="#69DB7C" transform="rotate(25 175 65)"/></svg>')
+            },
+            dog: {
+                name: '小狗',
+                category: 'animal',
+                points: [
+                    {x: 0.5, y: 0.15},  // 1 - head top
+                    {x: 0.7, y: 0.2},   // 2 - right ear top
+                    {x: 0.8, y: 0.35},  // 3 - right ear bottom
+                    {x: 0.75, y: 0.5},  // 4 - right cheek
+                    {x: 0.65, y: 0.65}, // 5 - chin right
+                    {x: 0.5, y: 0.75},  // 6 - chin
+                    {x: 0.35, y: 0.65}, // 7 - chin left
+                    {x: 0.25, y: 0.5},  // 8 - left cheek
+                    {x: 0.2, y: 0.35},  // 9 - left ear bottom
+                    {x: 0.3, y: 0.2},   // 10 - left ear top
+                    {x: 0.6, y: 0.35},  // 11 - eye right
+                    {x: 0.4, y: 0.35}   // 12 - eye left
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="180" rx="85" ry="75" fill="#E5997F" stroke="#495057" stroke-width="4"/><ellipse cx="75" cy="120" rx="30" ry="50" fill="#E5997F" stroke="#495057" stroke-width="4"/><ellipse cx="225" cy="120" rx="30" ry="50" fill="#E5997F" stroke="#495057" stroke-width="4"/><circle cx="120" cy="165" r="12" fill="#495057"/><circle cx="180" cy="165" r="12" fill="#495057"/><circle cx="124" cy="161" r="4" fill="white"/><circle cx="184" cy="161" r="4" fill="white"/><ellipse cx="150" cy="200" rx="15" ry="10" fill="#495057"/><path d="M135,215 Q150,230 165,215" stroke="#495057" stroke-width="3" fill="none"/></svg>')
+            },
+            bird: {
+                name: '小鸟',
+                category: 'animal',
+                points: [
+                    {x: 0.5, y: 0.2},   // 1 - head top
+                    {x: 0.65, y: 0.25}, // 2 - head right
+                    {x: 0.7, y: 0.4},   // 3 - neck right
+                    {x: 0.8, y: 0.5},   // 4 - wing tip
+                    {x: 0.6, y: 0.55},   // 5 - wing mid
+                    {x: 0.7, y: 0.75},   // 6 - tail right
+                    {x: 0.5, y: 0.8},    // 7 - tail center
+                    {x: 0.3, y: 0.75},   // 8 - tail left
+                    {x: 0.4, y: 0.55},   // 9 - body left
+                    {x: 0.2, y: 0.5},    // 10 - wing tip left
+                    {x: 0.35, y: 0.4},   // 11 - neck left
+                    {x: 0.4, y: 0.25}    // 12 - head left
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="170" rx="70" ry="60" fill="#69DB7C" stroke="#495057" stroke-width="4"/><circle cx="150" cy="100" r="50" fill="#69DB7C" stroke="#495057" stroke-width="4"/><circle cx="130" cy="90" r="10" fill="#495057"/><circle cx="170" cy="90" r="10" fill="#495057"/><circle cx="134" cy="86" r="3" fill="white"/><circle cx="174" cy="86" r="3" fill="white"/><polygon points="150,100 130,115 170,115" fill="#FFA94D"/><ellipse cx="80" cy="160" rx="35" ry="20" fill="#69DB7C" stroke="#495057" stroke-width="3"/><ellipse cx="220" cy="160" rx="35" ry="20" fill="#69DB7C" stroke="#495057" stroke-width="3"/><path d="M130,210 L140,240 M150,210 L150,240 M170,210 L160,240" stroke="#FFA94D" stroke-width="5" stroke-linecap="round"/></svg>')
+            },
+            airplane: {
+                name: '飞机',
+                category: 'vehicle',
+                points: [
+                    {x: 0.1, y: 0.5},   // 1 - nose
+                    {x: 0.25, y: 0.4},   // 2 - cockpit top
+                    {x: 0.35, y: 0.35}, // 3 - body top front
+                    {x: 0.6, y: 0.3},   // 4 - wing front
+                    {x: 0.65, y: 0.5},  // 5 - wing back
+                    {x: 0.75, y: 0.45}, // 6 - tail front
+                    {x: 0.9, y: 0.4},   // 7 - tail top
+                    {x: 0.9, y: 0.55},  // 8 - tail bottom
+                    {x: 0.75, y: 0.6},   // 9 - tail back
+                    {x: 0.5, y: 0.55}    // 10 - body bottom
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="150" rx="120" ry="30" fill="#74C0FC" stroke="#495057" stroke-width="4"/><polygon points="270,150 290,140 290,160" fill="#74C0FC" stroke="#495057" stroke-width="3"/><polygon points="100,120 150,60 200,120" fill="#74C0FC" stroke="#495057" stroke-width="3"/><polygon points="100,180 150,240 200,180" fill="#74C0FC" stroke="#495057" stroke-width="3"/><polygon points="60,150 30,130 20,150 30,170" fill="#4DABF7" stroke="#495057" stroke-width="2"/></svg>')
+            },
+            sun: {
+                name: '太阳',
+                category: 'nature',
+                points: [
+                    {x: 0.5, y: 0.2},   // 1 - top center
+                    {x: 0.7, y: 0.25},  // 2 - upper right
+                    {x: 0.85, y: 0.4},  // 3 - right upper
+                    {x: 0.9, y: 0.6},   // 4 - right center
+                    {x: 0.8, y: 0.75},   // 5 - lower right
+                    {x: 0.6, y: 0.85},   // 6 - bottom right
+                    {x: 0.4, y: 0.85},   // 7 - bottom left
+                    {x: 0.2, y: 0.75},   // 8 - lower left
+                    {x: 0.1, y: 0.6},    // 9 - left center
+                    {x: 0.15, y: 0.4},   // 10 - left upper
+                    {x: 0.3, y: 0.25},   // 11 - upper left
+                    {x: 0.5, y: 0.5}     // 12 - center
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="70" fill="#FFE066" stroke="#495057" stroke-width="4"/><g stroke="#FFE066" stroke-width="8"><line x1="150" y1="50" x2="150" y2="20"/><line x1="150" y1="250" x2="150" y2="280"/><line x1="50" y1="150" x2="20" y2="150"/><line x1="250" y1="150" x2="280" y2="150"/><line x1="80" y1="80" x2="55" y2="55"/><line x1="220" y1="220" x2="245" y2="245"/><line x1="80" y1="220" x2="55" y2="245"/><line x1="220" y1="80" x2="245" y2="55"/></g><circle cx="130" cy="135" r="8" fill="#495057"/><circle cx="175" cy="135" r="8" fill="#495057"/><path d="M120,170 Q150,195 180,170" stroke="#495057" stroke-width="4" fill="none"/></svg>')
+            },
+            tree: {
+                name: '大树',
+                category: 'nature',
+                points: [
+                    {x: 0.5, y: 0.15},  // 1 - top
+                    {x: 0.65, y: 0.3},  // 2 - right upper
+                    {x: 0.75, y: 0.45}, // 3 - right mid
+                    {x: 0.7, y: 0.6},   // 4 - right lower
+                    {x: 0.55, y: 0.7},  // 5 - bottom right
+                    {x: 0.45, y: 0.7},  // 6 - bottom left
+                    {x: 0.3, y: 0.6},   // 7 - left lower
+                    {x: 0.25, y: 0.45}, // 8 - left mid
+                    {x: 0.35, y: 0.3},  // 9 - left upper
+                    {x: 0.45, y: 0.5},  // 10 - trunk right
+                    {x: 0.55, y: 0.5},  // 11 - trunk left
+                    {x: 0.5, y: 0.9}    // 12 - ground
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect x="125" y="180" width="50" height="90" fill="#8B4513" stroke="#495057" stroke-width="3"/><polygon points="150,30 50,180 250,180" fill="#69DB7C" stroke="#495057" stroke-width="4"/><polygon points="150,70 70,180 230,180" fill="#8CE99A" stroke="#495057" stroke-width="3"/><circle cx="110" cy="130" r="15" fill="#FF6B6B"/><circle cx="170" cy="110" r="12" fill="#FF6B6B"/><circle cx="140" cy="150" r="10" fill="#FFE066"/></svg>')
+            },
+            flower: {
+                name: '花朵',
+                category: 'nature',
+                points: [
+                    {x: 0.5, y: 0.25},  // 1 - petal top
+                    {x: 0.6, y: 0.35},  // 2 - petal right upper
+                    {x: 0.7, y: 0.45},  // 3 - petal right
+                    {x: 0.65, y: 0.6},  // 4 - petal right lower
+                    {x: 0.55, y: 0.7},  // 5 - petal bottom right
+                    {x: 0.45, y: 0.7},  // 6 - petal bottom left
+                    {x: 0.35, y: 0.6},  // 7 - petal left lower
+                    {x: 0.3, y: 0.45},  // 8 - petal left
+                    {x: 0.4, y: 0.35},  // 9 - petal left upper
+                    {x: 0.5, y: 0.5},   // 10 - center
+                    {x: 0.5, y: 0.85}    // 11 - stem
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="35" fill="#FFE066" stroke="#495057" stroke-width="3"/><ellipse cx="150" cy="80" rx="25" ry="40" fill="#FF6B6B" stroke="#495057" stroke-width="3"/><ellipse cx="150" cy="220" rx="25" ry="40" fill="#FF6B6B" stroke="#495057" stroke-width="3"/><ellipse cx="80" cy="150" rx="40" ry="25" fill="#FF6B6B" stroke="#495057" stroke-width="3"/><ellipse cx="220" cy="150" rx="40" ry="25" fill="#FF6B6B" stroke="#495057" stroke-width="3"/><ellipse cx="95" cy="95" rx="25" ry="35" fill="#F783AC" stroke="#495057" stroke-width="3" transform="rotate(-45 95 95)"/><ellipse cx="205" cy="95" rx="25" ry="35" fill="#F783AC" stroke="#495057" stroke-width="3" transform="rotate(45 205 95)"/><ellipse cx="95" cy="205" rx="25" ry="35" fill="#F783AC" stroke="#495057" stroke-width="3" transform="rotate(45 95 205)"/><ellipse cx="205" cy="205" rx="25" ry="35" fill="#F783AC" stroke="#495057" stroke-width="3" transform="rotate(-45 205 205)"/><rect x="142" y="180" width="16" height="80" fill="#69DB7C" stroke="#495057" stroke-width="2"/></svg>')
             }
         };
 
@@ -11805,6 +12042,45 @@
             exitGame();
         });
 
+        let dotCategory = 'all';
+
+        // Dot category tabs
+        document.querySelectorAll('.dot-category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.dot-category-tab').forEach(t => t.classList.remove('selected'));
+                tab.classList.add('selected');
+                dotCategory = tab.dataset.category;
+                renderDotTemplatePanel();
+                playSound && playSound(playBtnClick);
+            });
+        });
+
+        function renderDotTemplatePanel() {
+            const panel = document.getElementById('dotTemplatePanel');
+            panel.innerHTML = '';
+
+            Object.keys(dotTemplates).forEach(key => {
+                const template = dotTemplates[key];
+                if (dotCategory !== 'all' && template.category !== dotCategory) return;
+
+                const btn = document.createElement('button');
+                btn.className = 'dot-template-btn' + (key === dotTemplate ? ' selected' : '');
+                btn.dataset.template = key;
+                btn.dataset.category = template.category;
+                btn.textContent = template.name;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.dot-template-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    dotTemplate = key;
+                    initAudio();
+                    playSound && playSound(playBtnClick);
+                    initDotConnect();
+                });
+                panel.appendChild(btn);
+            });
+        }
+
+        // Initialize dot template panel buttons
         document.querySelectorAll('.dot-template-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.dot-template-btn').forEach(b => b.classList.remove('selected'));
