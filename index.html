@@ -579,6 +579,22 @@
             background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
             background-color: #FFFFFF;
         }
+        .bg-space {
+            background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d1a 60%, #000010 100%);
+            background-color: #0d0d1a;
+        }
+        .bg-underwater {
+            background: linear-gradient(180deg, #74C0FC 0%, #A5D8FF 40%, #74C0FC 100%);
+            background-color: #A5D8FF;
+        }
+        .bg-forest {
+            background: linear-gradient(180deg, #87CEEB 0%, #8CE99A 40%, #69DB7C 100%);
+            background-color: #69DB7C;
+        }
+        .bg-sunset {
+            background: linear-gradient(180deg, #1A1A2E 0%, #E5997F 40%, #FFA94D 70%, #FFE066 100%);
+            background-color: #FFE066;
+        }
     </style>
 </head>
 <body>
@@ -720,7 +736,39 @@
             { id: 'heart', name: 'Heart', svg: '<svg viewBox="0 0 100 100"><path d="M50 88 C20 60 5 40 25 25 C40 15 50 30 50 30 C50 30 60 15 75 25 C95 40 80 60 50 88Z" fill="#FF6B6B"/></svg>' },
             { id: 'smile', name: 'Smile', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="35" cy="40" r="5" fill="#495057"/><circle cx="65" cy="40" r="5" fill="#495057"/><path d="M30 60 Q50 80 70 60" stroke="#495057" stroke-width="4" fill="none"/></svg>' },
             { id: 'cloud', name: 'Cloud', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="35" ry="20" fill="white"/><circle cx="30" cy="50" r="18" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><circle cx="50" cy="40" r="20" fill="white"/></svg>' },
-            { id: 'leaf', name: 'Leaf', svg: '<svg viewBox="0 0 100 100"><path d="M50 90 Q30 60 20 40 Q40 20 60 30 Q80 40 75 70 Q70 85 50 90Z" fill="#69DB7C"/><path d="M50 85 Q50 50 55 30" stroke="#495057" stroke-width="2" fill="none"/><path d="M45 55 Q50 50 55 55" stroke="#495057" stroke-width="1" fill="none"/><path d="M40 70 Q50 60 60 65" stroke="#495057" stroke-width="1" fill="none"/></svg>' }
+            { id: 'leaf', name: 'Leaf', svg: '<svg viewBox="0 0 100 100"><path d="M50 90 Q30 60 20 40 Q40 20 60 30 Q80 40 75 70 Q70 85 50 90Z" fill="#69DB7C"/><path d="M50 85 Q50 50 55 30" stroke="#495057" stroke-width="2" fill="none"/><path d="M45 55 Q50 50 55 55" stroke="#495057" stroke-width="1" fill="none"/><path d="M40 70 Q50 60 60 65" stroke="#495057" stroke-width="1" fill="none"/></svg>' },
+            { id: 'apple_food', name: 'Apple', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="58" rx="30" ry="28" fill="#FF6B6B"/><rect x="47" y="20" width="6" height="15" fill="#8B4513"/><ellipse cx="60" cy="25" rx="10" ry="6" fill="#69DB7C" transform="rotate(30 60 25)"/></svg>' },
+            { id: 'banana_food', name: 'Banana', svg: '<svg viewBox="0 0 100 100"><path d="M20 70 Q30 30 50 25 Q80 20 85 50 Q80 80 50 75 Q25 72 20 70Z" fill="#FFE066" stroke="#E5997F" stroke-width="2"/></svg>' },
+            { id: 'grape', name: 'Grape', svg: '<svg viewBox="0 0 100 100"><circle cx="40" cy="40" r="12" fill="#B197FC"/><circle cx="60" cy="40" r="12" fill="#B197FC"/><circle cx="50" cy="55" r="12" fill="#B197FC"/><circle cx="35" cy="58" r="12" fill="#B197FC"/><circle cx="65" cy="58" r="12" fill="#B197FC"/><circle cx="50" cy="72" r="12" fill="#B197FC"/><rect x="47" y="18" width="6" height="15" fill="#8B4513"/><ellipse cx="60" cy="22" rx="8" ry="5" fill="#69DB7C" transform="rotate(20 60 22)"/></svg>' },
+            { id: 'strawberry', name: 'Strawberry', svg: '<svg viewBox="0 0 100 100"><path d="M50 20 Q20 50 25 70 Q30 90 50 90 Q70 90 75 70 Q80 50 50 20Z" fill="#FF6B6B"/><circle cx="40" cy="50" r="2" fill="#FFE066"/><circle cx="55" cy="45" r="2" fill="#FFE066"/><circle cx="45" cy="65" r="2" fill="#FFE066"/><circle cx="60" cy="60" r="2" fill="#FFE066"/><circle cx="50" cy="78" r="2" fill="#FFE066"/><rect x="45" y="12" width="10" height="10" fill="#69DB7C"/></svg>' },
+            { id: 'carrot', name: 'Carrot', svg: '<svg viewBox="0 0 100 100"><path d="M50 15 L70 85 Q50 95 30 85 Z" fill="#FFA94D"/><ellipse cx="50" cy="15" rx="15" ry="8" fill="#69DB7C"/><path d="M42 18 Q35 5 40 10" stroke="#69DB7C" stroke-width="3" fill="none"/><path d="M50 15 Q50 5 55 8" stroke="#69DB7C" stroke-width="3" fill="none"/><path d="M58 18 Q65 5 60 10" stroke="#69DB7C" stroke-width="3" fill="none"/></svg>' },
+            { id: 'corn', name: 'Corn', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="18" ry="35" fill="#FFE066"/><path d="M32 30 Q20 20 15 35 Q20 45 32 40" fill="#69DB7C"/><path d="M50 20 Q50 8 55 15 Q55 25 50 30" fill="#69DB7C"/><path d="M68 30 Q80 20 85 35 Q80 45 68 40" fill="#69DB7C"/><ellipse cx="42" cy="40" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="50" cy="38" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="58" cy="40" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="44" cy="52" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="52" cy="50" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="40" cy="64" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="48" cy="62" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="56" cy="64" rx="3" ry="5" fill="#FFA94D"/><ellipse cx="50" cy="74" rx="3" ry="5" fill="#FFA94D"/></svg>' },
+            { id: 'pizza', name: 'Pizza', svg: '<svg viewBox="0 0 100 100"><path d="M50 10 L15 90 L85 90 Z" fill="#FFE066"/><circle cx="45" cy="55" r="8" fill="#FF6B6B"/><circle cx="60" cy="70" r="7" fill="#FF6B6B"/><circle cx="50" cy="40" r="6" fill="#FF6B6B"/><circle cx="35" cy="75" r="5" fill="#8B4513"/><circle cx="65" cy="50" r="4" fill="#8B4513"/></svg>' },
+            { id: 'donut', name: 'Donut', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#F8F0F0"/><circle cx="50" cy="50" r="12" fill="white"/><path d="M20 45 Q30 30 50 30 Q70 30 80 45" stroke="#FF6B6B" stroke-width="8" fill="none"/><path d="M20 55 Q30 70 50 70 Q70 70 80 55" stroke="#B197FC" stroke-width="8" fill="none"/><circle cx="35" cy="40" r="3" fill="#FFE066"/><circle cx="60" cy="38" r="3" fill="#69DB7C"/><circle cx="70" cy="55" r="3" fill="#FF6B6B"/></svg>' },
+            { id: 'bus', name: 'Bus', svg: '<svg viewBox="0 0 100 100"><rect x="10" y="30" width="80" height="40" rx="5" fill="#FFE066"/><rect x="10" y="30" width="80" height="15" fill="#74C0FC"/><rect x="18" y="50" width="12" height="15" fill="#74C0FC" opacity="0.7"/><rect x="35" y="50" width="12" height="15" fill="#74C0FC" opacity="0.7"/><rect x="52" y="50" width="12" height="15" fill="#74C0FC" opacity="0.7"/><rect x="69" y="50" width="12" height="15" fill="#74C0FC" opacity="0.7"/><circle cx="25" cy="70" r="10" fill="#495057"/><circle cx="75" cy="70" r="10" fill="#495057"/><circle cx="25" cy="70" r="5" fill="#888"/><circle cx="75" cy="70" r="5" fill="#888"/></svg>' },
+            { id: 'bike', name: 'Bike', svg: '<svg viewBox="0 0 100 100"><circle cx="25" cy="70" r="15" fill="none" stroke="#495057" stroke-width="4"/><circle cx="75" cy="70" r="15" fill="none" stroke="#495057" stroke-width="4"/><path d="M25 70 L50 40 L75 70" stroke="#495057" stroke-width="4" fill="none"/><path d="M50 40 L50 25 L60 25" stroke="#495057" stroke-width="4" fill="none"/><circle cx="50" cy="40" r="5" fill="#495057"/></svg>' },
+            { id: 'ship', name: 'Ship', svg: '<svg viewBox="0 0 100 100"><polygon points="15,60 50,80 85,60 75,60 50,40 25,60" fill="#E5997F"/><rect x="45" y="20" width="5" height="40" fill="#8B4513"/><polygon points="50,20 50,45 70,38" fill="white"/><path d="M10 70 Q30 65 50 70 Q70 75 90 70" stroke="#74C0FC" stroke-width="3" fill="none"/></svg>' },
+            { id: 'rocket', name: 'Rocket', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="45" rx="15" ry="30" fill="#F8F0F0"/><polygon points="35,45 20,60 35,55" fill="#FF6B6B"/><polygon points="65,45 80,60 65,55" fill="#FF6B6B"/><polygon points="50,15 40,35 60,35" fill="#74C0FC"/><circle cx="50" cy="40" r="6" fill="#74C0FC"/><rect x="40" y="70" width="20" height="10" fill="#495057"/><polygon points="40,80 35,90 40,85" fill="#FFA94D"/><polygon points="50,80 50,95 50,85" fill="#FFA94D"/><polygon points="60,80 65,90 60,85" fill="#FFA94D"/></svg>' },
+            { id: 'helicopter', name: 'Helicopter', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="30" ry="15" fill="#74C0FC"/><polygon points="80,50 95,45 95,55" fill="#74C0FC"/><rect x="45" y="35" width="5" height="15" fill="#495057"/><rect x="20" y="32" width="55" height="4" fill="#495057"/><polygon points="30,65 25,80 35,75" fill="#495057"/><polygon points="70,65 65,80 75,75" fill="#495057"/><circle cx="50" cy="50" r="6" fill="white"/></svg>' },
+            { id: 'skateboard', name: 'Skateboard', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="45" width="70" height="12" rx="6" fill="#B197FC"/><circle cx="25" cy="60" r="7" fill="#495057"/><circle cx="75" cy="60" r="7" fill="#495057"/></svg>' },
+            { id: 'train', name: 'Train', svg: '<svg viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="45" rx="5" fill="#74C0FC"/><rect x="25" y="35" width="20" height="15" fill="#74C0FC" stroke="white" stroke-width="2"/><rect x="55" y="35" width="20" height="15" fill="#74C0FC" stroke="white" stroke-width="2"/><circle cx="50" cy="70" r="8" fill="#495057"/><rect x="45" y="10" width="10" height="20" fill="#495057"/></svg>' },
+            { id: 'truck', name: 'Truck', svg: '<svg viewBox="0 0 100 100"><rect x="5" y="35" width="50" height="35" fill="#69DB7C"/><rect x="55" y="40" width="35" height="30" rx="3" fill="#FFA94D"/><rect x="60" y="45" width="15" height="12" fill="#74C0FC" opacity="0.7"/><circle cx="20" cy="70" r="10" fill="#495057"/><circle cx="45" cy="70" r="10" fill="#495057"/><circle cx="75" cy="70" r="10" fill="#495057"/></svg>' },
+            { id: 'rain_weather', name: 'Rain', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="35" rx="30" ry="18" fill="#E3F2FD"/><circle cx="35" cy="30" r="15" fill="#E3F2FD"/><circle cx="65" cy="30" r="12" fill="#E3F2FD"/><circle cx="50" cy="25" r="18" fill="#E3F2FD"/><path d="M25 55 L25 65" stroke="#74C0FC" stroke-width="3" stroke-linecap="round"/><path d="M40 58 L40 72" stroke="#74C0FC" stroke-width="3" stroke-linecap="round"/><path d="M55 55 L55 68" stroke="#74C0FC" stroke-width="3" stroke-linecap="round"/><path d="M70 52 L70 65" stroke="#74C0FC" stroke-width="3" stroke-linecap="round"/></svg>' },
+            { id: 'snow_weather', name: 'Snow', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="30" rx="28" ry="18" fill="white"/><circle cx="30" cy="25" r="15" fill="white"/><circle cx="70" cy="25" r="12" fill="white"/><circle cx="50" cy="20" r="18" fill="white"/><circle cx="20" cy="75" r="6" fill="white"/><circle cx="50" cy="70" r="5" fill="white"/><circle cx="80" cy="78" r="7" fill="white"/></svg>' },
+            { id: 'christmas_tree', name: 'Christmas Tree', svg: '<svg viewBox="0 0 100 100"><polygon points="50,10 25,45 75,45" fill="#69DB7C"/><polygon points="50,30 20,70 80,70" fill="#69DB7C"/><rect x="43" y="70" width="14" height="20" fill="#8B4513"/><circle cx="50" cy="25" r="4" fill="#FF6B6B"/><circle cx="40" cy="40" r="3" fill="#FFE066"/><circle cx="60" cy="50" r="4" fill="#FF6B6B"/><circle cx="45" cy="60" r="3" fill="#74C0FC"/><polygon points="50,5 47,12 53,12" fill="#FFE066"/></svg>' },
+            { id: 'halloween_pumpkin', name: 'Pumpkin', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="35" ry="30" fill="#FFA94D"/><path d="M50 30 Q30 55 35 60 Q40 50 50 55 Q60 50 65 60 Q70 55 50 30Z" fill="#FF8C00"/><rect x="46" y="20" width="8" height="15" fill="#8B4513"/><polygon points="38,50 33,60 43,60" fill="#FFE066"/><polygon points="50,55 45,65 55,65" fill="#FFE066"/><polygon points="62,50 57,60 67,60" fill="#FFE066"/></svg>' },
+            { id: 'birthday_cake', name: 'Birthday Cake', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="50" width="70" height="40" rx="5" fill="#F8F0F0"/><rect x="15" y="50" width="70" height="12" fill="#FF6B6B"/><rect x="20" y="65" width="60" height="3" fill="#FFE066"/><rect x="45" y="30" width="5" height="20" fill="#FFE066"/><ellipse cx="47" cy="27" rx="6" ry="8" fill="#FFA94D"/><circle cx="30" cy="45" r="3" fill="#FF6B6B"/><circle cx="50" cy="45" r="3" fill="#69DB7C"/><circle cx="70" cy="45" r="3" fill="#74C0FC"/></svg>' },
+            { id: 'easter_egg', name: 'Easter Egg', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="28" ry="38" fill="#B197FC"/><ellipse cx="40" cy="40" rx="8" ry="12" fill="#FF6B6B" opacity="0.6"/><ellipse cx="60" cy="50" rx="8" ry="12" fill="#69DB7C" opacity="0.6"/><ellipse cx="45" cy="68" rx="8" ry="10" fill="#FFE066" opacity="0.6"/></svg>' },
+            { id: 'lantern', name: 'Lantern', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="25" ry="35" fill="#FF6B6B"/><rect x="35" y="15" width="30" height="8" fill="#8B4513"/><rect x="40" y="8" width="20" height="8" rx="3" fill="#FFE066"/><ellipse cx="50" cy="50" rx="18" ry="28" fill="#FFE066" opacity="0.4"/><rect x="45" y="80" width="10" height="8" fill="#8B4513"/></svg>' },
+            { id: 'firework', name: 'Firework', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="8" fill="#FFE066"/><line x1="50" y1="20" x2="50" y2="38" stroke="#FF6B6B" stroke-width="3"/><line x1="50" y1="62" x2="50" y2="80" stroke="#FF6B6B" stroke-width="3"/><line x1="20" y1="50" x2="38" y2="50" stroke="#FF6B6B" stroke-width="3"/><line x1="62" y1="50" x2="80" y2="50" stroke="#FF6B6B" stroke-width="3"/><line x1="28" y1="28" x2="40" y2="40" stroke="#FFE066" stroke-width="3"/><line x1="60" y1="60" x2="72" y2="72" stroke="#FFE066" stroke-width="3"/><line x1="72" y1="28" x2="60" y2="40" stroke="#FFE066" stroke-width="3"/><line x1="40" y1="60" x2="28" y2="72" stroke="#FFE066" stroke-width="3"/></svg>' },
+            { id: 'happy_face', name: 'Happy', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="35" cy="42" r="5" fill="#495057"/><circle cx="65" cy="42" r="5" fill="#495057"/><path d="M30 60 Q50 80 70 60" stroke="#495057" stroke-width="4" fill="none"/><circle cx="25" cy="55" r="6" fill="#FF9A9E" opacity="0.6"/><circle cx="75" cy="55" r="6" fill="#FF9A9E" opacity="0.6"/></svg>' },
+            { id: 'sad_face', name: 'Sad', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#74C0FC"/><circle cx="35" cy="42" r="5" fill="#495057"/><circle cx="65" cy="42" r="5" fill="#495057"/><path d="M30 70 Q50 55 70 70" stroke="#495057" stroke-width="4" fill="none"/><path d="M30 30 L40 38" stroke="#495057" stroke-width="3" fill="none"/><path d="M70 30 L60 38" stroke="#495057" stroke-width="3" fill="none"/></svg>' },
+            { id: 'angry_face', name: 'Angry', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FF6B6B"/><circle cx="35" cy="42" r="5" fill="#495057"/><circle cx="65" cy="42" r="5" fill="#495057"/><path d="M30 68 Q50 55 70 68" stroke="#495057" stroke-width="4" fill="none"/><path d="M25 32 L42 40" stroke="#495057" stroke-width="4" fill="none"/><path d="M75 32 L58 40" stroke="#495057" stroke-width="4" fill="none"/></svg>' },
+            { id: 'surprised_face', name: 'Surprised', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="35" cy="40" r="8" fill="white"/><circle cx="65" cy="40" r="8" fill="white"/><circle cx="35" cy="40" r="4" fill="#495057"/><circle cx="65" cy="40" r="4" fill="#495057"/><ellipse cx="50" cy="70" rx="10" ry="12" fill="#495057"/></svg>' },
+            { id: 'love_face', name: 'Love', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#F783AC"/><circle cx="35" cy="42" r="4" fill="#495057"/><circle cx="65" cy="42" r="4" fill="#495057"/><path d="M50 75 C30 60 20 50 32 40 C40 33 50 45 50 45 C50 45 60 33 68 40 C80 50 70 60 50 75Z" fill="#FF6B6B"/></svg>' },
+            { id: 'cool_face', name: 'Cool', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#495057"/><rect x="20" y="35" width="60" height="15" rx="3" fill="#1a1a2e"/><rect x="22" y="37" width="20" height="11" rx="2" fill="#74C0FC" opacity="0.8"/><rect x="58" y="37" width="20" height="11" rx="2" fill="#74C0FC" opacity="0.8"/><path d="M35 65 Q50 75 65 65" stroke="white" stroke-width="3" fill="none"/></svg>' },
+            { id: 'watermelon', name: 'Watermelon', svg: '<svg viewBox="0 0 100 100"><path d="M10 70 Q50 10 90 70 Z" fill="#69DB7C"/><path d="M15 68 Q50 18 85 68 Z" fill="#FF6B6B"/><circle cx="35" cy="55" r="3" fill="#495057"/><circle cx="50" cy="50" r="3" fill="#495057"/><circle cx="65" cy="55" r="3" fill="#495057"/><circle cx="42" cy="62" r="3" fill="#495057"/><circle cx="58" cy="62" r="3" fill="#495057"/><circle cx="50" cy="42" r="2" fill="#495057"/></svg>' },
+            { id: 'icecream', name: 'Ice Cream', svg: '<svg viewBox="0 0 100 100"><polygon points="35,55 50,90 65,55" fill="#E5997F"/><ellipse cx="50" cy="45" rx="22" ry="20" fill="#F8F0F0"/><ellipse cx="42" cy="38" rx="12" ry="10" fill="#FF6B6B"/><ellipse cx="58" cy="38" rx="12" ry="10" fill="#FFE066"/><ellipse cx="50" cy="32" rx="12" ry="10" fill="#B197FC"/></svg>' }
         ];
 
         // Tracing templates (8 templates with path data)
@@ -842,6 +890,122 @@
                     { type: 'move', x: 50, y: 70 },
                     { type: 'line', x: 50, y: 90 }
                 ]
+            },
+            {
+                id: 'num1', name: 'Number 1',
+                paths: [
+                    { type: 'move', x: 45, y: 20 },
+                    { type: 'line', x: 45, y: 80 },
+                    { type: 'move', x: 35, y: 30 },
+                    { type: 'line', x: 45, y: 20 },
+                    { type: 'line', x: 55, y: 30 }
+                ]
+            },
+            {
+                id: 'num2', name: 'Number 2',
+                paths: [
+                    { type: 'move', x: 25, y: 25 },
+                    { type: 'bezier', x1: 25, y1: 50, x2: 50, y2: 50, x: 75, y: 80 },
+                    { type: 'line', x: 25, y: 80 },
+                    { type: 'move', x: 25, y: 25 },
+                    { type: 'line', x: 75, y: 25 }
+                ]
+            },
+            {
+                id: 'num3', name: 'Number 3',
+                paths: [
+                    { type: 'move', x: 25, y: 25 },
+                    { type: 'bezier', x1: 25, y1: 52, x2: 75, y2: 52, x: 75, y: 80 },
+                    { type: 'bezier', x1: 75, y1: 52, x2: 25, y2: 52, x: 25, y: 80 }
+                ]
+            },
+            {
+                id: 'num4', name: 'Number 4',
+                paths: [
+                    { type: 'move', x: 65, y: 20 },
+                    { type: 'line', x: 20, y: 55 },
+                    { type: 'line', x: 80, y: 55 },
+                    { type: 'move', x: 65, y: 20 },
+                    { type: 'line', x: 65, y: 80 }
+                ]
+            },
+            {
+                id: 'num5', name: 'Number 5',
+                paths: [
+                    { type: 'move', x: 70, y: 25 },
+                    { type: 'line', x: 30, y: 25 },
+                    { type: 'line', x: 30, y: 50 },
+                    { type: 'bezier', x1: 30, y1: 50, x2: 75, y2: 50, x: 75, y: 80 },
+                    { type: 'line', x: 75, y: 50 },
+                    { type: 'line', x: 30, y: 50 }
+                ]
+            },
+            {
+                id: 'da', name: 'Da (Big)',
+                paths: [
+                    { type: 'move', x: 20, y: 20 },
+                    { type: 'line', x: 20, y: 80 },
+                    { type: 'move', x: 20, y: 50 },
+                    { type: 'line', x: 80, y: 50 }
+                ]
+            },
+            {
+                id: 'xiao', name: 'Xiao (Small)',
+                paths: [
+                    { type: 'move', x: 30, y: 20 },
+                    { type: 'line', x: 70, y: 80 },
+                    { type: 'move', x: 70, y: 20 },
+                    { type: 'line', x: 30, y: 80 }
+                ]
+            },
+            {
+                id: 'shang', name: 'Shang (Up)',
+                paths: [
+                    { type: 'move', x: 50, y: 80 },
+                    { type: 'line', x: 50, y: 20 },
+                    { type: 'move', x: 30, y: 50 },
+                    { type: 'line', x: 70, y: 50 }
+                ]
+            },
+            {
+                id: 'xia', name: 'Xia (Down)',
+                paths: [
+                    { type: 'move', x: 50, y: 20 },
+                    { type: 'line', x: 50, y: 80 },
+                    { type: 'move', x: 30, y: 35 },
+                    { type: 'line', x: 70, y: 35 }
+                ]
+            },
+            {
+                id: 'letterO', name: 'Letter O',
+                paths: [
+                    { type: 'arc', x: 50, y: 50, r: 30, start: 0, end: Math.PI * 2 }
+                ]
+            },
+            {
+                id: 'letterX', name: 'Letter X',
+                paths: [
+                    { type: 'move', x: 25, y: 20 },
+                    { type: 'line', x: 75, y: 80 },
+                    { type: 'move', x: 75, y: 20 },
+                    { type: 'line', x: 25, y: 80 }
+                ]
+            },
+            {
+                id: 'star_letter', name: 'Star',
+                paths: [
+                    { type: 'move', x: 50, y: 10 },
+                    { type: 'line', x: 61, y: 38 },
+                    { type: 'line', x: 90, y: 38 },
+                    { type: 'line', x: 68, y: 58 },
+                    { type: 'line', x: 79, y: 90 },
+                    { type: 'line', x: 50, y: 70 },
+                    { type: 'line', x: 21, y: 90 },
+                    { type: 'line', x: 32, y: 58 },
+                    { type: 'line', x: 10, y: 38 },
+                    { type: 'line', x: 39, y: 38 },
+                    { type: 'line', x: 50, y: 10 }
+                ]
             }
         ];
 
@@ -852,7 +1016,11 @@
             { id: 'grass', name: 'Grass', class: 'bg-grass' },
             { id: 'beach', name: 'Beach', class: 'bg-beach' },
             { id: 'night', name: 'Night', class: 'bg-night' },
-            { id: 'checker', name: 'Checker', class: 'bg-checker' }
+            { id: 'checker', name: 'Checker', class: 'bg-checker' },
+            { id: 'space', name: 'Space', class: 'bg-space' },
+            { id: 'underwater', name: 'Underwater', class: 'bg-underwater' },
+            { id: 'forest', name: 'Forest', class: 'bg-forest' },
+            { id: 'sunset', name: 'Sunset', class: 'bg-sunset' }
         ];
 
         // Coloring pages (SVG paths with regions)
@@ -907,6 +1075,71 @@
                     { id: 'wheel_center1', path: 'M25 70 A4 4 0 1 1 25 71', color: '#888' },
                     { id: 'wheel_center2', path: 'M75 70 A4 4 0 1 1 75 71', color: '#888' },
                     { id: 'light', path: 'M88 52 L90 52 L90 58 L88 58 Z', color: '#FFE066' }
+                ]
+            },
+            {
+                id: 'dog',
+                name: 'Dog',
+                regions: [
+                    { id: 'body', path: 'M20 55 Q50 30 80 55 Q80 75 50 80 Q20 75 20 55Z', color: '#E5997F' },
+                    { id: 'head', path: 'M50 30 Q35 20 30 35 Q25 50 50 50Z', color: '#E5997F' },
+                    { id: 'ear', path: 'M30 25 Q20 15 25 30 Q30 35 35 30Z', color: '#E5997F' },
+                    { id: 'eye', path: 'M38 35 A4 4 0 1 1 38 36', color: '#495057' },
+                    { id: 'nose', path: 'M48 42 A4 3 0 1 1 48 43', color: '#495057' },
+                    { id: 'tail', path: 'M75 55 Q90 45 85 60 Q80 70 75 65Z', color: '#E5997F' }
+                ]
+            },
+            {
+                id: 'cat',
+                name: 'Cat',
+                regions: [
+                    { id: 'body', path: 'M25 55 Q50 30 75 55 Q75 75 50 80 Q25 75 25 55Z', color: '#F8F0F0' },
+                    { id: 'head', path: 'M50 28 Q30 20 28 40 Q30 52 50 50Z', color: '#F8F0F0' },
+                    { id: 'ear1', path: 'M32 25 L28 12 L40 22Z', color: '#F8F0F0' },
+                    { id: 'ear2', path: 'M68 25 L72 12 L60 22Z', color: '#F8F0F0' },
+                    { id: 'inner_ear', path: 'M33 24 L30 15 L38 22Z', color: '#F783AC' },
+                    { id: 'eye', path: 'M40 35 A4 4 0 1 1 40 36', color: '#69DB7C' },
+                    { id: 'nose', path: 'M50 42 L47 46 L53 46Z', color: '#F783AC' }
+                ]
+            },
+            {
+                id: 'bird',
+                name: 'Bird',
+                regions: [
+                    { id: 'body', path: 'M30 50 Q50 30 70 50 Q70 70 50 75 Q30 70 30 50Z', color: '#69DB7C' },
+                    { id: 'head', path: 'M65 40 Q80 30 75 50 Q70 60 65 50Z', color: '#69DB7C' },
+                    { id: 'wing', path: 'M35 50 Q45 40 55 50 Q45 60 35 55Z', color: '#8CE99A' },
+                    { id: 'eye', path: 'M70 38 A3 3 0 1 1 70 39', color: '#495057' },
+                    { id: 'beak', path: 'M78 45 L90 50 L78 52Z', color: '#FFA94D' }
+                ]
+            },
+            {
+                id: 'apple_color',
+                name: 'Apple',
+                regions: [
+                    { id: 'fruit', path: 'M50 25 Q20 40 25 65 Q30 85 50 85 Q70 85 75 65 Q80 40 50 25Z', color: '#FF6B6B' },
+                    { id: 'stem', path: 'M50 25 L50 15', color: '#8B4513', strokeWidth: 4 },
+                    { id: 'leaf', path: 'M50 20 Q65 15 60 25 Q55 30 50 25', color: '#69DB7C' }
+                ]
+            },
+            {
+                id: 'orange_color',
+                name: 'Orange',
+                regions: [
+                    { id: 'fruit', path: 'M50 20 Q20 30 20 55 Q20 80 50 85 Q80 80 80 55 Q80 30 50 20Z', color: '#FFA94D' },
+                    { id: 'stem', path: 'M50 20 L50 12', color: '#8B4513', strokeWidth: 3 },
+                    { id: 'leaf', path: 'M50 15 Q62 10 58 22 Q52 25 50 20', color: '#69DB7C' }
+                ]
+            },
+            {
+                id: 'pumpkin_color',
+                name: 'Pumpkin',
+                regions: [
+                    { id: 'p1', path: 'M50 25 Q25 45 30 55 Q35 45 50 50Z', color: '#FFA94D' },
+                    { id: 'p2', path: 'M50 25 Q75 45 70 55 Q65 45 50 50Z', color: '#FFA94D' },
+                    { id: 'p3', path: 'M50 50 Q35 65 35 80 Q40 90 50 90 Q60 90 65 80 Q65 65 50 50Z', color: '#FF8C00' },
+                    { id: 'stem', path: 'M48 20 L52 20 L52 28 L48 28Z', color: '#8B4513' },
+                    { id: 'leaf', path: 'M52 22 Q62 18 58 28 Q54 30 52 25', color: '#69DB7C' }
                 ]
             }
         ];
