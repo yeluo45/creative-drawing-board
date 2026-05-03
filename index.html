@@ -85,6 +85,57 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        .bgm-btn {
+            background: linear-gradient(180deg, #C9A7EB 0%, #A855F7 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .bgm-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .bgm-volume-panel {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            background: rgba(255,255,255,0.98);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1001;
+            box-shadow: 3px 3px 0 #495057;
+            min-width: 200px;
+        }
+
+        .bgm-volume-panel.active {
+            display: flex;
+        }
+
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .volume-row input[type="range"] {
+            flex: 1;
+            accent-color: #A855F7;
+        }
+
         .stats-btn {
             background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
             border: 3px solid #495057;
@@ -3259,6 +3310,17 @@
         <div class="header-title">Creative Drawing Board</div>
         <div class="header-btns">
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
+            <button class="bgm-btn" id="bgmBtn" title="Music On">🎵</button>
+            <div class="bgm-volume-panel" id="bgmVolumePanel">
+                <div class="volume-row">
+                    <span>🎵 背景音乐</span>
+                    <input type="range" id="bgmVolumeSlider" min="0" max="100" value="50">
+                </div>
+                <div class="volume-row">
+                    <span>🔊 音效</span>
+                    <input type="range" id="sfxVolumeSlider" min="0" max="100" value="80">
+                </div>
+            </div>
             <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="challenge-btn" id="challengeBtn" title="Daily Challenge">🔔<span class="unread-dot" id="unreadDot"></span></button>
@@ -4982,6 +5044,15 @@
         // Audio Context
         let audioCtx = null;
         let soundEnabled = true; // V3: global sound toggle
+        let sfxGainNode = null;   // V3: SFX volume control
+        let bgmGainNode = null;   // V13: BGM volume control
+        let bgmEnabled = true;    // V13: BGM on/off
+        let bgmVolume = 50;       // V13: BGM volume 0-100
+        let sfxVolume = 80;       // V13: SFX volume 0-100
+        let bgmPlaying = false;  // V13: prevent multiple BGM instances
+        let currentBGMType = null; // V13: currently playing BGM type
+        let bgmSchedulerTimer = null; // V13: BGM scheduler
+        let currentBGMScheduler = null; // V13: reference to current scheduler
 
         // Load sound preference from localStorage
         function loadSoundPreference() {
@@ -5020,6 +5091,12 @@
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                sfxGainNode = audioCtx.createGain();
+                sfxGainNode.connect(audioCtx.destination);
+                sfxGainNode.gain.value = sfxVolume / 100;
+                bgmGainNode = audioCtx.createGain();
+                bgmGainNode.connect(audioCtx.destination);
+                bgmGainNode.gain.value = bgmEnabled ? bgmVolume / 100 : 0;
             }
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -5041,7 +5118,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(440, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
@@ -5056,7 +5133,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'square';
             osc.frequency.setValueAtTime(660, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
@@ -5072,7 +5149,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(880, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.06);
@@ -5090,7 +5167,7 @@
             const gain = audioCtx.createGain();
             osc1.connect(gain);
             osc2.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc1.type = 'sine';
             osc2.type = 'sine';
             osc1.frequency.setValueAtTime(523, audioCtx.currentTime);
@@ -5109,7 +5186,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(523, audioCtx.currentTime);
             osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
@@ -5128,7 +5205,7 @@
             const gain = audioCtx.createGain();
             osc1.connect(gain);
             osc2.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc1.type = 'sine';
             osc2.type = 'sine';
             osc1.frequency.setValueAtTime(784, audioCtx.currentTime);
@@ -5156,7 +5233,7 @@
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
             source.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             source.start();
         }
 
@@ -5166,7 +5243,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(330, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
@@ -5181,7 +5258,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(220, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
@@ -5196,7 +5273,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(330, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.05);
@@ -5212,7 +5289,7 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(sfxGainNode);
             osc.type = 'sine';
             osc.frequency.setValueAtTime(784, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(523, audioCtx.currentTime + 0.2);
@@ -5221,6 +5298,341 @@
             osc.start();
             osc.stop(audioCtx.currentTime + 0.2);
         }
+
+        // ===== V13: Background Music System =====
+        // BGM constants: C major, 120 BPM, chord progression C-Am-F-G
+        const BPM = 120;
+        const BEAT_DURATION = 60 / BPM; // 0.5s per beat
+        const BAR_DURATION = BEAT_DURATION * 4; // 2s per bar
+
+        // Note frequencies (C major scale)
+        const NOTES = {
+            C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+            C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+            C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, R: 0 // R = rest
+        };
+
+        // Chord progression: C (C-E-G), Am (A-C-E), F (F-A-C), G (G-B-D)
+        const CHORD_ROOT = [NOTES.C3, NOTES.A3, NOTES.F3, NOTES.G3];
+        const CHORD_THIRD = [NOTES.E3, NOTES.C4, NOTES.A4, NOTES.B3];
+        const CHORD_FIFTH = [NOTES.G3, NOTES.E4, NOTES.C4, NOTES.D4];
+
+        // BGM track definitions - 8-bar melody sequences
+        // happy: bright piano melody for drawing mode
+        const HAPPY_MELODY = [
+            NOTES.C5, NOTES.E5, NOTES.G5, NOTES.E5,
+            NOTES.A4, NOTES.C5, NOTES.E5, NOTES.D5,
+            NOTES.C5, NOTES.G4, NOTES.E5, NOTES.C5,
+            NOTES.G4, NOTES.B4, NOTES.D5, NOTES.C5,
+            NOTES.F4, NOTES.A4, NOTES.C5, NOTES.A4,
+            NOTES.G4, NOTES.B4, NOTES.D5, NOTES.E5,
+            NOTES.D5, NOTES.C5, NOTES.A4, NOTES.G4,
+            NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C5
+        ];
+
+        // peaceful: soft gentle melody for coloring/tracing mode
+        const PEACEFUL_MELODY = [
+            NOTES.C5, NOTES.R, NOTES.E4, NOTES.G4,
+            NOTES.A4, NOTES.R, NOTES.C5, NOTES.E5,
+            NOTES.D5, NOTES.R, NOTES.C5, NOTES.A4,
+            NOTES.G4, NOTES.R, NOTES.E4, NOTES.C4,
+            NOTES.F4, NOTES.R, NOTES.A4, NOTES.C5,
+            NOTES.E5, NOTES.R, NOTES.D5, NOTES.C5,
+            NOTES.A4, NOTES.R, NOTES.G4, NOTES.E4,
+            NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5
+        ];
+
+        // playful: rhythmic俏皮 melody for game modes
+        const PLAYFUL_MELODY = [
+            NOTES.C4, NOTES.E4, NOTES.G4, NOTES.C5,
+            NOTES.G4, NOTES.E4, NOTES.C4, NOTES.E4,
+            NOTES.F4, NOTES.A4, NOTES.C5, NOTES.G4,
+            NOTES.A4, NOTES.G4, NOTES.F4, NOTES.E4,
+            NOTES.D4, NOTES.F4, NOTES.A4, NOTES.D5,
+            NOTES.C5, NOTES.A4, NOTES.F4, NOTES.D4,
+            NOTES.E4, NOTES.G4, NOTES.B4, NOTES.G4,
+            NOTES.C5, NOTES.G4, NOTES.E4, NOTES.C4
+        ];
+
+        // dreamy: soft pad tones for gallery/achievement viewing
+        const DREAMY_MELODY = [
+            NOTES.E5, NOTES.R, NOTES.C5, NOTES.R,
+            NOTES.D5, NOTES.R, NOTES.G4, NOTES.R,
+            NOTES.E5, NOTES.R, NOTES.C5, NOTES.R,
+            NOTES.A4, NOTES.R, NOTES.E4, NOTES.R,
+            NOTES.F5, NOTES.R, NOTES.C5, NOTES.R,
+            NOTES.G5, NOTES.R, NOTES.D5, NOTES.R,
+            NOTES.E5, NOTES.R, NOTES.C5, NOTES.R,
+            NOTES.G4, NOTES.C4, NOTES.E4, NOTES.G4
+        ];
+
+        // festive: celebratory melody for holiday theme
+        const FESTIVE_MELODY = [
+            NOTES.C5, NOTES.C5, NOTES.G5, NOTES.G5,
+            NOTES.A5, NOTES.A5, NOTES.G5, NOTES.E5,
+            NOTES.C5, NOTES.D5, NOTES.E5, NOTES.G5,
+            NOTES.E5, NOTES.D5, NOTES.C5, NOTES.G4,
+            NOTES.C5, NOTES.C5, NOTES.G5, NOTES.G5,
+            NOTES.A5, NOTES.G5, NOTES.E5, NOTES.D5,
+            NOTES.C5, NOTES.E5, NOTES.G5, NOTES.E5,
+            NOTES.D5, NOTES.C5, NOTES.G4, NOTES.C4
+        ];
+
+        // Melody per BGM type
+        const BGM_MELODIES = {
+            happy: HAPPY_MELODY,
+            peaceful: PEACEFUL_MELODY,
+            playful: PLAYFUL_MELODY,
+            dreamy: DREAMY_MELODY,
+            festive: FESTIVE_MELODY
+        };
+
+        // Schedule a single note
+        function scheduleNote(freq, startTime, duration, gainValue, type, destination) {
+            if (freq === 0) return; // rest
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.value = freq;
+            gain.gain.value = 0;
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(gainValue, startTime + 0.02);
+            gain.gain.setValueAtTime(gainValue, startTime + duration - 0.03);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration);
+            osc.connect(gain);
+            gain.connect(destination);
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        }
+
+        // Schedule drum pattern for one bar (kick + hihat)
+        function scheduleDrums(startTime, destination) {
+            // Kick on beats 1 and 3
+            for (let beat = 0; beat < 4; beat += 2) {
+                const t = startTime + beat * BEAT_DURATION;
+                const kick = audioCtx.createOscillator();
+                const kickGain = audioCtx.createGain();
+                kick.type = 'sine';
+                kick.frequency.setValueAtTime(150, t);
+                kick.frequency.exponentialRampToValueAtTime(40, t + 0.1);
+                kickGain.gain.setValueAtTime(0.6, t);
+                kickGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                kick.connect(kickGain);
+                kickGain.connect(destination);
+                kick.start(t);
+                kick.stop(t + 0.15);
+            }
+            // Hi-hat on every beat (noise)
+            for (let beat = 0; beat < 4; beat++) {
+                const t = startTime + beat * BEAT_DURATION;
+                const bufferSize = audioCtx.sampleRate * 0.05;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const hihatGain = audioCtx.createGain();
+                const hihatFilter = audioCtx.createBiquadFilter();
+                hihatFilter.type = 'highpass';
+                hihatFilter.frequency.value = 5000;
+                hihatGain.gain.setValueAtTime(beat % 2 === 0 ? 0.15 : 0.08, t);
+                hihatGain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
+                noise.connect(hihatFilter);
+                hihatFilter.connect(hihatGain);
+                hihatGain.connect(destination);
+                noise.start(t);
+                noise.stop(t + 0.05);
+            }
+        }
+
+        // Schedule bass line for one bar
+        function scheduleBass(startTime, barIndex, destination) {
+            const chordIndex = barIndex % 4;
+            const root = CHORD_ROOT[chordIndex];
+            // Bass on every beat
+            for (let beat = 0; beat < 4; beat++) {
+                const t = startTime + beat * BEAT_DURATION;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = root;
+                gain.gain.setValueAtTime(0.25, t);
+                gain.gain.exponentialRampToValueAtTime(0.01, t + BEAT_DURATION * 0.8);
+                osc.connect(gain);
+                gain.connect(destination);
+                osc.start(t);
+                osc.stop(t + BEAT_DURATION);
+            }
+            // Chord pad (sustain)
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.value = CHORD_ROOT[chordIndex];
+            osc2.frequency.value = CHORD_THIRD[chordIndex];
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.08, startTime + 0.05);
+            gain.gain.setValueAtTime(0.08, startTime + BAR_DURATION - 0.1);
+            gain.gain.linearRampToValueAtTime(0, startTime + BAR_DURATION);
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(destination);
+            osc1.start(startTime);
+            osc2.start(startTime);
+            osc1.stop(startTime + BAR_DURATION);
+            osc2.stop(startTime + BAR_DURATION);
+        }
+
+        // Schedule melody for one bar
+        function scheduleMelody(startTime, barIndex, melody, gainValue, destination) {
+            const notesPerBar = melody.length / 8; // 32 notes / 8 bars = 4 notes per bar
+            const noteDuration = BAR_DURATION / 4;
+            for (let i = 0; i < notesPerBar; i++) {
+                const noteIndex = (barIndex % 8) * notesPerBar + i;
+                const freq = melody[noteIndex];
+                const t = startTime + i * noteDuration;
+                const oscType = 'sine'; // bright piano-like
+                scheduleNote(freq, t, noteDuration * 0.8, gainValue, oscType, destination);
+            }
+        }
+
+        // Main BGM scheduler - schedules 4 bars ahead
+        function startBGMScheduler(bgmType) {
+            if (!audioCtx || bgmPlaying) return;
+            bgmPlaying = true;
+            const melody = BGM_MELODIES[bgmType] || HAPPY_MELODY;
+            const melodyGain = 0.15;
+
+            function scheduleBars() {
+                if (!bgmPlaying) return;
+                const LOOKAHEAD = 0.1; // seconds
+                const SCHEDULE_AHEAD = 0.5; // schedule 500ms ahead
+
+                // Calculate how far we've scheduled
+                let nextBarTime = audioCtx.currentTime;
+
+                function scheduler() {
+                    if (!bgmPlaying) return;
+                    while (nextBarTime < audioCtx.currentTime + SCHEDULE_AHEAD) {
+                        const barIndex = Math.floor((nextBarTime - audioCtx.currentTime) / BAR_DURATION) % 8;
+                        scheduleBass(nextBarTime, barIndex, bgmGainNode);
+                        scheduleMelody(nextBarTime, barIndex, melody, melodyGain, bgmGainNode);
+                        if (bgmType === 'happy' || bgmType === 'festive' || bgmType === 'playful') {
+                            scheduleDrums(nextBarTime, bgmGainNode);
+                        }
+                        nextBarTime += BAR_DURATION;
+                    }
+                    bgmSchedulerTimer = setTimeout(scheduler, LOOKAHEAD * 1000);
+                }
+                scheduler();
+            }
+            scheduleBars();
+        }
+
+        // Stop BGM scheduler
+        function stopBGMScheduler() {
+            bgmPlaying = false;
+            if (bgmSchedulerTimer) {
+                clearTimeout(bgmSchedulerTimer);
+                bgmSchedulerTimer = null;
+            }
+        }
+
+        // Crossfade BGM: fade out old, switch, fade in new
+        function switchBGM(newType) {
+            if (!audioCtx) {
+                initAudio();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            // Don't switch if same type and already playing
+            if (newType === currentBGMType && bgmPlaying) return;
+            const fadeTime = 0.5; // 500ms crossfade
+
+            if (bgmPlaying) {
+                // Fade out current BGM
+                const oldGain = bgmGainNode.gain.value;
+                bgmGainNode.gain.setValueAtTime(oldGain, audioCtx.currentTime);
+                bgmGainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + fadeTime);
+                stopBGMScheduler();
+                setTimeout(() => {
+                    bgmGainNode.gain.setValueAtTime(bgmEnabled ? bgmVolume / 100 : 0, audioCtx.currentTime);
+                    currentBGMType = newType;
+                    startBGMScheduler(newType);
+                }, fadeTime * 1000);
+            } else {
+                currentBGMType = newType;
+                bgmGainNode.gain.setValueAtTime(bgmEnabled ? bgmVolume / 100 : 0, audioCtx.currentTime);
+                startBGMScheduler(newType);
+            }
+        }
+
+        // Toggle BGM on/off
+        function toggleBGM() {
+            initAudio();
+            bgmEnabled = !bgmEnabled;
+            localStorage.setItem('bgmEnabled', bgmEnabled);
+            updateBGMButton();
+            if (bgmGainNode) {
+                if (bgmEnabled && bgmPlaying) {
+                    bgmGainNode.gain.linearRampToValueAtTime(bgmVolume / 100, audioCtx.currentTime + 0.3);
+                } else if (!bgmEnabled) {
+                    bgmGainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                }
+            }
+        }
+
+        // Update BGM button icon
+        function updateBGMButton() {
+            const btn = document.getElementById('bgmBtn');
+            if (btn) {
+                btn.innerHTML = bgmEnabled ? '🎵' : '🔇';
+                btn.title = bgmEnabled ? 'Music On' : 'Music Off';
+            }
+        }
+
+        // Load BGM preferences from localStorage
+        function loadBGMPreference() {
+            const enabled = localStorage.getItem('bgmEnabled');
+            if (enabled !== null) bgmEnabled = enabled === 'true';
+            const vol = localStorage.getItem('bgmVolume');
+            if (vol !== null) bgmVolume = parseInt(vol, 10);
+            const sfx = localStorage.getItem('sfxVolume');
+            if (sfx !== null) sfxVolume = parseInt(sfx, 10);
+        }
+
+        // Save BGM preferences
+        function saveBGMVolume() {
+            localStorage.setItem('bgmVolume', bgmVolume);
+            if (bgmGainNode && bgmEnabled) {
+                bgmGainNode.gain.linearRampToValueAtTime(bgmVolume / 100, audioCtx.currentTime + 0.1);
+            }
+        }
+
+        function saveSFXVolume() {
+            localStorage.setItem('sfxVolume', sfxVolume);
+            if (sfxGainNode) {
+                sfxGainNode.gain.linearRampToValueAtTime(sfxVolume / 100, audioCtx.currentTime + 0.1);
+            }
+        }
+
+        // Visibility handling - reduce volume when tab hidden
+        document.addEventListener('visibilitychange', () => {
+            if (!audioCtx || !bgmGainNode) return;
+            if (document.hidden) {
+                // Reduce BGM to 30%
+                bgmGainNode.gain.linearRampToValueAtTime((bgmVolume / 100) * 0.3, audioCtx.currentTime + 0.2);
+            } else {
+                // Restore full volume
+                if (bgmEnabled && bgmPlaying) {
+                    bgmGainNode.gain.linearRampToValueAtTime(bgmVolume / 100, audioCtx.currentTime + 0.2);
+                }
+            }
+        });
 
         // Initialize color palette
         function initColorPalette() {
@@ -6031,6 +6443,7 @@
             initColoringFilters();
             renderColoringTemplateBar();
             renderColoringPage();
+            switchBGM('peaceful'); // V13: peaceful for coloring mode
             playSound(playBtnClick);
         }
 
@@ -6127,7 +6540,7 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                gain.connect(sfxGainNode);
                 osc.frequency.value = freq;
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
@@ -6797,7 +7210,43 @@
             redoBtn.addEventListener('click', redo);
             saveBtn.addEventListener('click', saveDrawing);
             soundBtn.addEventListener('click', toggleSound);
-            
+
+            // V13: BGM button and volume controls
+            loadBGMPreference();
+            updateBGMButton();
+            document.getElementById('bgmVolumeSlider').value = bgmVolume;
+            document.getElementById('sfxVolumeSlider').value = sfxVolume;
+
+            document.getElementById('bgmBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                initAudio();
+                playSound(playBtnClick);
+                toggleBGM();
+                const panel = document.getElementById('bgmVolumePanel');
+                panel.classList.toggle('active');
+            });
+
+            document.getElementById('bgmVolumeSlider').addEventListener('input', (e) => {
+                bgmVolume = parseInt(e.target.value, 10);
+                saveBGMVolume();
+            });
+
+            document.getElementById('sfxVolumeSlider').addEventListener('input', (e) => {
+                sfxVolume = parseInt(e.target.value, 10);
+                saveSFXVolume();
+            });
+
+            // Close volume panel when clicking outside
+            document.addEventListener('click', (e) => {
+                const panel = document.getElementById('bgmVolumePanel');
+                const btn = document.getElementById('bgmBtn');
+                if (panel.classList.contains('active') &&
+                    !panel.contains(e.target) &&
+                    e.target !== btn &&
+                    !btn.contains(e.target)) {
+                    panel.classList.remove('active');
+                }
+            });
             // Resize
             window.addEventListener('resize', resizeCanvas);
             
@@ -7616,12 +8065,14 @@
             updateStatsDisplay();
             renderAchievements();
             document.getElementById('statsOverlay').classList.add('active');
+            switchBGM('dreamy'); // V13: dreamy for stats/achievements
         }
 
         // Close stats overlay
         function closeStats() {
             document.getElementById('statsOverlay').classList.remove('active');
             playSound && playSound(playBtnClick);
+            switchBGM('happy'); // V13: return to drawing mode
         }
 
         // Switch between stats and achievements tabs
@@ -7861,12 +8312,14 @@
             playSound(playBtnClick);
             renderGallery();
             document.getElementById('galleryOverlay').classList.add('active');
+            switchBGM('dreamy'); // V13: dreamy for gallery viewing
         }
 
         // Close gallery
         function closeGallery() {
             document.getElementById('galleryOverlay').classList.remove('active');
             playSound(playBtnClick);
+            switchBGM('happy'); // V13: return to drawing mode
         }
 
         // ===== V11: Gallery Enhancements =====
@@ -10165,6 +10618,7 @@
             initAudio();
             playSound && playSound(playBtnClick);
             initJigsaw();
+            switchBGM('playful'); // V13: playful for game modes
         }
 
         document.getElementById('jigsawBackBtn').addEventListener('click', () => {
@@ -10480,6 +10934,7 @@
             document.getElementById('dotConnectOverlay').classList.add('active');
             initAudio();
             playSound && playSound(playBtnClick);
+            switchBGM('playful');
             initDotConnect();
         }
 
@@ -10712,6 +11167,7 @@
             document.getElementById('mazeOverlay').classList.add('active');
             initAudio();
             playSound && playSound(playBtnClick);
+            switchBGM('playful');
             initMaze();
         }
 
@@ -11044,6 +11500,7 @@
         function exitGame() {
             initAudio();
             playSound && playSound(playBtnClick);
+            switchBGM('happy');
             
             if (jigsawTimerInterval) {
                 clearInterval(jigsawTimerInterval);
