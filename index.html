@@ -1831,7 +1831,7 @@
             const ctx = drawingCanvas.getContext('2d');
             const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             redoStack.push(currentState);
-            ctx.putImageData(state.data, 0, 0);
+            ctx.putImageData(state, 0, 0);
             playPopSound();
         }
 
@@ -1841,7 +1841,7 @@
             const ctx = drawingCanvas.getContext('2d');
             const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             undoStack.push(currentState);
-            ctx.putImageData(state.data, 0, 0);
+            ctx.putImageData(state, 0, 0);
             playPopSound();
         }
 
