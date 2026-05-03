@@ -43,7 +43,12 @@
             text-shadow: 1px 1px 0 white;
         }
 
-        .bubbles-btn {
+        .header-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .bubbles-btn, .coloring-btn {
             background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
             border: 3px solid #495057;
             border-radius: 16px;
@@ -59,7 +64,7 @@
             font-family: inherit;
         }
 
-        .bubbles-btn:active {
+        .bubbles-btn:active, .coloring-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0 #495057;
         }
@@ -69,11 +74,34 @@
             box-shadow: 3px 3px 0 #495057, inset 0 0 0 3px white;
         }
 
+        .coloring-btn {
+            background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
+        }
+
         /* Canvas Container */
         .canvas-container {
             flex: 1;
             position: relative;
             overflow: hidden;
+        }
+
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #tracingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
 
         #drawingCanvas {
@@ -82,7 +110,28 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 2;
             cursor: crosshair;
+        }
+
+        #fillCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        #stampCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
         }
 
         #bubbleCanvas {
@@ -91,11 +140,254 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 5;
             pointer-events: none;
         }
 
         .canvas-container.bubble-mode #bubbleCanvas {
             pointer-events: auto;
+        }
+
+        /* Panels */
+        .panel {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 4px 4px 0 #495057;
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            gap: 8px;
+        }
+
+        .panel-item {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, background 0.1s;
+        }
+
+        .panel-item:hover, .panel-item.selected {
+            background: #FFE066;
+            transform: scale(1.05);
+        }
+
+        .panel-item svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .panel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .panel-nav-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .panel-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tracing Panel */
+        #tracingPanel .panel-grid {
+            grid-template-columns: repeat(4, 70px);
+        }
+
+        .panel-item.tracing-item {
+            width: 70px;
+            height: 70px;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 4px;
+        }
+
+        /* Coloring Game Overlay */
+        #coloringOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #coloringOverlay.active {
+            display: flex;
+        }
+
+        .coloring-header {
+            height: 50px;
+            background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
+            border-bottom: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .coloring-title {
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .coloring-canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #coloringCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .coloring-tools {
+            height: 60px;
+            background: linear-gradient(180deg, #FFE4EC 0%, #FFF8E7 100%);
+            border-top: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .coloring-btn {
+            padding: 8px 20px;
+            border-radius: 12px;
+            border: 3px solid #495057;
+            background: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            font-family: inherit;
+            min-height: 44px;
+        }
+
+        .coloring-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .coloring-btn.done-btn {
+            background: #69DB7C;
+            color: white;
+        }
+
+        .coloring-btn.reset-btn {
+            background: #FFA94D;
+            color: white;
+        }
+
+        .coloring-btn.back-btn {
+            background: #74C0FC;
+            color: white;
+        }
+
+        /* Complete Overlay */
+        #completeOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #completeOverlay.active {
+            display: flex;
+        }
+
+        .complete-box {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .complete-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #69DB7C;
+            margin-bottom: 16px;
+        }
+
+        .complete-stars {
+            font-size: 3rem;
+            margin-bottom: 16px;
         }
 
         /* Color Palette */
@@ -137,65 +429,29 @@
             border-top: 3px solid #495057;
             display: flex;
             align-items: center;
-            padding: 0 16px;
-            gap: 12px;
-        }
-
-        .size-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .size-label {
-            font-size: 0.9rem;
-            color: #495057;
-            font-weight: bold;
-            margin-right: 4px;
-        }
-
-        .size-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            border: 3px solid #495057;
-            background: white;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 #495057;
-            transition: transform 0.1s, box-shadow 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .size-btn:active {
-            transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0 #495057;
-        }
-
-        .size-btn.selected {
-            background: #FFE066;
-        }
-
-        .size-dot {
-            border-radius: 50%;
-            background: #495057;
+            padding: 0 8px;
+            gap: 6px;
         }
 
         .tool-btn {
-            padding: 8px 16px;
-            border-radius: 12px;
+            padding: 6px 10px;
+            border-radius: 10px;
             border: 3px solid #495057;
             background: white;
             cursor: pointer;
             box-shadow: 2px 2px 0 #495057;
             transition: transform 0.1s, box-shadow 0.1s;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: #495057;
             font-family: inherit;
-            min-width: 70px;
+            min-width: 56px;
             min-height: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
         }
 
         .tool-btn:active {
@@ -209,10 +465,32 @@
 
         .tool-btn.brush-btn.selected {
             background: #69DB7C;
+            color: white;
         }
 
         .tool-btn.eraser-btn.selected {
             background: #74C0FC;
+        }
+
+        .tool-btn.stamp-btn.selected {
+            background: #F783AC;
+        }
+
+        .tool-btn.fill-btn.selected {
+            background: #4DABF7;
+        }
+
+        .tool-btn.tracing-btn.selected {
+            background: #9775FA;
+            color: white;
+        }
+
+        .tool-btn.bg-btn.selected {
+            background: #FFA94D;
+        }
+
+        .tool-icon {
+            font-size: 1.2rem;
         }
 
         .spacer {
@@ -251,17 +529,88 @@
             0% { opacity: 1; transform: scale(1); }
             100% { opacity: 0; transform: scale(0); }
         }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .stamp {
+            position: absolute;
+            pointer-events: auto;
+            cursor: move;
+            animation: bounceIn 0.3s ease-out;
+            transform-origin: center center;
+        }
+
+        /* Backgrounds */
+        .bg-white { background: #FFFFFF; }
+        .bg-sky { background: linear-gradient(180deg, #74C0FC 0%, #A5D8FF 100%); }
+        .bg-grass { background: linear-gradient(180deg, #8CE99A 0%, #69DB7C 100%); }
+        .bg-beach { background: linear-gradient(180deg, #74C0FC 30%, #FFA94D 60%, #FFE066 100%); }
+        .bg-night { background: linear-gradient(180deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%); }
+        .bg-checker {
+            background-image: 
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+                linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 40px 40px;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+            background-color: #FFFFFF;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-title">Creative Drawing Board</div>
-        <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
+        <div class="header-btns">
+            <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
+            <button class="coloring-btn" id="coloringBtn">Coloring</button>
+        </div>
     </header>
 
     <div class="canvas-container" id="canvasContainer">
+        <canvas id="bgCanvas"></canvas>
+        <canvas id="tracingCanvas"></canvas>
         <canvas id="drawingCanvas"></canvas>
+        <canvas id="fillCanvas"></canvas>
+        <canvas id="stampCanvas"></canvas>
         <canvas id="bubbleCanvas"></canvas>
+        
+        <!-- Stamp Panel -->
+        <div class="panel" id="stampPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="panel-grid" id="stampGrid"></div>
+        </div>
+        
+        <!-- Tracing Panel -->
+        <div class="panel" id="tracingPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="panel-grid" id="tracingGrid"></div>
+            <div class="panel-nav">
+                <button class="panel-nav-btn" onclick="prevTracing()">◀ Prev</button>
+                <button class="panel-nav-btn" onclick="toggleTracingVisibility()">👁 Show/Hide</button>
+                <button class="panel-nav-btn" onclick="clearTracingLines()">Clear Lines</button>
+                <button class="panel-nav-btn" onclick="nextTracing()">Next ▶</button>
+            </div>
+        </div>
+        
+        <!-- Fill Panel -->
+        <div class="panel" id="fillPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div style="text-align:center;padding:8px;font-weight:bold;color:#495057;">
+                Tap canvas to fill area with selected color
+            </div>
+        </div>
+        
+        <!-- Background Panel -->
+        <div class="panel" id="bgPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="panel-grid" id="bgGrid"></div>
+        </div>
     </div>
 
     <div class="color-palette" id="colorPalette">
@@ -269,25 +618,280 @@
     </div>
 
     <div class="tools">
-        <div class="size-selector">
-            <span class="size-label">Size:</span>
-            <button class="size-btn selected" data-size="4" title="Small">
-                <span class="size-dot" style="width: 8px; height: 8px;"></span>
-            </button>
-            <button class="size-btn" data-size="12" title="Medium">
-                <span class="size-dot" style="width: 16px; height: 16px;"></span>
-            </button>
-            <button class="size-btn" data-size="24" title="Large">
-                <span class="size-dot" style="width: 24px; height: 24px;"></span>
-            </button>
-        </div>
-        <button class="tool-btn brush-btn selected" id="brushBtn">Brush</button>
-        <button class="tool-btn eraser-btn" id="eraserBtn">Eraser</button>
+        <button class="tool-btn brush-btn selected" id="brushBtn">
+            <span class="tool-icon">✏️</span>
+            <span>Brush</span>
+        </button>
+        <button class="tool-btn stamp-btn" id="stampBtn">
+            <span class="tool-icon">🎨</span>
+            <span>Sticker</span>
+        </button>
+        <button class="tool-btn fill-btn" id="fillBtn">
+            <span class="tool-icon">🪣</span>
+            <span>Fill</span>
+        </button>
+        <button class="tool-btn tracing-btn" id="tracingBtn">
+            <span class="tool-icon">📝</span>
+            <span>Tracing</span>
+        </button>
+        <button class="tool-btn bg-btn" id="bgBtn">
+            <span class="tool-icon">🖼️</span>
+            <span>BG</span>
+        </button>
+        <button class="tool-btn eraser-btn" id="eraserBtn">
+            <span class="tool-icon">🧹</span>
+            <span>Eraser</span>
+        </button>
         <div class="spacer"></div>
+        <button class="tool-btn" id="undoBtn" title="Undo">↩️</button>
+        <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
         <button class="tool-btn clear-btn" id="clearBtn">Clear</button>
+        <button class="tool-btn" id="saveBtn" title="Save">💾</button>
+    </div>
+
+    <!-- Coloring Game Overlay -->
+    <div id="coloringOverlay">
+        <div class="coloring-header">
+            <div class="coloring-title" id="coloringTitle">Coloring Page</div>
+            <button class="coloring-btn back-btn" onclick="exitColoringGame()">← Back</button>
+        </div>
+        <div class="coloring-canvas-wrap" id="coloringWrap">
+            <canvas id="coloringCanvas"></canvas>
+        </div>
+        <div class="coloring-tools">
+            <button class="coloring-btn done-btn" onclick="completeColoring()">✨ Done!</button>
+            <button class="coloring-btn reset-btn" onclick="resetColoring()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- Complete Overlay -->
+    <div id="completeOverlay">
+        <div class="complete-box">
+            <div class="complete-stars">⭐🌟⭐🌟⭐</div>
+            <div class="complete-text">太棒了!</div>
+            <button class="coloring-btn done-btn" onclick="closeComplete()">继续</button>
+        </div>
     </div>
 
     <script>
+        // ===== V2: M1 Stamps + M2 Tracing + M3 Fill + M4 Backgrounds + M5 ColoringGame =====
+        
+        // Stamp SVG definitions (20+ stamps)
+        const STAMPS = [
+            { id: 'cat', name: 'Cat', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="35" ry="30" fill="#FFA94D"/><polygon points="20,35 30,60 10,60" fill="#FFA94D"/><polygon points="80,35 90,60 70,60" fill="#FFA94D"/><circle cx="38" cy="55" r="5" fill="#495057"/><circle cx="62" cy="55" r="5" fill="#495057"/><ellipse cx="50" cy="68" rx="4" ry="3" fill="#F783AC"/><path d="M46 72 Q50 76 54 72" stroke="#495057" stroke-width="2" fill="none"/></svg>' },
+            { id: 'dog', name: 'Dog', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="30" ry="28" fill="#E5997F"/><ellipse cx="25" cy="40" rx="12" ry="18" fill="#E5997F"/><ellipse cx="75" cy="40" rx="12" ry="18" fill="#E5997F"/><circle cx="40" cy="55" r="4" fill="#495057"/><circle cx="60" cy="55" r="4" fill="#495057"/><ellipse cx="50" cy="68" rx="6" ry="4" fill="#495057"/><path d="M44 75 Q50 80 56 75" stroke="#495057" stroke-width="2" fill="none"/></svg>' },
+            { id: 'fish', name: 'Fish', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="35" ry="22" fill="#74C0FC"/><polygon points="85,50 100,35 100,65" fill="#74C0FC"/><circle cx="30" cy="47" r="4" fill="#495057"/><path d="M45 55 Q50 58 55 55" stroke="#495057" stroke-width="2" fill="none"/><path d="M50 30 Q55 20 65 25" stroke="#74C0FC" stroke-width="4" fill="none"/></svg>' },
+            { id: 'bird', name: 'Bird', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="25" ry="20" fill="#69DB7C"/><circle cx="50" cy="35" r="18" fill="#69DB7C"/><circle cx="44" cy="32" r="3" fill="#495057"/><circle cx="56" cy="32" r="3" fill="#495057"/><polygon points="50,38 45,45 55,45" fill="#FFA94D"/><ellipse cx="30" cy="55" rx="12" ry="8" fill="#69DB7C"/><ellipse cx="70" cy="55" rx="12" ry="8" fill="#69DB7C"/><path d="M40 70 L45 85 M50 70 L50 85 M60 70 L55 85" stroke="#FFA94D" stroke-width="3"/></svg>' },
+            { id: 'butterfly', name: 'Butterfly', svg: '<svg viewBox="0 0 100 100"><ellipse cx="30" cy="40" rx="20" ry="18" fill="#B197FC"/><ellipse cx="70" cy="40" rx="20" ry="18" fill="#B197FC"/><ellipse cx="30" cy="65" rx="15" ry="14" fill="#F783AC"/><ellipse cx="70" cy="65" rx="15" ry="14" fill="#F783AC"/><ellipse cx="50" cy="55" rx="5" ry="20" fill="#495057"/><circle cx="30" cy="38" r="5" fill="#74C0FC"/><circle cx="70" cy="38" r="5" fill="#74C0FC"/></svg>' },
+            { id: 'rabbit', name: 'Rabbit', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="65" rx="28" ry="25" fill="#F8F0F0"/><ellipse cx="35" cy="25" rx="8" ry="25" fill="#F8F0F0"/><ellipse cx="65" cy="25" rx="8" ry="25" fill="#F8F0F0"/><ellipse cx="35" cy="25" rx="4" ry="18" fill="#F783AC"/><ellipse cx="65" cy="25" rx="4" ry="18" fill="#F783AC"/><circle cx="40" cy="60" r="4" fill="#495057"/><circle cx="60" cy="60" r="4" fill="#495057"/><ellipse cx="50" cy="70" rx="4" ry="3" fill="#F783AC"/><circle cx="35" cy="72" r="8" fill="#FF9A9E" opacity="0.5"/><circle cx="65" cy="72" r="8" fill="#FF9A9E" opacity="0.5"/></svg>' },
+            { id: 'bear', name: 'Bear', svg: '<svg viewBox="0 0 100 100"><circle cx="25" cy="25" r="12" fill="#E5997F"/><circle cx="75" cy="25" r="12" fill="#E5997F"/><circle cx="50" cy="55" r="32" fill="#E5997F"/><circle cx="40" cy="48" r="4" fill="#495057"/><circle cx="60" cy="48" r="4" fill="#495057"/><ellipse cx="50" cy="62" rx="8" ry="6" fill="#E5997F"/><circle cx="50" cy="60" r="4" fill="#495057"/></svg>' },
+            { id: 'frog', name: 'Frog', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="65" rx="35" ry="25" fill="#69DB7C"/><circle cx="30" cy="35" r="15" fill="#69DB7C"/><circle cx="70" cy="35" r="15" fill="#69DB7C"/><circle cx="30" cy="32" r="8" fill="white"/><circle cx="70" cy="32" r="8" fill="white"/><circle cx="30" cy="32" r="4" fill="#495057"/><circle cx="70" cy="32" r="4" fill="#495057"/><path d="M35 72 Q50 82 65 72" stroke="#495057" stroke-width="3" fill="none"/></svg>' },
+            { id: 'flower', name: 'Flower', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="12" fill="#FFE066"/><ellipse cx="50" cy="25" rx="10" ry="15" fill="#FF6B6B"/><ellipse cx="50" cy="75" rx="10" ry="15" fill="#FF6B6B"/><ellipse cx="25" cy="50" rx="15" ry="10" fill="#FF6B6B"/><ellipse cx="75" cy="50" rx="15" ry="10" fill="#FF6B6B"/><ellipse cx="30" cy="30" rx="10" ry="12" fill="#F783AC" transform="rotate(-45 30 30)"/><ellipse cx="70" cy="30" rx="10" ry="12" fill="#F783AC" transform="rotate(45 70 30)"/><ellipse cx="30" cy="70" rx="10" ry="12" fill="#F783AC" transform="rotate(45 30 70)"/><ellipse cx="70" cy="70" rx="10" ry="12" fill="#F783AC" transform="rotate(-45 70 70)"/></svg>' },
+            { id: 'tree', name: 'Tree', svg: '<svg viewBox="0 0 100 100"><rect x="42" y="60" width="16" height="30" fill="#E5997F"/><polygon points="50,10 20,60 80,60" fill="#69DB7C"/><polygon points="50,25 25,60 75,60" fill="#8CE99A"/><circle cx="40" cy="45" r="5" fill="#FF6B6B"/><circle cx="60" cy="40" r="4" fill="#FF6B6B"/></svg>' },
+            { id: 'sun', name: 'Sun', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="22" fill="#FFE066"/><g stroke="#FFE066" stroke-width="4"><line x1="50" y1="5" x2="50" y2="20"/><line x1="50" y1="80" x2="50" y2="95"/><line x1="5" y1="50" x2="20" y2="50"/><line x1="80" y1="50" x2="95" y2="50"/><line x1="18" y1="18" x2="28" y2="28"/><line x1="72" y1="72" x2="82" y2="82"/><line x1="18" y1="82" x2="28" y2="72"/><line x1="72" y1="28" x2="82" y2="18"/></g></svg>' },
+            { id: 'moon', name: 'Moon', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#FFE066"/><circle cx="70" cy="50" r="30" fill="#FFF8E7"/></svg>' },
+            { id: 'star', name: 'Star', svg: '<svg viewBox="0 0 100 100"><polygon points="50,5 61,40 98,40 68,62 79,97 50,75 21,97 32,62 2,40 39,40" fill="#FFE066"/></svg>' },
+            { id: 'rainbow', name: 'Rainbow', svg: '<svg viewBox="0 0 100 100"><path d="M10 80 Q50 10 90 80" stroke="#FF6B6B" stroke-width="8" fill="none"/><path d="M18 80 Q50 20 82 80" stroke="#FFA94D" stroke-width="6" fill="none"/><path d="M25 80 Q50 28 75 80" stroke="#FFE066" stroke-width="6" fill="none"/><path d="M32 80 Q50 36 68 80" stroke="#69DB7C" stroke-width="5" fill="none"/><path d="M38 80 Q50 42 62 80" stroke="#74C0FC" stroke-width="5" fill="none"/><path d="M44 80 Q50 50 56 80" stroke="#B197FC" stroke-width="4" fill="none"/></svg>' },
+            { id: 'car', name: 'Car', svg: '<svg viewBox="0 0 100 100"><rect x="10" y="45" width="80" height="25" rx="5" fill="#FF6B6B"/><rect x="25" y="30" width="50" height="20" rx="5" fill="#FF6B6B"/><circle cx="25" cy="70" r="10" fill="#495057"/><circle cx="75" cy="70" r="10" fill="#495057"/><circle cx="25" cy="70" r="5" fill="#888"/><circle cx="75" cy="70" r="5" fill="#888"/><rect x="55" y="35" width="15" height="12" fill="#74C0FC" opacity="0.7"/></svg>' },
+            { id: 'airplane', name: 'Airplane', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="35" ry="10" fill="#74C0FC"/><polygon points="85,50 95,45 95,55" fill="#74C0FC"/><polygon points="40,40 50,20 60,40" fill="#74C0FC"/><polygon points="40,60 50,80 60,60" fill="#74C0FC"/><polygon points="30,50 20,40 15,50 20,60" fill="#4DABF7"/></svg>' },
+            { id: 'boat', name: 'Boat', svg: '<svg viewBox="0 0 100 100"><polygon points="20,60 50,80 80,60 70,60 50,45 30,60" fill="#E5997F"/><rect x="45" y="25" width="5" height="35" fill="#E5997F"/><polygon points="50,25 50,50 75,45" fill="white"/><path d="M10 75 Q30 70 50 75 Q70 80 90 75" stroke="#74C0FC" stroke-width="3" fill="none"/></svg>' },
+            { id: 'house', name: 'House', svg: '<svg viewBox="0 0 100 100"><polygon points="50,15 15,50 85,50" fill="#FF6B6B"/><rect x="20" y="50" width="60" height="40" fill="#FFE066"/><rect x="40" y="65" width="20" height="25" fill="#E5997F"/><rect x="25" y="58" width="12" height="12" fill="#74C0FC"/><rect x="63" y="58" width="12" height="12" fill="#74C0FC"/><circle cx="55" cy="78" r="2" fill="#FFE066"/></svg>' },
+            { id: 'balloon', name: 'Balloon', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="40" rx="22" ry="30" fill="#FF6B6B"/><polygon points="50,70 45,75 50,90 55,75" fill="#FF6B6B"/><path d="M50 90 Q55 95 50 100" stroke="#495057" stroke-width="2" fill="none"/><ellipse cx="42" cy="30" rx="5" ry="8" fill="rgba(255,255,255,0.3)"/></svg>' },
+            { id: 'cake', name: 'Cake', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="55" width="70" height="35" rx="5" fill="#F8F0F0"/><rect x="15" y="55" width="70" height="12" fill="#FF6B6B"/><rect x="20" y="70" width="60" height="3" fill="#FFE066"/><rect x="20" y="78" width="60" height="3" fill="#FFE066"/><rect x="45" y="35" width="10" height="20" fill="#FFE066"/><ellipse cx="50" cy="32" rx="8" ry="6" fill="#FFA94D"/><circle cx="30" cy="50" r="3" fill="#FF6B6B"/><circle cx="50" cy="50" r="3" fill="#69DB7C"/><circle cx="70" cy="50" r="3" fill="#74C0FC"/></svg>' },
+            { id: 'heart', name: 'Heart', svg: '<svg viewBox="0 0 100 100"><path d="M50 88 C20 60 5 40 25 25 C40 15 50 30 50 30 C50 30 60 15 75 25 C95 40 80 60 50 88Z" fill="#FF6B6B"/></svg>' },
+            { id: 'smile', name: 'Smile', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="35" cy="40" r="5" fill="#495057"/><circle cx="65" cy="40" r="5" fill="#495057"/><path d="M30 60 Q50 80 70 60" stroke="#495057" stroke-width="4" fill="none"/></svg>' },
+            { id: 'cloud', name: 'Cloud', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="35" ry="20" fill="white"/><circle cx="30" cy="50" r="18" fill="white"/><circle cx="70" cy="50" r="15" fill="white"/><circle cx="50" cy="40" r="20" fill="white"/></svg>' },
+            { id: 'leaf', name: 'Leaf', svg: '<svg viewBox="0 0 100 100"><path d="M50 90 Q30 60 20 40 Q40 20 60 30 Q80 40 75 70 Q70 85 50 90Z" fill="#69DB7C"/><path d="M50 85 Q50 50 55 30" stroke="#495057" stroke-width="2" fill="none"/><path d="M45 55 Q50 50 55 55" stroke="#495057" stroke-width="1" fill="none"/><path d="M40 70 Q50 60 60 65" stroke="#495057" stroke-width="1" fill="none"/></svg>' }
+        ];
+
+        // Tracing templates (8 templates with path data)
+        const TRACING_TEMPLATES = [
+            { 
+                id: 'apple', name: 'Apple', 
+                paths: [
+                    { type: 'arc', x: 50, y: 55, r: 30, start: 0, end: Math.PI * 2 },
+                    { type: 'move', x: 50, y: 25 },
+                    { type: 'bezier', x1: 50, y1: 15, x2: 60, y2: 10, x: 65, y: 20 },
+                    { type: 'move', x: 50, y: 25 },
+                    { type: 'bezier', x1: 50, y1: 15, x2: 40, y2: 10, x: 35, y: 20 }
+                ]
+            },
+            { 
+                id: 'banana', name: 'Banana',
+                paths: [
+                    { type: 'move', x: 20, y: 70 },
+                    { type: 'bezier', x1: 30, y1: 30, x2: 70, y2: 30, x: 80, y: 70 },
+                    { type: 'bezier', x1: 75, y1: 35, x2: 40, y2: 35, x: 25, y: 70 }
+                ]
+            },
+            { 
+                id: 'fish', name: 'Fish',
+                paths: [
+                    { type: 'move', x: 15, y: 50 },
+                    { type: 'bezier', x1: 15, y1: 25, x2: 50, y2: 25, x: 60, y: 50 },
+                    { type: 'bezier', x1: 50, y1: 25, x2: 85, y2: 25, x: 85, y: 50 },
+                    { type: 'bezier', x1: 85, y1: 25, x2: 50, y2: 75, x: 60, y: 50 },
+                    { type: 'bezier', x1: 50, y1: 75, x2: 15, y2: 75, x: 15, y: 50 },
+                    { type: 'move', x: 85, y: 50 },
+                    { type: 'line', x: 95, y: 35 },
+                    { type: 'move', x: 85, y: 50 },
+                    { type: 'line', x: 95, y: 65 }
+                ]
+            },
+            { 
+                id: 'bird', name: 'Bird',
+                paths: [
+                    { type: 'move', x: 30, y: 40 },
+                    { type: 'arc', x: 50, y: 45, r: 20, start: 0, end: Math.PI * 2 },
+                    { type: 'move', x: 50, y: 25 },
+                    { type: 'line', x: 50, y: 15 },
+                    { type: 'move', x: 50, y: 15 },
+                    { type: 'bezier', x1: 45, y1: 10, x2: 40, y2: 5, x: 35, y: 10 },
+                    { type: 'move', x: 38, y: 40 },
+                    { type: 'line', x: 25, y: 35 },
+                    { type: 'move', x: 62, y: 40 },
+                    { type: 'line', x: 75, y: 35 },
+                    { type: 'move', x: 50, y: 65 },
+                    { type: 'line', x: 45, y: 80 },
+                    { type: 'move', x: 50, y: 65 },
+                    { type: 'line', x: 55, y: 80 }
+                ]
+            },
+            { 
+                id: 'house', name: 'House',
+                paths: [
+                    { type: 'move', x: 20, y: 55 },
+                    { type: 'line', x: 50, y: 30 },
+                    { type: 'line', x: 80, y: 55 },
+                    { type: 'line', x: 80, y: 85 },
+                    { type: 'line', x: 20, y: 85 },
+                    { type: 'line', x: 20, y: 55 },
+                    { type: 'move', x: 40, y: 85 },
+                    { type: 'line', x: 40, y: 65 },
+                    { type: 'line', x: 60, y: 65 },
+                    { type: 'line', x: 60, y: 85 },
+                    { type: 'rect', x: 25, y: 60, w: 12, h: 12 }
+                ]
+            },
+            { 
+                id: 'car', name: 'Car',
+                paths: [
+                    { type: 'move', x: 10, y: 55 },
+                    { type: 'line', x: 25, y: 55 },
+                    { type: 'line', x: 30, y: 40 },
+                    { type: 'line', x: 70, y: 40 },
+                    { type: 'line', x: 75, y: 55 },
+                    { type: 'line', x: 90, y: 55 },
+                    { type: 'arc', x: 25, y: 55, r: 12, start: Math.PI, end: 0 },
+                    { type: 'arc', x: 75, y: 55, r: 12, start: Math.PI, end: 0 }
+                ]
+            },
+            { 
+                id: 'sun', name: 'Sun',
+                paths: [
+                    { type: 'arc', x: 50, y: 50, r: 20, start: 0, end: Math.PI * 2 },
+                    { type: 'move', x: 50, y: 20 },
+                    { type: 'line', x: 50, y: 10 },
+                    { type: 'move', x: 50, y: 80 },
+                    { type: 'line', x: 50, y: 90 },
+                    { type: 'move', x: 20, y: 50 },
+                    { type: 'line', x: 10, y: 50 },
+                    { type: 'move', x: 80, y: 50 },
+                    { type: 'line', x: 90, y: 50 },
+                    { type: 'move', x: 28, y: 28 },
+                    { type: 'line', x: 20, y: 20 },
+                    { type: 'move', x: 72, y: 72 },
+                    { type: 'line', x: 80, y: 80 },
+                    { type: 'move', x: 72, y: 28 },
+                    { type: 'line', x: 80, y: 20 },
+                    { type: 'move', x: 28, y: 72 },
+                    { type: 'line', x: 20, y: 80 }
+                ]
+            },
+            { 
+                id: 'flower', name: 'Flower',
+                paths: [
+                    { type: 'arc', x: 50, y: 40, r: 10, start: 0, end: Math.PI * 2 },
+                    { type: 'move', x: 50, y: 30 },
+                    { type: 'ellipse', cx: 50, cy: 20, rx: 8, ry: 15 },
+                    { type: 'move', x: 50, y: 50 },
+                    { type: 'ellipse', cx: 50, cy: 60, rx: 8, ry: 15 },
+                    { type: 'move', x: 40, y: 40 },
+                    { type: 'ellipse', cx: 32, cy: 40, rx: 15, ry: 8 },
+                    { type: 'move', x: 60, y: 40 },
+                    { type: 'ellipse', cx: 68, cy: 40, rx: 15, ry: 8 },
+                    { type: 'move', x: 50, y: 70 },
+                    { type: 'line', x: 50, y: 90 }
+                ]
+            }
+        ];
+
+        // Backgrounds
+        const BACKGROUNDS = [
+            { id: 'white', name: 'White', class: 'bg-white' },
+            { id: 'sky', name: 'Sky', class: 'bg-sky' },
+            { id: 'grass', name: 'Grass', class: 'bg-grass' },
+            { id: 'beach', name: 'Beach', class: 'bg-beach' },
+            { id: 'night', name: 'Night', class: 'bg-night' },
+            { id: 'checker', name: 'Checker', class: 'bg-checker' }
+        ];
+
+        // Coloring pages (SVG paths with regions)
+        const COLORING_PAGES = [
+            {
+                id: 'rainbow',
+                name: 'Rainbow',
+                regions: [
+                    { id: 'r1', path: 'M10 75 Q50 20 90 75 L82 75 Q50 30 18 75 Z', color: '#FF6B6B' },
+                    { id: 'r2', path: 'M18 75 Q50 30 82 75 L74 75 Q50 38 26 75 Z', color: '#FFA94D' },
+                    { id: 'r3', path: 'M26 75 Q50 38 74 75 L66 75 Q50 46 34 75 Z', color: '#FFE066' },
+                    { id: 'r4', path: 'M34 75 Q50 46 66 75 L58 75 Q50 54 42 75 Z', color: '#69DB7C' },
+                    { id: 'r5', path: 'M42 75 Q50 54 58 75 L50 75 Q50 62 50 75 Z', color: '#74C0FC' }
+                ]
+            },
+            {
+                id: 'fish',
+                name: 'Fish',
+                regions: [
+                    { id: 'body', path: 'M20 50 Q50 20 80 50 Q50 80 20 50 M80 50 L95 35 L95 65 Z', color: '#74C0FC' },
+                    { id: 'eye', path: 'M30 45 A5 5 0 1 1 30 46', color: 'white' },
+                    { id: 'pupil', path: 'M30 45 A2 2 0 1 1 30 46', color: '#495057' },
+                    { id: 'fin_top', path: 'M45 35 Q55 20 60 35 Q55 30 45 35', color: '#4DABF7' },
+                    { id: 'fin_bottom', path: 'M45 65 Q55 80 60 65 Q55 70 45 65', color: '#4DABF7' },
+                    { id: 'bubble1', path: 'M15 35 A4 4 0 1 1 15 36', color: '#A5D8FF' },
+                    { id: 'bubble2', path: 'M8 45 A3 3 0 1 1 8 46', color: '#A5D8FF' }
+                ]
+            },
+            {
+                id: 'flower',
+                name: 'Flower',
+                regions: [
+                    { id: 'center', path: 'M50 40 A12 12 0 1 1 50 41', color: '#FFE066' },
+                    { id: 'petal1', path: 'M50 28 Q60 15 50 10 Q40 15 50 28', color: '#FF6B6B' },
+                    { id: 'petal2', path: 'M62 40 Q75 35 80 50 Q70 55 62 40', color: '#F783AC' },
+                    { id: 'petal3', path: 'M50 52 Q60 65 50 75 Q40 65 50 52', color: '#FF6B6B' },
+                    { id: 'petal4', path: 'M38 40 Q25 35 20 50 Q30 55 38 40', color: '#F783AC' },
+                    { id: 'stem', path: 'M50 62 L50 90', color: '#69DB7C', strokeWidth: 4 },
+                    { id: 'leaf1', path: 'M50 75 Q35 70 30 80 Q40 82 50 75', color: '#69DB7C' },
+                    { id: 'leaf2', path: 'M50 80 Q65 75 70 85 Q60 87 50 80', color: '#69DB7C' }
+                ]
+            },
+            {
+                id: 'car',
+                name: 'Car',
+                regions: [
+                    { id: 'body', path: 'M10 55 L25 55 L30 40 L70 40 L75 55 L90 55 L90 70 L10 70 Z', color: '#FF6B6B' },
+                    { id: 'window', path: 'M35 42 L45 42 L45 52 L30 52 Z', color: '#74C0FC' },
+                    { id: 'window2', path: 'M55 42 L65 42 L65 52 L48 52 Z', color: '#74C0FC' },
+                    { id: 'wheel1', path: 'M25 70 A10 10 0 1 1 25 71', color: '#495057' },
+                    { id: 'wheel2', path: 'M75 70 A10 10 0 1 1 75 71', color: '#495057' },
+                    { id: 'wheel_center1', path: 'M25 70 A4 4 0 1 1 25 71', color: '#888' },
+                    { id: 'wheel_center2', path: 'M75 70 A4 4 0 1 1 75 71', color: '#888' },
+                    { id: 'light', path: 'M88 52 L90 52 L90 58 L88 58 Z', color: '#FFE066' }
+                ]
+            }
+        ];
+
         // Color palette
         const COLORS = [
             { name: 'Red', hex: '#FF6B6B' },
@@ -314,6 +918,26 @@
         let particles = [];
         let bubbleSpawnInterval = null;
 
+        // V2 State
+        let stamps = [];
+        let selectedStamp = null;
+        let placedStamps = [];
+        let currentTracing = -1;
+        let tracingVisible = true;
+        let currentBackground = 'white';
+        let fillMode = false;
+        let undoStack = [];
+        let redoStack = [];
+        let isDraggingStamp = false;
+        let dragStamp = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        // Coloring game state
+        let coloringPage = 0;
+        let coloringRegions = [];
+        let coloringCanvas, coloringCtx;
+
         // Elements
         const drawingCanvas = document.getElementById('drawingCanvas');
         const bubbleCanvas = document.getElementById('bubbleCanvas');
@@ -323,7 +947,11 @@
         const brushBtn = document.getElementById('brushBtn');
         const eraserBtn = document.getElementById('eraserBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const sizeBtns = document.querySelectorAll('.size-btn');
+        const coloringBtn = document.getElementById('coloringBtn');
+        const tracingCanvas = document.getElementById('tracingCanvas');
+        const fillCanvas = document.getElementById('fillCanvas');
+        const stampCanvas = document.getElementById('stampCanvas');
+        const bgCanvas = document.getElementById('bgCanvas');
 
         // Audio Context
         let audioCtx = null;
@@ -390,6 +1018,21 @@
             source.start();
         }
 
+        function playStampSound() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
         // Initialize color palette
         function initColorPalette() {
             COLORS.forEach((color, index) => {
@@ -421,20 +1064,89 @@
             const rect = canvasContainer.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
             
-            drawingCanvas.width = rect.width * dpr;
-            drawingCanvas.height = rect.height * dpr;
-            drawingCanvas.style.width = rect.width + 'px';
-            drawingCanvas.style.height = rect.height + 'px';
-            
-            bubbleCanvas.width = rect.width * dpr;
-            bubbleCanvas.height = rect.height * dpr;
-            bubbleCanvas.style.width = rect.width + 'px';
-            bubbleCanvas.height = rect.height + 'px';
-            
+            [bgCanvas, tracingCanvas, drawingCanvas, fillCanvas, stampCanvas, bubbleCanvas].forEach(canvas => {
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+            });
+
             const ctx = drawingCanvas.getContext('2d');
             ctx.scale(dpr, dpr);
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
+
+            const bgCtx = bgCanvas.getContext('2d');
+            bgCtx.scale(dpr, dpr);
+
+            const tracingCtx = tracingCanvas.getContext('2d');
+            tracingCtx.scale(dpr, dpr);
+
+            const fillCtx = fillCanvas.getContext('2d');
+            fillCtx.scale(dpr, dpr);
+
+            const stampCtx = stampCanvas.getContext('2d');
+            stampCtx.scale(dpr, dpr);
+
+            const bubbleCtx2 = bubbleCanvas.getContext('2d');
+            bubbleCtx2.scale(dpr, dpr);
+
+            // Redraw background
+            drawBackground();
+
+            // Redraw tracing if active
+            if (currentTracing >= 0) {
+                drawTracing();
+            }
+
+            // Redraw stamps
+            renderStamps();
+        }
+
+        function drawBackground() {
+            const ctx = bgCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            if (currentBackground === 'night') {
+                // Draw stars
+                ctx.fillStyle = '#FFFFFF';
+                for (let i = 0; i < 50; i++) {
+                    const x = Math.random() * rect.width;
+                    const y = Math.random() * rect.height * 0.6;
+                    const size = Math.random() * 2 + 1;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else if (currentBackground === 'sky') {
+                // Draw clouds
+                ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                drawCloud(ctx, rect.width * 0.2, rect.height * 0.15, 40);
+                drawCloud(ctx, rect.width * 0.6, rect.height * 0.1, 50);
+                drawCloud(ctx, rect.width * 0.8, rect.height * 0.2, 35);
+            } else if (currentBackground === 'beach') {
+                // Draw waves
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, rect.height * 0.35 + i * 15);
+                    for (let x = 0; x < rect.width; x += 20) {
+                        ctx.quadraticCurveTo(x + 10, rect.height * 0.35 + i * 15 - 5, x + 20, rect.height * 0.35 + i * 15);
+                    }
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawCloud(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.4, y - size * 0.1, size * 0.4, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.8, y, size * 0.45, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.4, y + size * 0.2, size * 0.35, 0, Math.PI * 2);
+            ctx.fill();
         }
 
         // Drawing functions
@@ -452,12 +1164,32 @@
             };
         }
 
+        function saveUndoState() {
+            const ctx = drawingCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            undoStack.push({ type: 'canvas', data: imageData });
+            redoStack = [];
+            if (undoStack.length > 50) undoStack.shift();
+        }
+
         function startDrawing(e) {
             if (bubbleMode) return;
+            if (currentTool === 'stamp' && selectedStamp) return;
+            
             isDrawing = true;
             const pos = getPos(e);
             lastX = pos.x;
             lastY = pos.y;
+
+            if (currentTool === 'fill') {
+                performFloodFill(pos.x, pos.y);
+                isDrawing = false;
+                return;
+            }
+
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                saveUndoState();
+            }
         }
 
         function draw(e) {
@@ -480,6 +1212,405 @@
 
         function stopDrawing() {
             isDrawing = false;
+        }
+
+        // ===== M3: Flood Fill =====
+        function performFloodFill(startX, startY) {
+            const ctx = drawingCanvas.getContext('2d');
+            const fillCtx = fillCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvasContainer.getBoundingClientRect();
+            
+            // Limit fill area to 500x500
+            const size = 500;
+            const offsetX = Math.max(0, Math.floor(startX - size / 2));
+            const offsetY = Math.max(0, Math.floor(startY - size / 2));
+            const actualSize = Math.min(size, Math.floor(rect.width - offsetX), Math.floor(rect.height - offsetY));
+            
+            if (actualSize < 1) return;
+
+            saveUndoState();
+
+            const imageData = ctx.getImageData(offsetX * dpr, offsetY * dpr, actualSize * dpr, actualSize * dpr);
+            const data = imageData.data;
+            const width = imageData.width;
+            const height = imageData.height;
+
+            const startPixelX = Math.floor(startX - offsetX);
+            const startPixelY = Math.floor(startY - offsetY);
+            const startIdx = (startPixelY * width + startPixelX) * 4;
+
+            const startR = data[startIdx];
+            const startG = data[startIdx + 1];
+            const startB = data[startIdx + 2];
+            const startA = data[startIdx + 3];
+
+            const fillR = parseInt(currentColor.slice(1, 3), 16);
+            const fillG = parseInt(currentColor.slice(3, 5), 16);
+            const fillB = parseInt(currentColor.slice(5, 7), 16);
+
+            // Don't fill if clicking on same color
+            if (Math.abs(startR - fillR) < 10 && Math.abs(startG - fillG) < 10 && Math.abs(startB - fillB) < 10) return;
+
+            const visited = new Uint8Array(width * height);
+            const stack = [[startPixelX, startPixelY]];
+            const threshold = 128;
+
+            function matchesStart(idx) {
+                const a = data[idx + 3];
+                if (a < threshold) return false;
+                const dr = Math.abs(data[idx] - startR);
+                const dg = Math.abs(data[idx + 1] - startG);
+                const db = Math.abs(data[idx + 2] - startB);
+                return dr < 50 && dg < 50 && db < 50;
+            }
+
+            function matchesFill(idx) {
+                return Math.abs(data[idx] - fillR) < 10 && Math.abs(data[idx + 1] - fillG) < 10 && Math.abs(data[idx + 2] - fillB) < 10;
+            }
+
+            while (stack.length > 0) {
+                const [x, y] = stack.pop();
+                if (x < 0 || x >= width || y < 0 || y >= height) continue;
+                
+                const pixelIdx = y * width + x;
+                if (visited[pixelIdx]) continue;
+                
+                const idx = pixelIdx * 4;
+                if (!matchesStart(idx) || matchesFill(idx)) continue;
+                
+                visited[pixelIdx] = 1;
+                data[idx] = fillR;
+                data[idx + 1] = fillG;
+                data[idx + 2] = fillB;
+                data[idx + 3] = 255;
+
+                stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+            }
+
+            ctx.putImageData(imageData, offsetX * dpr, offsetY * dpr);
+            playPopSound();
+        }
+
+        // ===== M1: Stamps =====
+        function initStampPanel() {
+            const grid = document.getElementById('stampGrid');
+            STAMPS.forEach(stamp => {
+                const item = document.createElement('div');
+                item.className = 'panel-item';
+                item.innerHTML = stamp.svg;
+                item.title = stamp.name;
+                item.addEventListener('click', () => selectStamp(stamp));
+                grid.appendChild(item);
+            });
+        }
+
+        function selectStamp(stamp) {
+            selectedStamp = stamp;
+            closeAllPanels();
+            playStampSound();
+            stampBtn.classList.add('selected');
+        }
+
+        function placeStamp(x, y) {
+            if (!selectedStamp) return;
+            
+            const stamp = {
+                id: Date.now(),
+                type: selectedStamp.id,
+                svg: selectedStamp.svg,
+                x: x - 30,
+                y: y - 30,
+                scale: 1
+            };
+            
+            placedStamps.push(stamp);
+            renderStamps();
+            saveUndoState();
+        }
+
+        function renderStamps() {
+            const ctx = stampCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            placedStamps.forEach(stamp => {
+                const img = new Image();
+                const svgBlob = new Blob([stamp.svg], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(svgBlob);
+                
+                img.onload = () => {
+                    ctx.drawImage(img, stamp.x, stamp.y, 60 * stamp.scale, 60 * stamp.scale);
+                    URL.revokeObjectURL(url);
+                };
+                img.src = url;
+            });
+        }
+
+        function checkStampHit(x, y) {
+            for (let i = placedStamps.length - 1; i >= 0; i--) {
+                const stamp = placedStamps[i];
+                if (x >= stamp.x && x <= stamp.x + 60 && y >= stamp.y && y <= stamp.y + 60) {
+                    return stamp;
+                }
+            }
+            return null;
+        }
+
+        function deleteStamp(stamp) {
+            const idx = placedStamps.indexOf(stamp);
+            if (idx >= 0) {
+                placedStamps.splice(idx, 1);
+                renderStamps();
+                saveUndoState();
+            }
+        }
+
+        // ===== M2: Tracing =====
+        function initTracingPanel() {
+            const grid = document.getElementById('tracingGrid');
+            TRACING_TEMPLATES.forEach((template, index) => {
+                const item = document.createElement('div');
+                item.className = 'panel-item tracing-item';
+                item.innerHTML = `<span>${template.name}</span>`;
+                item.addEventListener('click', () => selectTracing(index));
+                grid.appendChild(item);
+            });
+        }
+
+        function selectTracing(index) {
+            currentTracing = index;
+            closeAllPanels();
+            drawTracing();
+            tracingBtn.classList.add('selected');
+            playPopSound();
+        }
+
+        function drawTracing() {
+            const ctx = tracingCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            if (currentTracing < 0 || !tracingVisible) return;
+
+            const template = TRACING_TEMPLATES[currentTracing];
+            const scale = Math.min(rect.width, rect.height) / 100;
+            const offsetX = rect.width / 2 - 50 * scale;
+            const offsetY = rect.height / 2 - 50 * scale;
+
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+            ctx.strokeStyle = '#495057';
+            ctx.lineWidth = 3 / scale;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.4;
+
+            template.paths.forEach(path => {
+                ctx.beginPath();
+                switch (path.type) {
+                    case 'move':
+                        ctx.moveTo(path.x, path.y);
+                        break;
+                    case 'line':
+                        ctx.lineTo(path.x, path.y);
+                        break;
+                    case 'arc':
+                        ctx.arc(path.x, path.y, path.r, path.start, path.end);
+                        break;
+                    case 'bezier':
+                        ctx.bezierCurveTo(path.x1, path.y1, path.x2, path.y2, path.x, path.y);
+                        break;
+                    case 'rect':
+                        ctx.rect(path.x, path.y, path.w, path.h);
+                        break;
+                    case 'ellipse':
+                        ctx.ellipse(path.cx, path.cy, path.rx, path.ry, 0, 0, Math.PI * 2);
+                        break;
+                }
+                ctx.stroke();
+            });
+
+            ctx.restore();
+        }
+
+        function prevTracing() {
+            if (currentTracing > 0) {
+                currentTracing--;
+                drawTracing();
+                playPopSound();
+            }
+        }
+
+        function nextTracing() {
+            if (currentTracing < TRACING_TEMPLATES.length - 1) {
+                currentTracing++;
+                drawTracing();
+                playPopSound();
+            }
+        }
+
+        function toggleTracingVisibility() {
+            tracingVisible = !tracingVisible;
+            drawTracing();
+            playPopSound();
+        }
+
+        function clearTracingLines() {
+            saveUndoState();
+            playWhooshSound();
+        }
+
+        // ===== M4: Backgrounds =====
+        function initBackgroundPanel() {
+            const grid = document.getElementById('bgGrid');
+            BACKGROUNDS.forEach(bg => {
+                const item = document.createElement('div');
+                item.className = `panel-item ${bg.class}`;
+                item.style.border = '2px solid #495057';
+                item.title = bg.name;
+                item.addEventListener('click', () => selectBackground(bg.id));
+                grid.appendChild(item);
+            });
+        }
+
+        function selectBackground(bgId) {
+            currentBackground = bgId;
+            closeAllPanels();
+            drawBackground();
+            playPopSound();
+        }
+
+        // ===== Panels =====
+        function closeAllPanels() {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        }
+
+        function togglePanel(id) {
+            const panel = document.getElementById(id + 'Panel');
+            if (panel.classList.contains('active')) {
+                closeAllPanels();
+            } else {
+                closeAllPanels();
+                panel.classList.add('active');
+            }
+        }
+
+        // ===== M5: Coloring Game =====
+        function initColoringGame() {
+            coloringCanvas = document.getElementById('coloringCanvas');
+            coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+            renderColoringPage();
+        }
+
+        function enterColoringGame() {
+            coloringPage = 0;
+            coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+            document.getElementById('coloringTitle').textContent = COLORING_PAGES[coloringPage].name;
+            document.getElementById('coloringOverlay').classList.add('active');
+            
+            const wrap = document.getElementById('coloringWrap');
+            coloringCanvas.width = wrap.offsetWidth;
+            coloringCanvas.height = wrap.offsetHeight;
+            
+            renderColoringPage();
+            playPopSound();
+        }
+
+        function exitColoringGame() {
+            document.getElementById('coloringOverlay').classList.remove('active');
+            playPopSound();
+        }
+
+        function renderColoringPage() {
+            if (!coloringCanvas) return;
+            
+            const ctx = coloringCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            ctx.clearRect(0, 0, coloringCanvas.width, coloringCanvas.height);
+
+            const page = COLORING_PAGES[coloringPage];
+            const scale = Math.min(coloringCanvas.width / dpr, coloringCanvas.height / dpr) / 100;
+            const offsetX = (coloringCanvas.width / dpr - 100 * scale) / 2;
+            const offsetY = (coloringCanvas.height / dpr - 100 * scale) / 2;
+
+            ctx.save();
+            ctx.translate(offsetX * dpr, offsetY * dpr);
+            ctx.scale(scale * dpr, scale * dpr);
+
+            // Draw background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 100, 100);
+
+            // Draw regions
+            coloringRegions.forEach(region => {
+                ctx.beginPath();
+                const path = new Path2D(region.path);
+                ctx.fillStyle = region.color;
+                ctx.fill(path, region.fillRule || 'evenodd');
+                
+                // Draw stroke for unfilled regions
+                if (region.color === 'white' || region.color === '#FFFFFF') {
+                    ctx.strokeStyle = '#495057';
+                    ctx.lineWidth = 2;
+                    ctx.stroke(path);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        function handleColoringClick(e) {
+            const rect = coloringCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const dpr = window.devicePixelRatio || 1;
+
+            const page = COLORING_PAGES[coloringPage];
+            const scale = Math.min(coloringCanvas.width / dpr, coloringCanvas.height / dpr) / 100;
+            const offsetX = (coloringCanvas.width / dpr - 100 * scale) / 2;
+            const offsetY = (coloringCanvas.height / dpr - 100 * scale) / 2;
+
+            const pathX = (x / dpr - offsetX) / scale;
+            const pathY = (y / dpr - offsetY) / scale;
+
+            // Check if clicked inside a region
+            const ctx = coloringCanvas.getContext('2d');
+            
+            for (let i = 0; i < coloringRegions.length; i++) {
+                const region = coloringRegions[i];
+                const path = new Path2D(region.path);
+                
+                if (ctx.isPointInPath(path, pathX, pathY)) {
+                    region.color = currentColor;
+                    renderColoringPage();
+                    playPopSound();
+                    break;
+                }
+            }
+        }
+
+        function completeColoring() {
+            document.getElementById('completeOverlay').classList.add('active');
+            playPopSound();
+        }
+
+        function closeComplete() {
+            document.getElementById('completeOverlay').classList.remove('active');
+            // Move to next page
+            if (coloringPage < COLORING_PAGES.length - 1) {
+                coloringPage++;
+                coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+                document.getElementById('coloringTitle').textContent = COLORING_PAGES[coloringPage].name;
+                renderColoringPage();
+            }
+        }
+
+        function resetColoring() {
+            coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+            renderColoringPage();
+            playWhooshSound();
         }
 
         // Bubble mode
@@ -540,26 +1671,21 @@
             const rect = canvasContainer.getBoundingClientRect();
             ctx.clearRect(0, 0, rect.width, rect.height);
             
-            // Draw and update bubbles
             for (let i = bubbles.length - 1; i >= 0; i--) {
                 const b = bubbles[i];
                 
-                // Update position
                 b.y -= b.riseSpeed;
                 b.wobbleOffset += 0.02;
                 const wobble = Math.sin(b.wobbleOffset) * 0.5;
                 
-                // Remove if off screen
                 if (b.y + b.radius < 0) {
                     bubbles.splice(i, 1);
                     continue;
                 }
                 
-                // Draw bubble
                 ctx.save();
                 ctx.globalAlpha = b.opacity;
                 
-                // Bubble gradient
                 const gradient = ctx.createRadialGradient(
                     b.x - b.radius * 0.3, b.y - b.radius * 0.3, 0,
                     b.x, b.y, b.radius
@@ -573,7 +1699,6 @@
                 ctx.fillStyle = gradient;
                 ctx.fill();
                 
-                // Highlight
                 ctx.beginPath();
                 ctx.arc(b.x - b.radius * 0.3, b.y - b.radius * 0.3, b.radius * 0.2, 0, Math.PI * 2);
                 ctx.fillStyle = 'rgba(255,255,255,0.6)';
@@ -582,7 +1707,6 @@
                 ctx.restore();
             }
             
-            // Draw particles
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.x += p.vx;
@@ -614,7 +1738,6 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
-            // Check if clicked on a bubble
             for (let i = bubbles.length - 1; i >= 0; i--) {
                 const b = bubbles[i];
                 const dx = x - b.x;
@@ -622,7 +1745,6 @@
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
                 if (dist < b.radius) {
-                    // Pop bubble
                     playBubblePopSound();
                     createParticles(b.x, b.y, b.color, b.radius);
                     bubbles.splice(i, 1);
@@ -667,6 +1789,8 @@
                 } else {
                     ctx.fillStyle = '#FFFFFF';
                     ctx.fillRect(0, 0, rect.width, rect.height);
+                    undoStack = [];
+                    redoStack = [];
                 }
             }
             
@@ -678,18 +1802,78 @@
             currentTool = tool;
             brushBtn.classList.toggle('selected', tool === 'brush');
             eraserBtn.classList.toggle('selected', tool === 'eraser');
+            stampBtn.classList.toggle('selected', tool === 'stamp');
+            fillBtn.classList.toggle('selected', tool === 'fill');
+            tracingBtn.classList.toggle('selected', tool === 'tracing');
+            bgBtn.classList.toggle('selected', tool === 'bg');
+            
+            closeAllPanels();
+            
+            if (tool === 'stamp') {
+                togglePanel('stamp');
+            } else if (tool === 'tracing') {
+                togglePanel('tracing');
+            } else if (tool === 'fill') {
+                togglePanel('fill');
+            } else if (tool === 'bg') {
+                togglePanel('bg');
+            }
+            
+            if (tool !== 'stamp') {
+                selectedStamp = null;
+            }
         }
 
-        function selectSize(size) {
-            currentSize = size;
-            sizeBtns.forEach(btn => {
-                btn.classList.toggle('selected', parseInt(btn.dataset.size) === size);
-            });
+        // Undo/Redo
+        function undo() {
+            if (undoStack.length === 0) return;
+            const state = undoStack.pop();
+            const ctx = drawingCanvas.getContext('2d');
+            const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            redoStack.push(currentState);
+            ctx.putImageData(state.data, 0, 0);
+            playPopSound();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            const state = redoStack.pop();
+            const ctx = drawingCanvas.getContext('2d');
+            const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            undoStack.push(currentState);
+            ctx.putImageData(state.data, 0, 0);
+            playPopSound();
+        }
+
+        // Save
+        function saveDrawing() {
+            const tempCanvas = document.createElement('canvas');
+            const rect = canvasContainer.getBoundingClientRect();
+            tempCanvas.width = bgCanvas.width;
+            tempCanvas.height = bgCanvas.height;
+            const ctx = tempCanvas.getContext('2d');
+            
+            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' : 
+                            currentBackground === 'sky' ? '#A5D8FF' :
+                            currentBackground === 'grass' ? '#69DB7C' :
+                            currentBackground === 'beach' ? '#FFE066' :
+                            currentBackground === 'night' ? '#1A1A2E' : '#FFFFFF';
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            ctx.drawImage(bgCanvas, 0, 0);
+            ctx.drawImage(drawingCanvas, 0, 0);
+            ctx.drawImage(stampCanvas, 0, 0);
+            
+            const link = document.createElement('a');
+            link.download = 'drawing.png';
+            link.href = tempCanvas.toDataURL();
+            link.click();
+            playPopSound();
         }
 
         // Event listeners
         function initEventListeners() {
-            // Mouse events
+            // Mouse events for drawing
             drawingCanvas.addEventListener('mousedown', startDrawing);
             drawingCanvas.addEventListener('mousemove', draw);
             drawingCanvas.addEventListener('mouseup', stopDrawing);
@@ -700,22 +1884,71 @@
             drawingCanvas.addEventListener('touchmove', draw, { passive: false });
             drawingCanvas.addEventListener('touchend', stopDrawing);
             
+            // Stamp placement on canvas click
+            drawingCanvas.addEventListener('click', (e) => {
+                if (currentTool === 'stamp' && selectedStamp) {
+                    const rect = drawingCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    placeStamp(x, y);
+                }
+            });
+
+            // Stamp dragging
+            stampCanvas.addEventListener('mousedown', (e) => {
+                const rect = stampCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const hit = checkStampHit(x, y);
+                if (hit) {
+                    if (currentTool === 'eraser') {
+                        deleteStamp(hit);
+                    } else {
+                        dragStamp = hit;
+                        isDraggingStamp = true;
+                        dragOffsetX = x - hit.x;
+                        dragOffsetY = y - hit.y;
+                    }
+                }
+            });
+
+            stampCanvas.addEventListener('mousemove', (e) => {
+                if (isDraggingStamp && dragStamp) {
+                    const rect = stampCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    dragStamp.x = x - dragOffsetX;
+                    dragStamp.y = y - dragOffsetY;
+                    renderStamps();
+                }
+            });
+
+            stampCanvas.addEventListener('mouseup', () => {
+                isDraggingStamp = false;
+                dragStamp = null;
+            });
+
             // Bubble canvas click
             bubbleCanvas.addEventListener('click', handleBubbleClick);
             
-            // Buttons
+            // Coloring canvas click
+            document.getElementById('coloringCanvas').addEventListener('click', handleColoringClick);
+            
+            // Header buttons
             bubblesBtn.addEventListener('click', toggleBubbleMode);
+            coloringBtn.addEventListener('click', enterColoringGame);
+            
+            // Tool buttons
             brushBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('brush'); });
             eraserBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('eraser'); });
+            stampBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('stamp'); });
+            fillBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('fill'); });
+            tracingBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('tracing'); });
+            bgBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('bg'); });
             clearBtn.addEventListener('click', clearCanvas);
-            
-            sizeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    initAudio();
-                    playPopSound();
-                    selectSize(parseInt(btn.dataset.size));
-                });
-            });
+            undoBtn.addEventListener('click', undo);
+            redoBtn.addEventListener('click', redo);
+            saveBtn.addEventListener('click', saveDrawing);
             
             // Resize
             window.addEventListener('resize', resizeCanvas);
@@ -729,10 +1962,13 @@
         // Initialize
         function init() {
             initColorPalette();
+            initStampPanel();
+            initTracingPanel();
+            initBackgroundPanel();
             resizeCanvas();
             initEventListeners();
+            initColoringGame();
             
-            // Set initial canvas background
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
             ctx.fillStyle = '#FFFFFF';
