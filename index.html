@@ -103,6 +103,47 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        .challenge-btn {
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+            position: relative;
+        }
+
+        .challenge-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-btn .unread-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 14px;
+            height: 14px;
+            background: #FF6B6B;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        .challenge-btn .unread-dot.show {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
         .gallery-btn {
             background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
             border: 3px solid #495057;
@@ -1388,6 +1429,304 @@
             background-color: #FFE066;
         }
 
+        /* Daily Challenge Overlay */
+        #challengeOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #challengeOverlay.active {
+            display: flex;
+        }
+
+        .challenge-container {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .challenge-header {
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border-bottom: 3px solid #495057;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .challenge-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .challenge-body {
+            padding: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .challenge-task {
+            background: #FFF9DB;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .challenge-task-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .challenge-task-desc {
+            font-size: 1rem;
+            color: #868e96;
+            margin-bottom: 12px;
+        }
+
+        .challenge-progress-wrap {
+            background: #dee2e6;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .challenge-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #69DB7C 0%, #40C057 100%);
+            border-radius: 8px;
+            transition: width 0.4s ease-out;
+            width: 0%;
+        }
+
+        .challenge-progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .challenge-reward-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-reward-btn:disabled {
+            background: linear-gradient(180deg, #adb5bd 0%, #868e96 100%);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .challenge-reward-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-reward-btn.completed {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            color: #495057;
+        }
+
+        .challenge-streak {
+            background: #F8F0F0;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .challenge-streak-num {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #E8590C;
+        }
+
+        .challenge-streak-label {
+            font-size: 0.9rem;
+            color: #868e96;
+        }
+
+        .challenge-calendar {
+            background: #F8F0F0;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .challenge-calendar-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .challenge-calendar-days {
+            display: flex;
+            justify-content: space-around;
+            gap: 4px;
+        }
+
+        .challenge-calendar-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .challenge-calendar-day-label {
+            font-size: 0.7rem;
+            color: #868e96;
+        }
+
+        .challenge-calendar-day-marker {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .challenge-calendar-day-marker.success {
+            background: #69DB7C;
+            color: white;
+        }
+
+        .challenge-calendar-day-marker.fail {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .challenge-calendar-day-marker.future {
+            background: #dee2e6;
+            color: #adb5bd;
+        }
+
+        .challenge-show-more {
+            width: 100%;
+            padding: 8px;
+            background: transparent;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            color: #868e96;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .challenge-show-more:hover {
+            background: #f8f9fa;
+        }
+
+        .challenge-history {
+            display: none;
+            margin-top: 8px;
+        }
+
+        .challenge-history.show {
+            display: block;
+        }
+
+        .challenge-history-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+            margin: 8px 0 4px;
+        }
+
+        /* Achievement star tiers */
+        .achievement-tier {
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        .achievement-tier-1 { color: #FFD43B; }
+        .achievement-tier-2 { color: #ADB5BD; }
+        .achievement-tier-3 { color: #FF922B; }
+
+        /* Full screen celebration animation */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .celebration-particle {
+            position: absolute;
+            font-size: 2rem;
+            animation: celebrationFall 3s ease-out forwards;
+        }
+
+        @keyframes celebrationFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Smooth progress bar animation */
+        .progress-animated {
+            animation: progressGrow 0.5s ease-out;
+        }
+
+        @keyframes progressGrow {
+            0% { width: 0%; }
+        }
+
         /* Stats & Achievements Overlay */
         #statsOverlay {
             display: none;
@@ -1928,6 +2267,7 @@
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
             <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
+            <button class="challenge-btn" id="challengeBtn" title="Daily Challenge">🔔<span class="unread-dot" id="unreadDot"></span></button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
             <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
@@ -2111,6 +2451,19 @@
             <div class="complete-stars">⭐🌟⭐🌟⭐</div>
             <div class="complete-text">太棒了!</div>
             <button class="coloring-btn done-btn" onclick="closeComplete()">继续</button>
+        </div>
+    </div>
+
+    <!-- Daily Challenge Panel -->
+    <div id="challengeOverlay">
+        <div class="challenge-container">
+            <div class="challenge-header">
+                <div class="challenge-title">🎯 每日挑战</div>
+                <button class="challenge-close" id="challengeCloseBtn">×</button>
+            </div>
+            <div class="challenge-body" id="challengeBody">
+                <!-- Challenge content injected by JS -->
+            </div>
         </div>
     </div>
 
@@ -4762,21 +5115,648 @@
             lastDate: null
         };
 
-        // Achievements definitions (12 total)
-        const ACHIEVEMENTS = [
-            { id: 'first_draw', name: '初次涂鸦', desc: '完成第一次涂鸦', icon: '✏️', check: (s) => s.drawing >= 1 },
-            { id: 'coloring_5', name: '小画家', desc: '涂色5次', icon: '🖌️', check: (s) => s.coloring >= 5 },
-            { id: 'coloring_20', name: '涂色大师', desc: '涂色20次', icon: '🎨', check: (s) => s.coloring >= 20 },
-            { id: 'tracing_5', name: '描图新手', desc: '描图5次', icon: '📝', check: (s) => s.tracing >= 5 },
-            { id: 'tracing_20', name: '描图高手', desc: '描图20次', icon: '🏆', check: (s) => s.tracing >= 20 },
-            { id: 'sticker_50', name: '贴纸迷', desc: '使用贴纸50次', icon: '🌟', check: (s) => s.sticker >= 50 },
-            { id: 'sticker_200', name: '贴纸达人', desc: '使用贴纸200次', icon: '💫', check: (s) => s.sticker >= 200 },
-            { id: 'bubble_100', name: '泡泡王子/公主', desc: '填充100次', icon: '🫧', check: (s) => s.bubble >= 100 },
-            { id: 'save_10', name: '保存达人', desc: '保存10次', icon: '💾', check: (s) => s.save >= 10 },
-            { id: 'week_streak', name: '连续7天', desc: '连续7天使用应用', icon: '📅', check: (s) => s.weekStreak >= 7 },
-            { id: 'all_stickers', name: '集齐贴纸', desc: '使用所有类型贴纸', icon: '🎯', check: (s) => s.allStickers },
-            { id: 'explorer', name: '探索者', desc: '使用所有工具', icon: '🔍', check: (s) => s.explorer }
+        // ===== Daily Challenge System (V9) =====
+        
+        // Challenge types and descriptions
+        const CHALLENGE_TYPES = {
+            tracing: { name: '描图', icon: '📝', templates: ['cat','dog','fish','bird','butterfly','flower','star','heart'] },
+            coloring: { name: '涂色', icon: '🖌️', templates: ['cat','dog','fish','bird','flower','sun','heart','star'] },
+            sticker: { name: '贴纸', icon: '🎨', target: 10 },
+            drawing: { name: '涂鸦', icon: '✏️', target: 5 },
+            bubble: { name: '填充', icon: '🪣', target: 10 },
+            creative: { name: '创作', icon: '🌟', target: 1 },
+            guided: { name: '引导', icon: '🎯', target: 1 }
+        };
+
+        // Daily challenge task templates
+        const CHALLENGE_TASKS = [
+            { type: 'tracing', description: '完成 {count} 次描图练习', target: 3 },
+            { type: 'coloring', description: '完成 {count} 次涂色练习', target: 3 },
+            { type: 'sticker', description: '使用 {count} 次贴纸', target: 10 },
+            { type: 'drawing', description: '完成 {count} 次自由涂鸦', target: 5 },
+            { type: 'bubble', description: '完成 {count} 次填充练习', target: 10 },
+            { type: 'creative', description: '创作一幅完整作品', target: 1 },
+            { type: 'guided', description: '完成一次引导教程', target: 1 }
         ];
+
+        // Get date string (YYYY-MM-DD)
+        function getDateStr(date) {
+            const d = date || new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // Generate deterministic daily challenge based on date seed
+        function generateDailyChallenge() {
+            const today = getDateStr();
+            const saved = localStorage.getItem('daily_challenge');
+            
+            if (saved) {
+                const challenge = JSON.parse(saved);
+                // Same day, restore existing
+                if (challenge.date === today) {
+                    return challenge;
+                }
+            }
+            
+            // New day, generate new challenge
+            // Use date as seed for deterministic selection
+            const dateNum = parseInt(today.replace(/-/g, ''));
+            const taskIndex = dateNum % CHALLENGE_TASKS.length;
+            const task = CHALLENGE_TASKS[taskIndex];
+            
+            // For some types, add variety based on date
+            let actualTarget = task.target;
+            let description = task.description;
+            
+            if (task.type === 'tracing' || task.type === 'coloring') {
+                // Add template variety
+                const templates = CHALLENGE_TYPES[task.type].templates;
+                const templateIndex = (dateNum * 7) % templates.length;
+                description = `${CHALLENGE_TYPES[task.type].name}「${templates[templateIndex]}」 ${task.target}次`;
+            } else if (task.type === 'sticker' || task.type === 'bubble') {
+                actualTarget = 5 + (dateNum % 6); // 5-10 range
+                description = description.replace('{count}', actualTarget);
+            } else if (task.type === 'drawing') {
+                actualTarget = 3 + (dateNum % 3); // 3-5 range
+                description = description.replace('{count}', actualTarget);
+            }
+            
+            const challenge = {
+                date: today,
+                type: task.type,
+                description: description,
+                target: actualTarget,
+                current: 0,
+                completed: false,
+                reward_claimed: false,
+                template: task.type === 'tracing' || task.type === 'coloring' 
+                    ? CHALLENGE_TYPES[task.type].templates[(dateNum * 7) % CHALLENGE_TYPES[task.type].templates.length]
+                    : null
+            };
+            
+            localStorage.setItem('daily_challenge', JSON.stringify(challenge));
+            return challenge;
+        }
+
+        // Load daily challenge
+        function loadDailyChallenge() {
+            const saved = localStorage.getItem('daily_challenge');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return generateDailyChallenge();
+        }
+
+        // Save daily challenge
+        function saveDailyChallenge(challenge) {
+            localStorage.setItem('daily_challenge', JSON.stringify(challenge));
+        }
+
+        // Check and update daily challenge progress
+        function checkDailyChallenge(type) {
+            const challenge = loadDailyChallenge();
+            if (challenge.completed || challenge.reward_claimed) return;
+            
+            if (challenge.type === type) {
+                challenge.current = Math.min(challenge.current + 1, challenge.target);
+                challenge.completed = challenge.current >= challenge.target;
+                saveDailyChallenge(challenge);
+                updateChallengePanel();
+                updateUnreadDot();
+                
+                // If just completed, check achievements and show notification
+                if (challenge.completed) {
+                    showChallengeCompleteNotification();
+                    // Add to challenge calendar
+                    addToChallengeCalendar(challenge.date);
+                    // Check challenge achievements
+                    checkChallengeAchievements();
+                }
+            }
+        }
+
+        // Get challenge calendar
+        function getChallengeCalendar() {
+            try {
+                const saved = localStorage.getItem('challenge_calendar');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Save challenge calendar
+        function saveChallengeCalendar(calendar) {
+            localStorage.setItem('challenge_calendar', JSON.stringify(calendar));
+        }
+
+        // Add completed challenge to calendar
+        function addToChallengeCalendar(dateStr) {
+            const calendar = getChallengeCalendar();
+            if (!calendar.includes(dateStr)) {
+                calendar.push(dateStr);
+                saveChallengeCalendar(calendar);
+            }
+        }
+
+        // Calculate current streak from calendar
+        function calculateStreak() {
+            const calendar = getChallengeCalendar();
+            if (calendar.length === 0) return 0;
+            
+            // Sort dates descending
+            const sorted = [...calendar].sort((a, b) => new Date(b) - new Date(a));
+            const today = getDateStr();
+            const yesterday = getDateStr(new Date(Date.now() - 86400000));
+            
+            // Check if streak includes today or yesterday
+            if (sorted[0] !== today && sorted[0] !== yesterday) return 0;
+            
+            let streak = 0;
+            let checkDate = sorted[0] === today ? new Date() : new Date(Date.now() - 86400000);
+            
+            for (let i = 0; i < 365; i++) {
+                const dateStr = getDateStr(checkDate);
+                if (sorted.includes(dateStr)) {
+                    streak++;
+                    checkDate = new Date(checkDate.getTime() - 86400000);
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // Check for consecutive weekends (for weekend_warrior)
+        function countConsecutiveWeekends() {
+            const calendar = getChallengeCalendar();
+            if (calendar.length < 4) return 0;
+            
+            const sorted = [...calendar].sort((a, b) => new Date(b) - new Date(a));
+            let weekendCount = 0;
+            
+            for (let i = 0; i < sorted.length && i < 30; i++) {
+                const d = new Date(sorted[i]);
+                const dayOfWeek = d.getDay();
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    weekendCount++;
+                    if (weekendCount >= 4) return weekendCount;
+                } else {
+                    weekendCount = 0;
+                }
+            }
+            
+            return weekendCount >= 4 ? weekendCount : 0;
+        }
+
+        // Check time-based achievements
+        function checkTimeBasedAchievements() {
+            const hour = new Date().getHours();
+            const challenge = loadDailyChallenge();
+            
+            if (challenge.completed) {
+                if (hour < 9) {
+                    // early_bird - before 9am
+                    unlockAchievement('early_bird');
+                }
+                if (hour >= 21) {
+                    // night_owl - after 9pm
+                    unlockAchievement('night_owl');
+                }
+            }
+        }
+
+        // Check challenge-related achievements
+        function checkChallengeAchievements() {
+            const calendar = getChallengeCalendar();
+            const streak = calculateStreak();
+            
+            // challenge_1 - complete 1st daily challenge
+            if (calendar.length >= 1) {
+                unlockAchievement('challenge_1');
+            }
+            
+            // challenge_7 - complete 7 consecutive daily challenges
+            if (streak >= 7) {
+                unlockAchievement('challenge_7');
+            }
+            
+            // challenge_30 - complete 30 consecutive daily challenges
+            if (streak >= 30) {
+                unlockAchievement('challenge_30');
+            }
+            
+            // streak_7 - 7-day attendance
+            if (calendar.length >= 7) {
+                unlockAchievement('streak_7');
+            }
+            
+            // streak_30 - 30-day attendance
+            if (calendar.length >= 30) {
+                unlockAchievement('streak_30');
+            }
+            
+            // weekend_warrior - 4 consecutive weekends
+            if (countConsecutiveWeekends() >= 4) {
+                unlockAchievement('weekend_warrior');
+            }
+            
+            // Check time-based achievements
+            checkTimeBasedAchievements();
+        }
+
+        // Show challenge complete notification
+        function showChallengeCompleteNotification() {
+            showCelebration();
+            playSound && playSound(playSaveSuccess);
+        }
+
+        // Full screen celebration effect
+        function showCelebration() {
+            const overlay = document.createElement('div');
+            overlay.className = 'celebration-overlay';
+            document.body.appendChild(overlay);
+            
+            const emojis = ['🎉', '⭐', '🌟', '✨', '🎊', '🏆', '💫', '🎈'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'celebration-particle';
+                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                overlay.appendChild(particle);
+            }
+            
+            setTimeout(() => overlay.remove(), 5000);
+        }
+
+        // Render challenge panel content
+        function renderChallengePanel() {
+            const challenge = loadDailyChallenge();
+            const streak = calculateStreak();
+            const calendar = getChallengeCalendar();
+            const progress = Math.min((challenge.current / challenge.target) * 100, 100);
+            
+            let rewardBtnText = '任务进行中...';
+            let rewardBtnClass = '';
+            let rewardBtnDisabled = 'disabled';
+            
+            if (challenge.reward_claimed) {
+                rewardBtnText = '✓ 已领取奖励';
+                rewardBtnClass = 'completed';
+                rewardBtnDisabled = 'disabled';
+            } else if (challenge.completed) {
+                rewardBtnText = '🎁 领取奖励';
+                rewardBtnClass = '';
+                rewardBtnDisabled = '';
+            }
+            
+            // Generate last 7 days for calendar
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(Date.now() - i * 86400000);
+                const dateStr = getDateStr(d);
+                const dayLabel = ['日','一','二','三','四','五','六'][d.getDay()];
+                const hasChallenge = calendar.includes(dateStr);
+                last7Days.push({
+                    date: dateStr,
+                    label: dayLabel,
+                    status: hasChallenge ? 'success' : (dateStr === getDateStr() ? 'future' : 'fail')
+                });
+            }
+            
+            const body = document.getElementById('challengeBody');
+            body.innerHTML = `
+                <div class="challenge-streak">
+                    <div class="challenge-streak-num">🔥 ${streak}</div>
+                    <div class="challenge-streak-label">连续完成天数</div>
+                </div>
+                
+                <div class="challenge-task">
+                    <div class="challenge-task-title">${CHALLENGE_TYPES[challenge.type].icon} 今日任务</div>
+                    <div class="challenge-task-desc">${challenge.description}</div>
+                    <div class="challenge-progress-wrap">
+                        <div class="challenge-progress-bar progress-animated" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="challenge-progress-text">${challenge.current} / ${challenge.target}</div>
+                    <button class="challenge-reward-btn ${rewardBtnClass}" ${rewardBtnDisabled} onclick="claimChallengeReward()">
+                        ${rewardBtnText}
+                    </button>
+                </div>
+                
+                <div class="challenge-calendar">
+                    <div class="challenge-calendar-title">📅 最近7天</div>
+                    <div class="challenge-calendar-days">
+                        ${last7Days.map(day => `
+                            <div class="challenge-calendar-day">
+                                <span class="challenge-calendar-day-label">${day.label}</span>
+                                <span class="challenge-calendar-day-marker ${day.status}">
+                                    ${day.status === 'success' ? '✅' : (day.status === 'fail' ? '❌' : '○')}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="challenge-show-more" onclick="toggleChallengeHistory()">查看更多 ▼</button>
+                    <div class="challenge-history" id="challengeHistory">
+                        <div class="challenge-history-title">📆 近30天打卡记录</div>
+                        ${renderChallengeHistory(calendar)}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render challenge history
+        function renderChallengeHistory(calendar) {
+            const history = [];
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date(Date.now() - i * 86400000);
+                const dateStr = getDateStr(d);
+                const dayLabel = `${d.getMonth()+1}/${d.getDate()}`;
+                const hasChallenge = calendar.includes(dateStr);
+                history.push(`<span style="margin:2px;display:inline-block;">${dayLabel}:${hasChallenge?'✅':'❌'}</span>`);
+            }
+            return history.join('');
+        }
+
+        // Toggle challenge history visibility
+        function toggleChallengeHistory() {
+            const el = document.getElementById('challengeHistory');
+            const btn = el.previousElementSibling;
+            el.classList.toggle('show');
+            btn.textContent = el.classList.contains('show') ? '收起 ▲' : '查看更多 ▼';
+        }
+
+        // Update challenge panel (without full re-render)
+        function updateChallengePanel() {
+            const challenge = loadDailyChallenge();
+            const progress = Math.min((challenge.current / challenge.target) * 100, 100);
+            
+            // Update progress bar if exists
+            const progressBar = document.querySelector('.challenge-progress-bar');
+            const progressText = document.querySelector('.challenge-progress-text');
+            const rewardBtn = document.querySelector('.challenge-reward-btn');
+            
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+            if (progressText) {
+                progressText.textContent = `${challenge.current} / ${challenge.target}`;
+            }
+            if (rewardBtn && !challenge.reward_claimed) {
+                if (challenge.completed) {
+                    rewardBtn.textContent = '🎁 领取奖励';
+                    rewardBtn.disabled = false;
+                    rewardBtn.classList.remove('completed');
+                } else {
+                    rewardBtn.textContent = '任务进行中...';
+                    rewardBtn.disabled = true;
+                }
+            }
+        }
+
+        // Update unread dot on bell button
+        function updateUnreadDot() {
+            const challenge = loadDailyChallenge();
+            const dot = document.getElementById('unreadDot');
+            if (dot) {
+                // Show dot if challenge is completed and reward not claimed
+                dot.classList.toggle('show', challenge.completed && !challenge.reward_claimed);
+            }
+        }
+
+        // Claim challenge reward
+        function claimChallengeReward() {
+            const challenge = loadDailyChallenge();
+            if (!challenge.completed || challenge.reward_claimed) return;
+            
+            challenge.reward_claimed = true;
+            saveDailyChallenge(challenge);
+            
+            // Give reward: +5 bubble points
+            const stats = loadStats();
+            stats.bubble = (stats.bubble || 0) + 5;
+            saveStats(stats);
+            
+            // Unlock daily limited sticker
+            unlockDailySticker();
+            
+            // Update UI
+            updateChallengePanel();
+            updateUnreadDot();
+            
+            // Show reward notification
+            showRewardNotification();
+            
+            // Check achievements after reward
+            checkAchievements();
+        }
+
+        // Show reward notification
+        function showRewardNotification() {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#FFF9DB,#FFE066);border:4px solid #495057;border-radius:20px;padding:24px;text-align:center;z-index:5000;box-shadow:8px 8px 0 #495057;animation:popIn 0.5s ease-out;';
+            overlay.innerHTML = `
+                <div style="font-size:3rem;margin-bottom:10px;">🎁</div>
+                <div style="font-size:1.2rem;font-weight:bold;color:#495057;margin-bottom:8px;">奖励已领取!</div>
+                <div style="font-size:1rem;color:#868e96;margin-bottom:4px;">+5 泡泡游戏积分</div>
+                <div style="font-size:1rem;color:#868e96;">今日限定贴纸已解锁 ✨</div>
+            `;
+            document.body.appendChild(overlay);
+            playSound && playSound(playSaveSuccess);
+            setTimeout(() => {
+                overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => overlay.remove(), 300);
+            }, 2500);
+        }
+
+        // Unlock daily limited sticker
+        function unlockDailySticker() {
+            try {
+                let dailyStickers = JSON.parse(localStorage.getItem('daily_stickers') || '[]');
+                const today = getDateStr();
+                
+                // Check if already unlocked today
+                if (dailyStickers.some(s => s.date === today)) return;
+                
+                // Add today's sticker with a special design
+                dailyStickers.push({
+                    date: today,
+                    name: 'Daily Sticker ' + today,
+                    svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#FFE066" stroke="#495057" stroke-width="3"/><text x="50" y="55" text-anchor="middle" fill="#495057" font-size="24" font-weight="bold">${today.slice(5).replace('-','/')}</text></svg>`
+                });
+                
+                // Keep only last 30 days
+                if (dailyStickers.length > 30) {
+                    dailyStickers = dailyStickers.slice(-30);
+                }
+                
+                localStorage.setItem('daily_stickers', JSON.stringify(dailyStickers));
+            } catch (e) {}
+        }
+
+        // Open challenge panel
+        function openChallengePanel() {
+            initAudio && initAudio();
+            playSound && playSound(playBtnClick);
+            renderChallengePanel();
+            document.getElementById('challengeOverlay').classList.add('active');
+        }
+
+        // Close challenge panel
+        function closeChallengePanel() {
+            document.getElementById('challengeOverlay').classList.remove('active');
+        }
+
+        // ===== Achievement Evolution System (V9) =====
+        
+        // Achievement tiers: 1=⭐, 2=⭐⭐, 3=⭐⭐⭐
+        const ACHIEVEMENTS = [
+            // Tier 1 - Base achievements (⭐)
+            { id: 'first_draw', name: '初次涂鸦', desc: '完成第一次涂鸦', icon: '✏️', tier: 1, check: (s) => s.drawing >= 1 },
+            { id: 'coloring_5', name: '小画家', desc: '涂色5次', icon: '🖌️', tier: 1, check: (s) => s.coloring >= 5 },
+            { id: 'tracing_5', name: '描图新手', desc: '描图5次', icon: '📝', tier: 1, check: (s) => s.tracing >= 5 },
+            { id: 'sticker_50', name: '贴纸迷', desc: '使用贴纸50次', icon: '🌟', tier: 1, check: (s) => s.sticker >= 50 },
+            { id: 'bubble_100', name: '泡泡王子/公主', desc: '填充100次', icon: '🫧', tier: 1, check: (s) => s.bubble >= 100 },
+            { id: 'save_10', name: '保存达人', desc: '保存10次', icon: '💾', tier: 1, check: (s) => s.save >= 10 },
+            { id: 'week_streak', name: '连续7天', desc: '连续7天使用应用', icon: '📅', tier: 1, check: (s) => s.weekStreak >= 7 },
+            { id: 'all_stickers', name: '集齐贴纸', desc: '使用所有类型贴纸', icon: '🎯', tier: 1, check: (s) => s.allStickers },
+            { id: 'explorer', name: '探索者', desc: '使用所有工具', icon: '🔍', tier: 1, check: (s) => s.explorer },
+            
+            // Tier 2 - Mid achievements (⭐⭐)
+            { id: 'coloring_20', name: '涂色大师', desc: '涂色20次', icon: '🎨', tier: 2, check: (s) => s.coloring >= 20 },
+            { id: 'tracing_20', name: '描图高手', desc: '描图20次', icon: '🏆', tier: 2, check: (s) => s.tracing >= 20 },
+            { id: 'sticker_100', name: '贴纸达人', desc: '使用贴纸100次', icon: '💫', tier: 2, check: (s) => s.sticker >= 100 },
+            { id: 'bubble_300', name: '泡泡传奇', desc: '填充300次', icon: '✨', tier: 2, check: (s) => s.bubble >= 300 },
+            
+            // Tier 3 - Max achievements (⭐⭐⭐)
+            { id: 'coloring_50', name: '涂色宗师', desc: '涂色50次', icon: '👑', tier: 3, check: (s) => s.coloring >= 50 },
+            { id: 'tracing_50', name: '描图宗师', desc: '描图50次', icon: '🔱', tier: 3, check: (s) => s.tracing >= 50 },
+            { id: 'sticker_200', name: '贴纸大师', desc: '使用贴纸200次', icon: '🏅', tier: 3, check: (s) => s.sticker >= 200 },
+            { id: 'bubble_500', name: '泡泡之神', desc: '填充500次', icon: '🎯', tier: 3, check: (s) => s.bubble >= 500 },
+            
+            // Limited achievements (special)
+            { id: 'challenge_1', name: '初露锋芒', desc: '完成第1次每日挑战', icon: '🌱', tier: 1, limited: true, check: (s, c) => c.length >= 1 },
+            { id: 'challenge_7', name: '挑战新星', desc: '连续7天完成挑战', icon: '⭐', tier: 2, limited: true, check: (s, c) => calculateStreakFromCal(c) >= 7 },
+            { id: 'challenge_30', name: '挑战王者', desc: '连续30天完成挑战', icon: '👑', tier: 3, limited: true, check: (s, c) => calculateStreakFromCal(c) >= 30 },
+            { id: 'early_bird', name: '早起的鸟儿', desc: '在9点前完成挑战', icon: '🐦', tier: 1, limited: true, check: () => {
+                const saved = localStorage.getItem('early_bird_' + getDateStr());
+                return saved === 'true';
+            }},
+            { id: 'night_owl', name: '夜猫子', desc: '在21点后完成挑战', icon: '🦉', tier: 1, limited: true, check: () => {
+                const saved = localStorage.getItem('night_owl_' + getDateStr());
+                return saved === 'true';
+            }},
+            { id: 'streak_7', name: '坚持不懈', desc: '累计7天打卡', icon: '📆', tier: 1, limited: true, check: (s, c) => c.length >= 7 },
+            { id: 'streak_30', name: '持之以恒', desc: '累计30天打卡', icon: '🏆', tier: 2, limited: true, check: (s, c) => c.length >= 30 },
+            { id: 'weekend_warrior', name: '周末战士', desc: '连续4个周末完成挑战', icon: '⚔️', tier: 2, limited: true, check: () => countConsecutiveWeekends() >= 4 }
+        ];
+
+        // Helper function to calculate streak from calendar
+        function calculateStreakFromCal(calendar) {
+            if (!calendar || calendar.length === 0) return 0;
+            const sorted = [...calendar].sort((a, b) => new Date(b) - new Date(a));
+            const today = getDateStr();
+            const yesterday = getDateStr(new Date(Date.now() - 86400000));
+            if (sorted[0] !== today && sorted[0] !== yesterday) return 0;
+            
+            let streak = 0;
+            let checkDate = sorted[0] === today ? new Date() : new Date(Date.now() - 86400000);
+            for (let i = 0; i < 365; i++) {
+                const dateStr = getDateStr(checkDate);
+                if (sorted.includes(dateStr)) {
+                    streak++;
+                    checkDate = new Date(checkDate.getTime() - 86400000);
+                } else break;
+            }
+            return streak;
+        }
+
+        // Unlock a specific achievement
+        function unlockAchievement(id) {
+            let unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            if (unlocked.includes(id)) return;
+            
+            const ach = ACHIEVEMENTS.find(a => a.id === id);
+            if (!ach) return;
+            
+            unlocked.push(id);
+            localStorage.setItem('unlockedAchievements', JSON.stringify(unlocked));
+            showAchievementNotification(ach);
+        }
+
+        // Check and unlock achievements (updated for V9)
+        function checkAchievements() {
+            const stats = loadStats();
+            const calendar = getChallengeCalendar();
+            let unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            let changed = false;
+            
+            ACHIEVEMENTS.forEach(ach => {
+                if (!unlocked.includes(ach.id)) {
+                    let isUnlocked = false;
+                    if (ach.limited) {
+                        // Limited achievements use calendar-aware check
+                        isUnlocked = ach.check(stats, calendar);
+                    } else {
+                        isUnlocked = ach.check(stats);
+                    }
+                    if (isUnlocked) {
+                        unlocked.push(ach.id);
+                        changed = true;
+                        showAchievementNotification(ach);
+                    }
+                }
+            });
+            
+            if (changed) {
+                localStorage.setItem('unlockedAchievements', JSON.stringify(unlocked));
+            }
+        }
+
+        // Show achievement popup (updated for V9 with tier stars)
+        function showAchievementNotification(ach) {
+            const stars = '⭐'.repeat(ach.tier || 1);
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#FFF9DB,#FFE066);border:4px solid #495057;border-radius:20px;padding:24px;text-align:center;z-index:5000;box-shadow:8px 8px 0 #495057;animation:popIn 0.5s ease-out;';
+            overlay.innerHTML = `
+                <div style="font-size:3rem;margin-bottom:10px;">${ach.icon}</div>
+                <div style="font-size:1.2rem;font-weight:bold;color:#495057;margin-bottom:8px;">🎉 成就解锁!</div>
+                <div style="font-size:1.1rem;font-weight:bold;color:#40C057;">${ach.name}</div>
+                <div style="font-size:0.9rem;color:#868e96;margin-top:4px;">${ach.desc}</div>
+                <div style="font-size:1.2rem;margin-top:8px;">${stars}</div>
+            `;
+            document.body.appendChild(overlay);
+            showCelebration();
+            playSound && playSound(playSaveSuccess);
+            setTimeout(() => {
+                overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => overlay.remove(), 300);
+            }, 2500);
+        }
+
+        // Render achievements grid (updated for V9 with tier stars)
+        function renderAchievements() {
+            const stats = loadStats();
+            const unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+            
+            ACHIEVEMENTS.forEach(ach => {
+                const isUnlocked = unlocked.includes(ach.id);
+                const tierStars = ach.tier ? '⭐'.repeat(ach.tier) : '';
+                const div = document.createElement('div');
+                div.className = `achievement-badge ${isUnlocked ? 'unlocked' : 'locked'}`;
+                div.innerHTML = `
+                    <div class="achievement-icon">${isUnlocked ? ach.icon : '🔒'}</div>
+                    <div class="achievement-name">${ach.name}${isUnlocked && tierStars ? `<span class="achievement-tier">${tierStars}</span>` : ''}</div>
+                    <div class="achievement-desc">${isUnlocked ? ach.desc : '???'}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
 
         // Load stats from localStorage
         function loadStats() {
@@ -4824,16 +5804,19 @@
         // Track sticker use
         function trackStickerUse() {
             incrementStat('sticker');
+            checkDailyChallenge('sticker');
         }
 
         // Track tracing
         function trackTracing() {
             incrementStat('tracing');
+            checkDailyChallenge('tracing');
         }
 
         // Track coloring
         function trackColoring() {
             incrementStat('coloring');
+            checkDailyChallenge('coloring');
         }
 
         // Track save
@@ -4841,41 +5824,84 @@
             incrementStat('save');
         }
 
-        // Check and unlock achievements
-        function checkAchievements() {
-            const stats = loadStats();
-            let unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
-            let changed = false;
-            
-            ACHIEVEMENTS.forEach(ach => {
-                if (!unlocked.includes(ach.id) && ach.check(stats)) {
-                    unlocked.push(ach.id);
-                    changed = true;
-                    showAchievementNotification(ach);
-                }
-            });
-            
-            if (changed) {
-                localStorage.setItem('unlockedAchievements', JSON.stringify(unlocked));
-            }
+        // Track drawing
+        function trackDrawing() {
+            incrementStat('drawing');
+            checkDailyChallenge('drawing');
         }
 
-        // Show achievement popup
-        function showAchievementNotification(ach) {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#FFF9DB,#FFE066);border:4px solid #495057;border-radius:20px;padding:24px;text-align:center;z-index:5000;box-shadow:8px 8px 0 #495057;animation:popIn 0.5s ease-out;';
-            overlay.innerHTML = `
-                <div style="font-size:3rem;margin-bottom:10px;">${ach.icon}</div>
-                <div style="font-size:1.2rem;font-weight:bold;color:#495057;margin-bottom:8px;">🎉 成就解锁!</div>
-                <div style="font-size:1.1rem;font-weight:bold;color:#40C057;">${ach.name}</div>
-                <div style="font-size:0.9rem;color:#868e96;margin-top:4px;">${ach.desc}</div>
-            `;
-            document.body.appendChild(overlay);
-            playSound && playSound(playSaveSuccess);
-            setTimeout(() => {
-                overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
-                setTimeout(() => overlay.remove(), 300);
-            }, 2500);
+        // Track bubble use
+        function trackBubbleUse() {
+            incrementStat('bubble');
+            checkDailyChallenge('bubble');
+        }
+
+        // Load stats from localStorage
+        function loadStats() {
+            try {
+                const saved = localStorage.getItem('drawingBoardStats');
+                if (saved) {
+                    return { ...DEFAULT_STATS, ...JSON.parse(saved) };
+                }
+            } catch (e) {}
+            return { ...DEFAULT_STATS };
+        }
+
+        // Save stats to localStorage
+        function saveStats(stats) {
+            try {
+                localStorage.setItem('drawingBoardStats', JSON.stringify(stats));
+            } catch (e) {}
+        }
+
+        // Get today's date string
+        function getTodayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // Update a stat count
+        function incrementStat(statName) {
+            const stats = loadStats();
+            stats[statName] = (stats[statName] || 0) + 1;
+            stats.lastDate = getTodayStr();
+            saveStats(stats);
+            checkAchievements();
+        }
+
+        // Track bubble/fill usage
+        function trackBubbleUse() {
+            incrementStat('bubble');
+            checkDailyChallenge('bubble');
+        }
+
+        // Track drawing
+        function trackDrawing() {
+            incrementStat('drawing');
+            checkDailyChallenge('drawing');
+        }
+
+        // Track sticker use
+        function trackStickerUse() {
+            incrementStat('sticker');
+            checkDailyChallenge('sticker');
+        }
+
+        // Track tracing
+        function trackTracing() {
+            incrementStat('tracing');
+            checkDailyChallenge('tracing');
+        }
+
+        // Track coloring
+        function trackColoring() {
+            incrementStat('coloring');
+            checkDailyChallenge('coloring');
+        }
+
+        // Track save
+        function trackSave() {
+            incrementStat('save');
         }
 
         // Open stats overlay
@@ -4897,7 +5923,7 @@
         function switchStatsTab(tab) {
             document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             if (tab === 'stats') {
                 document.getElementById('statsPanel').style.display = 'block';
                 document.getElementById('achievementsPanel').style.display = 'none';
@@ -4918,26 +5944,6 @@
             document.getElementById('statColoring').textContent = stats.coloring;
             document.getElementById('statSave').textContent = stats.save;
             document.getElementById('statDate').textContent = stats.lastDate || '-';
-        }
-
-        // Render achievements grid
-        function renderAchievements() {
-            const stats = loadStats();
-            const unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
-            const grid = document.getElementById('achievementsGrid');
-            grid.innerHTML = '';
-            
-            ACHIEVEMENTS.forEach(ach => {
-                const isUnlocked = unlocked.includes(ach.id);
-                const div = document.createElement('div');
-                div.className = `achievement-badge ${isUnlocked ? 'unlocked' : 'locked'}`;
-                div.innerHTML = `
-                    <div class="achievement-icon">${isUnlocked ? ach.icon : '🔒'}</div>
-                    <div class="achievement-name">${ach.name}</div>
-                    <div class="achievement-desc">${isUnlocked ? ach.desc : '???'}</div>
-                `;
-                grid.appendChild(div);
-            });
         }
 
         // ===== Gallery Feature =====
@@ -5161,6 +6167,7 @@
             initEventListeners();
             initColoringGame();
             initStatsButton();
+            initChallengeButton();
             initGalleryButton();
 
             const ctx = drawingCanvas.getContext('2d');
@@ -5178,6 +6185,16 @@
         // Init stats button
         function initStatsButton() {
             document.getElementById('statsBtn').addEventListener('click', openStats);
+        }
+
+        // Init challenge button
+        function initChallengeButton() {
+            document.getElementById('challengeBtn').addEventListener('click', openChallengePanel);
+            document.getElementById('challengeCloseBtn').addEventListener('click', closeChallengePanel);
+            // Generate or restore daily challenge on load
+            generateDailyChallenge();
+            // Update unread dot
+            updateUnreadDot();
         }
 
         // Init gallery button
