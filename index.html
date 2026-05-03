@@ -1167,7 +1167,7 @@
         function saveUndoState() {
             const ctx = drawingCanvas.getContext('2d');
             const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
-            undoStack.push({ type: 'canvas', data: imageData });
+            undoStack.push(imageData);
             redoStack = [];
             if (undoStack.length > 50) undoStack.shift();
         }
