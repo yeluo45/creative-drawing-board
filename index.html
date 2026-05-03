@@ -82,6 +82,42 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        .stats-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .stats-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .gallery-btn {
+            background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .gallery-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         .bubbles-btn:active, .coloring-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0 #495057;
@@ -150,6 +186,99 @@
             height: 100%;
             z-index: 4;
             pointer-events: none;
+        }
+
+        /* P1: Stamp layer for DOM-based editable stamps */
+        #stampLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        #stampLayer .stamp-wrapper {
+            position: absolute;
+            pointer-events: auto;
+            cursor: move;
+            transform-origin: center center;
+        }
+
+        #stampLayer .stamp-wrapper.selected {
+            outline: 3px dashed #4DABF7;
+            outline-offset: 4px;
+        }
+
+        #stampLayer .stamp-wrapper svg {
+            display: block;
+            width: 60px;
+            height: 60px;
+        }
+
+        #stampLayer .stamp-controls {
+            position: absolute;
+            top: -44px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            padding: 4px 6px;
+            box-shadow: 2px 2px 0 #495057;
+            white-space: nowrap;
+            pointer-events: auto;
+        }
+
+        #stampLayer .stamp-ctrl-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: transform 0.1s;
+        }
+
+        #stampLayer .stamp-ctrl-btn:active {
+            transform: scale(0.95);
+        }
+
+        #stampLayer .stamp-ctrl-btn.delete-btn {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        #stampLayer .stamp-ctrl-btn.scale-up-btn {
+            background: #69DB7C;
+            color: white;
+        }
+
+        #stampLayer .stamp-ctrl-btn.scale-down-btn {
+            background: #74C0FC;
+            color: white;
+        }
+
+        #stampLayer .stamp-ctrl-btn.rotate-btn {
+            background: #FFE066;
+        }
+
+        #stampLayer .stamp-ctrl-btn.front-btn {
+            background: #B197FC;
+            color: white;
+        }
+
+        #stampLayer .stamp-ctrl-btn.back-btn {
+            background: #F783AC;
+            color: white;
         }
 
         #bubbleCanvas {
@@ -362,6 +491,175 @@
             color: white;
         }
 
+        /* Gallery Overlay */
+        #galleryOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #galleryOverlay.active {
+            display: flex;
+        }
+
+        .gallery-header {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 80px);
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .gallery-item {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item .delete-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+
+        .gallery-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .gallery-empty {
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .gallery-close {
+            margin-top: 16px;
+            padding: 12px 32px;
+            border-radius: 12px;
+            border: 3px solid #495057;
+            background: #74C0FC;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
+        .gallery-close:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Full Image View Overlay */
+        #fullImageOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fullImageOverlay.active {
+            display: flex;
+        }
+
+        #fullImageOverlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 4px solid white;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        #fullImageOverlay .close-full {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            background: #FF6B6B;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fullImageOverlay .download-full {
+            position: absolute;
+            bottom: 20px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 3px solid #495057;
+            background: #69DB7C;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
         /* Complete Overlay */
         #completeOverlay {
             display: none;
@@ -555,14 +853,6 @@
             100% { transform: scale(1); }
         }
 
-        .stamp {
-            position: absolute;
-            pointer-events: auto;
-            cursor: move;
-            animation: bounceIn 0.3s ease-out;
-            transform-origin: center center;
-        }
-
         /* Backgrounds */
         .bg-white { background: #FFFFFF; }
         .bg-sky { background: linear-gradient(180deg, #74C0FC 0%, #A5D8FF 100%); }
@@ -595,6 +885,183 @@
             background: linear-gradient(180deg, #1A1A2E 0%, #E5997F 40%, #FFA94D 70%, #FFE066 100%);
             background-color: #FFE066;
         }
+
+        /* Stats & Achievements Overlay */
+        #statsOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #statsOverlay.active {
+            display: flex;
+        }
+
+        .stats-container {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .stats-header {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border-bottom: 3px solid #495057;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .stats-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-tabs {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .stats-tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: white;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            color: #868e96;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .stats-tab.active {
+            color: #40C057;
+            border-bottom-color: #40C057;
+        }
+
+        .stats-content {
+            padding: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 8px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 1rem;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-icon {
+            font-size: 1.2rem;
+            margin-right: 10px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .stat-row span:nth-child(2) {
+            flex: 1;
+            color: #495057;
+        }
+
+        .stat-row span:last-child {
+            font-weight: bold;
+            color: #40C057;
+            font-size: 1.1rem;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .achievement-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border: 3px solid #dee2e6;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .achievement-badge.unlocked {
+            border-color: #FFE066;
+            background: linear-gradient(180deg, #FFF9DB 0%, #FFF0AB 100%);
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .achievement-badge.locked {
+            opacity: 0.6;
+            filter: grayscale(0.8);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+
+        .achievement-name {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .achievement-badge.locked .achievement-name {
+            color: #868e96;
+        }
+
+        .achievement-desc {
+            font-size: 0.6rem;
+            color: #868e96;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .achievement-badge.unlocked .achievement-desc {
+            color: #40C057;
+        }
     </style>
 </head>
 <body>
@@ -602,8 +1069,10 @@
         <div class="header-title">Creative Drawing Board</div>
         <div class="header-btns">
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
+            <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
+            <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
         </div>
     </header>
 
@@ -614,7 +1083,10 @@
         <canvas id="fillCanvas"></canvas>
         <canvas id="stampCanvas"></canvas>
         <canvas id="bubbleCanvas"></canvas>
-        
+
+        <!-- P1: DOM container for placed stamps (editable) -->
+        <div id="stampLayer"></div>
+
         <!-- Stamp Panel -->
         <div class="panel" id="stampPanel">
             <button class="panel-close" onclick="closeAllPanels()">×</button>
@@ -699,12 +1171,55 @@
         </div>
     </div>
 
+    <!-- Gallery Overlay -->
+    <div id="galleryOverlay">
+        <div class="gallery-header">🖼️ 我的画廊</div>
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div class="gallery-empty" id="galleryEmpty" style="display:none;">还没有保存的画作，快去画画吧！</div>
+        <button class="gallery-close" onclick="closeGallery()">关闭</button>
+    </div>
+
+    <!-- Full Image View Overlay -->
+    <div id="fullImageOverlay">
+        <button class="close-full" onclick="closeFullImage()">×</button>
+        <img id="fullImage" src="" alt="Full drawing">
+        <button class="download-full" onclick="downloadFullImage()">💾 下载</button>
+    </div>
+
     <!-- Complete Overlay -->
     <div id="completeOverlay">
         <div class="complete-box">
             <div class="complete-stars">⭐🌟⭐🌟⭐</div>
             <div class="complete-text">太棒了!</div>
             <button class="coloring-btn done-btn" onclick="closeComplete()">继续</button>
+        </div>
+    </div>
+
+    <!-- Stats & Achievements Overlay -->
+    <div id="statsOverlay">
+        <div class="stats-container">
+            <div class="stats-header">
+                <div class="stats-title">📊 学习记录</div>
+                <button class="stats-close" onclick="closeStats()">×</button>
+            </div>
+            <div class="stats-tabs">
+                <button class="stats-tab active" onclick="switchStatsTab('stats')">统计</button>
+                <button class="stats-tab" onclick="switchStatsTab('achievements')">成就</button>
+            </div>
+            <div class="stats-content" id="statsContent">
+                <div id="statsPanel" class="stats-panel">
+                    <div class="stat-row"><span class="stat-icon">✏️</span><span>涂鸦次数</span><span id="statDrawing">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">🎨</span><span>贴纸使用</span><span id="statSticker">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">🪣</span><span>填充次数</span><span id="statBubble">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">📝</span><span>描图次数</span><span id="statTracing">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">🖌️</span><span>涂色次数</span><span id="statColoring">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">💾</span><span>保存次数</span><span id="statSave">0</span></div>
+                    <div class="stat-row"><span class="stat-icon">📅</span><span>最后日期</span><span id="statDate">-</span></div>
+                </div>
+                <div id="achievementsPanel" class="achievements-panel" style="display:none;">
+                    <div class="achievements-grid" id="achievementsGrid"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1172,8 +1687,9 @@
 
         // V2 State
         let stamps = [];
-        let selectedStamp = null;
+        let selectedStamp = null; // selected stamp type from panel
         let placedStamps = [];
+        let selectedPlacedStamp = null; // P1: currently selected placed stamp for editing
         let currentTracing = -1;
         let tracingVisible = true;
         let currentBackground = 'white';
@@ -1605,6 +2121,11 @@
 
             if (currentTool === 'brush' || currentTool === 'eraser') {
                 saveUndoState();
+                trackDrawing();
+            }
+
+            if (currentTool === 'tracing' && currentTracing >= 0) {
+                trackTracing();
             }
         }
 
@@ -1706,6 +2227,7 @@
 
             ctx.putImageData(imageData, offsetX * dpr, offsetY * dpr);
             playSound(playFillComplete);
+            trackBubbleUse();
         }
 
         // ===== M1: Stamps =====
@@ -1728,58 +2250,282 @@
             stampBtn.classList.add('selected');
         }
 
+        // ===== P1: DOM-based Stamp Editing =====
+
+        // Get stamp layer element
+        function getStampLayer() {
+            return document.getElementById('stampLayer');
+        }
+
+        // Create a stamp wrapper DOM element
+        function createStampElement(stamp) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'stamp-wrapper';
+            wrapper.dataset.stampId = stamp.id;
+            wrapper.innerHTML = stamp.svg;
+
+            // Apply transform via CSS
+            updateStampElementTransform(wrapper, stamp);
+
+            // Mousedown to start drag or select
+            wrapper.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('stamp-ctrl-btn')) return;
+                e.stopPropagation();
+
+                // Select this stamp
+                selectPlacedStamp(stamp);
+
+                // Start dragging
+                isDraggingStamp = true;
+                dragStamp = stamp;
+                const rect = wrapper.getBoundingClientRect();
+                dragOffsetX = e.clientX - rect.left;
+                dragOffsetY = e.clientY - rect.top;
+            });
+
+            // Touch support
+            wrapper.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('stamp-ctrl-btn')) return;
+                e.stopPropagation();
+
+                selectPlacedStamp(stamp);
+
+                isDraggingStamp = true;
+                dragStamp = stamp;
+                const touch = e.touches[0];
+                const rect = wrapper.getBoundingClientRect();
+                dragOffsetX = touch.clientX - rect.left;
+                dragOffsetY = touch.clientY - rect.top;
+            }, { passive: true });
+
+            return wrapper;
+        }
+
+        // Update a stamp wrapper's CSS transform
+        function updateStampElementTransform(wrapper, stamp) {
+            const size = 60 * stamp.scale;
+            wrapper.style.width = size + 'px';
+            wrapper.style.height = size + 'px';
+            wrapper.style.left = stamp.x + 'px';
+            wrapper.style.top = stamp.y + 'px';
+            wrapper.style.transform = `rotate(${stamp.rotation || 0}deg)`;
+        }
+
+        // Place a new stamp at x, y
         function placeStamp(x, y) {
             if (!selectedStamp) return;
-            
+
             const stamp = {
                 id: Date.now(),
                 type: selectedStamp.id,
                 svg: selectedStamp.svg,
                 x: x - 30,
                 y: y - 30,
-                scale: 1
+                scale: 1,
+                rotation: 0
             };
-            
+
             placedStamps.push(stamp);
-            renderStamps();
+
+            // Create DOM element
+            const layer = getStampLayer();
+            const wrapper = createStampElement(stamp);
+            layer.appendChild(wrapper);
+
+            // Select this new stamp
+            selectPlacedStamp(stamp);
+
             saveUndoState();
+            playSound(playStampPlace);
         }
 
+        // Render all placed stamps as DOM elements
         function renderStamps() {
-            const ctx = stampCanvas.getContext('2d');
-            const rect = canvasContainer.getBoundingClientRect();
-            ctx.clearRect(0, 0, rect.width, rect.height);
+            const layer = getStampLayer();
+            layer.innerHTML = '';
 
             placedStamps.forEach(stamp => {
-                const img = new Image();
-                const svgBlob = new Blob([stamp.svg], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(svgBlob);
-                
-                img.onload = () => {
-                    ctx.drawImage(img, stamp.x, stamp.y, 60 * stamp.scale, 60 * stamp.scale);
-                    URL.revokeObjectURL(url);
-                };
-                img.src = url;
+                const wrapper = createStampElement(stamp);
+                if (stamp === selectedPlacedStamp) {
+                    wrapper.classList.add('selected');
+                    appendControls(wrapper, stamp);
+                }
+                layer.appendChild(wrapper);
             });
         }
 
+        // Append control buttons to a stamp wrapper
+        function appendControls(wrapper, stamp) {
+            const controls = document.createElement('div');
+            controls.className = 'stamp-controls';
+
+            controls.innerHTML = `
+                <button class="stamp-ctrl-btn scale-up-btn" title="Scale Up">＋</button>
+                <button class="stamp-ctrl-btn scale-down-btn" title="Scale Down">－</button>
+                <button class="stamp-ctrl-btn rotate-btn" title="Rotate">↻</button>
+                <button class="stamp-ctrl-btn front-btn" title="Bring to Front">⬆</button>
+                <button class="stamp-ctrl-btn back-btn" title="Send to Back">⬇</button>
+                <button class="stamp-ctrl-btn delete-btn" title="Delete">×</button>
+            `;
+
+            // Delete
+            controls.querySelector('.delete-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                deleteStamp(stamp);
+            });
+
+            // Scale up
+            controls.querySelector('.scale-up-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                stampScaleUp(stamp);
+            });
+
+            // Scale down
+            controls.querySelector('.scale-down-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                stampScaleDown(stamp);
+            });
+
+            // Rotate
+            controls.querySelector('.rotate-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                stampRotate(stamp);
+            });
+
+            // Bring to front
+            controls.querySelector('.front-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                stampBringToFront(stamp);
+            });
+
+            // Send to back
+            controls.querySelector('.back-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                stampSendToBack(stamp);
+            });
+
+            wrapper.appendChild(controls);
+        }
+
+        // Select a placed stamp
+        function selectPlacedStamp(stamp) {
+            selectedPlacedStamp = stamp;
+            renderStamps();
+        }
+
+        // Deselect all stamps
+        function deselectAllStamps() {
+            selectedPlacedStamp = null;
+            renderStamps();
+        }
+
+        // Check if a point hits any stamp (reverse order for top-most first)
         function checkStampHit(x, y) {
             for (let i = placedStamps.length - 1; i >= 0; i--) {
                 const stamp = placedStamps[i];
-                if (x >= stamp.x && x <= stamp.x + 60 && y >= stamp.y && y <= stamp.y + 60) {
+                const size = 60 * stamp.scale;
+                if (x >= stamp.x && x <= stamp.x + size && y >= stamp.y && y <= stamp.y + size) {
                     return stamp;
                 }
             }
             return null;
         }
 
+        // Delete a stamp
         function deleteStamp(stamp) {
             const idx = placedStamps.indexOf(stamp);
             if (idx >= 0) {
                 placedStamps.splice(idx, 1);
+                if (selectedPlacedStamp === stamp) {
+                    selectedPlacedStamp = null;
+                }
                 renderStamps();
                 saveUndoState();
                 playSound(playStampRemove);
+            }
+        }
+
+        // Scale up
+        function stampScaleUp(stamp) {
+            stamp.scale = Math.min(stamp.scale + 0.25, 5);
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Scale down
+        function stampScaleDown(stamp) {
+            stamp.scale = Math.max(stamp.scale - 0.25, 0.25);
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Rotate
+        function stampRotate(stamp) {
+            stamp.rotation = (stamp.rotation || 0) + 45;
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Bring to front
+        function stampBringToFront(stamp) {
+            const idx = placedStamps.indexOf(stamp);
+            if (idx >= 0 && idx < placedStamps.length - 1) {
+                placedStamps.splice(idx, 1);
+                placedStamps.push(stamp);
+                renderStamps();
+                saveUndoState();
+            }
+        }
+
+        // Send to back
+        function stampSendToBack(stamp) {
+            const idx = placedStamps.indexOf(stamp);
+            if (idx > 0) {
+                placedStamps.splice(idx, 1);
+                placedStamps.unshift(stamp);
+                renderStamps();
+                saveUndoState();
+            }
+        }
+
+        // Update stamp dragging
+        function updateStampDrag(e) {
+            if (!isDraggingStamp || !dragStamp) return;
+
+            const rect = canvasContainer.getBoundingClientRect();
+            let clientX, clientY;
+
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            dragStamp.x = x - dragOffsetX;
+            dragStamp.y = y - dragOffsetY;
+
+            // Update only the wrapper's position without re-rendering everything
+            const wrapper = getStampLayer().querySelector(`[data-stamp-id="${dragStamp.id}"]`);
+            if (wrapper) {
+                const size = 60 * dragStamp.scale;
+                wrapper.style.left = dragStamp.x + 'px';
+                wrapper.style.top = dragStamp.y + 'px';
+            }
+        }
+
+        // Stop stamp dragging
+        function stopStampDrag() {
+            if (isDraggingStamp) {
+                isDraggingStamp = false;
+                if (dragStamp) {
+                    saveUndoState();
+                }
+                dragStamp = null;
             }
         }
 
@@ -2003,6 +2749,7 @@
                     region.color = currentColor;
                     renderColoringPage();
                     playSound(playBtnClick);
+                    trackColoring();
                     break;
                 }
             }
@@ -2286,6 +3033,7 @@
             link.href = tempCanvas.toDataURL();
             link.click();
             playSound(playSaveSuccess);
+            trackSave();
         }
 
         // Event listeners
@@ -2301,48 +3049,29 @@
             drawingCanvas.addEventListener('touchmove', draw, { passive: false });
             drawingCanvas.addEventListener('touchend', stopDrawing);
             
-            // Stamp placement on canvas click
+            // Stamp dragging (now DOM-based, handled in wrappers but need global move/up)
+            document.addEventListener('mousemove', updateStampDrag);
+            document.addEventListener('mouseup', stopStampDrag);
+            document.addEventListener('touchmove', updateStampDrag, { passive: true });
+            document.addEventListener('touchend', stopStampDrag);
+
+            // Click on empty canvas area to deselect stamps
             drawingCanvas.addEventListener('click', (e) => {
                 if (currentTool === 'stamp' && selectedStamp) {
                     const rect = drawingCanvas.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
                     placeStamp(x, y);
+                } else if (currentTool !== 'stamp') {
+                    deselectAllStamps();
                 }
             });
 
-            // Stamp dragging
-            stampCanvas.addEventListener('mousedown', (e) => {
-                const rect = stampCanvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const hit = checkStampHit(x, y);
-                if (hit) {
-                    if (currentTool === 'eraser') {
-                        deleteStamp(hit);
-                    } else {
-                        dragStamp = hit;
-                        isDraggingStamp = true;
-                        dragOffsetX = x - hit.x;
-                        dragOffsetY = y - hit.y;
-                    }
-                }
-            });
-
-            stampCanvas.addEventListener('mousemove', (e) => {
-                if (isDraggingStamp && dragStamp) {
-                    const rect = stampCanvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    dragStamp.x = x - dragOffsetX;
-                    dragStamp.y = y - dragOffsetY;
-                    renderStamps();
-                }
-            });
-
-            stampCanvas.addEventListener('mouseup', () => {
-                isDraggingStamp = false;
-                dragStamp = null;
+            // Also handle clicks on other canvases to deselect
+            [fillCanvas, tracingCanvas].forEach(canvas => {
+                canvas.addEventListener('click', () => {
+                    deselectAllStamps();
+                });
             });
 
             // Bubble canvas click
@@ -2377,6 +3106,405 @@
             ctx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
         }
 
+        // ===== Learning Record System (P0) =====
+        
+        // Stats data structure
+        const DEFAULT_STATS = {
+            drawing: 0,
+            sticker: 0,
+            bubble: 0,
+            tracing: 0,
+            coloring: 0,
+            save: 0,
+            lastDate: null
+        };
+
+        // Achievements definitions (12 total)
+        const ACHIEVEMENTS = [
+            { id: 'first_draw', name: '初次涂鸦', desc: '完成第一次涂鸦', icon: '✏️', check: (s) => s.drawing >= 1 },
+            { id: 'coloring_5', name: '小画家', desc: '涂色5次', icon: '🖌️', check: (s) => s.coloring >= 5 },
+            { id: 'coloring_20', name: '涂色大师', desc: '涂色20次', icon: '🎨', check: (s) => s.coloring >= 20 },
+            { id: 'tracing_5', name: '描图新手', desc: '描图5次', icon: '📝', check: (s) => s.tracing >= 5 },
+            { id: 'tracing_20', name: '描图高手', desc: '描图20次', icon: '🏆', check: (s) => s.tracing >= 20 },
+            { id: 'sticker_50', name: '贴纸迷', desc: '使用贴纸50次', icon: '🌟', check: (s) => s.sticker >= 50 },
+            { id: 'sticker_200', name: '贴纸达人', desc: '使用贴纸200次', icon: '💫', check: (s) => s.sticker >= 200 },
+            { id: 'bubble_100', name: '泡泡王子/公主', desc: '填充100次', icon: '🫧', check: (s) => s.bubble >= 100 },
+            { id: 'save_10', name: '保存达人', desc: '保存10次', icon: '💾', check: (s) => s.save >= 10 },
+            { id: 'week_streak', name: '连续7天', desc: '连续7天使用应用', icon: '📅', check: (s) => s.weekStreak >= 7 },
+            { id: 'all_stickers', name: '集齐贴纸', desc: '使用所有类型贴纸', icon: '🎯', check: (s) => s.allStickers },
+            { id: 'explorer', name: '探索者', desc: '使用所有工具', icon: '🔍', check: (s) => s.explorer }
+        ];
+
+        // Load stats from localStorage
+        function loadStats() {
+            try {
+                const saved = localStorage.getItem('drawingBoardStats');
+                if (saved) {
+                    return { ...DEFAULT_STATS, ...JSON.parse(saved) };
+                }
+            } catch (e) {}
+            return { ...DEFAULT_STATS };
+        }
+
+        // Save stats to localStorage
+        function saveStats(stats) {
+            try {
+                localStorage.setItem('drawingBoardStats', JSON.stringify(stats));
+            } catch (e) {}
+        }
+
+        // Get today's date string
+        function getTodayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // Update a stat count
+        function incrementStat(statName) {
+            const stats = loadStats();
+            stats[statName] = (stats[statName] || 0) + 1;
+            stats.lastDate = getTodayStr();
+            saveStats(stats);
+            checkAchievements();
+        }
+
+        // Track bubble/fill usage
+        function trackBubbleUse() {
+            incrementStat('bubble');
+        }
+
+        // Track drawing
+        function trackDrawing() {
+            incrementStat('drawing');
+        }
+
+        // Track sticker use
+        function trackStickerUse() {
+            incrementStat('sticker');
+        }
+
+        // Track tracing
+        function trackTracing() {
+            incrementStat('tracing');
+        }
+
+        // Track coloring
+        function trackColoring() {
+            incrementStat('coloring');
+        }
+
+        // Track save
+        function trackSave() {
+            incrementStat('save');
+        }
+
+        // Check and unlock achievements
+        function checkAchievements() {
+            const stats = loadStats();
+            let unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            let changed = false;
+            
+            ACHIEVEMENTS.forEach(ach => {
+                if (!unlocked.includes(ach.id) && ach.check(stats)) {
+                    unlocked.push(ach.id);
+                    changed = true;
+                    showAchievementNotification(ach);
+                }
+            });
+            
+            if (changed) {
+                localStorage.setItem('unlockedAchievements', JSON.stringify(unlocked));
+            }
+        }
+
+        // Show achievement popup
+        function showAchievementNotification(ach) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,#FFF9DB,#FFE066);border:4px solid #495057;border-radius:20px;padding:24px;text-align:center;z-index:5000;box-shadow:8px 8px 0 #495057;animation:popIn 0.5s ease-out;';
+            overlay.innerHTML = `
+                <div style="font-size:3rem;margin-bottom:10px;">${ach.icon}</div>
+                <div style="font-size:1.2rem;font-weight:bold;color:#495057;margin-bottom:8px;">🎉 成就解锁!</div>
+                <div style="font-size:1.1rem;font-weight:bold;color:#40C057;">${ach.name}</div>
+                <div style="font-size:0.9rem;color:#868e96;margin-top:4px;">${ach.desc}</div>
+            `;
+            document.body.appendChild(overlay);
+            playSound && playSound(playSaveSuccess);
+            setTimeout(() => {
+                overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => overlay.remove(), 300);
+            }, 2500);
+        }
+
+        // Open stats overlay
+        function openStats() {
+            initAudio && initAudio();
+            playSound && playSound(playBtnClick);
+            updateStatsDisplay();
+            renderAchievements();
+            document.getElementById('statsOverlay').classList.add('active');
+        }
+
+        // Close stats overlay
+        function closeStats() {
+            document.getElementById('statsOverlay').classList.remove('active');
+            playSound && playSound(playBtnClick);
+        }
+
+        // Switch between stats and achievements tabs
+        function switchStatsTab(tab) {
+            document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'stats') {
+                document.getElementById('statsPanel').style.display = 'block';
+                document.getElementById('achievementsPanel').style.display = 'none';
+            } else {
+                document.getElementById('statsPanel').style.display = 'none';
+                document.getElementById('achievementsPanel').style.display = 'block';
+                renderAchievements();
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            const stats = loadStats();
+            document.getElementById('statDrawing').textContent = stats.drawing;
+            document.getElementById('statSticker').textContent = stats.sticker;
+            document.getElementById('statBubble').textContent = stats.bubble;
+            document.getElementById('statTracing').textContent = stats.tracing;
+            document.getElementById('statColoring').textContent = stats.coloring;
+            document.getElementById('statSave').textContent = stats.save;
+            document.getElementById('statDate').textContent = stats.lastDate || '-';
+        }
+
+        // Render achievements grid
+        function renderAchievements() {
+            const stats = loadStats();
+            const unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+            
+            ACHIEVEMENTS.forEach(ach => {
+                const isUnlocked = unlocked.includes(ach.id);
+                const div = document.createElement('div');
+                div.className = `achievement-badge ${isUnlocked ? 'unlocked' : 'locked'}`;
+                div.innerHTML = `
+                    <div class="achievement-icon">${isUnlocked ? ach.icon : '🔒'}</div>
+                    <div class="achievement-name">${ach.name}</div>
+                    <div class="achievement-desc">${isUnlocked ? ach.desc : '???'}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // ===== Gallery Feature =====
+        const MAX_GALLERY_ITEMS = 10;
+        const MAX_THUMBNAIL_SIZE = 50 * 1024; // 50KB
+        const GALLERY_STORAGE_KEY = 'drawing_board_gallery';
+
+        // Compress image to stay within size limit
+        function compressToDataURL(canvas, maxSizeBytes) {
+            let quality = 0.9;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            while (dataUrl.length > maxSizeBytes && quality > 0.1) {
+                quality -= 0.1;
+                dataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            
+            // If still too large, reduce dimensions
+            if (dataUrl.length > maxSizeBytes) {
+                const tempCanvas = document.createElement('canvas');
+                const scale = Math.sqrt(maxSizeBytes / dataUrl.length);
+                tempCanvas.width = canvas.width * scale;
+                tempCanvas.height = canvas.height * scale;
+                const ctx = tempCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+                return tempCanvas.toDataURL('image/jpeg', 0.7);
+            }
+            
+            return dataUrl;
+        }
+
+        // Get full canvas composite for saving
+        function getFullCanvasData() {
+            const tempCanvas = document.createElement('canvas');
+            const rect = canvasContainer.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            tempCanvas.width = rect.width * dpr;
+            tempCanvas.height = rect.height * dpr;
+            const ctx = tempCanvas.getContext('2d');
+            
+            // Fill background color
+            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
+                            currentBackground === 'sky' ? '#A5D8FF' :
+                            currentBackground === 'grass' ? '#69DB7C' :
+                            currentBackground === 'beach' ? '#FFE066' :
+                            currentBackground === 'night' ? '#1A1A2E' :
+                            currentBackground === 'space' ? '#0d0d1a' :
+                            currentBackground === 'underwater' ? '#A5D8FF' :
+                            currentBackground === 'forest' ? '#69DB7C' :
+                            currentBackground === 'sunset' ? '#FFE066' : '#FFFFFF';
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            ctx.drawImage(bgCanvas, 0, 0);
+            ctx.drawImage(drawingCanvas, 0, 0);
+            ctx.drawImage(stampCanvas, 0, 0);
+            
+            return tempCanvas;
+        }
+
+        // Create thumbnail (compressed, max 50KB)
+        function createThumbnail() {
+            const fullCanvas = getFullCanvasData();
+            return compressToDataURL(fullCanvas, MAX_THUMBNAIL_SIZE);
+        }
+
+        // Load gallery from localStorage
+        function loadGallery() {
+            const saved = localStorage.getItem(GALLERY_STORAGE_KEY);
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    return [];
+                }
+            }
+            return [];
+        }
+
+        // Save gallery to localStorage
+        function saveGallery(gallery) {
+            localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(gallery));
+        }
+
+        // Add current drawing to gallery
+        function addToGallery() {
+            const gallery = loadGallery();
+            const thumbnail = createThumbnail();
+            const fullData = getFullCanvasData().toDataURL('image/png');
+            
+            const newItem = {
+                id: Date.now(),
+                thumbnail: thumbnail,
+                fullImage: fullData,
+                timestamp: new Date().toLocaleString('zh-CN')
+            };
+            
+            gallery.unshift(newItem);
+            
+            // Keep only last 10
+            if (gallery.length > MAX_GALLERY_ITEMS) {
+                gallery.pop();
+            }
+            
+            saveGallery(gallery);
+            playSound(playSaveSuccess);
+        }
+
+        // Auto-save drawing when leaving (on page unload)
+        function autoSaveToGallery() {
+            // Only save if there's actual drawing content
+            const ctx = drawingCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            const hasContent = imageData.data.some((val, i) => i % 4 !== 3 && val !== 255);
+            
+            if (hasContent) {
+                addToGallery();
+            }
+        }
+
+        // Open gallery
+        function openGallery() {
+            initAudio();
+            playSound(playBtnClick);
+            renderGallery();
+            document.getElementById('galleryOverlay').classList.add('active');
+        }
+
+        // Close gallery
+        function closeGallery() {
+            document.getElementById('galleryOverlay').classList.remove('active');
+            playSound(playBtnClick);
+        }
+
+        // Render gallery items
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            const empty = document.getElementById('galleryEmpty');
+            const gallery = loadGallery();
+            
+            grid.innerHTML = '';
+            
+            if (gallery.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            
+            gallery.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                
+                const img = document.createElement('img');
+                img.src = item.thumbnail;
+                img.alt = 'Drawing';
+                
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.innerHTML = '×';
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteFromGallery(item.id);
+                };
+                
+                div.appendChild(img);
+                div.appendChild(delBtn);
+                
+                div.addEventListener('click', () => viewFullImage(item));
+                
+                grid.appendChild(div);
+            });
+        }
+
+        // Delete from gallery
+        function deleteFromGallery(id) {
+            const gallery = loadGallery();
+            const newGallery = gallery.filter(item => item.id !== id);
+            saveGallery(newGallery);
+            renderGallery();
+            playSound(playStampRemove);
+        }
+
+        // View full size image
+        let currentFullImage = null;
+
+        function viewFullImage(item) {
+            currentFullImage = item;
+            document.getElementById('fullImage').src = item.fullImage;
+            document.getElementById('fullImageOverlay').classList.add('active');
+            playSound(playBtnClick);
+        }
+
+        // Close full image view
+        function closeFullImage() {
+            document.getElementById('fullImageOverlay').classList.remove('active');
+            currentFullImage = null;
+            playSound(playBtnClick);
+        }
+
+        // Download full image
+        function downloadFullImage() {
+            if (!currentFullImage) return;
+            
+            const link = document.createElement('a');
+            link.download = `drawing_${currentFullImage.id}.png`;
+            link.href = currentFullImage.fullImage;
+            link.click();
+            playSound(playSaveSuccess);
+        }
+
         // Initialize
         function init() {
             loadSoundPreference(); // V3: Load sound preference from localStorage
@@ -2388,11 +3516,29 @@
             resizeCanvas();
             initEventListeners();
             initColoringGame();
-            
+            initStatsButton();
+            initGalleryButton();
+
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, rect.width, rect.height);
+
+            // Check achievements on load
+            checkAchievements();
+
+            // Auto-save to gallery on page unload
+            window.addEventListener('beforeunload', autoSaveToGallery);
+        }
+
+        // Init stats button
+        function initStatsButton() {
+            document.getElementById('statsBtn').addEventListener('click', openStats);
+        }
+
+        // Init gallery button
+        function initGalleryButton() {
+            document.getElementById('galleryBtn').addEventListener('click', openGallery);
         }
 
         init();
