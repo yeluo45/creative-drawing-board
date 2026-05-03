@@ -526,6 +526,241 @@
             justify-content: center;
         }
 
+        /* V7: Custom Sticker Drawing Panel */
+        #customStickerPanel {
+            width: 260px;
+            max-height: 380px;
+        }
+
+        .custom-sticker-title {
+            text-align: center;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .custom-sticker-canvas-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        #customStickerCanvas {
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+        }
+
+        .custom-sticker-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .custom-sticker-tool-btn {
+            padding: 4px 10px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .custom-sticker-tool-btn.selected {
+            background: #FFE066;
+        }
+
+        .custom-sticker-tool-btn:hover {
+            background: #FFE066;
+        }
+
+        .custom-sticker-brush-size {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .custom-sticker-brush-size input[type="range"] {
+            width: 80px;
+        }
+
+        .custom-sticker-colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .custom-sticker-color-btn {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #495057;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .custom-sticker-color-btn.selected {
+            box-shadow: 0 0 0 3px #74C0FC;
+        }
+
+        .custom-sticker-bg-btns {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .custom-sticker-bg-btn {
+            padding: 4px 8px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+
+        .custom-sticker-bg-btn.selected {
+            background: #FFE066;
+        }
+
+        .custom-sticker-bg-btn.transparent-bg {
+            background: repeating-conic-gradient(#ccc 0% 25%, white 0% 50%) 50% / 10px 10px;
+        }
+
+        .custom-sticker-bg-btn.colored-bg {
+            position: relative;
+        }
+
+        .custom-sticker-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .custom-sticker-save-btn {
+            padding: 6px 16px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .custom-sticker-clear-btn {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #FF6B6B 0%, #fa5252 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .custom-sticker-limit-msg {
+            text-align: center;
+            color: #FF6B6B;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        /* V7: Stamp Panel Category Tabs */
+        .stamp-category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .stamp-category-tab {
+            padding: 3px 8px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .stamp-category-tab.active {
+            background: #FFE066;
+        }
+
+        .stamp-category-tab:hover {
+            background: #FFE066;
+        }
+
+        /* V7: Custom sticker item in panel */
+        .panel-item.custom-sticker-item {
+            position: relative;
+        }
+
+        .panel-item.custom-sticker-item:hover .custom-sticker-delete {
+            opacity: 1;
+        }
+
+        .custom-sticker-delete {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 5;
+        }
+
+        /* V7: Selected placed stamp editing controls */
+        .stamp-edit-controls {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 4px;
+        }
+
+        .stamp-edit-btn {
+            padding: 3px 8px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .stamp-edit-btn:hover {
+            background: #FFE066;
+        }
+
         /* Tracing Panel */
         #tracingPanel .panel-grid {
             grid-template-columns: repeat(4, 70px);
@@ -1601,7 +1836,37 @@
         <!-- Stamp Panel -->
         <div class="panel" id="stampPanel">
             <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="stamp-category-tabs" id="stampCategoryTabs"></div>
             <div class="panel-grid" id="stampGrid"></div>
+        </div>
+
+        <!-- Custom Sticker Drawing Panel (V7) -->
+        <div class="panel" id="customStickerPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="custom-sticker-title">✏️ 自制贴纸</div>
+            <div class="custom-sticker-canvas-wrap">
+                <canvas id="customStickerCanvas" width="200" height="200"></canvas>
+            </div>
+            <div class="custom-sticker-tools">
+                <button class="custom-sticker-tool-btn selected" id="csBrushBtn">画笔</button>
+                <button class="custom-sticker-tool-btn" id="csEraserBtn">橡皮</button>
+            </div>
+            <div class="custom-sticker-brush-size">
+                <span>粗细:</span>
+                <input type="range" id="csBrushSize" min="1" max="20" value="4">
+                <span id="csBrushSizeLabel">4</span>
+            </div>
+            <div class="custom-sticker-colors" id="csColorPalette"></div>
+            <div class="custom-sticker-bg-btns">
+                <button class="custom-sticker-bg-btn selected" id="csBgWhite">白底</button>
+                <button class="custom-sticker-bg-btn transparent-bg" id="csBgTransparent">透明</button>
+                <button class="custom-sticker-bg-btn colored-bg" id="csBgColored" style="background:#74C0FC;">彩底</button>
+            </div>
+            <div class="custom-sticker-actions">
+                <button class="custom-sticker-clear-btn" id="csClearBtn">清空</button>
+                <button class="custom-sticker-save-btn" id="csSaveBtn">保存贴纸</button>
+            </div>
+            <div class="custom-sticker-limit-msg" id="csLimitMsg" style="display:none;">已达到最大数量(20个)，请删除旧贴纸</div>
         </div>
         
         <!-- Tracing Panel -->
@@ -1643,6 +1908,10 @@
         <button class="tool-btn stamp-btn" id="stampBtn">
             <span class="tool-icon">🎨</span>
             <span>Sticker</span>
+        </button>
+        <button class="tool-btn" id="customStickerBtn" title="Custom Sticker">
+            <span class="tool-icon">📐</span>
+            <span>My Sticker</span>
         </button>
         <button class="tool-btn fill-btn" id="fillBtn">
             <span class="tool-icon">🪣</span>
@@ -3789,6 +4058,7 @@
             fillBtn.classList.toggle('selected', tool === 'fill');
             tracingBtn.classList.toggle('selected', tool === 'tracing');
             bgBtn.classList.toggle('selected', tool === 'bg');
+            document.getElementById('customStickerBtn').classList.toggle('selected', tool === 'customSticker');
             
             closeAllPanels();
             
@@ -5280,6 +5550,755 @@
 
         // Event listener for print button
         document.getElementById('printBtn').addEventListener('click', printDrawing);
+
+        // ===== V7: Custom Sticker Creation =====
+
+        // State
+        let customStickers = []; // Array of {id, svg, isCustom, createdAt}
+        let csCurrentColor = '#495057';
+        let csCurrentTool = 'brush';
+        let csBrushSize = 4;
+        let csBgType = 'white'; // 'white' | 'transparent' | 'colored'
+        let csIsDrawing = false;
+        let csLastX = 0;
+        let csLastY = 0;
+        let editingCustomStickerId = null; // Non-null when editing existing sticker
+
+        // Stamp panel category
+        const STAMP_CATEGORIES = [
+            { id: 'animals', name: '动物' },
+            { id: 'nature', name: '自然' },
+            { id: 'food', name: '食物' },
+            { id: 'transport', name: '交通' },
+            { id: 'weather', name: '天气' },
+            { id: 'celebration', name: '节日' },
+            { id: 'emotion', name: '情绪' },
+            { id: 'custom', name: '我的贴纸' }
+        ];
+
+        const STAMP_CATEGORY_MAP = {
+            'animals': ['cat', 'dog', 'fish', 'bird', 'butterfly', 'rabbit', 'bear', 'frog'],
+            'nature': ['flower', 'tree', 'sun', 'moon', 'star', 'cloud', 'rainbow', 'leaf'],
+            'food': ['apple', 'orange', 'watermelon', 'corn', 'donut', 'pizza', 'cake', 'carrot'],
+            'transport': ['car', 'rocket', 'helicopter', 'train', 'truck', 'ship', 'airplane', 'bus'],
+            'weather': ['sun', 'moon', 'cloud', 'rain', 'snow', 'wind', 'lightning', 'rainbow'],
+            'celebration': ['star', 'gift', 'balloon', 'cake', 'firework', 'bell', 'candy', 'ribbon'],
+            'emotion': ['happy', 'love', 'surprised', 'sleepy', 'sick', 'angry', 'cool', 'laugh'],
+            'custom': []
+        };
+
+        // Load custom stickers from localStorage
+        function loadCustomStickers() {
+            try {
+                const saved = localStorage.getItem('custom_stickers');
+                if (saved) {
+                    customStickers = JSON.parse(saved);
+                }
+            } catch (e) {
+                customStickers = [];
+            }
+        }
+
+        // Save custom stickers to localStorage
+        function saveCustomStickersToStorage() {
+            localStorage.setItem('custom_stickers', JSON.stringify(customStickers));
+        }
+
+        // Initialize custom sticker panel
+        function initCustomStickerPanel() {
+            const palette = document.getElementById('csColorPalette');
+            palette.innerHTML = '';
+            COLORS.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'custom-sticker-color-btn';
+                btn.style.background = c.hex;
+                btn.dataset.color = c.hex;
+                if (c.hex === csCurrentColor) btn.classList.add('selected');
+                btn.addEventListener('click', () => {
+                    csCurrentColor = c.hex;
+                    document.querySelectorAll('.custom-sticker-color-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                });
+                palette.appendChild(btn);
+            });
+
+            // Tool buttons
+            document.getElementById('csBrushBtn').addEventListener('click', () => {
+                csCurrentTool = 'brush';
+                document.getElementById('csBrushBtn').classList.add('selected');
+                document.getElementById('csEraserBtn').classList.remove('selected');
+            });
+            document.getElementById('csEraserBtn').addEventListener('click', () => {
+                csCurrentTool = 'eraser';
+                document.getElementById('csEraserBtn').classList.add('selected');
+                document.getElementById('csBrushBtn').classList.remove('selected');
+            });
+
+            // Brush size
+            const brushSizeInput = document.getElementById('csBrushSize');
+            brushSizeInput.addEventListener('input', () => {
+                csBrushSize = parseInt(brushSizeInput.value);
+                document.getElementById('csBrushSizeLabel').textContent = csBrushSize;
+            });
+
+            // Background buttons
+            document.getElementById('csBgWhite').addEventListener('click', () => {
+                csBgType = 'white';
+                document.querySelectorAll('.custom-sticker-bg-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('csBgWhite').classList.add('selected');
+                updateCustomStickerCanvasBg();
+            });
+            document.getElementById('csBgTransparent').addEventListener('click', () => {
+                csBgType = 'transparent';
+                document.querySelectorAll('.custom-sticker-bg-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('csBgTransparent').classList.add('selected');
+                updateCustomStickerCanvasBg();
+            });
+            document.getElementById('csBgColored').addEventListener('click', () => {
+                csBgType = 'colored';
+                document.querySelectorAll('.custom-sticker-bg-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('csBgColored').classList.add('selected');
+                updateCustomStickerCanvasBg();
+            });
+
+            // Clear button
+            document.getElementById('csClearBtn').addEventListener('click', clearCustomStickerCanvas);
+
+            // Save button
+            document.getElementById('csSaveBtn').addEventListener('click', saveCustomSticker);
+
+            // Drawing events
+            const canvas = document.getElementById('customStickerCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.addEventListener('mousedown', startCsDrawing);
+            canvas.addEventListener('mousemove', drawCs);
+            canvas.addEventListener('mouseup', stopCsDrawing);
+            canvas.addEventListener('mouseleave', stopCsDrawing);
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startCsDrawing(e.touches[0]); }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); drawCs(e.touches[0]); }, { passive: false });
+            canvas.addEventListener('touchend', stopCsDrawing);
+
+            updateCustomStickerCanvasBg();
+        }
+
+        function updateCustomStickerCanvasBg() {
+            const canvas = document.getElementById('customStickerCanvas');
+            const ctx = canvas.getContext('2d');
+            if (csBgType === 'white') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, 200, 200);
+            } else if (csBgType === 'transparent') {
+                ctx.clearRect(0, 0, 200, 200);
+            } else if (csBgType === 'colored') {
+                ctx.fillStyle = '#74C0FC';
+                ctx.fillRect(0, 0, 200, 200);
+            }
+        }
+
+        function startCsDrawing(e) {
+            csIsDrawing = true;
+            const rect = document.getElementById('customStickerCanvas').getBoundingClientRect();
+            csLastX = e.clientX - rect.left;
+            csLastY = e.clientY - rect.top;
+        }
+
+        function drawCs(e) {
+            if (!csIsDrawing) return;
+            const canvas = document.getElementById('customStickerCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(csLastX, csLastY);
+            ctx.lineTo(x, y);
+
+            if (csCurrentTool === 'eraser') {
+                ctx.strokeStyle = csBgType === 'transparent' ? 'rgba(0,0,0,0)' : (csBgType === 'colored' ? '#74C0FC' : '#FFFFFF');
+                ctx.lineWidth = csBrushSize * 2;
+                ctx.globalCompositeOperation = 'destination-out';
+            } else {
+                ctx.strokeStyle = csCurrentColor;
+                ctx.lineWidth = csBrushSize;
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            csLastX = x;
+            csLastY = y;
+        }
+
+        function stopCsDrawing() {
+            csIsDrawing = false;
+        }
+
+        function clearCustomStickerCanvas() {
+            editingCustomStickerId = null;
+            updateCustomStickerCanvasBg();
+        }
+
+        // Convert custom sticker canvas to SVG
+        function canvasToSVG(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, 200, 200);
+            const data = imageData.data;
+            let paths = '';
+
+            // Group pixels by color for efficient SVG
+            const colorMap = {};
+
+            for (let y = 0; y < 200; y++) {
+                for (let x = 0; x < 200; x++) {
+                    const idx = (y * 200 + x) * 4;
+                    const r = data[idx];
+                    const g = data[idx + 1];
+                    const b = data[idx + 2];
+                    const a = data[idx + 3];
+
+                    if (a > 128) {
+                        const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+                        if (!colorMap[hex]) colorMap[hex] = [];
+                        colorMap[hex].push({ x, y });
+                    }
+                }
+            }
+
+            // For simplicity, draw each pixel as a small rect (sparse representation)
+            // Group contiguous runs for efficiency
+            for (const [color, points] of Object.entries(colorMap)) {
+                if (points.length === 0) continue;
+                // Simple approach: draw as a path combining all points
+                // For many points, we simplify by drawing lines between adjacent points
+                let pathData = '';
+                points.sort((a, b) => a.y - b.y || a.x - b.x);
+
+                // Draw as small filled circles for each point (simplified approach)
+                // For better quality, use actual path aggregation
+                // Here we use circles at low density for rendering clarity
+                const step = Math.max(1, Math.floor(Math.sqrt(points.length / 500)));
+                for (let i = 0; i < points.length; i += step) {
+                    const p = points[i];
+                    pathData += `M${p.x},${p.y}m-1,0a1,1,0,1,0,2,0a1,1,0,1,0,-2,0`;
+                }
+
+                if (pathData) {
+                    paths += `<path d="${pathData}" fill="${color}" />`;
+                }
+            }
+
+            return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+        }
+
+        // Better SVG conversion using actual strokes
+        function canvasToSVGV2(canvas) {
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, 200, 200);
+            const data = imageData.data;
+            const bgColor = csBgType === 'transparent' ? null : (csBgType === 'colored' ? '#74C0FC' : '#FFFFFF');
+
+            // Build a simple SVG by rendering the image as a base64 data URL
+            // This is more accurate but larger - we use it as fallback
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 200;
+            tempCanvas.height = 200;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            if (bgColor) {
+                tempCtx.fillStyle = bgColor;
+                tempCtx.fillRect(0, 0, 200, 200);
+            }
+            tempCtx.drawImage(canvas, 0, 0);
+
+            const dataURL = tempCanvas.toDataURL('image/png');
+            return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><image href="${dataURL}" width="200" height="200"/></svg>`;
+        }
+
+        // Save custom sticker
+        function saveCustomSticker() {
+            const canvas = document.getElementById('customStickerCanvas');
+
+            // Check limit
+            if (customStickers.length >= 20 && !editingCustomStickerId) {
+                document.getElementById('csLimitMsg').style.display = 'block';
+                return;
+            }
+            document.getElementById('csLimitMsg').style.display = 'none';
+
+            const svgContent = canvasToSVGV2(canvas);
+            const now = Date.now();
+
+            if (editingCustomStickerId) {
+                // Update existing
+                const idx = customStickers.findIndex(s => s.id === editingCustomStickerId);
+                if (idx >= 0) {
+                    customStickers[idx].svg = svgContent;
+                    customStickers[idx].createdAt = now;
+                }
+                // Also update placed stamps with this custom sticker
+                placedStamps.forEach(stamp => {
+                    if (stamp.id === editingCustomStickerId) {
+                        stamp.svg = svgContent;
+                    }
+                });
+                editingCustomStickerId = null;
+            } else {
+                // Create new
+                const newSticker = {
+                    id: 'custom_' + now,
+                    svg: svgContent,
+                    isCustom: true,
+                    createdAt: now
+                };
+                customStickers.push(newSticker);
+
+                // Auto-place on canvas center
+                const rect = canvasContainer.getBoundingClientRect();
+                const placedStamp = {
+                    id: newSticker.id,
+                    type: newSticker.id,
+                    svg: newSticker.svg,
+                    x: rect.width / 2 - 40,
+                    y: rect.height / 2 - 40,
+                    scale: 1.33,
+                    rotation: 0,
+                    isCustom: true
+                };
+                placedStamps.push(placedStamp);
+                renderStamps();
+            }
+
+            saveCustomStickersToStorage();
+            closeAllPanels();
+
+            // Refresh stamp panel if open
+            if (document.getElementById('stampPanel').classList.contains('active')) {
+                renderStampPanelByCategory(currentStampCategory || 'animals');
+            }
+
+            playSound(playStampPlace);
+        }
+
+        // Initialize stamp category tabs
+        function initStampCategoryTabs() {
+            const tabsContainer = document.getElementById('stampCategoryTabs');
+            tabsContainer.innerHTML = '';
+
+            STAMP_CATEGORIES.forEach(cat => {
+                const tab = document.createElement('button');
+                tab.className = 'stamp-category-tab';
+                tab.textContent = cat.name;
+                tab.dataset.category = cat.id;
+
+                // Hide custom tab if no custom stickers
+                if (cat.id === 'custom' && customStickers.length === 0) {
+                    tab.style.display = 'none';
+                }
+
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.stamp-category-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderStampPanelByCategory(cat.id);
+                });
+                tabsContainer.appendChild(tab);
+            });
+
+            // Activate first tab by default
+            const firstTab = tabsContainer.querySelector('.stamp-category-tab');
+            if (firstTab) {
+                firstTab.classList.add('active');
+                renderStampPanelByCategory(firstTab.dataset.category);
+            }
+        }
+
+        let currentStampCategory = 'animals';
+
+        // Render stamp panel by category
+        function renderStampPanelByCategory(category) {
+            currentStampCategory = category;
+            const grid = document.getElementById('stampGrid');
+            grid.innerHTML = '';
+
+            const ids = STAMP_CATEGORY_MAP[category] || [];
+
+            if (category === 'custom') {
+                // Show custom stickers
+                customStickers.forEach(sticker => {
+                    const item = document.createElement('div');
+                    item.className = 'panel-item custom-sticker-item';
+
+                    // Create a container for the SVG
+                    const svgContainer = document.createElement('div');
+                    svgContainer.innerHTML = sticker.svg;
+                    svgContainer.style.width = '40px';
+                    svgContainer.style.height = '40px';
+                    svgContainer.style.display = 'flex';
+                    svgContainer.style.alignItems = 'center';
+                    svgContainer.style.justifyContent = 'center';
+
+                    const svg = svgContainer.querySelector('svg');
+                    if (svg) {
+                        svg.style.width = '40px';
+                        svg.style.height = '40px';
+                    }
+
+                    item.appendChild(svgContainer);
+
+                    // Delete button
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'custom-sticker-delete';
+                    delBtn.textContent = '×';
+                    delBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteCustomSticker(sticker.id);
+                    });
+                    item.appendChild(delBtn);
+
+                    item.addEventListener('click', () => selectStamp(sticker));
+                    grid.appendChild(item);
+                });
+            } else {
+                ids.forEach(id => {
+                    const stamp = STAMPS.find(s => s.id === id);
+                    if (stamp) {
+                        const item = document.createElement('div');
+                        item.className = 'panel-item';
+                        item.innerHTML = stamp.svg;
+                        item.title = stamp.name;
+                        item.addEventListener('click', () => selectStamp(stamp));
+                        grid.appendChild(item);
+                    }
+                });
+            }
+        }
+
+        // Delete custom sticker
+        function deleteCustomSticker(stickerId) {
+            // Remove from customStickers
+            customStickers = customStickers.filter(s => s.id !== stickerId);
+            saveCustomStickersToStorage();
+
+            // Remove from placedStamps
+            for (let i = placedStamps.length - 1; i >= 0; i--) {
+                if (placedStamps[i].id === stickerId) {
+                    placedStamps.splice(i, 1);
+                }
+            }
+
+            // Deselect if selected
+            if (selectedPlacedStamp && selectedPlacedStamp.id === stickerId) {
+                selectedPlacedStamp = null;
+            }
+
+            renderStamps();
+
+            // Refresh panel
+            initStampCategoryTabs();
+            const activeTab = document.querySelector('.stamp-category-tab.active');
+            if (activeTab) {
+                renderStampPanelByCategory(activeTab.dataset.category);
+            }
+
+            playSound(playStampRemove);
+        }
+
+        // Open custom sticker drawing panel for editing
+        function openCustomStickerEditor(stamp) {
+            if (!stamp.isCustom) return;
+
+            editingCustomStickerId = stamp.id;
+            closeAllPanels();
+
+            // Load the SVG into the custom sticker canvas
+            const canvas = document.getElementById('customStickerCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            updateCustomStickerCanvasBg();
+
+            // Load SVG as image and draw onto canvas
+            const svgBlob = new Blob([stamp.svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 200, 200);
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+
+            // Show custom sticker panel
+            document.getElementById('customStickerPanel').classList.add('active');
+        }
+
+        // Open custom sticker panel
+        function openCustomStickerPanel() {
+            closeAllPanels();
+            editingCustomStickerId = null;
+            updateCustomStickerCanvasBg();
+            document.getElementById('customStickerPanel').classList.add('active');
+
+            // Check limit
+            if (customStickers.length >= 20) {
+                document.getElementById('csLimitMsg').style.display = 'block';
+            } else {
+                document.getElementById('csLimitMsg').style.display = 'none';
+            }
+        }
+
+        // Color replacement for placed stamp
+        function recolorStamp(stamp, newColor) {
+            if (!stamp || !stamp.svg) return;
+
+            // Simple color replacement in SVG
+            // Find the primary color in the SVG and replace it
+            let svg = stamp.svg;
+
+            // Extract all fill colors from SVG
+            const fillMatches = svg.match(/fill="(#[A-Fa-f0-9]{6})"/g) || [];
+            const colors = [...new Set(fillMatches.map(m => m.match(/fill="(#[A-Fa-f0-9]{6})"/)[1]))];
+
+            if (colors.length > 0) {
+                // Replace the most prominent (first) color
+                const primaryColor = colors[0];
+                svg = svg.split(primaryColor).join(newColor);
+                stamp.svg = svg;
+            }
+
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Flip stamp horizontally
+        function flipStampHorizontal(stamp) {
+            if (!stamp) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = stamp.svg;
+            const svg = wrapper.querySelector('svg');
+            if (!svg) return;
+
+            // Add transform to flip
+            const viewBox = svg.getAttribute('viewBox') || '0 0 100 100';
+            const parts = viewBox.split(' ');
+            const w = parseInt(parts[2]) || 100;
+            const transform = svg.getAttribute('transform') || '';
+
+            svg.setAttribute('transform', `translate(${w},0) scale(-1,1) ${transform}`.trim());
+            stamp.svg = wrapper.innerHTML;
+
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Flip stamp vertically
+        function flipStampVertical(stamp) {
+            if (!stamp) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = stamp.svg;
+            const svg = wrapper.querySelector('svg');
+            if (!svg) return;
+
+            const viewBox = svg.getAttribute('viewBox') || '0 0 100 100';
+            const parts = viewBox.split(' ');
+            const h = parseInt(parts[3]) || 100;
+            const transform = svg.getAttribute('transform') || '';
+
+            svg.setAttribute('transform', `translate(0,${h}) scale(1,-1) ${transform}`.trim());
+            stamp.svg = wrapper.innerHTML;
+
+            renderStamps();
+            saveUndoState();
+        }
+
+        // Update stamp panel to include custom sticker tab
+        function openStampPanel() {
+            closeAllPanels();
+            document.getElementById('stampPanel').classList.add('active');
+            initStampCategoryTabs();
+            playSound(playBtnClick);
+        }
+
+        // Update stamp controls to add V7 buttons for custom stamps
+        const originalAppendControls = appendControls;
+        appendControls = function(wrapper, stamp) {
+            originalAppendControls(wrapper, stamp);
+
+            // Add V7 edit controls for custom stamps
+            if (stamp.isCustom) {
+                const controls = wrapper.querySelector('.stamp-controls');
+                if (!controls) return;
+
+                const editDiv = document.createElement('div');
+                editDiv.className = 'stamp-edit-controls';
+
+                // Flip horizontal
+                const flipHBtn = document.createElement('button');
+                flipHBtn.className = 'stamp-edit-btn';
+                flipHBtn.textContent = '↔';
+                flipHBtn.title = '水平翻转';
+                flipHBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    flipStampHorizontal(stamp);
+                });
+
+                // Flip vertical
+                const flipVBtn = document.createElement('button');
+                flipVBtn.className = 'stamp-edit-btn';
+                flipVBtn.textContent = '↕';
+                flipVBtn.title = '垂直翻转';
+                flipVBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    flipStampVertical(stamp);
+                });
+
+                // Recolor button
+                const recolorBtn = document.createElement('button');
+                recolorBtn.className = 'stamp-edit-btn';
+                recolorBtn.textContent = '🎨';
+                recolorBtn.title = '换色';
+                recolorBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Use current selected color from palette
+                    recolorStamp(stamp, currentColor);
+                });
+
+                // Redraw button
+                const redrawBtn = document.createElement('button');
+                redrawBtn.className = 'stamp-edit-btn';
+                redrawBtn.textContent = '✏️';
+                redrawBtn.title = '重绘';
+                redrawBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openCustomStickerEditor(stamp);
+                });
+
+                editDiv.appendChild(flipHBtn);
+                editDiv.appendChild(flipVBtn);
+                editDiv.appendChild(recolorBtn);
+                editDiv.appendChild(redrawBtn);
+                controls.appendChild(editDiv);
+            }
+        };
+
+        // Color replacement button for all stamps (V7)
+        // Override selectPlacedStamp to add recolor button to all placed stamps
+        const originalSelectPlacedStamp = selectPlacedStamp;
+        selectPlacedStamp = function(stamp) {
+            originalSelectPlacedStamp(stamp);
+
+            // Add recolor button to selected stamp
+            if (stamp) {
+                const wrapper = getStampLayer().querySelector(`[data-stamp-id="${stamp.id}"]`);
+                if (wrapper) {
+                    // Remove existing edit controls if any
+                    const existingEdit = wrapper.querySelector('.stamp-edit-controls');
+                    if (existingEdit) existingEdit.remove();
+
+                    // Add new edit controls
+                    const controls = wrapper.querySelector('.stamp-controls');
+                    if (controls) {
+                        const editDiv = document.createElement('div');
+                        editDiv.className = 'stamp-edit-controls';
+
+                        // Flip horizontal
+                        const flipHBtn = document.createElement('button');
+                        flipHBtn.className = 'stamp-edit-btn';
+                        flipHBtn.textContent = '↔';
+                        flipHBtn.title = '水平翻转';
+                        flipHBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            flipStampHorizontal(stamp);
+                        });
+
+                        // Flip vertical
+                        const flipVBtn = document.createElement('button');
+                        flipVBtn.className = 'stamp-edit-btn';
+                        flipVBtn.textContent = '↕';
+                        flipVBtn.title = '垂直翻转';
+                        flipVBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            flipStampVertical(stamp);
+                        });
+
+                        // Recolor button
+                        const recolorBtn = document.createElement('button');
+                        recolorBtn.className = 'stamp-edit-btn';
+                        recolorBtn.textContent = '🎨';
+                        recolorBtn.title = '换色';
+                        recolorBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            recolorStamp(stamp, currentColor);
+                        });
+
+                        // Redraw button (only for custom stickers)
+                        if (stamp.isCustom) {
+                            const redrawBtn = document.createElement('button');
+                            redrawBtn.className = 'stamp-edit-btn';
+                            redrawBtn.textContent = '✏️';
+                            redrawBtn.title = '重绘';
+                            redrawBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                openCustomStickerEditor(stamp);
+                            });
+                            editDiv.appendChild(redrawBtn);
+                        }
+
+                        editDiv.appendChild(flipHBtn);
+                        editDiv.appendChild(flipVBtn);
+                        editDiv.appendChild(recolorBtn);
+                        controls.appendChild(editDiv);
+                    }
+                }
+            }
+        };
+
+        // Override deselectAllStamps
+        const originalDeselectAllStamps = deselectAllStamps;
+        deselectAllStamps = function() {
+            originalDeselectAllStamps();
+        };
+
+        // Initialize V7 on load
+        loadCustomStickers();
+
+        // Initialize custom sticker panel directly (init() was already called earlier)
+        if (document.getElementById('customStickerCanvas')) {
+            initCustomStickerPanel();
+        }
+
+        // Custom sticker button event
+        document.getElementById('customStickerBtn').addEventListener('click', () => {
+            initAudio();
+            playSound(playBtnClick);
+            selectTool('customSticker');
+        });
+
+        // When selectTool is called with 'customSticker', open the custom sticker panel
+        const originalSelectTool = selectTool;
+        selectTool = function(tool) {
+            originalSelectTool(tool);
+            if (tool === 'customSticker') {
+                openCustomStickerPanel();
+            }
+        };
+
+        // Override closeAllPanels to reinit stamp tabs when reopening
+        const originalCloseAllPanels = closeAllPanels;
+        closeAllPanels = function() {
+            originalCloseAllPanels();
+            // Refresh custom sticker tabs in case stickers were added/removed
+            if (customStickers.length > 0) {
+                const customTab = document.querySelector('.stamp-category-tab[data-category="custom"]');
+                if (customTab) {
+                    customTab.style.display = customStickers.length > 0 ? '' : 'none';
+                }
+            }
+        };
     </script>
 
     <!-- Print Area (hidden, used for printing) -->
