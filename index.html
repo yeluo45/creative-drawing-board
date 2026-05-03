@@ -1629,6 +1629,402 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        /* V11: Export and Share Buttons */
+        .export-btn, .share-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .export-btn:active, .share-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .share-btn {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+        }
+
+        /* Export Panel */
+        .export-panel {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 4px 4px 0 #495057;
+            z-index: 100;
+            min-width: 280px;
+        }
+
+        .export-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .export-panel-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.1s;
+            background: white;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+            text-align: left;
+        }
+
+        .export-option:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+        }
+
+        .export-option:active {
+            transform: scale(0.98);
+        }
+
+        .export-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .export-option label {
+            cursor: pointer;
+            flex: 1;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .export-title-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        .export-title-input:focus {
+            outline: none;
+            border-color: #4DABF7;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .export-action-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            font-family: inherit;
+        }
+
+        .export-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .export-save-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+
+        .export-copy-btn {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            color: #495057;
+        }
+
+        /* Share Panel */
+        .share-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 6px 6px 0 #495057;
+            z-index: 3000;
+            min-width: 300px;
+            max-width: 90vw;
+        }
+
+        .share-panel.active {
+            display: block;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .share-panel-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .share-panel-preview {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+
+        .share-panel-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .share-panel-info {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .share-panel-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+
+        .share-panel-date {
+            font-size: 0.9rem;
+            color: #868e96;
+        }
+
+        .share-panel-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .share-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            font-family: inherit;
+            background: white;
+            color: #495057;
+        }
+
+        .share-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .share-action-btn.save-btn { background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%); color: white; }
+        .share-action-btn.copy-btn { background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%); }
+        .share-action-btn.native-btn { background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%); color: white; }
+        .share-action-btn.delete-btn { background: linear-gradient(180deg, #FF6B6B 0%, #fa5252 100%); color: white; }
+
+        .share-panel-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Gallery Item Enhancements */
+        .gallery-item.selected {
+            outline: 4px solid #4DABF7;
+            outline-offset: 2px;
+        }
+
+        .gallery-item-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            flex-wrap: wrap;
+            gap: 2px;
+            padding: 2px;
+        }
+
+        .gallery-item:hover .gallery-item-actions,
+        .gallery-item.selected .gallery-item-actions {
+            display: flex;
+        }
+
+        .gallery-item-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 3px 2px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .gallery-item-btn:active {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .gallery-item-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gallery-item input.gallery-title-input {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border: none;
+            border-top: 1px solid #495057;
+            font-size: 0.65rem;
+            padding: 2px 4px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Gallery Batch Bar */
+        .gallery-batch-bar {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-batch-bar.active {
+            display: flex;
+        }
+
+        .gallery-select-all-btn {
+            padding: 8px 16px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .gallery-select-all-btn.selected {
+            background: #FFE066;
+        }
+
+        .gallery-batch-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-batch-btn {
+            padding: 8px 16px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .gallery-batch-download {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+
+        .gallery-batch-delete {
+            background: linear-gradient(180deg, #FF6B6B 0%, #fa5252 100%);
+            color: white;
+        }
+
+        /* Feedback Message */
+        .feedback-msg {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            z-index: 5000;
+            animation: fadeIn 0.2s ease-out;
+            text-align: center;
+            max-width: 90vw;
+        }
+
         /* Full Image View Overlay */
         #fullImageOverlay {
             display: none;
@@ -2756,6 +3152,8 @@
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
             <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
+            <button class="export-btn" id="exportBtn" title="Export">📥</button>
+            <button class="share-btn" id="shareBtn" title="Share">🔗</button>
             <button class="game-btn" id="gameBtn" title="Games">🧩</button>
         </div>
     </header>
@@ -3023,9 +3421,53 @@
     <!-- Gallery Overlay -->
     <div id="galleryOverlay">
         <div class="gallery-header">🖼️ 我的画廊</div>
+        <div class="gallery-batch-bar" id="galleryBatchBar">
+            <button class="gallery-select-all-btn" id="selectAllBtn" onclick="toggleSelectAll()">全选</button>
+            <div class="gallery-batch-actions">
+                <button class="gallery-batch-btn gallery-batch-download" onclick="batchDownload()">📥 批量下载</button>
+                <button class="gallery-batch-btn gallery-batch-delete" onclick="batchDelete()">🗑️ 批量删除</button>
+            </div>
+        </div>
         <div class="gallery-grid" id="galleryGrid"></div>
         <div class="gallery-empty" id="galleryEmpty" style="display:none;">还没有保存的画作，快去画画吧！</div>
         <button class="gallery-close" onclick="closeGallery()">关闭</button>
+    </div>
+
+    <!-- Export Panel (floating) -->
+    <div class="export-panel" id="exportPanel">
+        <div class="export-panel-title">📥 导出画作</div>
+        <input type="text" class="export-title-input" id="exportTitleInput" placeholder="输入作品名称（可选）" maxlength="30">
+        <div class="export-option">
+            <input type="checkbox" id="exportWatermark">
+            <label for="exportWatermark">📅 添加日期水印</label>
+        </div>
+        <div class="export-option">
+            <input type="checkbox" id="exportTitle" checked>
+            <label for="exportTitle">📝 添加作品名称</label>
+        </div>
+        <div class="export-actions">
+            <button class="export-action-btn export-save-btn" onclick="doExportSave()">💾 保存到设备</button>
+            <button class="export-action-btn export-copy-btn" onclick="doExportCopy()">📋 复制到剪贴板</button>
+        </div>
+    </div>
+
+    <!-- Share Panel -->
+    <div class="share-panel" id="sharePanel">
+        <button class="share-panel-close" onclick="closeSharePanel()">×</button>
+        <div class="share-panel-title">🔗 分享画作</div>
+        <div class="share-panel-preview">
+            <img id="sharePreview" src="" alt="Preview">
+        </div>
+        <div class="share-panel-info">
+            <div class="share-panel-name" id="sharePanelName">我的画作</div>
+            <div class="share-panel-date" id="sharePanelDate"></div>
+        </div>
+        <div class="share-panel-actions">
+            <button class="share-action-btn save-btn" onclick="shareSaveToDevice()">📥 保存到设备</button>
+            <button class="share-action-btn copy-btn" onclick="shareCopyToClipboard()">📋 复制到剪贴板</button>
+            <button class="share-action-btn native-btn" onclick="shareNative()">📱 分享到...</button>
+            <button class="share-action-btn delete-btn" onclick="shareDeleteFromGallery()">🗑️ 从画廊删除</button>
+        </div>
     </div>
 
     <!-- Full Image View Overlay -->
@@ -6536,10 +6978,11 @@
             document.getElementById('statDate').textContent = stats.lastDate || '-';
         }
 
-        // ===== Gallery Feature =====
-        const MAX_GALLERY_ITEMS = 10;
-        const MAX_THUMBNAIL_SIZE = 50 * 1024; // 50KB
-        const GALLERY_STORAGE_KEY = 'drawing_board_gallery';
+        // ===== Gallery Feature (V11) =====
+        const MAX_GALLERY_ITEMS = 20;
+        const MAX_THUMBNAIL_SIZE = 100 * 1024; // 100KB
+        const MAX_ITEM_SIZE = 100 * 1024; // 100KB per item
+        const GALLERY_STORAGE_KEY = 'gallery_items';
 
         // Compress image to stay within size limit
         function compressToDataURL(canvas, maxSizeBytes) {
@@ -6565,7 +7008,7 @@
             return dataUrl;
         }
 
-        // Get full canvas composite for saving
+        // Get full canvas composite for saving (V11: includes all layers)
         function getFullCanvasData() {
             const tempCanvas = document.createElement('canvas');
             const rect = canvasContainer.getBoundingClientRect();
@@ -6573,7 +7016,7 @@
             tempCanvas.width = rect.width * dpr;
             tempCanvas.height = rect.height * dpr;
             const ctx = tempCanvas.getContext('2d');
-            
+
             // Fill background color
             ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
                             currentBackground === 'sky' ? '#A5D8FF' :
@@ -6585,15 +7028,100 @@
                             currentBackground === 'forest' ? '#69DB7C' :
                             currentBackground === 'sunset' ? '#FFE066' : '#FFFFFF';
             ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-            
+
+            // Draw layers in order: background → main canvas → stamps → coloring → tracing
             ctx.drawImage(bgCanvas, 0, 0);
             ctx.drawImage(drawingCanvas, 0, 0);
             ctx.drawImage(stampCanvas, 0, 0);
-            
+            if (currentColoringPage) {
+                ctx.drawImage(fillCanvas, 0, 0);
+            }
+            if (currentTracingTemplate) {
+                ctx.drawImage(tracingCanvas, 0, 0);
+            }
+
             return tempCanvas;
         }
 
-        // Create thumbnail (compressed, max 50KB)
+        // Get merged canvas data for export (V11: all layers with optional watermark/title)
+        function getMergedCanvasData(options = {}) {
+            const tempCanvas = document.createElement('canvas');
+            const rect = canvasContainer.getBoundingClientRect();
+            const dpr = (window.devicePixelRatio || 1) * (options.scale || 1);
+            tempCanvas.width = rect.width * dpr;
+            tempCanvas.height = rect.height * dpr;
+            const ctx = tempCanvas.getContext('2d');
+
+            // Fill background
+            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
+                            currentBackground === 'sky' ? '#A5D8FF' :
+                            currentBackground === 'grass' ? '#69DB7C' :
+                            currentBackground === 'beach' ? '#FFE066' :
+                            currentBackground === 'night' ? '#1A1A2E' :
+                            currentBackground === 'space' ? '#0d0d1a' :
+                            currentBackground === 'underwater' ? '#A5D8FF' :
+                            currentBackground === 'forest' ? '#69DB7C' :
+                            currentBackground === 'sunset' ? '#FFE066' : '#FFFFFF';
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+            // Draw all layers
+            ctx.drawImage(bgCanvas, 0, 0);
+            ctx.drawImage(drawingCanvas, 0, 0);
+            ctx.drawImage(stampCanvas, 0, 0);
+            if (currentColoringPage) {
+                ctx.drawImage(fillCanvas, 0, 0);
+            }
+            if (currentTracingTemplate) {
+                ctx.drawImage(tracingCanvas, 0, 0);
+            }
+
+            const w = tempCanvas.width;
+            const h = tempCanvas.height;
+
+            // Add watermark (date) in bottom-right
+            if (options.watermark) {
+                const dateStr = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '年') + '日';
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.fillRect(w - 180, h - 40, 175, 35);
+                ctx.fillStyle = '#666';
+                ctx.font = `bold ${Math.round(16 * dpr)}px sans-serif`;
+                ctx.fillText(dateStr, w - 175, h - 12);
+            }
+
+            // Add title in bottom-left
+            if (options.title) {
+                const titleText = options.title.substring(0, 20);
+                ctx.font = `bold ${Math.round(18 * dpr)}px sans-serif`;
+                const titleWidth = ctx.measureText(titleText).width;
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.fillRect(10 * dpr, h - 40, titleWidth + 30 * dpr, 35);
+                ctx.fillStyle = '#333';
+                ctx.fillText(titleText, 20 * dpr, h - 12);
+            }
+
+            return tempCanvas;
+        }
+
+        // Render stamp layer to a context (for export)
+        function renderStampLayerToContext(ctx) {
+            const stampLayer = document.getElementById('stampLayer');
+            if (!stampLayer) return;
+            const stamps = stampLayer.querySelectorAll('.stamp-wrapper');
+            stamps.forEach(stamp => {
+                const svg = stamp.querySelector('svg');
+                if (svg) {
+                    const rect = stamp.getBoundingClientRect();
+                    const canvasRect = canvasContainer.getBoundingClientRect();
+                    const x = rect.left - canvasRect.left;
+                    const y = rect.top - canvasRect.top;
+                    const img = new Image();
+                    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+                    ctx.drawImage(img, x, y, rect.width, rect.height);
+                }
+            });
+        }
+
+        // Create thumbnail (compressed, max 100KB for V11)
         function createThumbnail() {
             const fullCanvas = getFullCanvasData();
             return compressToDataURL(fullCanvas, MAX_THUMBNAIL_SIZE);
@@ -6617,26 +7145,27 @@
             localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(gallery));
         }
 
-        // Add current drawing to gallery
-        function addToGallery() {
+        // Add current drawing to gallery (V11: with title/date)
+        function addToGallery(title) {
             const gallery = loadGallery();
             const thumbnail = createThumbnail();
             const fullData = getFullCanvasData().toDataURL('image/png');
-            
+
             const newItem = {
                 id: Date.now(),
                 thumbnail: thumbnail,
                 fullImage: fullData,
-                timestamp: new Date().toLocaleString('zh-CN')
+                title: title || '我的画作',
+                date: new Date().toLocaleDateString('zh-CN')
             };
-            
+
             gallery.unshift(newItem);
-            
-            // Keep only last 10
+
+            // Keep only last 20 (V11)
             if (gallery.length > MAX_GALLERY_ITEMS) {
                 gallery.pop();
             }
-            
+
             saveGallery(gallery);
             playSound(playSaveSuccess);
         }
@@ -6647,7 +7176,7 @@
             const ctx = drawingCanvas.getContext('2d');
             const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             const hasContent = imageData.data.some((val, i) => i % 4 !== 3 && val !== 255);
-            
+
             if (hasContent) {
                 addToGallery();
             }
@@ -6667,44 +7196,230 @@
             playSound(playBtnClick);
         }
 
-        // Render gallery items
+        // ===== V11: Gallery Enhancements =====
+        let selectedGalleryItems = new Set();
+
+        // Render gallery items (V11: with title, rename, jigsaw buttons, batch mode)
         function renderGallery() {
             const grid = document.getElementById('galleryGrid');
             const empty = document.getElementById('galleryEmpty');
+            const batchBar = document.getElementById('galleryBatchBar');
+            const selectAllBtn = document.getElementById('selectAllBtn');
             const gallery = loadGallery();
-            
+
             grid.innerHTML = '';
-            
+            selectedGalleryItems.clear();
+            batchBar.classList.remove('active');
+            selectAllBtn.classList.remove('selected');
+
             if (gallery.length === 0) {
                 empty.style.display = 'block';
                 return;
             }
-            
+
             empty.style.display = 'none';
-            
+
             gallery.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'gallery-item';
-                
+                div.dataset.id = item.id;
+
                 const img = document.createElement('img');
                 img.src = item.thumbnail;
-                img.alt = 'Drawing';
-                
-                const delBtn = document.createElement('button');
-                delBtn.className = 'delete-btn';
-                delBtn.innerHTML = '×';
-                delBtn.onclick = (e) => {
+                img.alt = item.title || 'Drawing';
+
+                // Title label
+                const titleLabel = document.createElement('div');
+                titleLabel.className = 'gallery-item-title';
+                titleLabel.textContent = item.title || '我的画作';
+
+                // Action buttons container
+                const actions = document.createElement('div');
+                actions.className = 'gallery-item-actions';
+
+                // Share button
+                const shareBtn = document.createElement('button');
+                shareBtn.className = 'gallery-item-btn';
+                shareBtn.textContent = '🔗';
+                shareBtn.title = '分享';
+                shareBtn.onclick = (e) => {
                     e.stopPropagation();
-                    deleteFromGallery(item.id);
+                    openSharePanel(item);
                 };
-                
+
+                // Rename button
+                const renameBtn = document.createElement('button');
+                renameBtn.className = 'gallery-item-btn';
+                renameBtn.textContent = '✏️';
+                renameBtn.title = '重命名';
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    startRename(item.id);
+                };
+
+                // Jigsaw button
+                const jigsawBtn = document.createElement('button');
+                jigsawBtn.className = 'gallery-item-btn';
+                jigsawBtn.textContent = '🧩';
+                jigsawBtn.title = '设为拼图';
+                jigsawBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    setAsJigsawImage(item);
+                };
+
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'gallery-item-btn';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.title = '删除';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    confirmDelete(item.id);
+                };
+
+                actions.appendChild(shareBtn);
+                actions.appendChild(renameBtn);
+                actions.appendChild(jigsawBtn);
+                actions.appendChild(deleteBtn);
+
                 div.appendChild(img);
-                div.appendChild(delBtn);
-                
-                div.addEventListener('click', () => viewFullImage(item));
-                
+                div.appendChild(titleLabel);
+                div.appendChild(actions);
+
+                // Click to view full image
+                div.addEventListener('click', (e) => {
+                    if (e.target === div || e.target === img || e.target === titleLabel) {
+                        viewFullImage(item);
+                    }
+                });
+
+                // Long press for selection
+                let longPressTimer;
+                div.addEventListener('touchstart', (e) => {
+                    longPressTimer = setTimeout(() => {
+                        div.classList.toggle('selected');
+                        updateBatchBar();
+                        playSound(playBtnClick);
+                    }, 500);
+                });
+                div.addEventListener('touchend', () => clearTimeout(longPressTimer));
+                div.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+
                 grid.appendChild(div);
             });
+        }
+
+        // Update batch bar visibility
+        function updateBatchBar() {
+            const batchBar = document.getElementById('galleryBatchBar');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const gallery = loadGallery();
+
+            if (selectedGalleryItems.size > 0) {
+                batchBar.classList.add('active');
+            } else {
+                batchBar.classList.remove('active');
+            }
+
+            if (selectedGalleryItems.size === gallery.length && gallery.length > 0) {
+                selectAllBtn.classList.add('selected');
+                selectAllBtn.textContent = '取消全选';
+            } else {
+                selectAllBtn.classList.remove('selected');
+                selectAllBtn.textContent = '全选';
+            }
+        }
+
+        // Toggle select all
+        function toggleSelectAll() {
+            const gallery = loadGallery();
+            const selectAllBtn = document.getElementById('selectAllBtn');
+
+            if (selectedGalleryItems.size === gallery.length) {
+                selectedGalleryItems.clear();
+                selectAllBtn.classList.remove('selected');
+                selectAllBtn.textContent = '全选';
+            } else {
+                gallery.forEach(item => selectedGalleryItems.add(item.id));
+                selectAllBtn.classList.add('selected');
+                selectAllBtn.textContent = '取消全选';
+            }
+
+            document.querySelectorAll('.gallery-item').forEach(div => {
+                const id = parseInt(div.dataset.id);
+                if (selectedGalleryItems.has(id)) {
+                    div.classList.add('selected');
+                } else {
+                    div.classList.remove('selected');
+                }
+            });
+
+            updateBatchBar();
+        }
+
+        // Batch download
+        function batchDownload() {
+            const gallery = loadGallery();
+            let delay = 0;
+            selectedGalleryItems.forEach(id => {
+                const item = gallery.find(g => g.id === id);
+                if (item) {
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.download = `创意画作_${item.title || item.id}.png`;
+                        link.href = item.fullImage;
+                        link.click();
+                    }, delay);
+                    delay += 300;
+                }
+            });
+            showFeedback(`已下载 ${selectedGalleryItems.size} 张画作`);
+        }
+
+        // Batch delete
+        function batchDelete() {
+            if (selectedGalleryItems.size === 0) return;
+            if (!confirm(`确定要删除选中的 ${selectedGalleryItems.size} 张画作吗？`)) return;
+
+            const gallery = loadGallery();
+            const newGallery = gallery.filter(item => !selectedGalleryItems.has(item.id));
+            saveGallery(newGallery);
+            selectedGalleryItems.clear();
+            renderGallery();
+            playSound(playStampRemove);
+            showFeedback(`已删除 ${selectedGalleryItems.size} 张画作`);
+        }
+
+        // Start rename (inline edit)
+        function startRename(id) {
+            const gallery = loadGallery();
+            const item = gallery.find(g => g.id === id);
+            if (!item) return;
+
+            const newTitle = prompt('请输入新的作品名称：', item.title || '');
+            if (newTitle !== null && newTitle.trim() !== '') {
+                item.title = newTitle.trim().substring(0, 30);
+                saveGallery(gallery);
+                renderGallery();
+                playSound(playBtnClick);
+            }
+        }
+
+        // Confirm delete
+        function confirmDelete(id) {
+            if (!confirm('确定要删除这张画作吗？')) return;
+            deleteFromGallery(id);
+        }
+
+        // Set gallery item as jigsaw image
+        function setAsJigsawImage(item) {
+            if (typeof jigsawImages !== 'undefined') {
+                // Add to front of jigsaw images array
+                jigsawImages.unshift(item.fullImage);
+                if (jigsawImages.length > 10) jigsawImages.pop();
+                showFeedback('已设为拼图素材！');
+                playSound(playSaveSuccess);
+            }
         }
 
         // Delete from gallery
@@ -6716,7 +7431,7 @@
             playSound(playStampRemove);
         }
 
-        // View full size image
+        // View full size image (V11: update for new data structure)
         let currentFullImage = null;
 
         function viewFullImage(item) {
@@ -6733,15 +7448,262 @@
             playSound(playBtnClick);
         }
 
-        // Download full image
+        // Download full image (V11: use title in filename)
         function downloadFullImage() {
             if (!currentFullImage) return;
-            
+
             const link = document.createElement('a');
-            link.download = `drawing_${currentFullImage.id}.png`;
+            const title = currentFullImage.title || 'drawing';
+            link.download = `创意画作_${title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_')}_${currentFullImage.id}.png`;
             link.href = currentFullImage.fullImage;
             link.click();
             playSound(playSaveSuccess);
+        }
+
+        // ===== V11: Export Functions =====
+        let currentExportItem = null;
+
+        // Toggle export panel
+        function toggleExportPanel() {
+            const panel = document.getElementById('exportPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                // Reset form
+                document.getElementById('exportTitleInput').value = '';
+                document.getElementById('exportWatermark').checked = false;
+                document.getElementById('exportTitle').checked = true;
+            }
+            playSound(playBtnClick);
+        }
+
+        // Export as PNG (V11)
+        function exportAsPNG(options = {}) {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const scale = isMobile ? 2 : 1;
+            const mergedCanvas = getMergedCanvasData({
+                scale: scale,
+                watermark: options.watermark || false,
+                title: options.title || ''
+            });
+
+            return mergedCanvas.toDataURL('image/png');
+        }
+
+        // Do export save to device
+        function doExportSave() {
+            const title = document.getElementById('exportTitleInput').value.trim();
+            const addWatermark = document.getElementById('exportWatermark').checked;
+            const addTitle = document.getElementById('exportTitle').checked && title;
+
+            const dataUrl = exportAsPNG({
+                watermark: addWatermark,
+                title: addTitle ? title : ''
+            });
+
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+            const filename = title ? `创意画作_${title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_')}_${timestamp}.png` : `创意画作_${timestamp}.png`;
+
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+
+            // Also save to gallery with title
+            addToGallery(title);
+
+            document.getElementById('exportPanel').classList.remove('active');
+            showFeedback('已保存到设备！');
+            playSound(playSaveSuccess);
+        }
+
+        // Do export copy to clipboard
+        function doExportCopy() {
+            const title = document.getElementById('exportTitleInput').value.trim();
+            const addWatermark = document.getElementById('exportWatermark').checked;
+            const addTitle = document.getElementById('exportTitle').checked && title;
+
+            const dataUrl = exportAsPNG({
+                watermark: addWatermark,
+                title: addTitle ? title : ''
+            });
+
+            // Convert dataURL to blob and copy
+            fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        const item = new ClipboardItem({ 'image/png': blob });
+                        navigator.clipboard.write([item]).then(() => {
+                            showFeedback('已复制到剪贴板！');
+                            playSound(playSaveSuccess);
+                        }).catch(() => {
+                            showFeedback('复制失败，请尝试保存到设备');
+                        });
+                    } else {
+                        showFeedback('不支持剪贴板复制');
+                    }
+                })
+                .catch(() => {
+                    showFeedback('复制失败，请尝试保存到设备');
+                });
+
+            document.getElementById('exportPanel').classList.remove('active');
+        }
+
+        // ===== V11: Share Functions =====
+        let currentShareItem = null;
+
+        // Toggle share panel
+        function toggleSharePanel() {
+            // If called without item, use current canvas drawing
+            const panel = document.getElementById('sharePanel');
+            if (!panel.classList.contains('active')) {
+                // Create temporary item from current drawing
+                const fullData = getFullCanvasData().toDataURL('image/png');
+                const thumbnail = createThumbnail();
+                currentShareItem = {
+                    id: 'temp_' + Date.now(),
+                    thumbnail: thumbnail,
+                    fullImage: fullData,
+                    title: '我的画作',
+                    date: new Date().toLocaleDateString('zh-CN')
+                };
+                updateSharePanelUI();
+            }
+            panel.classList.toggle('active');
+            playSound(playBtnClick);
+        }
+
+        // Open share panel for specific gallery item
+        function openSharePanel(item) {
+            currentShareItem = item;
+            updateSharePanelUI();
+            document.getElementById('sharePanel').classList.add('active');
+            document.getElementById('galleryOverlay').classList.remove('active');
+            playSound(playBtnClick);
+        }
+
+        // Update share panel UI
+        function updateSharePanelUI() {
+            if (!currentShareItem) return;
+            document.getElementById('sharePreview').src = currentShareItem.thumbnail || currentShareItem.fullImage;
+            document.getElementById('sharePanelName').textContent = currentShareItem.title || '我的画作';
+            document.getElementById('sharePanelDate').textContent = currentShareItem.date || '';
+        }
+
+        // Close share panel
+        function closeSharePanel() {
+            document.getElementById('sharePanel').classList.remove('active');
+            currentShareItem = null;
+            playSound(playBtnClick);
+        }
+
+        // Share: save to device
+        function shareSaveToDevice() {
+            if (!currentShareItem) return;
+
+            const link = document.createElement('a');
+            const title = currentShareItem.title || 'drawing';
+            link.download = `创意画作_${title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_')}_${currentShareItem.id}.png`;
+            link.href = currentShareItem.fullImage;
+            link.click();
+
+            showFeedback('已保存到设备！');
+            playSound(playSaveSuccess);
+        }
+
+        // Share: copy to clipboard
+        function shareCopyToClipboard() {
+            if (!currentShareItem) return;
+
+            fetch(currentShareItem.fullImage)
+                .then(res => res.blob())
+                .then(blob => {
+                    if (navigator.clipboard && navigator.clipboard.write) {
+                        const item = new ClipboardItem({ 'image/png': blob });
+                        navigator.clipboard.write([item]).then(() => {
+                            showFeedback('已复制到剪贴板！');
+                            playSound(playSaveSuccess);
+                        }).catch(() => {
+                            showFeedback('复制失败，请尝试保存到设备');
+                        });
+                    } else {
+                        showFeedback('不支持剪贴板复制');
+                    }
+                })
+                .catch(() => {
+                    showFeedback('复制失败');
+                });
+        }
+
+        // Share: native share (Web Share API)
+        function shareNative() {
+            if (!currentShareItem) return;
+
+            fetch(currentShareItem.fullImage)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], `创意画作_${currentShareItem.title || 'drawing'}.png`, { type: 'image/png' });
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: currentShareItem.title || '我的画作',
+                            text: '我在儿童创意画板画了一幅画！'
+                        }).then(() => {
+                            showFeedback('分享成功！');
+                        }).catch((err) => {
+                            if (err.name !== 'AbortError') {
+                                showFeedback('分享失败，请尝试其他方式');
+                            }
+                        });
+                    } else if (navigator.share) {
+                        // Try without files
+                        navigator.share({
+                            title: currentShareItem.title || '我的画作',
+                            text: '我在儿童创意画板画了一幅画！',
+                            url: currentShareItem.fullImage
+                        }).catch((err) => {
+                            if (err.name !== 'AbortError') {
+                                showFeedback('您的浏览器不支持分享图片');
+                            }
+                        });
+                    } else {
+                        showFeedback('您的浏览器不支持分享功能');
+                    }
+                })
+                .catch(() => {
+                    showFeedback('分享失败');
+                });
+        }
+
+        // Share: delete from gallery
+        function shareDeleteFromGallery() {
+            if (!currentShareItem) return;
+            if (!confirm('确定要删除这张画作吗？')) return;
+
+            // Only delete if it's a saved gallery item (not temp)
+            if (currentShareItem.id && !String(currentShareItem.id).startsWith('temp_')) {
+                deleteFromGallery(currentShareItem.id);
+            }
+
+            closeSharePanel();
+            showFeedback('已从画廊删除');
+        }
+
+        // Show feedback message
+        function showFeedback(msg) {
+            // Remove existing
+            const existing = document.querySelector('.feedback-msg');
+            if (existing) existing.remove();
+
+            const div = document.createElement('div');
+            div.className = 'feedback-msg';
+            div.textContent = msg;
+            document.body.appendChild(div);
+
+            setTimeout(() => div.remove(), 2500);
         }
 
         // Initialize
@@ -6759,6 +7721,8 @@
             initStatsButton();
             initChallengeButton();
             initGalleryButton();
+            initExportButton(); // V11
+            initShareButton(); // V11
 
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
@@ -6770,6 +7734,16 @@
 
             // Auto-save to gallery on page unload
             window.addEventListener('beforeunload', autoSaveToGallery);
+        }
+
+        // V11: Init export button
+        function initExportButton() {
+            document.getElementById('exportBtn').addEventListener('click', toggleExportPanel);
+        }
+
+        // V11: Init share button
+        function initShareButton() {
+            document.getElementById('shareBtn').addEventListener('click', toggleSharePanel);
         }
 
         // Init stats button
