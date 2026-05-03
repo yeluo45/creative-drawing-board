@@ -176,6 +176,491 @@
             background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
         }
 
+        .game-btn {
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .game-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Game Selection Panel */
+        .game-selection-panel {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 3px solid #495057;
+            border-radius: 20px 20px 0 0;
+            padding: 16px;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+        }
+
+        .game-selection-panel.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .game-panel-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+
+        .game-cards {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 12px;
+            width: 140px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .game-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 #495057;
+        }
+
+        .game-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 6px;
+        }
+
+        .game-card-name {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+
+        .game-card-desc {
+            font-size: 0.75rem;
+            color: #868e96;
+            margin-bottom: 8px;
+        }
+
+        .game-card-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .game-card-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Game Overlay (shared) */
+        .game-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            z-index: 500;
+            flex-direction: column;
+        }
+
+        .game-overlay.active {
+            display: flex;
+        }
+
+        .game-header {
+            height: 50px;
+            background: linear-gradient(180deg, #FF9A9E 0%, #FECFEF 100%);
+            border-bottom: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            color: #495057;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        .game-back-btn {
+            background: linear-gradient(180deg, #FF6B6B 0%, #fa5252 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .game-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Jigsaw Game */
+        .jigsaw-difficulty-panel {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+        }
+
+        .jigsaw-diff-btn {
+            padding: 6px 14px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .jigsaw-diff-btn.selected {
+            background: #FFE066;
+        }
+
+        .jigsaw-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .jigsaw-target-thumb {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            width: 80px;
+            height: 80px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 2px 2px 0 #495057;
+            z-index: 10;
+        }
+
+        .jigsaw-target-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .jigsaw-board {
+            display: grid;
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0 #495057;
+        }
+
+        .jigsaw-slot {
+            border: 1px dashed #ccc;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .jigsaw-slot.filled {
+            border: none;
+            background: transparent;
+        }
+
+        .jigsaw-slot.selected {
+            background: #FFE066;
+            box-shadow: inset 0 0 0 3px #495057;
+        }
+
+        .jigsaw-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-top: 2px solid #495057;
+            min-height: 100px;
+        }
+
+        .jigsaw-piece {
+            border: 2px solid #495057;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            background: white;
+        }
+
+        .jigsaw-piece:hover {
+            transform: scale(1.05);
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .jigsaw-piece.selected {
+            box-shadow: 0 0 0 3px #74C0FC;
+            transform: scale(1.1);
+        }
+
+        .jigsaw-timer {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            padding: 4px;
+        }
+
+        /* Dot Connect Game */
+        .dot-connect-template-panel {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+        }
+
+        .dot-template-btn {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dot-template-btn.selected {
+            background: #FFE066;
+        }
+
+        .dot-connect-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dot-canvas-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        #dotCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dot-hint-text {
+            text-align: center;
+            padding: 8px;
+            font-size: 0.95rem;
+            color: #495057;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .dot-reset-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            z-index: 10;
+        }
+
+        /* Maze Game */
+        .maze-difficulty-panel {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+        }
+
+        .maze-diff-btn {
+            padding: 6px 14px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .maze-diff-btn.selected {
+            background: #FFE066;
+        }
+
+        .maze-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .maze-canvas-wrap {
+            position: relative;
+            border: 3px solid #495057;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 4px 4px 0 #495057;
+            overflow: hidden;
+        }
+
+        #mazeCanvas {
+            display: block;
+        }
+
+        #mazeDrawCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+
+        .maze-instruction {
+            text-align: center;
+            padding: 8px;
+            font-size: 0.95rem;
+            color: #495057;
+        }
+
+        .maze-regen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            z-index: 10;
+        }
+
+        /* Game completion celebration */
+        .game-celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 24px 40px;
+            text-align: center;
+            z-index: 600;
+            box-shadow: 6px 6px 0 #495057;
+            animation: popIn 0.4s ease-out;
+            display: none;
+        }
+
+        .game-celebration.show {
+            display: block;
+        }
+
+        .celebration-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+
+        .celebration-sub {
+            font-size: 1.1rem;
+            color: #868e96;
+            margin-bottom: 16px;
+        }
+
+        .celebration-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        /* Shake animation for wrong dot */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Pulse animation for current dot */
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+
         /* Canvas Container */
         .canvas-container {
             flex: 1;
@@ -2271,6 +2756,7 @@
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
             <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
+            <button class="game-btn" id="gameBtn" title="Games">🧩</button>
         </div>
     </header>
 
@@ -2295,6 +2781,110 @@
             <div class="bubble-game-over-score" id="bubbleFinalScore">Score: 0</div>
             <div class="bubble-game-over-high" id="bubbleFinalHigh">Best: 0</div>
             <button class="bubble-continue-btn" id="bubbleContinueBtn">Continue</button>
+        </div>
+
+        <!-- V10: Game Selection Panel -->
+        <div class="game-selection-panel" id="gameSelectionPanel">
+            <div class="game-panel-title">🎮 选择游戏</div>
+            <div class="game-cards">
+                <div class="game-card" onclick="startJigsawGame()">
+                    <div class="game-card-icon">🧩</div>
+                    <div class="game-card-name">拼图</div>
+                    <div class="game-card-desc">将碎片拼成完整图片</div>
+                    <button class="game-card-btn">开始</button>
+                </div>
+                <div class="game-card" onclick="startDotConnectGame()">
+                    <div class="game-card-icon">🔗</div>
+                    <div class="game-card-name">连线游戏</div>
+                    <div class="game-card-desc">按顺序连接所有点</div>
+                    <button class="game-card-btn">开始</button>
+                </div>
+                <div class="game-card" onclick="startMazeGame()">
+                    <div class="game-card-icon">🧭</div>
+                    <div class="game-card-name">迷宫</div>
+                    <div class="game-card-desc">从起点走到终点</div>
+                    <button class="game-card-btn">开始</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- V10: Jigsaw Game Overlay -->
+        <div class="game-overlay" id="jigsawOverlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="jigsawBackBtn">← 退出</button>
+                <div class="game-title">🧩 拼图游戏</div>
+                <div></div>
+            </div>
+            <div class="game-content">
+                <div class="jigsaw-difficulty-panel">
+                    <button class="jigsaw-diff-btn selected" data-diff="3x3">3×3 简单</button>
+                    <button class="jigsaw-diff-btn" data-diff="4x3">4×3 中等</button>
+                    <button class="jigsaw-diff-btn" data-diff="4x4">4×4 困难</button>
+                </div>
+                <div class="jigsaw-area">
+                    <div class="jigsaw-timer" id="jigsawTimer">用时: 0秒</div>
+                    <div class="jigsaw-target-thumb" id="jigsawThumb"></div>
+                    <div class="jigsaw-board" id="jigsawBoard"></div>
+                </div>
+                <div class="jigsaw-pieces" id="jigsawPieces"></div>
+            </div>
+        </div>
+
+        <!-- V10: Dot Connect Game Overlay -->
+        <div class="game-overlay" id="dotConnectOverlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="dotConnectBackBtn">← 退出</button>
+                <div class="game-title">🔗 连线游戏</div>
+                <div></div>
+            </div>
+            <div class="game-content">
+                <div class="dot-connect-template-panel" id="dotTemplatePanel">
+                    <button class="dot-template-btn selected" data-template="star">小星星</button>
+                    <button class="dot-template-btn" data-template="house">小房子</button>
+                    <button class="dot-template-btn" data-template="cat">小猫</button>
+                    <button class="dot-template-btn" data-template="fish">小鱼</button>
+                    <button class="dot-template-btn" data-template="rabbit">小兔子</button>
+                    <button class="dot-template-btn" data-template="car">小汽车</button>
+                </div>
+                <div class="dot-connect-area">
+                    <div class="dot-canvas-wrap" id="dotCanvasWrap">
+                        <canvas id="dotCanvas"></canvas>
+                    </div>
+                    <div class="dot-hint-text" id="dotHintText">从 1 开始，按顺序连接所有点</div>
+                    <button class="dot-reset-btn" id="dotResetBtn">重置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- V10: Maze Game Overlay -->
+        <div class="game-overlay" id="mazeOverlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="mazeBackBtn">← 退出</button>
+                <div class="game-title">🧭 迷宫游戏</div>
+                <div></div>
+            </div>
+            <div class="game-content">
+                <div class="maze-difficulty-panel">
+                    <button class="maze-diff-btn selected" data-diff="7x7">简单 7×7</button>
+                    <button class="maze-diff-btn" data-diff="11x11">中等 11×11</button>
+                    <button class="maze-diff-btn" data-diff="15x11">困难 15×11</button>
+                </div>
+                <div class="maze-area">
+                    <div class="maze-canvas-wrap" id="mazeCanvasWrap">
+                        <canvas id="mazeCanvas"></canvas>
+                        <canvas id="mazeDrawCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="maze-instruction" id="mazeInstruction">从左上角走到右下角，避开墙壁！</div>
+                <button class="maze-regen-btn" id="mazeRegenBtn">重新生成</button>
+            </div>
+        </div>
+
+        <!-- V10: Game Celebration Popup -->
+        <div class="game-celebration" id="gameCelebration">
+            <div class="celebration-text" id="celebrationText">🎉 恭喜完成！</div>
+            <div class="celebration-sub" id="celebrationSub">用时: 0秒</div>
+            <button class="celebration-btn" onclick="closeCelebration()">再来一次</button>
         </div>
 
         <!-- P1: DOM container for placed stamps (editable) -->
@@ -7871,6 +8461,964 @@
                 }
             }
         };
+
+        // ==========================================
+        // V10: GAME MODES
+        // ==========================================
+
+        // Game States
+        const GAME_STATES = { NONE: 0, JIGSAW: 1, DOT_CONNECT: 2, MAZE: 3 };
+        let currentGame = GAME_STATES.NONE;
+
+        // ---- GAME SELECTION PANEL ----
+        document.getElementById('gameBtn').addEventListener('click', () => {
+            initAudio();
+            playSound && playSound(playBtnClick);
+            const panel = document.getElementById('gameSelectionPanel');
+            panel.classList.toggle('active');
+        });
+
+        document.getElementById('gameBtn').addEventListener('dblclick', () => {
+            // Double click closes panel if open
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('gameSelectionPanel');
+            const btn = document.getElementById('gameBtn');
+            if (panel.classList.contains('active') && 
+                !panel.contains(e.target) && 
+                e.target !== btn && 
+                !btn.contains(e.target)) {
+                panel.classList.remove('active');
+            }
+        });
+
+        // ---- JIGSAW GAME ----
+        let jigsawDifficulty = '3x3';
+        let jigsawPieces = [];
+        let jigsawBoard = [];
+        let selectedPiece = null;
+        let jigsawTimerInterval = null;
+        let jigsawStartTime = 0;
+        let jigsawImage = null;
+
+        // Preset images for jigsaw
+        const jigsawImages = [
+            'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="#FF9A9E" width="300" height="300"/><circle cx="150" cy="150" r="80" fill="#FECFEF"/><polygon points="150,70 180,130 150,110 120,130" fill="#FFD43B"/><circle cx="100" cy="100" r="20" fill="#74C0FC"/><circle cx="200" cy="100" r="20" fill="#69DB7C"/><circle cx="100" cy="200" r="20" fill="#9775FA"/><circle cx="200" cy="200" r="20" fill="#FF922B"/></svg>'),
+            'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="#74C0FC" width="300" height="300"/><rect x="50" y="100" width="200" height="150" fill="#FFE066" stroke="#495057" stroke-width="4"/><polygon points="50,100 150,40 250,100" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><rect x="120" y="170" width="60" height="80" fill="#495057"/><circle cx="160" cy="210" r="5" fill="#FFD43B"/></svg>'),
+            'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="#69DB7C" width="300" height="300"/><ellipse cx="150" cy="180" rx="100" ry="80" fill="#40C057"/><circle cx="100" cy="130" r="30" fill="#40C057"/><circle cx="200" cy="130" r="30" fill="#40C057"/><circle cx="85" cy="125" r="8" fill="#495057"/><circle cx="115" cy="125" r="8" fill="#495057"/><path d="M90,145 Q100,160 110,145" stroke="#495057" stroke-width="3" fill="none"/></svg>')
+        ];
+
+        function startJigsawGame() {
+            currentGame = GAME_STATES.JIGSAW;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('jigsawOverlay').classList.add('active');
+            initAudio();
+            playSound && playSound(playBtnClick);
+            initJigsaw();
+        }
+
+        document.getElementById('jigsawBackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
+        document.querySelectorAll('.jigsaw-diff-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.jigsaw-diff-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                jigsawDifficulty = btn.dataset.diff;
+                initAudio();
+                playSound && playSound(playBtnClick);
+                initJigsaw();
+            });
+        });
+
+        function initJigsaw() {
+            if (jigsawTimerInterval) clearInterval(jigsawTimerInterval);
+            
+            // Get difficulty settings
+            let cols, rows;
+            if (jigsawDifficulty === '3x3') { cols = 3; rows = 3; }
+            else if (jigsawDifficulty === '4x3') { cols = 4; rows = 3; }
+            else { cols = 4; rows = 4; }
+
+            // Load image
+            jigsawImage = new Image();
+            jigsawImage.crossOrigin = 'anonymous';
+            const imgIndex = Math.floor(Math.random() * jigsawImages.length);
+            jigsawImage.src = jigsawImages[imgIndex];
+
+            jigsawImage.onload = () => {
+                // Setup thumbnail
+                const thumb = document.getElementById('jigsawThumb');
+                thumb.innerHTML = '';
+                const thumbImg = jigsawImage.cloneNode();
+                thumbImg.style.width = '100%';
+                thumbImg.style.height = '100%';
+                thumb.appendChild(thumbImg);
+
+                // Calculate piece size
+                const maxBoardSize = Math.min(window.innerWidth - 40, 450);
+                const pieceW = Math.floor(maxBoardSize / cols);
+                const pieceH = Math.floor(maxBoardSize / rows);
+                const boardW = pieceW * cols;
+                const boardH = pieceH * rows;
+
+                // Setup board
+                const board = document.getElementById('jigsawBoard');
+                board.style.gridTemplateColumns = `repeat(${cols}, ${pieceW}px)`;
+                board.style.gridTemplateRows = `repeat(${rows}, ${pieceH}px)`;
+                board.innerHTML = '';
+
+                jigsawPieces = [];
+                jigsawBoard = [];
+
+                for (let r = 0; r < rows; r++) {
+                    jigsawBoard[r] = [];
+                    for (let c = 0; c < cols; c++) {
+                        const slot = document.createElement('div');
+                        slot.className = 'jigsaw-slot';
+                        slot.dataset.row = r;
+                        slot.dataset.col = c;
+                        slot.style.width = pieceW + 'px';
+                        slot.style.height = pieceH + 'px';
+                        slot.addEventListener('click', () => placePiece(r, c));
+                        board.appendChild(slot);
+                        jigsawBoard[r][c] = null;
+                    }
+                }
+
+                // Create pieces (scrambled)
+                const piecesDiv = document.getElementById('jigsawPieces');
+                piecesDiv.innerHTML = '';
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        jigsawPieces.push({ row: r, col: c });
+                    }
+                }
+
+                // Shuffle pieces
+                for (let i = jigsawPieces.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [jigsawPieces[i], jigsawPieces[j]] = [jigsawPieces[j], jigsawPieces[i]];
+                }
+
+                // Render pieces
+                jigsawPieces.forEach((piece, idx) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = pieceW;
+                    canvas.height = pieceH;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(jigsawImage, piece.col * (jigsawImage.width / cols), piece.row * (jigsawImage.height / rows), 
+                                  jigsawImage.width / cols, jigsawImage.height / rows, 0, 0, pieceW, pieceH);
+                    
+                    const div = document.createElement('div');
+                    div.className = 'jigsaw-piece';
+                    div.dataset.row = piece.row;
+                    div.dataset.col = piece.col;
+                    div.appendChild(canvas);
+                    div.style.width = pieceW + 'px';
+                    div.style.height = pieceH + 'px';
+                    div.addEventListener('click', () => selectPiece(div, piece));
+                    piecesDiv.appendChild(div);
+                });
+
+                // Start timer
+                jigsawStartTime = Date.now();
+                updateJigsawTimer();
+                jigsawTimerInterval = setInterval(updateJigsawTimer, 1000);
+            };
+        }
+
+        function updateJigsawTimer() {
+            const elapsed = Math.floor((Date.now() - jigsawStartTime) / 1000);
+            document.getElementById('jigsawTimer').textContent = `用时: ${elapsed}秒`;
+        }
+
+        function selectPiece(div, piece) {
+            document.querySelectorAll('.jigsaw-piece.selected').forEach(p => p.classList.remove('selected'));
+            document.querySelectorAll('.jigsaw-slot.selected').forEach(s => s.classList.remove('selected'));
+            div.classList.add('selected');
+            selectedPiece = piece;
+        }
+
+        function placePiece(row, col) {
+            if (!selectedPiece || jigsawBoard[row][col] !== null) return;
+            
+            // Check if correct position
+            if (selectedPiece.row === row && selectedPiece.col === col) {
+                // Correct placement
+                const slot = document.querySelector(`.jigsaw-slot[data-row="${row}"][data-col="${col}"]`);
+                const pieceDiv = document.querySelector(`.jigsaw-piece.selected`);
+                
+                if (slot && pieceDiv) {
+                    const canvas = pieceDiv.querySelector('canvas');
+                    slot.innerHTML = '';
+                    const img = canvas.cloneNode(true);
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.imageRendering = 'pixelated';
+                    slot.appendChild(img);
+                    slot.classList.add('filled');
+                    jigsawBoard[row][col] = selectedPiece;
+                    pieceDiv.remove();
+                    playSound && playSound(playBtnClick);
+                }
+                
+                selectedPiece = null;
+                document.querySelectorAll('.jigsaw-slot.selected').forEach(s => s.classList.remove('selected'));
+                
+                // Check win
+                checkJigsawWin();
+            } else {
+                // Wrong position - show shake and highlight slot
+                const slot = document.querySelector(`.jigsaw-slot[data-row="${row}"][data-col="${col}"]`);
+                if (slot) {
+                    slot.classList.add('selected');
+                    slot.classList.add('shake');
+                    setTimeout(() => slot.classList.remove('shake'), 400);
+                }
+            }
+        }
+
+        function checkJigsawWin() {
+            for (let r = 0; r < jigsawBoard.length; r++) {
+                for (let c = 0; c < jigsawBoard[r].length; c++) {
+                    if (jigsawBoard[r][c] === null) return;
+                }
+            }
+            // Win!
+            clearInterval(jigsawTimerInterval);
+            const elapsed = Math.floor((Date.now() - jigsawStartTime) / 1000);
+            
+            // Save best time
+            const bestTime = localStorage.getItem('jigsaw_best_time');
+            if (!bestTime || elapsed < parseInt(bestTime)) {
+                localStorage.setItem('jigsaw_best_time', elapsed);
+            }
+
+            playSound && playSound(playSaveSuccess);
+            showCelebration('🎉 拼图完成！', `用时: ${elapsed}秒`);
+        }
+
+        // ---- DOT CONNECT GAME ----
+        let dotCanvas, dotCtx;
+        let dotTemplate = 'star';
+        let dotIndex = 0;
+        let dotLines = [];
+        let currentDotPos = null;
+        let dotStartPos = null;
+        let dotTouching = false;
+        let dotRevealedImage = null;
+
+        // Dot templates
+        const dotTemplates = {
+            star: {
+                name: '小星星',
+                points: [
+                    {x: 0.5, y: 0.1},  // 1 - top
+                    {x: 0.6, y: 0.35}, // 2 - right upper
+                    {x: 0.9, y: 0.35}, // 3 - right
+                    {x: 0.7, y: 0.55}, // 4 - right lower
+                    {x: 0.8, y: 0.9},  // 5 - right bottom
+                    {x: 0.5, y: 0.7},  // 6 - center bottom
+                    {x: 0.2, y: 0.9},  // 7 - left bottom
+                    {x: 0.3, y: 0.55}, // 8 - left lower
+                    {x: 0.1, y: 0.35}, // 9 - left
+                    {x: 0.4, y: 0.35}  // 10 - left upper
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><polygon points="150,30 180,105 270,105 195,150 225,240 150,195 75,240 105,150 30,105 120,105" fill="#FFD43B" stroke="#495057" stroke-width="4"/></svg>')
+            },
+            house: {
+                name: '小房子',
+                points: [
+                    {x: 0.5, y: 0.1},  // 1 - roof top
+                    {x: 0.85, y: 0.45}, // 2 - right roof
+                    {x: 0.85, y: 0.9},  // 3 - right bottom
+                    {x: 0.6, y: 0.9},   // 4 - door right
+                    {x: 0.6, y: 0.65},  // 5 - door top right
+                    {x: 0.4, y: 0.65},  // 6 - door top left
+                    {x: 0.4, y: 0.9},   // 7 - door left
+                    {x: 0.15, y: 0.9},  // 8 - left bottom
+                    {x: 0.15, y: 0.45}  // 9 - left roof
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><polygon points="150,20 290,140 290,280 10,280 10,140" fill="#FF9A9E" stroke="#495057" stroke-width="4"/><rect x="120" y="195" width="60" height="85" fill="#495057"/><circle cx="165" cy="240" r="5" fill="#FFD43B"/><rect x="40" y="170" width="50" height="50" fill="#74C0FC" stroke="#495057"/><line x1="65" y1="170" x2="65" y2="220" stroke="#495057" stroke-width="2"/><line x1="40" y1="195" x2="90" y2="195" stroke="#495057" stroke-width="2"/></svg>')
+            },
+            cat: {
+                name: '小猫',
+                points: [
+                    {x: 0.5, y: 0.15},  // 1 - head top
+                    {x: 0.65, y: 0.25}, // 2 - right ear top
+                    {x: 0.7, y: 0.4},   // 3 - right head
+                    {x: 0.75, y: 0.55}, // 4 - right cheek
+                    {x: 0.7, y: 0.7},   // 5 - chin right
+                    {x: 0.5, y: 0.8},   // 6 - chin bottom
+                    {x: 0.3, y: 0.7},   // 7 - chin left
+                    {x: 0.25, y: 0.55}, // 8 - left cheek
+                    {x: 0.3, y: 0.4},   // 9 - left head
+                    {x: 0.35, y: 0.25}, // 10 - left ear top
+                    {x: 0.4, y: 0.05},  // 11 - tail start
+                    {x: 0.9, y: 0.15}   // 12 - tail end
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="80" ry="70" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="80,140 60,80 110,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><polygon points="220,140 240,80 190,120" fill="#9775FA" stroke="#495057" stroke-width="4"/><circle cx="120" cy="190" r="12" fill="#495057"/><circle cx="180" cy="190" r="12" fill="#495057"/><circle cx="125" cy="185" r="4" fill="white"/><circle cx="185" cy="185" r="4" fill="white"/><ellipse cx="150" cy="220" rx="10" ry="8" fill="#FF6B6B"/><path d="M140,230 Q150,240 160,230" stroke="#495057" stroke-width="3" fill="none"/><path d="M240,120 Q280,100 270,160" stroke="#9775FA" stroke-width="10" fill="none" stroke-linecap="round"/></svg>')
+            },
+            fish: {
+                name: '小鱼',
+                points: [
+                    {x: 0.15, y: 0.5},  // 1 - mouth
+                    {x: 0.35, y: 0.3}, // 2 - head top
+                    {x: 0.55, y: 0.25}, // 3 - dorsal start
+                    {x: 0.7, y: 0.15}, // 4 - dorsal top
+                    {x: 0.8, y: 0.3},  // 5 - dorsal end
+                    {x: 0.9, y: 0.2},  // 6 - tail top
+                    {x: 0.95, y: 0.5},  // 7 - tail center
+                    {x: 0.9, y: 0.8},  // 8 - tail bottom
+                    {x: 0.8, y: 0.7},  // 9 - ventral end
+                    {x: 0.7, y: 0.85}, // 10 - ventral bottom
+                    {x: 0.55, y: 0.75}, // 11 - ventral start
+                    {x: 0.35, y: 0.7}, // 12 - belly
+                    {x: 0.2, y: 0.6}   // 13 - throat
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="150" rx="100" ry="60" fill="#74C0FC" stroke="#495057" stroke-width="4"/><polygon points="250,150 290,100 290,200" fill="#74C0FC" stroke="#495057" stroke-width="4"/><circle cx="80" cy="140" r="12" fill="#495057"/><circle cx="85" cy="135" r="4" fill="white"/><path d="M60,170 Q80,180 100,170" stroke="#495057" stroke-width="3" fill="none"/><ellipse cx="150" cy="100" rx="30" ry="15" fill="#4DABF7" stroke="#495057" stroke-width="2"/></svg>')
+            },
+            rabbit: {
+                name: '小兔子',
+                points: [
+                    {x: 0.5, y: 0.2},  // 1 - head top
+                    {x: 0.65, y: 0.25}, // 2 - right ear top
+                    {x: 0.7, y: 0.4},   // 3 - right head
+                    {x: 0.65, y: 0.6},  // 4 - right cheek
+                    {x: 0.5, y: 0.75},  // 5 - chin
+                    {x: 0.35, y: 0.6},  // 6 - left cheek
+                    {x: 0.3, y: 0.4},   // 7 - left head
+                    {x: 0.35, y: 0.25}, // 8 - left ear top
+                    {x: 0.38, y: 0.05}, // 9 - left ear tip
+                    {x: 0.45, y: 0.12}, // 10 - left ear base
+                    {x: 0.55, y: 0.12}, // 11 - right ear base
+                    {x: 0.62, y: 0.05}, // 12 - right ear tip
+                    {x: 0.7, y: 0.15},  // 13 - tail
+                    {x: 0.85, y: 0.35}, // 14 - front paw
+                    {x: 0.75, y: 0.9}   // 15 - back foot
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><ellipse cx="150" cy="200" rx="90" ry="70" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="110" cy="80" rx="10" ry="45" fill="#FFB3B3"/><ellipse cx="190" cy="80" rx="20" ry="60" fill="#F8F0F0" stroke="#495057" stroke-width="4"/><ellipse cx="190" cy="80" rx="10" ry="45" fill="#FFB3B3"/><circle cx="120" cy="180" r="10" fill="#495057"/><circle cx="180" cy="180" r="10" fill="#495057"/><circle cx="123" cy="177" r="3" fill="white"/><circle cx="183" cy="177" r="3" fill="white"/><ellipse cx="150" cy="210" rx="12" ry="8" fill="#FFB3B3"/><circle cx="100" cy="220" r="15" fill="#FFB3B3" opacity="0.5"/><circle cx="200" cy="220" r="15" fill="#FFB3B3" opacity="0.5"/></svg>')
+            },
+            car: {
+                name: '小汽车',
+                points: [
+                    {x: 0.1, y: 0.6},   // 1 - front bottom
+                    {x: 0.1, y: 0.4},   // 2 - front top
+                    {x: 0.25, y: 0.25}, // 3 - hood
+                    {x: 0.4, y: 0.2},   // 4 - windshield top
+                    {x: 0.55, y: 0.2},  // 5 - roof top
+                    {x: 0.7, y: 0.3},   // 6 - rear window
+                    {x: 0.85, y: 0.45}, // 7 - trunk
+                    {x: 0.9, y: 0.6},   // 8 - rear bottom
+                    {x: 0.7, y: 0.7},   // 9 - rear wheel top
+                    {x: 0.6, y: 0.85},  // 10 - rear wheel bottom
+                    {x: 0.4, y: 0.85},  // 11 - front wheel bottom
+                    {x: 0.3, y: 0.7},   // 12 - front wheel top
+                    {x: 0.2, y: 0.55},  // 13 - body middle
+                    {x: 0.5, y: 0.35}   // 14 - mirror
+                ],
+                image: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect x="20" y="150" width="260" height="80" rx="10" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><path d="M60,150 L100,80 L200,80 L240,150" fill="#FF6B6B" stroke="#495057" stroke-width="4"/><rect x="110" y="90" width="80" height="55" fill="#74C0FC" stroke="#495057" stroke-width="2"/><circle cx="80" cy="230" r="30" fill="#495057"/><circle cx="80" cy="230" r="15" fill="#868e96"/><circle cx="220" cy="230" r="30" fill="#495057"/><circle cx="220" cy="230" r="15" fill="#868e96"/><rect x="250" y="160" width="25" height="15" fill="#FFE066" stroke="#495057" stroke-width="2"/><rect x="25" y="165" width="20" height="12" fill="#FFE066" stroke="#495057" stroke-width="2"/></svg>')
+            }
+        };
+
+        function startDotConnectGame() {
+            currentGame = GAME_STATES.DOT_CONNECT;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('dotConnectOverlay').classList.add('active');
+            initAudio();
+            playSound && playSound(playBtnClick);
+            initDotConnect();
+        }
+
+        document.getElementById('dotConnectBackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
+        document.querySelectorAll('.dot-template-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.dot-template-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                dotTemplate = btn.dataset.template;
+                initAudio();
+                playSound && playSound(playBtnClick);
+                initDotConnect();
+            });
+        });
+
+        document.getElementById('dotResetBtn').addEventListener('click', () => {
+            initAudio();
+            playSound && playSound(playBtnClick);
+            initDotConnect();
+        });
+
+        function initDotConnect() {
+            dotCanvas = document.getElementById('dotCanvas');
+            const wrap = document.getElementById('dotCanvasWrap');
+            dotCanvas.width = wrap.offsetWidth;
+            dotCanvas.height = wrap.offsetHeight;
+            dotCtx = dotCanvas.getContext('2d');
+
+            dotIndex = 0;
+            dotLines = [];
+            dotTouching = false;
+            dotRevealedImage = null;
+
+            drawDotConnect();
+            updateDotHint();
+        }
+
+        function drawDotConnect() {
+            if (!dotCtx) return;
+            const w = dotCanvas.width;
+            const h = dotCanvas.height;
+            dotCtx.clearRect(0, 0, w, h);
+
+            const template = dotTemplates[dotTemplate];
+            const points = template.points;
+
+            // Draw lines
+            dotCtx.strokeStyle = '#4DABF7';
+            dotCtx.lineWidth = 4;
+            dotCtx.lineCap = 'round';
+            dotCtx.lineJoin = 'round';
+            dotCtx.beginPath();
+            for (let i = 0; i < dotLines.length; i++) {
+                const p1 = { x: points[dotLines[i]].x * w, y: points[dotLines[i]].y * h };
+                const p2 = { x: points[dotLines[i + 1]].x * w, y: points[dotLines[i + 1]].y * h };
+                if (i === 0) {
+                    dotCtx.moveTo(p1.x, p1.y);
+                }
+                dotCtx.lineTo(p2.x, p2.y);
+            }
+            dotCtx.stroke();
+
+            // Draw revealed image if complete
+            if (dotRevealedImage) {
+                dotCtx.globalAlpha = 0.3;
+                dotCtx.drawImage(dotRevealedImage, 0, 0, w, h);
+                dotCtx.globalAlpha = 1;
+            }
+
+            // Draw dots
+            points.forEach((pt, idx) => {
+                const x = pt.x * w;
+                const y = pt.y * h;
+                const isCompleted = idx < dotIndex;
+                const isCurrent = idx === dotIndex;
+                const isFuture = idx > dotIndex;
+
+                // Pulse animation for current dot
+                const scale = isCurrent ? 1.3 : 1;
+
+                dotCtx.beginPath();
+                dotCtx.arc(x, y, (isCurrent ? 20 : 14) * scale, 0, Math.PI * 2);
+                
+                if (isCompleted) {
+                    dotCtx.fillStyle = '#69DB7C';
+                } else if (isCurrent) {
+                    dotCtx.fillStyle = '#FF6B6B';
+                } else {
+                    dotCtx.fillStyle = '#868e96';
+                }
+                dotCtx.fill();
+                dotCtx.strokeStyle = '#495057';
+                dotCtx.lineWidth = 3;
+                dotCtx.stroke();
+
+                // Number
+                dotCtx.fillStyle = isCompleted || isCurrent ? 'white' : '#495057';
+                dotCtx.font = `bold ${isCurrent ? 16 : 12}px sans-serif`;
+                dotCtx.textAlign = 'center';
+                dotCtx.textBaseline = 'middle';
+                dotCtx.fillText(idx + 1, x, y);
+            });
+        }
+
+        function updateDotHint() {
+            const hint = document.getElementById('dotHintText');
+            if (dotIndex < dotTemplates[dotTemplate].points.length) {
+                hint.textContent = `从 ${dotIndex + 1} 开始，按顺序连接所有点`;
+            } else {
+                hint.textContent = '太棒了！完成啦！';
+            }
+        }
+
+        function getDotAtPos(x, y) {
+            const template = dotTemplates[dotTemplate];
+            const w = dotCanvas.width;
+            const h = dotCanvas.height;
+            const threshold = 25;
+
+            for (let i = 0; i < template.points.length; i++) {
+                const pt = template.points[i];
+                const dx = x - pt.x * w;
+                const dy = y - pt.y * h;
+                if (Math.sqrt(dx * dx + dy * dy) < threshold) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Mouse/touch events for dot connect
+        function setupDotCanvasEvents() {
+            const canvas = document.getElementById('dotCanvas');
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            canvas.addEventListener('mousedown', onDotStart);
+            canvas.addEventListener('mousemove', onDotMove);
+            canvas.addEventListener('mouseup', onDotEnd);
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); onDotStart(e); });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); onDotMove(e); });
+            canvas.addEventListener('touchend', (e) => { e.preventDefault(); onDotEnd(e); });
+
+            function onDotStart(e) {
+                const pos = getPos(e);
+                const dotNum = getDotAtPos(pos.x, pos.y);
+                if (dotNum === dotIndex) {
+                    dotTouching = true;
+                    dotStartPos = pos;
+                    const template = dotTemplates[dotTemplate];
+                    currentDotPos = { x: template.points[dotIndex].x * dotCanvas.width, 
+                                      y: template.points[dotIndex].y * dotCanvas.height };
+                } else if (dotNum > dotIndex) {
+                    // Wrong dot - shake it
+                    shakeDot(dotNum);
+                }
+            }
+
+            function onDotMove(e) {
+                if (!dotTouching) return;
+                const pos = getPos(e);
+                currentDotPos = pos;
+
+                // Check if near next dot
+                const nextDot = getDotAtPos(pos.x, pos.y);
+                if (nextDot === dotIndex + 1) {
+                    // Correct! Connect
+                    dotLines.push(dotIndex);
+                    dotIndex++;
+                    dotTouching = false;
+                    playSound && playSound(playBtnClick);
+                    updateDotHint();
+                    drawDotConnect();
+
+                    // Check win
+                    if (dotIndex >= dotTemplates[dotTemplate].points.length) {
+                        setTimeout(() => {
+                            dotRevealedImage = new Image();
+                            dotRevealedImage.src = dotTemplates[dotTemplate].image;
+                            dotRevealedImage.onload = () => {
+                                drawDotConnect();
+                            };
+                            playSound && playSound(playSaveSuccess);
+                            showCelebration('🎉 太棒了！', '完成连线挑战！');
+                        }, 200);
+                    }
+                }
+            }
+
+            function onDotEnd(e) {
+                dotTouching = false;
+                currentDotPos = null;
+                drawDotConnect();
+            }
+        }
+
+        function shakeDot(dotNum) {
+            // Visual shake effect on the canvas would be complex
+            // Instead, just play error sound
+            playSound && playSound(playBtnClick);
+        }
+
+        setupDotCanvasEvents();
+
+        // ---- MAZE GAME ----
+        let mazeCtx, mazeDrawCtx;
+        let mazeCellSize = 30;
+        let mazeCols = 7;
+        let mazeRows = 7;
+        let mazeGrid = [];
+        let mazePath = [];
+        let mazeDrawing = false;
+        let mazeStartCell = null;
+        let mazeEndCell = null;
+
+        function startMazeGame() {
+            currentGame = GAME_STATES.MAZE;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('mazeOverlay').classList.add('active');
+            initAudio();
+            playSound && playSound(playBtnClick);
+            initMaze();
+        }
+
+        document.getElementById('mazeBackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
+        document.querySelectorAll('.maze-diff-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.maze-diff-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const diff = btn.dataset.diff;
+                if (diff === '7x7') { mazeCols = 7; mazeRows = 7; }
+                else if (diff === '11x11') { mazeCols = 11; mazeRows = 11; }
+                else { mazeCols = 15; mazeRows = 11; }
+                initAudio();
+                playSound && playSound(playBtnClick);
+                initMaze();
+            });
+        });
+
+        document.getElementById('mazeRegenBtn').addEventListener('click', () => {
+            initAudio();
+            playSound && playSound(playBtnClick);
+            initMaze();
+        });
+
+        function initMaze() {
+            const wrap = document.getElementById('mazeCanvasWrap');
+            const canvas = document.getElementById('mazeCanvas');
+            const drawCanvas = document.getElementById('mazeDrawCanvas');
+
+            mazeCellSize = Math.floor((Math.min(wrap.parentElement.offsetWidth - 40, 550)) / mazeCols);
+            const mazeW = mazeCellSize * mazeCols;
+            const mazeH = mazeCellSize * mazeRows;
+
+            canvas.width = mazeW;
+            canvas.height = mazeH;
+            drawCanvas.width = mazeW;
+            drawCanvas.height = mazeH;
+
+            mazeCtx = canvas.getContext('2d');
+            mazeDrawCtx = drawCanvas.getContext('2d');
+
+            // Generate maze using recursive backtracking
+            generateMaze();
+
+            // Draw maze
+            drawMaze();
+
+            // Clear drawing
+            mazeDrawCtx.clearRect(0, 0, mazeW, mazeH);
+            mazePath = [];
+            mazeDrawing = false;
+
+            // Setup draw events
+            setupMazeEvents();
+        }
+
+        function generateMaze() {
+            // Initialize grid
+            mazeGrid = [];
+            for (let r = 0; r < mazeRows; r++) {
+                mazeGrid[r] = [];
+                for (let c = 0; c < mazeCols; c++) {
+                    mazeGrid[r][c] = { visited: false, walls: { top: true, right: true, bottom: true, left: true } };
+                }
+            }
+
+            // Recursive backtracking
+            const stack = [];
+            const startR = 0, startC = 0;
+            mazeGrid[startR][startC].visited = true;
+            stack.push({ r: startR, c: startC });
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                const neighbors = [];
+
+                // Check all neighbors
+                const dirs = [
+                    { dr: -1, dc: 0, wall: 'top', opposite: 'bottom' },
+                    { dr: 1, dc: 0, wall: 'bottom', opposite: 'top' },
+                    { dr: 0, dc: -1, wall: 'left', opposite: 'right' },
+                    { dr: 0, dc: 1, wall: 'right', opposite: 'left' }
+                ];
+
+                for (const dir of dirs) {
+                    const nr = current.r + dir.dr;
+                    const nc = current.c + dir.dc;
+                    if (nr >= 0 && nr < mazeRows && nc >= 0 && nc < mazeCols && !mazeGrid[nr][nc].visited) {
+                        neighbors.push({ r: nr, c: nc, wall: dir.wall, opposite: dir.opposite });
+                    }
+                }
+
+                if (neighbors.length > 0) {
+                    // Choose random neighbor
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    
+                    // Remove walls
+                    mazeGrid[current.r][current.c].walls[next.wall] = false;
+                    mazeGrid[next.r][next.c].walls[next.opposite] = false;
+                    
+                    mazeGrid[next.r][next.c].visited = true;
+                    stack.push({ r: next.r, c: next.c });
+                } else {
+                    stack.pop();
+                }
+            }
+
+            mazeStartCell = { r: 0, c: 0 };
+            mazeEndCell = { r: mazeRows - 1, c: mazeCols - 1 };
+        }
+
+        function drawMaze() {
+            mazeCtx.fillStyle = 'white';
+            mazeCtx.fillRect(0, 0, mazeCellSize * mazeCols, mazeCellSize * mazeRows);
+
+            mazeCtx.strokeStyle = '#495057';
+            mazeCtx.lineWidth = 4;
+            mazeCtx.lineCap = 'square';
+
+            for (let r = 0; r < mazeRows; r++) {
+                for (let c = 0; c < mazeCols; c++) {
+                    const x = c * mazeCellSize;
+                    const y = r * mazeCellSize;
+                    const cell = mazeGrid[r][c];
+
+                    if (cell.walls.top) {
+                        mazeCtx.beginPath();
+                        mazeCtx.moveTo(x, y);
+                        mazeCtx.lineTo(x + mazeCellSize, y);
+                        mazeCtx.stroke();
+                    }
+                    if (cell.walls.right) {
+                        mazeCtx.beginPath();
+                        mazeCtx.moveTo(x + mazeCellSize, y);
+                        mazeCtx.lineTo(x + mazeCellSize, y + mazeCellSize);
+                        mazeCtx.stroke();
+                    }
+                    if (cell.walls.bottom) {
+                        mazeCtx.beginPath();
+                        mazeCtx.moveTo(x, y + mazeCellSize);
+                        mazeCtx.lineTo(x + mazeCellSize, y + mazeCellSize);
+                        mazeCtx.stroke();
+                    }
+                    if (cell.walls.left) {
+                        mazeCtx.beginPath();
+                        mazeCtx.moveTo(x, y);
+                        mazeCtx.lineTo(x, y + mazeCellSize);
+                        mazeCtx.stroke();
+                    }
+                }
+            }
+
+            // Draw start marker (green circle)
+            const startX = mazeStartCell.c * mazeCellSize + mazeCellSize / 2;
+            const startY = mazeStartCell.r * mazeCellSize + mazeCellSize / 2;
+            mazeCtx.fillStyle = '#69DB7C';
+            mazeCtx.beginPath();
+            mazeCtx.arc(startX, startY, mazeCellSize / 3, 0, Math.PI * 2);
+            mazeCtx.fill();
+            mazeCtx.strokeStyle = '#495057';
+            mazeCtx.lineWidth = 2;
+            mazeCtx.stroke();
+
+            // Draw end marker (red circle)
+            const endX = mazeEndCell.c * mazeCellSize + mazeCellSize / 2;
+            const endY = mazeEndCell.r * mazeCellSize + mazeCellSize / 2;
+            mazeCtx.fillStyle = '#FF6B6B';
+            mazeCtx.beginPath();
+            mazeCtx.arc(endX, endY, mazeCellSize / 3, 0, Math.PI * 2);
+            mazeCtx.fill();
+            mazeCtx.strokeStyle = '#495057';
+            mazeCtx.lineWidth = 2;
+            mazeCtx.stroke();
+        }
+
+        function setupMazeEvents() {
+            const canvas = document.getElementById('mazeDrawCanvas');
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: Math.floor((clientX - rect.left) / mazeCellSize),
+                    y: Math.floor((clientY - rect.top) / mazeCellSize)
+                };
+            }
+
+            canvas.onmousedown = canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                const pos = getPos(e);
+                if (pos.x === mazeStartCell.c && pos.y === mazeStartCell.r) {
+                    mazeDrawing = true;
+                    mazePath = [pos];
+                    drawMazePath();
+                }
+            };
+
+            canvas.onmousemove = canvas.ontouchmove = (e) => {
+                if (!mazeDrawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                const last = mazePath[mazePath.length - 1];
+
+                // Check if adjacent cell
+                const dr = pos.y - last.y;
+                const dc = pos.x - last.x;
+                if (Math.abs(dr) + Math.abs(dc) === 1) {
+                    // Check wall between
+                    const cell = mazeGrid[last.y][last.x];
+                    let blocked = false;
+                    if (dr === -1 && cell.walls.top) blocked = true;
+                    if (dr === 1 && cell.walls.bottom) blocked = true;
+                    if (dc === -1 && cell.walls.left) blocked = true;
+                    if (dc === 1 && cell.walls.right) blocked = true;
+
+                    if (!blocked) {
+                        // Check collision with walls
+                        if (checkMazePathCollision(pos)) {
+                            mazeHitWall();
+                            return;
+                        }
+                        mazePath.push(pos);
+                        drawMazePath();
+
+                        // Check if reached end
+                        if (pos.x === mazeEndCell.c && pos.y === mazeEndCell.r) {
+                            mazeDrawing = false;
+                            mazeWin();
+                        }
+                    } else {
+                        mazeHitWall();
+                    }
+                }
+            };
+
+            canvas.onmouseup = canvas.ontouchend = (e) => {
+                if (mazeDrawing && mazePath.length > 1) {
+                    // Check if ends at start
+                    const last = mazePath[mazePath.length - 1];
+                    if (last.x !== mazeEndCell.c || last.y !== mazeEndCell.r) {
+                        // Path doesn't reach end, check if should restart
+                        if (last.x !== mazeStartCell.c || last.y !== mazeStartCell.r) {
+                            // Just stopped short - keep path for now
+                        }
+                    }
+                }
+                mazeDrawing = false;
+            };
+        }
+
+        function drawMazePath() {
+            mazeDrawCtx.clearRect(0, 0, mazeDrawCanvas.width, mazeDrawCanvas.height);
+            mazeDrawCtx.strokeStyle = '#74C0FC';
+            mazeDrawCtx.lineWidth = mazeCellSize / 3;
+            mazeDrawCtx.lineCap = 'round';
+            mazeDrawCtx.lineJoin = 'round';
+
+            if (mazePath.length > 1) {
+                mazeDrawCtx.beginPath();
+                mazeDrawCtx.moveTo(
+                    mazePath[0].x * mazeCellSize + mazeCellSize / 2,
+                    mazePath[0].y * mazeCellSize + mazeCellSize / 2
+                );
+                for (let i = 1; i < mazePath.length; i++) {
+                    mazeDrawCtx.lineTo(
+                        mazePath[i].x * mazeCellSize + mazeCellSize / 2,
+                        mazePath[i].y * mazeCellSize + mazeCellSize / 2
+                    );
+                }
+                mazeDrawCtx.stroke();
+            }
+        }
+
+        function checkMazePathCollision(pos) {
+            // Simple wall collision check - just check if the current cell wall is hit
+            // More sophisticated would trace actual pixel collision
+            return false; // Path following is already wall-validated
+        }
+
+        function mazeHitWall() {
+            playSound && playSound(playBtnClick);
+            const instruction = document.getElementById('mazeInstruction');
+            instruction.textContent = '撞墙了！请重试...';
+            instruction.style.color = '#FF6B6B';
+            
+            // Shake effect
+            const wrap = document.getElementById('mazeCanvasWrap');
+            wrap.classList.add('shake');
+            setTimeout(() => {
+                wrap.classList.remove('shake');
+                // Clear and restart
+                mazeDrawCtx.clearRect(0, 0, mazeDrawCanvas.width, mazeDrawCanvas.height);
+                mazePath = [];
+                mazeDrawing = false;
+                instruction.textContent = '从左上角走到右下角，避开墙壁！';
+                instruction.style.color = '#495057';
+            }, 800);
+        }
+
+        function mazeWin() {
+            playSound && playSound(playSaveSuccess);
+            showCelebration('🎉 迷宫完成！', '你找到了出口！');
+        }
+
+        // ---- CELEBRATION ----
+        function showCelebration(text, sub) {
+            const celeb = document.getElementById('gameCelebration');
+            document.getElementById('celebrationText').textContent = text;
+            document.getElementById('celebrationSub').textContent = sub;
+            celeb.classList.add('show');
+        }
+
+        function closeCelebration() {
+            document.getElementById('gameCelebration').classList.remove('show');
+            // Restart current game
+            if (currentGame === GAME_STATES.JIGSAW) {
+                initJigsaw();
+            } else if (currentGame === GAME_STATES.DOT_CONNECT) {
+                initDotConnect();
+            } else if (currentGame === GAME_STATES.MAZE) {
+                initMaze();
+            }
+        }
+
+        // ---- EXIT GAME ----
+        function exitGame() {
+            initAudio();
+            playSound && playSound(playBtnClick);
+            
+            if (jigsawTimerInterval) {
+                clearInterval(jigsawTimerInterval);
+                jigsawTimerInterval = null;
+            }
+            
+            currentGame = GAME_STATES.NONE;
+            document.getElementById('jigsawOverlay').classList.remove('active');
+            document.getElementById('dotConnectOverlay').classList.remove('active');
+            document.getElementById('mazeOverlay').classList.remove('active');
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (currentGame === GAME_STATES.DOT_CONNECT) {
+                setTimeout(initDotConnect, 100);
+            } else if (currentGame === GAME_STATES.MAZE) {
+                setTimeout(initMaze, 100);
+            }
+        });
+
     </script>
 
     <!-- Print Area (hidden, used for printing) -->
