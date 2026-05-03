@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FF9A9E">
+    <meta name="description" content="A creative drawing board for toddlers with guided teaching, drawing, coloring, and bubble games">
+    <link rel="manifest" href="/creative-drawing-board/manifest.json">
     <title>Creative Drawing Board for Toddlers</title>
     <style>
         * {
@@ -1200,6 +1203,361 @@
         .achievement-badge.unlocked .achievement-desc {
             color: #40C057;
         }
+
+        /* ===== V6: Guided Teaching Mode ===== */
+        .guided-btn {
+            background: linear-gradient(180deg, #FF6B6B 0%, #FF5252 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .guided-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Guided Mode Overlay */
+        #guidedOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            z-index: 4000;
+            flex-direction: column;
+        }
+
+        #guidedOverlay.active {
+            display: flex;
+        }
+
+        .guided-header {
+            height: 50px;
+            background: linear-gradient(180deg, #FF6B6B 0%, #FF5252 100%);
+            border-bottom: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .guided-title {
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .guided-exit-btn {
+            background: #FF6B6B;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .guided-canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guided-step-indicator {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            border: 3px solid #495057;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .guided-hint-bubble {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FFE066;
+            border: 3px solid #495057;
+            border-radius: 20px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #495057;
+            max-width: 80%;
+            text-align: center;
+            animation: bounceIn 0.4s ease-out;
+        }
+
+        .guided-hint-bubble::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-bottom-color: #495057;
+        }
+
+        .guided-hint-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #FFE066;
+        }
+
+        .guided-skip-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #74C0FC;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 3px 3px 0 #495057;
+            z-index: 10;
+        }
+
+        .guided-next-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: #69DB7C;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 3px 3px 0 #495057;
+            z-index: 10;
+        }
+
+        /* Guided Template Selection Modal */
+        #guidedSelectOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #guidedSelectOverlay.active {
+            display: flex;
+        }
+
+        .guided-select-container {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .guided-select-header {
+            background: linear-gradient(180deg, #FF6B6B 0%, #FF5252 100%);
+            border-bottom: 3px solid #495057;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .guided-select-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .guided-select-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: #FF6B6B;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guided-age-tabs {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .guided-age-tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: white;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            color: #868e96;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .guided-age-tab.active {
+            color: #FF6B6B;
+            border-bottom-color: #FF6B6B;
+        }
+
+        .guided-select-content {
+            padding: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .guided-template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .guided-template-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 8px;
+            border: 3px solid #dee2e6;
+            border-radius: 16px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .guided-template-item:hover {
+            background: #FFE066;
+            border-color: #495057;
+            transform: scale(1.02);
+        }
+
+        .guided-template-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .guided-template-name {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+        }
+
+        .guided-template-steps {
+            font-size: 0.8rem;
+            color: #868e96;
+            margin-top: 4px;
+        }
+
+        /* Guided Celebration */
+        .guided-celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #FFE066 0%, #FFA94D 100%);
+            border: 4px solid #495057;
+            border-radius: 24px;
+            padding: 32px 48px;
+            text-align: center;
+            z-index: 5000;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.5s ease-out;
+        }
+
+        .guided-celebration-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .guided-celebration-stars {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .guided-continue-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 10px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+            @page {
+                margin: 0;
+                size: A4 landscape;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1207,6 +1565,7 @@
         <div class="header-title">Creative Drawing Board</div>
         <div class="header-btns">
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
+            <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
@@ -1306,6 +1665,7 @@
         <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
         <button class="tool-btn clear-btn" id="clearBtn">Clear</button>
         <button class="tool-btn" id="saveBtn" title="Save">💾</button>
+        <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
     </div>
 
     <!-- Coloring Game Overlay -->
@@ -1373,6 +1733,46 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Guided Teaching Mode Overlay -->
+    <div id="guidedOverlay">
+        <div class="guided-header">
+            <div class="guided-title" id="guidedTitle">Guided Drawing</div>
+            <button class="guided-exit-btn" id="guidedExitBtn">Exit</button>
+        </div>
+        <div class="guided-canvas-wrap" id="guidedCanvasWrap">
+            <canvas id="guidedCanvas"></canvas>
+            <div class="guided-step-indicator" id="guidedStepIndicator">Step 1 of 3</div>
+            <div class="guided-hint-bubble" id="guidedHintBubble">Follow the dotted line!</div>
+            <button class="guided-next-btn" id="guidedNextBtn">Next →</button>
+            <button class="guided-skip-btn" id="guidedSkipBtn">Skip</button>
+        </div>
+    </div>
+
+    <!-- Guided Template Selection Overlay -->
+    <div id="guidedSelectOverlay">
+        <div class="guided-select-container">
+            <div class="guided-select-header">
+                <div class="guided-select-title">🎯 Choose a Template</div>
+                <button class="guided-select-close" id="guidedSelectClose">×</button>
+            </div>
+            <div class="guided-age-tabs">
+                <button class="guided-age-tab active" data-age="2-3">2-3岁</button>
+                <button class="guided-age-tab" data-age="3-4">3-4岁</button>
+                <button class="guided-age-tab" data-age="4-5">4-5岁</button>
+            </div>
+            <div class="guided-select-content">
+                <div class="guided-template-grid" id="guidedTemplateGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guided Celebration -->
+    <div class="guided-celebration" id="guidedCelebration" style="display:none;">
+        <div class="guided-celebration-stars">🎉🌟🎉🌟🎉</div>
+        <div class="guided-celebration-text">太棒了！</div>
+        <button class="guided-continue-btn" id="guidedContinueBtn">Continue</button>
     </div>
 
     <script>
@@ -3961,6 +4361,945 @@
         }
 
         init();
+
+        // ===== V6: Guided Teaching Mode =====
+
+        // Guided templates with steps (8 templates)
+        const GUIDED_TEMPLATES = {
+            'rabbit': {
+                name: '兔子',
+                icon: '🐰',
+                ageGroup: '4-5',
+                steps: [
+                    {
+                        instruction: '画一个大圆脑袋',
+                        hint: '从脑袋开始画一个大圆圈',
+                        path: { type: 'arc', x: 50, y: 45, r: 25, start: 0, end: Math.PI * 2 }
+                    },
+                    {
+                        instruction: '画两只耳朵',
+                        hint: '在头顶画两个长耳朵',
+                        paths: [
+                            { type: 'ellipse', cx: 35, cy: 20, rx: 6, ry: 18 },
+                            { type: 'ellipse', cx: 65, cy: 20, rx: 6, ry: 18 }
+                        ]
+                    },
+                    {
+                        instruction: '画眼睛和嘴巴',
+                        hint: '在脸上画眼睛和嘴巴',
+                        paths: [
+                            { type: 'arc', x: 40, y: 42, r: 4, start: 0, end: Math.PI * 2 },
+                            { type: 'arc', x: 60, y: 42, r: 4, start: 0, end: Math.PI * 2 },
+                            { type: 'arc', x: 50, y: 55, r: 3, start: 0, end: Math.PI * 2 }
+                        ]
+                    }
+                ]
+            },
+            'fish': {
+                name: '鱼',
+                icon: '🐟',
+                ageGroup: '4-5',
+                steps: [
+                    {
+                        instruction: '画鱼身体',
+                        hint: '画一个大椭圆形作为鱼的身体',
+                        path: { type: 'ellipse', cx: 50, cy: 50, rx: 30, ry: 20 }
+                    },
+                    {
+                        instruction: '画鱼尾巴',
+                        hint: '在右边画一个三角形尾巴',
+                        path: { type: 'triangle', points: [[80, 50], [95, 35], [95, 65]] }
+                    },
+                    {
+                        instruction: '画鱼鳍',
+                        hint: '在上面和下面画小鳍',
+                        paths: [
+                            { type: 'ellipse', cx: 50, cy: 32, rx: 8, ry: 5 },
+                            { type: 'ellipse', cx: 50, cy: 68, rx: 8, ry: 5 }
+                        ]
+                    }
+                ]
+            },
+            'house': {
+                name: '房子',
+                icon: '🏠',
+                ageGroup: '4-5',
+                steps: [
+                    {
+                        instruction: '画屋顶',
+                        hint: '先画一个三角形屋顶',
+                        path: { type: 'triangle', points: [[50, 20], [15, 50], [85, 50]] }
+                    },
+                    {
+                        instruction: '画墙壁',
+                        hint: '在屋顶下面画一个方形墙壁',
+                        paths: [
+                            { type: 'line', x1: 20, y1: 50, x2: 20, y2: 80 },
+                            { type: 'line', x1: 80, y1: 50, x2: 80, y2: 80 },
+                            { type: 'line', x1: 20, y1: 80, x2: 80, y2: 80 }
+                        ]
+                    },
+                    {
+                        instruction: '画门和窗户',
+                        hint: '画一扇门和两扇窗户',
+                        paths: [
+                            { type: 'rect', x: 42, y: 60, w: 16, h: 20 },
+                            { type: 'rect', x: 25, y: 58, w: 10, h: 10 },
+                            { type: 'rect', x: 65, y: 58, w: 10, h: 10 }
+                        ]
+                    }
+                ]
+            },
+            'car': {
+                name: '汽车',
+                icon: '🚗',
+                ageGroup: '3-4',
+                steps: [
+                    {
+                        instruction: '画车身',
+                        hint: '画一个扁扁的车身',
+                        path: { type: 'rect', x: 15, y: 45, w: 70, h: 25, rounded: true }
+                    },
+                    {
+                        instruction: '画车顶',
+                        hint: '在车身上面画车顶',
+                        paths: [
+                            { type: 'line', x1: 30, y1: 45, x2: 40, y2: 30 },
+                            { type: 'line', x1: 40, y1: 30, x2: 65, y2: 30 },
+                            { type: 'line', x1: 65, y1: 30, x2: 75, y2: 45 }
+                        ]
+                    },
+                    {
+                        instruction: '画轮子',
+                        hint: '在车底下画两个圆轮子',
+                        paths: [
+                            { type: 'arc', x: 30, y: 70, r: 10, start: 0, end: Math.PI * 2 },
+                            { type: 'arc', x: 70, y: 70, r: 10, start: 0, end: Math.PI * 2 }
+                        ]
+                    }
+                ]
+            },
+            'flower': {
+                name: '花',
+                icon: '🌸',
+                ageGroup: '3-4',
+                steps: [
+                    {
+                        instruction: '画花朵中心',
+                        hint: '先画一个小圆作为花心',
+                        path: { type: 'arc', x: 50, y: 40, r: 10, start: 0, end: Math.PI * 2 }
+                    },
+                    {
+                        instruction: '画花瓣',
+                        hint: '围绕花心画5片花瓣',
+                        paths: [
+                            { type: 'ellipse', cx: 50, cy: 22, rx: 8, ry: 12 },
+                            { type: 'ellipse', cx: 72, cy: 32, rx: 8, ry: 12, rotate: 45 },
+                            { type: 'ellipse', cx: 65, cy: 55, rx: 8, ry: 12, rotate: 80 },
+                            { type: 'ellipse', cx: 35, cy: 55, rx: 8, ry: 12, rotate: -80 },
+                            { type: 'ellipse', cx: 28, cy: 32, rx: 8, ry: 12, rotate: -45 }
+                        ]
+                    },
+                    {
+                        instruction: '画茎和叶子',
+                        hint: '画一条茎和两片叶子',
+                        paths: [
+                            { type: 'line', x1: 50, y1: 50, x2: 50, y2: 85 },
+                            { type: 'ellipse', cx: 40, cy: 70, rx: 10, ry: 5, rotate: -30 },
+                            { type: 'ellipse', cx: 60, cy: 75, rx: 10, ry: 5, rotate: 30 }
+                        ]
+                    }
+                ]
+            },
+            'sun': {
+                name: '太阳',
+                icon: '☀️',
+                ageGroup: '2-3',
+                steps: [
+                    {
+                        instruction: '画太阳脸',
+                        hint: '先画一个大圆作为太阳的脸',
+                        path: { type: 'arc', x: 50, y: 50, r: 25, start: 0, end: Math.PI * 2 }
+                    },
+                    {
+                        instruction: '画光芒',
+                        hint: '在太阳周围画8条光线',
+                        paths: (() => {
+                            const rays = [];
+                            for (let i = 0; i < 8; i++) {
+                                const angle = (i * Math.PI * 2 / 8) - Math.PI / 2;
+                                const x1 = 50 + Math.cos(angle) * 30;
+                                const y1 = 50 + Math.sin(angle) * 30;
+                                const x2 = 50 + Math.cos(angle) * 42;
+                                const y2 = 50 + Math.sin(angle) * 42;
+                                rays.push({ type: 'line', x1, y1, x2, y2 });
+                            }
+                            return rays;
+                        })()
+                    }
+                ]
+            },
+            'tree': {
+                name: '树',
+                icon: '🌳',
+                ageGroup: '3-4',
+                steps: [
+                    {
+                        instruction: '画树干',
+                        hint: '先画一个棕色树干',
+                        path: { type: 'rect', x: 42, y: 55, w: 16, h: 30 }
+                    },
+                    {
+                        instruction: '画树叶',
+                        hint: '在树干上面画三角形树叶',
+                        paths: [
+                            { type: 'triangle', points: [[50, 15], [20, 55], [80, 55]] },
+                            { type: 'triangle', points: [[50, 30], [25, 55], [75, 55]] }
+                        ]
+                    }
+                ]
+            },
+            'boat': {
+                name: '小船',
+                icon: '⛵',
+                ageGroup: '4-5',
+                steps: [
+                    {
+                        instruction: '画船身',
+                        hint: '画一个弯弯的船底',
+                        path: { type: 'bezier', x1: 15, y1: 60, cx1: 50, cy1: 80, cx2: 50, cy2: 80, x2: 85, y2: 60 }
+                    },
+                    {
+                        instruction: '画船舱',
+                        hint: '在船身上画一个小船舱',
+                        path: { type: 'rect', x: 35, y: 45, w: 30, h: 18, rounded: true }
+                    },
+                    {
+                        instruction: '画桅杆和帆',
+                        hint: '在船中间画一根桅杆和帆',
+                        paths: [
+                            { type: 'line', x1: 50, y1: 63, x2: 50, y2: 25 },
+                            { type: 'bezier', x1: 50, y1: 30, cx1: 50, cy1: 30, cx2: 75, cy2: 45, x2: 75, y2: 45 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // Age group template mapping
+        const AGE_TEMPLATES = {
+            '2-3': ['sun', 'tree'],
+            '3-4': ['car', 'flower', 'tree', 'boat'],
+            '4-5': ['rabbit', 'fish', 'house', 'car', 'flower', 'sun', 'tree', 'boat']
+        };
+
+        // Guided mode state
+        let guidedMode = false;
+        let guidedCanvas, guidedCtx;
+        let guidedDrawingCanvas, guidedDrawingCtx;
+        let currentGuidedTemplate = null;
+        let currentGuidedStep = 0;
+        let currentGuidedAge = '4-5';
+        let guidedStrokeData = []; // Track stroke coverage
+        let guidedAnimFrame = null;
+        let guidedAnimationPhase = 0;
+        let guidedTouchCount = 0;
+        const COVERAGE_THRESHOLD = 0.80;
+
+        // Initialize guided teaching
+        function initGuidedTeaching() {
+            guidedCanvas = document.getElementById('guidedCanvas');
+            guidedDrawingCanvas = document.createElement('canvas');
+            guidedDrawingCanvas.id = 'guidedDrawingCanvas';
+            
+            // Event listeners for guided buttons
+            document.getElementById('guidedBtn').addEventListener('click', openGuidedSelect);
+            document.getElementById('guidedSelectClose').addEventListener('click', closeGuidedSelect);
+            document.getElementById('guidedExitBtn').addEventListener('click', exitGuidedMode);
+            document.getElementById('guidedSkipBtn').addEventListener('click', skipGuidedStep);
+            document.getElementById('guidedNextBtn').addEventListener('click', nextGuidedStep);
+            document.getElementById('guidedContinueBtn').addEventListener('click', closeGuidedCelebration);
+            
+            // Age tab switching
+            document.querySelectorAll('.guided-age-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.guided-age-tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentGuidedAge = e.target.dataset.age;
+                    renderGuidedTemplateGrid();
+                });
+            });
+            
+            // Initialize canvas after resize
+            window.addEventListener('resize', () => {
+                if (guidedMode) {
+                    resizeGuidedCanvas();
+                }
+            });
+        }
+
+        function openGuidedSelect() {
+            initAudio();
+            playSound(playBtnClick);
+            currentGuidedAge = '4-5';
+            document.querySelectorAll('.guided-age-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.guided-age-tab[data-age="4-5"]').classList.add('active');
+            renderGuidedTemplateGrid();
+            document.getElementById('guidedSelectOverlay').classList.add('active');
+        }
+
+        function closeGuidedSelect() {
+            initAudio();
+            playSound(playBtnClick);
+            document.getElementById('guidedSelectOverlay').classList.remove('active');
+        }
+
+        function renderGuidedTemplateGrid() {
+            const grid = document.getElementById('guidedTemplateGrid');
+            const templates = AGE_TEMPLATES[currentGuidedAge];
+            
+            grid.innerHTML = '';
+            templates.forEach(templateId => {
+                const template = GUIDED_TEMPLATES[templateId];
+                const item = document.createElement('div');
+                item.className = 'guided-template-item';
+                item.innerHTML = `
+                    <div class="guided-template-icon">${template.icon}</div>
+                    <div class="guided-template-name">${template.name}</div>
+                    <div class="guided-template-steps">${template.steps.length} steps</div>
+                `;
+                item.addEventListener('click', () => startGuidedMode(templateId));
+                grid.appendChild(item);
+            });
+        }
+
+        function startGuidedMode(templateId) {
+            initAudio();
+            playSound(playBtnClick);
+            closeGuidedSelect();
+            
+            currentGuidedTemplate = templateId;
+            currentGuidedStep = 0;
+            guidedMode = true;
+            guidedTouchCount = 0;
+            guidedStrokeData = [];
+            
+            document.getElementById('guidedOverlay').classList.add('active');
+            document.getElementById('guidedTitle').textContent = GUIDED_TEMPLATES[templateId].name;
+            
+            resizeGuidedCanvas();
+            initGuidedDrawing();
+            updateGuidedUI();
+            startGuidedAnimation();
+        }
+
+        function resizeGuidedCanvas() {
+            const wrap = document.getElementById('guidedCanvasWrap');
+            const rect = wrap.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            
+            guidedCanvas.width = rect.width * dpr;
+            guidedCanvas.height = rect.height * dpr;
+            guidedCanvas.style.width = rect.width + 'px';
+            guidedCanvas.style.height = rect.height + 'px';
+            
+            guidedDrawingCanvas.width = rect.width * dpr;
+            guidedDrawingCanvas.height = rect.height * dpr;
+            guidedDrawingCanvas.style.width = rect.width + 'px';
+            guidedDrawingCanvas.style.height = rect.height + 'px';
+            
+            guidedCtx = guidedCanvas.getContext('2d');
+            guidedCtx.scale(dpr, dpr);
+            
+            guidedDrawingCtx = guidedDrawingCanvas.getContext('2d');
+            guidedDrawingCtx.scale(dpr, dpr);
+            guidedDrawingCtx.lineCap = 'round';
+            guidedDrawingCtx.lineJoin = 'round';
+            
+            // Redraw current state
+            if (currentGuidedTemplate) {
+                drawGuidedTemplate();
+                drawGuidedStep();
+            }
+        }
+
+        function initGuidedDrawing() {
+            const wrap = document.getElementById('guidedCanvasWrap');
+            
+            // Add drawing canvas if not already added
+            if (!document.getElementById('guidedDrawingCanvas')) {
+                wrap.insertBefore(guidedDrawingCanvas, guidedCanvas.nextSibling);
+            }
+            
+            // Clear drawing canvas
+            const rect = wrap.getBoundingClientRect();
+            guidedDrawingCtx.clearRect(0, 0, guidedDrawingCanvas.width, guidedDrawingCanvas.height);
+            
+            // Event listeners for drawing
+            guidedDrawingCanvas.addEventListener('mousedown', startGuidedDraw);
+            guidedDrawingCanvas.addEventListener('mousemove', guidedDraw);
+            guidedDrawingCanvas.addEventListener('mouseup', stopGuidedDraw);
+            guidedDrawingCanvas.addEventListener('mouseleave', stopGuidedDraw);
+            guidedDrawingCanvas.addEventListener('touchstart', startGuidedDraw, { passive: false });
+            guidedDrawingCanvas.addEventListener('touchmove', guidedDraw, { passive: false });
+            guidedDrawingCanvas.addEventListener('touchend', stopGuidedDraw);
+        }
+
+        let isGuidedDrawing = false;
+        let lastGuidedX = 0;
+        let lastGuidedY = 0;
+
+        function startGuidedDraw(e) {
+            e.preventDefault();
+            isGuidedDrawing = true;
+            const pos = getGuidedPos(e);
+            lastGuidedX = pos.x;
+            lastGuidedY = pos.y;
+            guidedTouchCount++;
+        }
+
+        function guidedDraw(e) {
+            if (!isGuidedDrawing) return;
+            e.preventDefault();
+            
+            const pos = getGuidedPos(e);
+            const ctx = guidedDrawingCtx;
+            ctx.beginPath();
+            ctx.strokeStyle = '#FF6B6B';
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.moveTo(lastGuidedX, lastGuidedY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            
+            // Track stroke for coverage calculation
+            guidedStrokeData.push({ x1: lastGuidedX, y1: lastGuidedY, x2: pos.x, y2: pos.y });
+            
+            lastGuidedX = pos.x;
+            lastGuidedY = pos.y;
+        }
+
+        function stopGuidedDraw(e) {
+            if (!isGuidedDrawing) return;
+            isGuidedDrawing = false;
+            
+            // Check if current step is completed
+            if (checkStepCompletion()) {
+                completeGuidedStep();
+            }
+        }
+
+        function getGuidedPos(e) {
+            const rect = guidedDrawingCanvas.getBoundingClientRect();
+            if (e.touches && e.touches.length > 0) {
+                return {
+                    x: e.touches[0].clientX - rect.left,
+                    y: e.touches[0].clientY - rect.top
+                };
+            }
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function checkStepCompletion() {
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            const step = template.steps[currentGuidedStep];
+            const scale = getGuidedScale();
+            const offsetX = getGuidedOffsetX();
+            const offsetY = getGuidedOffsetY();
+            
+            // Get target path bounds
+            const targetBounds = getStepBounds(step, scale, offsetX, offsetY);
+            
+            // Calculate coverage
+            const coverage = calculateStrokeCoverage(targetBounds);
+            
+            return coverage >= COVERAGE_THRESHOLD;
+        }
+
+        function getStepBounds(step, scale, offsetX, offsetY) {
+            const bounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+            
+            const processPath = (path) => {
+                if (path.type === 'arc') {
+                    bounds.minX = Math.min(bounds.minX, (path.x - path.r) * scale + offsetX);
+                    bounds.minY = Math.min(bounds.minY, (path.y - path.r) * scale + offsetY);
+                    bounds.maxX = Math.max(bounds.maxX, (path.x + path.r) * scale + offsetX);
+                    bounds.maxY = Math.max(bounds.maxY, (path.y + path.r) * scale + offsetY);
+                } else if (path.type === 'ellipse') {
+                    bounds.minX = Math.min(bounds.minX, (path.cx - path.rx) * scale + offsetX);
+                    bounds.minY = Math.min(bounds.minY, (path.cy - path.ry) * scale + offsetY);
+                    bounds.maxX = Math.max(bounds.maxX, (path.cx + path.rx) * scale + offsetX);
+                    bounds.maxY = Math.max(bounds.maxY, (path.cy + path.ry) * scale + offsetY);
+                } else if (path.type === 'rect') {
+                    bounds.minX = Math.min(bounds.minX, path.x * scale + offsetX);
+                    bounds.minY = Math.min(bounds.minY, path.y * scale + offsetY);
+                    bounds.maxX = Math.max(bounds.maxX, (path.x + path.w) * scale + offsetX);
+                    bounds.maxY = Math.max(bounds.maxY, (path.y + path.h) * scale + offsetY);
+                } else if (path.type === 'triangle') {
+                    path.points.forEach(p => {
+                        bounds.minX = Math.min(bounds.minX, p[0] * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, p[1] * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, p[0] * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, p[1] * scale + offsetY);
+                    });
+                } else if (path.type === 'line') {
+                    if (path.x1 !== undefined) {
+                        bounds.minX = Math.min(bounds.minX, path.x1 * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, path.y1 * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, path.x1 * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, path.y1 * scale + offsetY);
+                        bounds.minX = Math.min(bounds.minX, path.x2 * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, path.y2 * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, path.x2 * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, path.y2 * scale + offsetY);
+                    } else if (path.x !== undefined) {
+                        bounds.minX = Math.min(bounds.minX, path.x * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, path.y * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, path.x * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, path.y * scale + offsetY);
+                    }
+                } else if (path.type === 'bezier') {
+                    // Approximate bezier with control points
+                    bounds.minX = Math.min(bounds.minX, path.x1 * scale + offsetX);
+                    bounds.minY = Math.min(bounds.minY, path.y1 * scale + offsetY);
+                    bounds.maxX = Math.max(bounds.maxX, path.x1 * scale + offsetX);
+                    bounds.maxY = Math.max(bounds.maxY, path.y1 * scale + offsetY);
+                    if (path.cx1 !== undefined) {
+                        bounds.minX = Math.min(bounds.minX, path.cx1 * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, path.cy1 * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, path.cx1 * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, path.cy1 * scale + offsetY);
+                        bounds.minX = Math.min(bounds.minX, path.cx2 * scale + offsetX);
+                        bounds.minY = Math.min(bounds.minY, path.cy2 * scale + offsetY);
+                        bounds.maxX = Math.max(bounds.maxX, path.cx2 * scale + offsetX);
+                        bounds.maxY = Math.max(bounds.maxY, path.cy2 * scale + offsetY);
+                    }
+                    bounds.minX = Math.min(bounds.minX, path.x2 * scale + offsetX);
+                    bounds.minY = Math.min(bounds.minY, path.y2 * scale + offsetY);
+                    bounds.maxX = Math.max(bounds.maxX, path.x2 * scale + offsetX);
+                    bounds.maxY = Math.max(bounds.maxY, path.y2 * scale + offsetY);
+                }
+            };
+            
+            if (step.path) {
+                processPath(step.path);
+            }
+            if (step.paths) {
+                step.paths.forEach(processPath);
+            }
+            
+            // Add padding
+            const padding = 15;
+            bounds.minX -= padding;
+            bounds.minY -= padding;
+            bounds.maxX += padding;
+            bounds.maxY += padding;
+            
+            return bounds;
+        }
+
+        function calculateStrokeCoverage(targetBounds) {
+            if (guidedStrokeData.length === 0) return 0;
+            
+            const width = targetBounds.maxX - targetBounds.minX;
+            const height = targetBounds.maxY - targetBounds.minY;
+            const targetArea = width * height;
+            
+            if (targetArea <= 0) return 0;
+            
+            // Create a grid to sample coverage
+            const gridSize = 10;
+            const cellWidth = width / gridSize;
+            const cellHeight = height / gridSize;
+            let coveredCells = 0;
+            
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const cellCenterX = targetBounds.minX + (i + 0.5) * cellWidth;
+                    const cellCenterY = targetBounds.minY + (j + 0.5) * cellHeight;
+                    
+                    // Check if any stroke passes through this cell
+                    const cellCovered = guidedStrokeData.some(stroke => {
+                        return strokePassesNear(stroke, cellCenterX, cellCenterY, cellWidth);
+                    });
+                    
+                    if (cellCovered) coveredCells++;
+                }
+            }
+            
+            return coveredCells / (gridSize * gridSize);
+        }
+
+        function strokePassesNear(stroke, x, y, threshold) {
+            // Simple distance check to line segment
+            const dx = stroke.x2 - stroke.x1;
+            const dy = stroke.y2 - stroke.y1;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            
+            if (len === 0) {
+                const d = Math.sqrt((stroke.x1 - x) ** 2 + (stroke.y1 - y) ** 2);
+                return d < threshold;
+            }
+            
+            const t = Math.max(0, Math.min(1, ((x - stroke.x1) * dx + (y - stroke.y1) * dy) / (len * len)));
+            const nearestX = stroke.x1 + t * dx;
+            const nearestY = stroke.y1 + t * dy;
+            const dist = Math.sqrt((nearestX - x) ** 2 + (nearestY - y) ** 2);
+            
+            return dist < threshold * 1.5;
+        }
+
+        function getGuidedScale() {
+            const wrap = document.getElementById('guidedCanvasWrap');
+            const rect = wrap.getBoundingClientRect();
+            return Math.min(rect.width, rect.height) / 100;
+        }
+
+        function getGuidedOffsetX() {
+            const wrap = document.getElementById('guidedCanvasWrap');
+            const rect = wrap.getBoundingClientRect();
+            return (rect.width - 100 * getGuidedScale()) / 2;
+        }
+
+        function getGuidedOffsetY() {
+            const wrap = document.getElementById('guidedCanvasWrap');
+            const rect = wrap.getBoundingClientRect();
+            return (rect.height - 100 * getGuidedScale()) / 2;
+        }
+
+        function completeGuidedStep() {
+            initAudio();
+            playSound(playTracingComplete);
+            
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            
+            if (currentGuidedStep < template.steps.length - 1) {
+                // More steps remaining
+                currentGuidedStep++;
+                guidedStrokeData = [];
+                updateGuidedUI();
+                drawGuidedStep();
+            } else {
+                // All steps complete
+                showGuidedCelebration();
+            }
+        }
+
+        function skipGuidedStep() {
+            initAudio();
+            playSound(playBtnClick);
+            
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            
+            if (currentGuidedStep < template.steps.length - 1) {
+                currentGuidedStep++;
+                guidedStrokeData = [];
+                updateGuidedUI();
+                drawGuidedStep();
+            } else {
+                showGuidedCelebration();
+            }
+        }
+
+        function nextGuidedStep() {
+            initAudio();
+            playSound(playBtnClick);
+            
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            
+            if (currentGuidedStep < template.steps.length - 1) {
+                currentGuidedStep++;
+                guidedStrokeData = [];
+                updateGuidedUI();
+                drawGuidedStep();
+            } else {
+                showGuidedCelebration();
+            }
+        }
+
+        function updateGuidedUI() {
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            const step = template.steps[currentGuidedStep];
+            
+            document.getElementById('guidedStepIndicator').textContent = 
+                `第 ${currentGuidedStep + 1} 步，共 ${template.steps.length} 步`;
+            document.getElementById('guidedHintBubble').textContent = step.instruction;
+        }
+
+        function drawGuidedTemplate() {
+            if (!guidedCtx) return;
+            
+            const ctx = guidedCtx;
+            const scale = getGuidedScale();
+            const offsetX = getGuidedOffsetX();
+            const offsetY = getGuidedOffsetY();
+            
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+            
+            // Draw completed steps in faded color
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            ctx.globalAlpha = 0.3;
+            ctx.strokeStyle = '#69DB7C';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            for (let i = 0; i < currentGuidedStep; i++) {
+                drawStepPath(ctx, template.steps[i]);
+            }
+            
+            ctx.restore();
+        }
+
+        function drawGuidedStep() {
+            if (!guidedCtx) return;
+            
+            const ctx = guidedCtx;
+            const scale = getGuidedScale();
+            const offsetX = getGuidedOffsetX();
+            const offsetY = getGuidedOffsetY();
+            
+            // Redraw template first
+            drawGuidedTemplate();
+            
+            // Draw current step with animation
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+            
+            const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+            const step = template.steps[currentGuidedStep];
+            
+            ctx.strokeStyle = '#FF6B6B';
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([8, 8]);
+            
+            drawStepPath(ctx, step);
+            
+            ctx.restore();
+        }
+
+        function drawStepPath(ctx, step) {
+            if (step.path) {
+                drawSinglePath(ctx, step.path);
+            }
+            if (step.paths) {
+                step.paths.forEach(p => drawSinglePath(ctx, p));
+            }
+        }
+
+        function drawSinglePath(ctx, path) {
+            ctx.beginPath();
+            
+            switch (path.type) {
+                case 'arc':
+                    ctx.arc(path.x, path.y, path.r, path.start, path.end);
+                    break;
+                case 'ellipse':
+                    ctx.ellipse(path.cx, path.cy, path.rx, path.ry, (path.rotate || 0) * Math.PI / 180, 0, Math.PI * 2);
+                    break;
+                case 'rect':
+                    if (path.rounded) {
+                        const r = 5;
+                        ctx.moveTo(path.x + r, path.y);
+                        ctx.lineTo(path.x + path.w - r, path.y);
+                        ctx.quadraticCurveTo(path.x + path.w, path.y, path.x + path.w, path.y + r);
+                        ctx.lineTo(path.x + path.w, path.y + path.h - r);
+                        ctx.quadraticCurveTo(path.x + path.w, path.y + path.h, path.x + path.w - r, path.y + path.h);
+                        ctx.lineTo(path.x + r, path.y + path.h);
+                        ctx.quadraticCurveTo(path.x, path.y + path.h, path.x, path.y + path.h - r);
+                        ctx.lineTo(path.x, path.y + r);
+                        ctx.quadraticCurveTo(path.x, path.y, path.x + r, path.y);
+                    } else {
+                        ctx.rect(path.x, path.y, path.w, path.h);
+                    }
+                    break;
+                case 'triangle':
+                    if (path.points && path.points.length >= 3) {
+                        ctx.moveTo(path.points[0][0], path.points[0][1]);
+                        for (let i = 1; i < path.points.length; i++) {
+                            ctx.lineTo(path.points[i][0], path.points[i][1]);
+                        }
+                        ctx.closePath();
+                    }
+                    break;
+                case 'line':
+                    if (path.x1 !== undefined) {
+                        ctx.moveTo(path.x1, path.y1);
+                        ctx.lineTo(path.x2, path.y2);
+                    } else if (path.x !== undefined && path.y !== undefined) {
+                        if (path.toX !== undefined) {
+                            ctx.moveTo(path.x, path.y);
+                            ctx.lineTo(path.toX, path.toY);
+                        }
+                    }
+                    break;
+                case 'bezier':
+                    if (path.cx1 !== undefined) {
+                        ctx.moveTo(path.x1, path.y1);
+                        ctx.bezierCurveTo(path.cx1, path.cy1, path.cx2, path.cy2, path.x2, path.y2);
+                    } else {
+                        ctx.moveTo(path.x1, path.y1);
+                        ctx.quadraticCurveTo(path.cx1 || path.x2, path.cy1 || path.y2, path.x2, path.y2);
+                    }
+                    break;
+                case 'move':
+                    ctx.moveTo(path.x, path.y);
+                    break;
+            }
+            
+            ctx.stroke();
+        }
+
+        function startGuidedAnimation() {
+            if (guidedAnimFrame) cancelAnimationFrame(guidedAnimFrame);
+            
+            function animate() {
+                if (!guidedMode) return;
+                
+                guidedAnimationPhase += 0.05;
+                
+                // Redraw step with animated dash offset
+                const ctx = guidedCtx;
+                const scale = getGuidedScale();
+                const offsetX = getGuidedOffsetX();
+                const offsetY = getGuidedOffsetY();
+                
+                const template = GUIDED_TEMPLATES[currentGuidedTemplate];
+                const step = template.steps[currentGuidedStep];
+                
+                // Clear and redraw
+                const wrap = document.getElementById('guidedCanvasWrap');
+                const rect = wrap.getBoundingClientRect();
+                ctx.clearRect(0, 0, guidedCanvas.width, guidedCanvas.height);
+                
+                // Draw completed steps
+                drawGuidedTemplate();
+                
+                // Draw current step with animation
+                ctx.save();
+                ctx.translate(offsetX, offsetY);
+                ctx.scale(scale, scale);
+                
+                ctx.strokeStyle = '#FF6B6B';
+                ctx.lineWidth = 10;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.setLineDash([8, 8]);
+                ctx.lineDashOffset = -guidedAnimationPhase * 5;
+                
+                drawStepPath(ctx, step);
+                
+                ctx.restore();
+                
+                guidedAnimFrame = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function showGuidedCelebration() {
+            document.getElementById('guidedCelebration').style.display = 'block';
+            playSound(playColoringComplete);
+        }
+
+        function closeGuidedCelebration() {
+            initAudio();
+            playSound(playBtnClick);
+            document.getElementById('guidedCelebration').style.display = 'none';
+            exitGuidedMode();
+        }
+
+        function exitGuidedMode() {
+            guidedMode = false;
+            if (guidedAnimFrame) {
+                cancelAnimationFrame(guidedAnimFrame);
+                guidedAnimFrame = null;
+            }
+            document.getElementById('guidedOverlay').classList.remove('active');
+            currentGuidedTemplate = null;
+            currentGuidedStep = 0;
+            guidedStrokeData = [];
+            
+            // Remove drawing canvas event listeners
+            if (guidedDrawingCanvas) {
+                guidedDrawingCanvas.removeEventListener('mousedown', startGuidedDraw);
+                guidedDrawingCanvas.removeEventListener('mousemove', guidedDraw);
+                guidedDrawingCanvas.removeEventListener('mouseup', stopGuidedDraw);
+                guidedDrawingCanvas.removeEventListener('mouseleave', stopGuidedDraw);
+                guidedDrawingCanvas.removeEventListener('touchstart', startGuidedDraw);
+                guidedDrawingCanvas.removeEventListener('touchmove', guidedDraw);
+                guidedDrawingCanvas.removeEventListener('touchend', stopGuidedDraw);
+            }
+        }
+
+        // Initialize guided teaching on load
+        initGuidedTeaching();
+
+        // ===== V6: Print Functionality =====
+        function printDrawing() {
+            initAudio();
+            playSound(playBtnClick);
+            
+            const printArea = document.getElementById('printArea');
+            const printCanvas = document.getElementById('printCanvas');
+            const printCtx = printCanvas.getContext('2d');
+            
+            const rect = canvasContainer.getBoundingClientRect();
+            printCanvas.width = rect.width;
+            printCanvas.height = rect.height;
+            
+            // Draw white background
+            printCtx.fillStyle = '#FFFFFF';
+            printCtx.fillRect(0, 0, printCanvas.width, printCanvas.height);
+            
+            // Composite all drawing layers
+            printCtx.drawImage(bgCanvas, 0, 0, rect.width, rect.height);
+            printCtx.drawImage(drawingCanvas, 0, 0, rect.width, rect.height);
+            printCtx.drawImage(stampCanvas, 0, 0, rect.width, rect.height);
+            
+            // Also render placed stamps from DOM
+            printCtx.drawImage(stampCanvas, 0, 0);
+            
+            printArea.style.display = 'block';
+            
+            // Wait for canvas to render, then print
+            setTimeout(() => {
+                window.print();
+                printArea.style.display = 'none';
+            }, 100);
+        }
+
+        // Event listener for print button
+        document.getElementById('printBtn').addEventListener('click', printDrawing);
+    </script>
+
+    <!-- Print Area (hidden, used for printing) -->
+    <div id="printArea" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white;">
+        <canvas id="printCanvas" style="width:100%; height:100%;"></canvas>
+    </div>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/creative-drawing-board/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
