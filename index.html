@@ -245,6 +245,23 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        .parent-ctrl-btn {
+            background: linear-gradient(180deg, #CC5DE8 0%, #9C36B5 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+        .parent-ctrl-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         /* Game Selection Panel */
         .game-selection-panel {
             display: none;
@@ -3283,6 +3300,376 @@
             box-shadow: 3px 3px 0 #495057;
         }
 
+        /* V14: Parent Control Overlay */
+        #parentControlOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #parentControlOverlay.active { display: flex; }
+
+        #parentControlPanel {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .pc-header {
+            background: linear-gradient(180deg, #CC5DE8 0%, #9C36B5 100%);
+            border-bottom: 3px solid #495057;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0;
+        }
+        .pc-header-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+        .pc-close {
+            width: 32px; height: 32px;
+            border-radius: 50%; border: 2px solid #495057;
+            background: #FF6B6B; color: white;
+            font-size: 1.2rem; font-weight: bold;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pc-body { padding: 16px; }
+
+        .pc-section {
+            background: #F8F9FA;
+            border: 2px solid #DEE2E6;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .pc-section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pc-time-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .pc-time-btn {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pc-time-btn:hover { background: #E9ECEF; }
+        .pc-time-btn.selected {
+            background: #CC5DE8;
+            color: white;
+        }
+
+        .pc-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .pc-stat-item {
+            background: white;
+            border: 2px solid #DEE2E6;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .pc-stat-item .pc-stat-num {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #9C36B5;
+        }
+        .pc-stat-item .pc-stat-label {
+            color: #868E96;
+            font-size: 0.8rem;
+        }
+
+        .pc-bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 160px;
+            padding: 8px 0;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #DEE2E6;
+        }
+        .pc-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .pc-bar {
+            width: 30px;
+            background: linear-gradient(180deg, #CC5DE8 0%, #9C36B5 100%);
+            border-radius: 6px 6px 0 0;
+            transition: height 0.3s;
+            min-height: 4px;
+        }
+        .pc-bar-label {
+            font-size: 0.75rem;
+            color: #868E96;
+        }
+
+        .pc-export-btns { display: flex; gap: 8px; }
+        .pc-export-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: all 0.2s;
+        }
+        .pc-export-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #495057; }
+
+        .pc-unlock-list { display: flex; flex-direction: column; gap: 6px; }
+        .pc-unlock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #DEE2E6;
+            font-size: 0.9rem;
+        }
+        .pc-unlock-item .pc-unlock-name { display: flex; align-items: center; gap: 6px; }
+        .pc-unlock-item .pc-unlock-status.unlocked { color: #40C057; font-weight: bold; }
+        .pc-unlock-item .pc-unlock-status.locked { color: #FF6B6B; }
+
+        .pc-weekly-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        /* V14: Math Verification Modal */
+        #mathVerifyModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        #mathVerifyModal.active { display: flex; }
+        .math-modal-box {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+            max-width: 300px;
+        }
+        .math-modal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 16px;
+        }
+        .math-modal-question {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #9C36B5;
+            margin-bottom: 16px;
+        }
+        .math-modal-input {
+            width: 100px;
+            padding: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid #495057;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        .math-modal-input.shake {
+            animation: shake 0.5s ease-in-out;
+            border-color: #FF6B6B;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .math-modal-error {
+            color: #FF6B6B;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: none;
+        }
+        .math-modal-btn {
+            padding: 10px 24px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        /* V14: Time Limit Overlay */
+        #timeLimitOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #1A1A2E 0%, #16213E 100%);
+            z-index: 20000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #timeLimitOverlay.active { display: flex; }
+        .tl-moon { font-size: 6rem; margin-bottom: 20px; }
+        .tl-message {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .tl-gallery-btn {
+            padding: 16px 32px;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            font-size: 1.3rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #495057;
+        }
+
+        /* V14: Weekly Summary Modal */
+        #weeklySummaryOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+        }
+        #weeklySummaryOverlay.active { display: flex; }
+        .ws-modal {
+            background: linear-gradient(180deg, #FFF9DB 0%, #FFE066 100%);
+            border: 4px solid #495057;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+        .ws-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .ws-content {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .ws-content .ws-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .ws-footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        /* V14: Locked stamp overlay */
+        .stamp-item.locked-stamp {
+            position: relative;
+            cursor: not-allowed;
+        }
+        .stamp-item.locked-stamp::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .stamp-item.locked-stamp .stamp-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(200,200,200,0.6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #666;
+            text-align: center;
+            padding: 4px;
+        }
+
         /* Print Styles */
         @media print {
             body * {
@@ -3330,8 +3717,92 @@
             <button class="export-btn" id="exportBtn" title="Export">📥</button>
             <button class="share-btn" id="shareBtn" title="Share">🔗</button>
             <button class="game-btn" id="gameBtn" title="Games">🧩</button>
+            <button class="parent-ctrl-btn" id="parentCtrlBtn" title="家长控制">👨‍👩‍👧</button>
         </div>
     </header>
+
+    <!-- V14: Math Verification Modal -->
+    <div id="mathVerifyModal">
+        <div class="math-modal-box">
+            <div class="math-modal-title">👨‍👩‍👧 家长控制</div>
+            <div class="math-modal-question" id="mathQuestion">3 + 4 = ?</div>
+            <input type="number" class="math-modal-input" id="mathAnswer" placeholder="?">
+            <div class="math-modal-error" id="mathError">再试一次</div>
+            <button class="math-modal-btn" id="mathSubmitBtn">确认</button>
+        </div>
+    </div>
+
+    <!-- V14: Parent Control Overlay -->
+    <div id="parentControlOverlay">
+        <div id="parentControlPanel">
+            <div class="pc-header">
+                <div class="pc-header-title">👨‍👩‍👧 家长控制</div>
+                <button class="pc-close" id="pcCloseBtn">×</button>
+            </div>
+            <div class="pc-body">
+                <!-- Section A: Time Limit -->
+                <div class="pc-section">
+                    <div class="pc-section-title">⏰ 使用时长限制</div>
+                    <div class="pc-time-options" id="pcTimeOptions">
+                        <button class="pc-time-btn" data-minutes="0">关闭</button>
+                        <button class="pc-time-btn" data-minutes="15">15分钟</button>
+                        <button class="pc-time-btn" data-minutes="30">30分钟</button>
+                        <button class="pc-time-btn" data-minutes="45">45分钟</button>
+                        <button class="pc-time-btn" data-minutes="60">60分钟</button>
+                        <button class="pc-time-btn" data-minutes="90">90分钟</button>
+                        <button class="pc-time-btn" data-minutes="120">120分钟</button>
+                    </div>
+                </div>
+                <!-- Section B: Weekly Progress -->
+                <div class="pc-section">
+                    <div class="pc-section-title">📊 本周进度报告</div>
+                    <div class="pc-stats-grid" id="pcStatsGrid">
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcDrawing">0</div><div class="pc-stat-label">绘画次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcColoring">0</div><div class="pc-stat-label">涂色次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcTracing">0</div><div class="pc-stat-label">描红次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcGames">0</div><div class="pc-stat-label">游戏次数</div></div>
+                    </div>
+                    <div style="margin-bottom:6px;font-size:0.9rem;color:#868E96;">本周活动柱状图</div>
+                    <div class="pc-bar-chart" id="pcBarChart"></div>
+                </div>
+                <!-- Section C: Data Export -->
+                <div class="pc-section">
+                    <div class="pc-section-title">📤 数据导出</div>
+                    <div class="pc-export-btns">
+                        <button class="pc-export-btn" id="pcExportCSV">📥 导出CSV</button>
+                        <button class="pc-export-btn" id="pcExportJSON">📥 导出JSON</button>
+                    </div>
+                </div>
+                <!-- Section D: Content Unlock -->
+                <div class="pc-section">
+                    <div class="pc-section-title">🔓 内容解锁管理</div>
+                    <div class="pc-unlock-list" id="pcUnlockList"></div>
+                </div>
+                <!-- Section E: Weekly Summary -->
+                <div class="pc-section">
+                    <div class="pc-section-title">🌟 本周总结报告</div>
+                    <button class="pc-weekly-btn" id="pcWeeklyBtn">📋 查看</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V14: Weekly Summary Overlay -->
+    <div id="weeklySummaryOverlay">
+        <div class="ws-modal">
+            <div class="ws-title">🌟 本周绘画报告 🌟</div>
+            <div class="ws-content" id="wsContent"></div>
+            <div class="ws-footer">💪 下周继续加油！</div>
+            <button class="guided-continue-btn" id="wsCloseBtn" style="margin-top:16px;width:100%;">关闭</button>
+        </div>
+    </div>
+
+    <!-- V14: Time Limit Overlay -->
+    <div id="timeLimitOverlay">
+        <div class="tl-moon">🌙</div>
+        <div class="tl-message">今天的绘画时间结束啦<br>明天再来吧！🌙</div>
+        <button class="tl-gallery-btn" id="tlGalleryBtn">🖼️ 查看画廊</button>
+    </div>
 
     <div class="canvas-container" id="canvasContainer">
         <div id="themeBgOverlay"></div>
@@ -5775,6 +6246,7 @@
 
         function startDrawing(e) {
             if (bubbleMode) return;
+            if (checkTimeLimitBlock()) return;
             if (currentTool === 'stamp' && selectedStamp) return;
             
             isDrawing = true;
@@ -6008,6 +6480,7 @@
         // Place a new stamp at x, y
         function placeStamp(x, y) {
             if (!selectedStamp) return;
+            if (checkTimeLimitBlock()) return;
 
             const stamp = {
                 id: Date.now(),
@@ -8849,6 +9322,7 @@
             initGalleryButton();
             initExportButton(); // V11
             initShareButton(); // V11
+            initParentControls(); // V14
 
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
@@ -8890,6 +9364,393 @@
         // Init gallery button
         function initGalleryButton() {
             document.getElementById('galleryBtn').addEventListener('click', openGallery);
+        }
+
+        // ===== V14: Parent Controls =====
+
+        // State
+        let mathCorrectAnswer = 0;
+        let sessionStartTime = 0;
+        let checkTimeLimitInterval = null;
+        let isTimeLimitMode = false;
+
+        // --- Math Verification ---
+        function openMathVerify() {
+            const a = Math.floor(Math.random() * 9) + 1;
+            const b = Math.floor(Math.random() * 9) + 1;
+            mathCorrectAnswer = a + b;
+            document.getElementById('mathQuestion').textContent = a + ' + ' + b + ' = ?';
+            document.getElementById('mathAnswer').value = '';
+            document.getElementById('mathError').style.display = 'none';
+            document.getElementById('mathAnswer').classList.remove('shake');
+            document.getElementById('mathVerifyModal').classList.add('active');
+            setTimeout(() => document.getElementById('mathAnswer').focus(), 100);
+        }
+
+        function closeMathVerify() {
+            document.getElementById('mathVerifyModal').classList.remove('active');
+        }
+
+        function submitMathAnswer() {
+            const ans = parseInt(document.getElementById('mathAnswer').value);
+            if (ans === mathCorrectAnswer) {
+                closeMathVerify();
+                openParentControlPanel();
+            } else {
+                document.getElementById('mathError').style.display = 'block';
+                const input = document.getElementById('mathAnswer');
+                input.classList.remove('shake');
+                void input.offsetWidth;
+                input.classList.add('shake');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // --- Parent Control Panel ---
+        function openParentControlPanel() {
+            refreshParentControlPanel();
+            document.getElementById('parentControlOverlay').classList.add('active');
+        }
+
+        function closeParentControlPanel() {
+            document.getElementById('parentControlOverlay').classList.remove('active');
+        }
+
+        function refreshParentControlPanel() {
+            // Load parent controls
+            const pc = JSON.parse(localStorage.getItem('parentControls') || '{"timeLimitMinutes":0}');
+
+            // Update time limit buttons
+            document.querySelectorAll('.pc-time-btn').forEach(btn => {
+                btn.classList.toggle('selected', parseInt(btn.dataset.minutes) === pc.timeLimitMinutes);
+            });
+
+            // Compute weekly stats
+            const weekly = getWeeklyStats();
+            document.getElementById('pcDrawing').textContent = weekly.drawing;
+            document.getElementById('pcColoring').textContent = weekly.coloring;
+            document.getElementById('pcTracing').textContent = weekly.tracing;
+            document.getElementById('pcGames').textContent = weekly.games;
+
+            // Render bar chart
+            renderWeeklyBarChart(weekly.dailyCounts);
+
+            // Render unlock list
+            renderUnlockList();
+        }
+
+        function getWeeklyStats() {
+            const stats = loadStats();
+            const calendar = JSON.parse(localStorage.getItem('challenge_calendar') || '{}');
+            const unlocked = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            const weekStart = getWeekStart();
+            let weeklyDrawing = 0, weeklyColoring = 0, weeklyTracing = 0, weeklyGames = 0;
+            const dailyCounts = [0,0,0,0,0,0,0]; // Mon-Sun
+
+            // Sum up stats - for cumulative, just show current total for simplicity
+            weeklyDrawing = stats.drawing || 0;
+            weeklyColoring = stats.coloring || 0;
+            weeklyTracing = stats.tracing || 0;
+            weeklyGames = stats.bubble || 0; // bubble = games in this context
+
+            // Try to get per-day from daily_usage
+            const usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(weekStart);
+                d.setDate(d.getDate() + i);
+                const ds = getDateStr(d);
+                if (usage[ds]) {
+                    dailyCounts[i] = Math.min(10, Math.round((usage[ds].totalSeconds || 0) / 60));
+                }
+            }
+            // If no daily_usage data, use the fact we only have total stats
+            // so spread them across days proportionally
+            const total = weeklyDrawing + weeklyColoring + weeklyTracing;
+            if (total > 0 && dailyCounts.every(c => c === 0)) {
+                // Distribute evenly for now
+                for (let i = 0; i < 7; i++) {
+                    dailyCounts[i] = Math.ceil(total / 7);
+                }
+            }
+
+            return {
+                drawing: weeklyDrawing,
+                coloring: weeklyColoring,
+                tracing: weeklyTracing,
+                games: weeklyGames,
+                dailyCounts: dailyCounts
+            };
+        }
+
+        function getWeekStart() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
+
+        function renderWeeklyBarChart(dailyCounts) {
+            const container = document.getElementById('pcBarChart');
+            const max = Math.max(...dailyCounts, 1);
+            const days = ['周一','周二','周三','周四','周五','周六','周日'];
+            container.innerHTML = '';
+            days.forEach((day, i) => {
+                const count = dailyCounts[i] || 0;
+                const height = Math.round((count / max) * 140) + 4;
+                const wrap = document.createElement('div');
+                wrap.className = 'pc-bar-wrap';
+                wrap.innerHTML = '<div class="pc-bar" style="height:' + height + 'px;"></div><div class="pc-bar-label">' + day + '</div>';
+                container.appendChild(wrap);
+            });
+        }
+
+        function renderUnlockList() {
+            const list = document.getElementById('pcUnlockList');
+            const stats = loadStats();
+            const unlocks = JSON.parse(localStorage.getItem('unlocks') || '{}');
+            const calendar = JSON.parse(localStorage.getItem('challenge_calendar') || '{}');
+
+            const rules = [
+                { id: 'vehicleStickers', name: '🚗 交通工具贴纸', condition: '完成3张描红', check: () => (stats.tracing || 0) >= 3 },
+                { id: 'foodStickers', name: '🍎 食物贴纸', condition: '完成5张涂色', check: () => (stats.coloring || 0) >= 5 },
+                { id: 'holidayTheme', name: '🎉 节日主题', condition: '完成任意3个每日挑战', check: () => Object.keys(calendar).length >= 3 },
+                { id: 'advancedStickers', name: '⭐ 进阶贴纸包', condition: '累计绘画10次', check: () => (stats.drawing || 0) >= 10 },
+                { id: 'gamesMode', name: '🧩 游戏模式', condition: '累计游戏10次', check: () => (stats.bubble || 0) >= 10 }
+            ];
+
+            list.innerHTML = '';
+            rules.forEach(rule => {
+                const unlocked = rule.check();
+                // Persist unlock status
+                if (unlocked && !unlocks[rule.id]) {
+                    unlocks[rule.id] = true;
+                }
+                const div = document.createElement('div');
+                div.className = 'pc-unlock-item';
+                div.innerHTML = '<span class="pc-unlock-name"><span>' + (unlocked ? '✅' : '🔒') + '</span><span>' + rule.name + '</span></span><span class="pc-unlock-status ' + (unlocked ? 'unlocked' : 'locked') + '">' + (unlocked ? '已解锁' : rule.condition) + '</span>';
+                list.appendChild(div);
+            });
+            localStorage.setItem('unlocks', JSON.stringify(unlocks));
+        }
+
+        // --- Time Limit Settings ---
+        function setTimeLimit(minutes) {
+            const pc = JSON.parse(localStorage.getItem('parentControls') || '{}');
+            pc.timeLimitMinutes = minutes;
+            localStorage.setItem('parentControls', JSON.stringify(pc));
+            refreshParentControlPanel();
+            // Update time limit checking
+            if (minutes > 0) {
+                startUsageTimer();
+            } else {
+                stopUsageTimer();
+            }
+        }
+
+        function startUsageTimer() {
+            if (checkTimeLimitInterval) return;
+            sessionStartTime = Date.now();
+
+            // Record session start
+            const today = getDateStr();
+            const usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+            if (!usage[today]) usage[today] = { totalSeconds: 0, sessions: [] };
+            const sessionId = usage[today].sessions.length;
+            usage[today].sessions.push({ start: new Date().toTimeString().split(' ')[0] });
+            localStorage.setItem('daily_usage', JSON.stringify(usage));
+
+            checkTimeLimitInterval = setInterval(() => {
+                const pc = JSON.parse(localStorage.getItem('parentControls') || '{}');
+                if (!pc.timeLimitMinutes) return;
+
+                const today = getDateStr();
+                const usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+                let total = usage[today] ? usage[today].totalSeconds : 0;
+
+                // Add current session time
+                const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                total += elapsed;
+
+                const limit = pc.timeLimitMinutes * 60;
+                if (total >= limit) {
+                    showTimeLimitOverlay();
+                }
+            }, 60000);
+        }
+
+        function stopUsageTimer() {
+            if (checkTimeLimitInterval) {
+                clearInterval(checkTimeLimitInterval);
+                checkTimeLimitInterval = null;
+            }
+            // Save session end
+            if (sessionStartTime) {
+                const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+                const today = getDateStr();
+                const usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+                if (usage[today]) {
+                    const sessions = usage[today].sessions;
+                    if (sessions.length > 0) {
+                        sessions[sessions.length - 1].end = new Date().toTimeString().split(' ')[0];
+                    }
+                    usage[today].totalSeconds = (usage[today].totalSeconds || 0) + elapsed;
+                    localStorage.setItem('daily_usage', JSON.stringify(usage));
+                }
+                sessionStartTime = 0;
+            }
+        }
+
+        function showTimeLimitOverlay() {
+            stopUsageTimer();
+            isTimeLimitMode = true;
+            document.getElementById('timeLimitOverlay').classList.add('active');
+        }
+
+        function closeTimeLimitOverlay() {
+            document.getElementById('timeLimitOverlay').classList.remove('active');
+            isTimeLimitMode = false;
+        }
+
+        // Call this on drawing/stamp/game actions to check if blocked
+        function checkTimeLimitBlock() {
+            if (isTimeLimitMode) {
+                showTimeLimitOverlay();
+                return true;
+            }
+            return false;
+        }
+
+        // --- Data Export ---
+        function exportDataCSV() {
+            const stats = loadStats();
+            const calendar = JSON.parse(localStorage.getItem('challenge_calendar') || '{}');
+            const achievements = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+            const usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+            const unlocks = JSON.parse(localStorage.getItem('unlocks') || '{}');
+
+            let csv = '\uFEFF日期,绘画次数,涂色次数,描红次数,游戏次数,使用时长(分钟),获得成就\n';
+            // Aggregate by date from usage
+            const dates = Object.keys(usage).sort();
+            if (dates.length === 0) {
+                const today = getDateStr();
+                const minutes = Math.floor((stats.drawing || 0) * 2);
+                csv += today + ',' + (stats.drawing||0) + ',' + (stats.coloring||0) + ',' + (stats.tracing||0) + ',' + (stats.bubble||0) + ',' + minutes + ',' + achievements.length + '\n';
+            } else {
+                dates.forEach(date => {
+                    const u = usage[date];
+                    const mins = Math.round((u.totalSeconds || 0) / 60);
+                    csv += date + ',' + (stats.drawing||0) + ',' + (stats.coloring||0) + ',' + (stats.tracing||0) + ',' + (stats.bubble||0) + ',' + mins + ',' + achievements.length + '\n';
+                });
+            }
+
+            downloadFile(csv, 'creative_drawing_board_export.csv', 'text/csv;charset=utf-8');
+        }
+
+        function exportDataJSON() {
+            const data = {
+                exportDate: getDateStr(),
+                totalStats: loadStats(),
+                dailyUsage: JSON.parse(localStorage.getItem('daily_usage') || '{}'),
+                achievements: JSON.parse(localStorage.getItem('unlockedAchievements') || '[]'),
+                unlocks: JSON.parse(localStorage.getItem('unlocks') || '{}'),
+                challengeCalendar: JSON.parse(localStorage.getItem('challenge_calendar') || '{}'),
+                parentControls: JSON.parse(localStorage.getItem('parentControls') || '{}'),
+                galleryCount: 0
+            };
+            try {
+                const gallery = JSON.parse(localStorage.getItem('drawingBoardGallery') || '[]');
+                data.galleryCount = gallery.length;
+            } catch(e) {}
+            downloadFile(JSON.stringify(data, null, 2), 'creative_drawing_board_export.json', 'application/json');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // --- Weekly Summary ---
+        function showWeeklySummary() {
+            const stats = loadStats();
+            const calendar = JSON.parse(localStorage.getItem('challenge_calendar') || '{}');
+            const achievements = JSON.parse(localStorage.getItem('unlockedAchievements') || '[]');
+
+            // Count challenge days
+            const challengeDays = Object.keys(calendar).length;
+
+            let html = '<div class="ws-item">小画家，本周你：</div>';
+            html += '<div class="ws-item">• 画了 ' + (stats.drawing||0) + ' 幅画 🎨</div>';
+            html += '<div class="ws-item">• 完成了 ' + (stats.coloring||0) + ' 次涂色 🖌️</div>';
+            html += '<div class="ws-item">• 完成了 ' + (stats.tracing||0) + ' 次描红 ✏️</div>';
+            html += '<div class="ws-item">• 玩了 ' + (stats.bubble||0) + ' 次游戏 🧩</div>';
+            html += '<div class="ws-item">• 获得了 ' + achievements.length + ' 个新成就 🏆</div>';
+            html += '<div class="ws-item">• 坚持打卡 ' + challengeDays + ' 天 🔥</div>';
+
+            document.getElementById('wsContent').innerHTML = html;
+            document.getElementById('weeklySummaryOverlay').classList.add('active');
+        }
+
+        function closeWeeklySummary() {
+            document.getElementById('weeklySummaryOverlay').classList.remove('active');
+        }
+
+        // --- Init Parent Controls ---
+        function initParentControls() {
+            // Button click - shows math challenge
+            document.getElementById('parentCtrlBtn').addEventListener('click', openMathVerify);
+
+            // Math modal
+            document.getElementById('mathSubmitBtn').addEventListener('click', submitMathAnswer);
+            document.getElementById('mathAnswer').addEventListener('keydown', e => {
+                if (e.key === 'Enter') submitMathAnswer();
+            });
+
+            // Parent panel close
+            document.getElementById('pcCloseBtn').addEventListener('click', closeParentControlPanel);
+            document.getElementById('parentControlOverlay').addEventListener('click', e => {
+                if (e.target === document.getElementById('parentControlOverlay')) closeParentControlPanel();
+            });
+
+            // Time limit buttons
+            document.querySelectorAll('.pc-time-btn').forEach(btn => {
+                btn.addEventListener('click', () => setTimeLimit(parseInt(btn.dataset.minutes)));
+            });
+
+            // Export buttons
+            document.getElementById('pcExportCSV').addEventListener('click', exportDataCSV);
+            document.getElementById('pcExportJSON').addEventListener('click', exportDataJSON);
+
+            // Weekly summary
+            document.getElementById('pcWeeklyBtn').addEventListener('click', showWeeklySummary);
+            document.getElementById('wsCloseBtn').addEventListener('click', closeWeeklySummary);
+            document.getElementById('weeklySummaryOverlay').addEventListener('click', e => {
+                if (e.target === document.getElementById('weeklySummaryOverlay')) closeWeeklySummary();
+            });
+
+            // Time limit overlay gallery button
+            document.getElementById('tlGalleryBtn').addEventListener('click', () => {
+                closeTimeLimitOverlay();
+                openGallery();
+            });
+
+            // Start usage timer if time limit is set
+            const pc = JSON.parse(localStorage.getItem('parentControls') || '{}');
+            if (pc.timeLimitMinutes > 0) {
+                startUsageTimer();
+            }
+
+            // On page unload, save session
+            window.addEventListener('beforeunload', () => {
+                stopUsageTimer();
+            });
         }
 
         init();
@@ -10612,6 +11473,7 @@
         ];
 
         function startJigsawGame() {
+            if (checkTimeLimitBlock()) return;
             currentGame = GAME_STATES.JIGSAW;
             document.getElementById('gameSelectionPanel').classList.remove('active');
             document.getElementById('jigsawOverlay').classList.add('active');
@@ -10929,6 +11791,7 @@
         };
 
         function startDotConnectGame() {
+            if (checkTimeLimitBlock()) return;
             currentGame = GAME_STATES.DOT_CONNECT;
             document.getElementById('gameSelectionPanel').classList.remove('active');
             document.getElementById('dotConnectOverlay').classList.add('active');
@@ -11162,6 +12025,7 @@
         let mazeEndCell = null;
 
         function startMazeGame() {
+            if (checkTimeLimitBlock()) return;
             currentGame = GAME_STATES.MAZE;
             document.getElementById('gameSelectionPanel').classList.remove('active');
             document.getElementById('mazeOverlay').classList.add('active');
