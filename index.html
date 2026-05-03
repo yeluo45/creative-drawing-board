@@ -64,6 +64,24 @@
             font-family: inherit;
         }
 
+        .sound-btn {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .sound-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         .bubbles-btn:active, .coloring-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0 #495057;
@@ -567,6 +585,7 @@
     <header class="header">
         <div class="header-title">Creative Drawing Board</div>
         <div class="header-btns">
+            <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
         </div>
@@ -953,9 +972,45 @@
         const stampCanvas = document.getElementById('stampCanvas');
         const bgCanvas = document.getElementById('bgCanvas');
 
+        // ===== V3: Sound Engine =====
         // Audio Context
         let audioCtx = null;
+        let soundEnabled = true; // V3: global sound toggle
 
+        // Load sound preference from localStorage
+        function loadSoundPreference() {
+            const saved = localStorage.getItem('drawing_board_sound');
+            if (saved !== null) {
+                soundEnabled = saved === 'true';
+            }
+        }
+
+        // Save sound preference to localStorage
+        function saveSoundPreference() {
+            localStorage.setItem('drawing_board_sound', soundEnabled);
+        }
+
+        // Toggle sound on/off
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            saveSoundPreference();
+            updateSoundButton();
+            if (soundEnabled) {
+                initAudio();
+                playBtnClick();
+            }
+        }
+
+        // Update sound toggle button appearance
+        function updateSoundButton() {
+            const btn = document.getElementById('soundBtn');
+            if (btn) {
+                btn.innerHTML = soundEnabled ? '🔊' : '🔇';
+                btn.title = soundEnabled ? 'Sound On' : 'Sound Off';
+            }
+        }
+
+        // Initialize AudioContext on first user interaction
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -965,39 +1020,125 @@
             }
         }
 
-        function playPopSound() {
+        // Play sound only if soundEnabled is true
+        function playSound(soundFn) {
+            if (soundEnabled && soundFn) {
+                soundFn();
+            }
+        }
+
+        // ===== V3: 11 Sound Effects =====
+
+        // 1. btn_click: 440Hz sine 50ms
+        function playBtnClick() {
             initAudio();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            osc.stop(audioCtx.currentTime + 0.05);
         }
 
-        function playBubblePopSound() {
+        // 2. stamp_place: 660→880Hz square 80ms
+        function playStampPlace() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
+
+        // 3. stamp_remove: 880→440Hz sine 60ms
+        function playStampRemove() {
             initAudio();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.06);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.15);
+            osc.stop(audioCtx.currentTime + 0.06);
         }
 
-        function playWhooshSound() {
+        // 4. fill_complete: 523+659Hz sine 150ms (chord)
+        function playFillComplete() {
             initAudio();
-            const bufferSize = audioCtx.sampleRate * 0.3;
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.setValueAtTime(523, audioCtx.currentTime);
+            osc2.frequency.setValueAtTime(659, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 0.15);
+            osc2.stop(audioCtx.currentTime + 0.15);
+        }
+
+        // 5. tracing_complete: 523→659→784Hz sequential 300ms
+        function playTracingComplete() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        // 6. coloring_complete: 784+1047Hz 200ms (chord)
+        function playColoringComplete() {
+            initAudio();
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.setValueAtTime(784, audioCtx.currentTime);
+            osc2.frequency.setValueAtTime(1047, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 0.2);
+            osc2.stop(audioCtx.currentTime + 0.2);
+        }
+
+        // 7. bubble_pop: white noise burst 100ms
+        function playBubblePop() {
+            initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.1;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
@@ -1005,32 +1146,74 @@
             }
             const source = audioCtx.createBufferSource();
             source.buffer = buffer;
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(2000, audioCtx.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.3);
             const gain = audioCtx.createGain();
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            source.connect(filter);
-            filter.connect(gain);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            source.connect(gain);
             gain.connect(audioCtx.destination);
             source.start();
         }
 
-        function playStampSound() {
+        // 8. bg_switch: 330Hz sine 30ms
+        function playBgSwitch() {
             initAudio();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.frequency.setValueAtTime(330, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.15);
+            osc.stop(audioCtx.currentTime + 0.03);
+        }
+
+        // 9. undo: 220Hz sine 40ms
+        function playUndo() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.04);
+        }
+
+        // 10. redo: 330→440Hz sine 50ms
+        function playRedo() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(330, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        // 11. save_success: 784→523Hz 200ms
+        function playSaveSuccess() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(784, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(523, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
         }
 
         // Initialize color palette
@@ -1046,7 +1229,7 @@
                     e.preventDefault();
                     initAudio();
                     selectColor(color.hex);
-                    playPopSound();
+                    playSound(playBtnClick);
                 });
                 colorPalette.appendChild(btn);
             });
@@ -1289,7 +1472,7 @@
             }
 
             ctx.putImageData(imageData, offsetX * dpr, offsetY * dpr);
-            playPopSound();
+            playSound(playFillComplete);
         }
 
         // ===== M1: Stamps =====
@@ -1308,7 +1491,7 @@
         function selectStamp(stamp) {
             selectedStamp = stamp;
             closeAllPanels();
-            playStampSound();
+            playSound(playStampPlace);
             stampBtn.classList.add('selected');
         }
 
@@ -1363,6 +1546,7 @@
                 placedStamps.splice(idx, 1);
                 renderStamps();
                 saveUndoState();
+                playSound(playStampRemove);
             }
         }
 
@@ -1383,7 +1567,7 @@
             closeAllPanels();
             drawTracing();
             tracingBtn.classList.add('selected');
-            playPopSound();
+            playSound(playBtnClick);
         }
 
         function drawTracing() {
@@ -1439,7 +1623,7 @@
             if (currentTracing > 0) {
                 currentTracing--;
                 drawTracing();
-                playPopSound();
+                playSound(playBtnClick);
             }
         }
 
@@ -1447,19 +1631,19 @@
             if (currentTracing < TRACING_TEMPLATES.length - 1) {
                 currentTracing++;
                 drawTracing();
-                playPopSound();
+                playSound(playBtnClick);
             }
         }
 
         function toggleTracingVisibility() {
             tracingVisible = !tracingVisible;
             drawTracing();
-            playPopSound();
+            playSound(playBtnClick);
         }
 
         function clearTracingLines() {
             saveUndoState();
-            playWhooshSound();
+            playSound(playBgSwitch);
         }
 
         // ===== M4: Backgrounds =====
@@ -1479,7 +1663,7 @@
             currentBackground = bgId;
             closeAllPanels();
             drawBackground();
-            playPopSound();
+            playSound(playBgSwitch);
         }
 
         // ===== Panels =====
@@ -1515,12 +1699,12 @@
             coloringCanvas.height = wrap.offsetHeight;
             
             renderColoringPage();
-            playPopSound();
+            playSound(playBtnClick);
         }
 
         function exitColoringGame() {
             document.getElementById('coloringOverlay').classList.remove('active');
-            playPopSound();
+            playSound(playBtnClick);
         }
 
         function renderColoringPage() {
@@ -1585,7 +1769,7 @@
                 if (ctx.isPointInPath(path, pathX, pathY)) {
                     region.color = currentColor;
                     renderColoringPage();
-                    playPopSound();
+                    playSound(playBtnClick);
                     break;
                 }
             }
@@ -1593,7 +1777,7 @@
 
         function completeColoring() {
             document.getElementById('completeOverlay').classList.add('active');
-            playPopSound();
+            playSound(playColoringComplete);
         }
 
         function closeComplete() {
@@ -1610,13 +1794,13 @@
         function resetColoring() {
             coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
             renderColoringPage();
-            playWhooshSound();
+            playSound(playBgSwitch);
         }
 
         // Bubble mode
         function toggleBubbleMode() {
             initAudio();
-            playPopSound();
+            playSound(playBtnClick);
             bubbleMode = !bubbleMode;
             bubblesBtn.classList.toggle('active', bubbleMode);
             canvasContainer.classList.toggle('bubble-mode', bubbleMode);
@@ -1745,7 +1929,7 @@
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
                 if (dist < b.radius) {
-                    playBubblePopSound();
+                    playSound(playBubblePop);
                     createParticles(b.x, b.y, b.color, b.radius);
                     bubbles.splice(i, 1);
                     return;
@@ -1773,7 +1957,7 @@
         // Clear canvas with animation
         function clearCanvas() {
             initAudio();
-            playWhooshSound();
+            playSound(playBgSwitch);
             
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
@@ -1832,7 +2016,7 @@
             const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             redoStack.push(currentState);
             ctx.putImageData(state, 0, 0);
-            playPopSound();
+            playSound(playUndo);
         }
 
         function redo() {
@@ -1842,7 +2026,7 @@
             const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             undoStack.push(currentState);
             ctx.putImageData(state, 0, 0);
-            playPopSound();
+            playSound(playRedo);
         }
 
         // Save
@@ -1853,7 +2037,7 @@
             tempCanvas.height = bgCanvas.height;
             const ctx = tempCanvas.getContext('2d');
             
-            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' : 
+            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
                             currentBackground === 'sky' ? '#A5D8FF' :
                             currentBackground === 'grass' ? '#69DB7C' :
                             currentBackground === 'beach' ? '#FFE066' :
@@ -1868,7 +2052,7 @@
             link.download = 'drawing.png';
             link.href = tempCanvas.toDataURL();
             link.click();
-            playPopSound();
+            playSound(playSaveSuccess);
         }
 
         // Event listeners
@@ -1939,16 +2123,17 @@
             coloringBtn.addEventListener('click', enterColoringGame);
             
             // Tool buttons
-            brushBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('brush'); });
-            eraserBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('eraser'); });
-            stampBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('stamp'); });
-            fillBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('fill'); });
-            tracingBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('tracing'); });
-            bgBtn.addEventListener('click', () => { initAudio(); playPopSound(); selectTool('bg'); });
+            brushBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('brush'); });
+            eraserBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('eraser'); });
+            stampBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('stamp'); });
+            fillBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('fill'); });
+            tracingBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('tracing'); });
+            bgBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('bg'); });
             clearBtn.addEventListener('click', clearCanvas);
             undoBtn.addEventListener('click', undo);
             redoBtn.addEventListener('click', redo);
             saveBtn.addEventListener('click', saveDrawing);
+            soundBtn.addEventListener('click', toggleSound);
             
             // Resize
             window.addEventListener('resize', resizeCanvas);
@@ -1961,6 +2146,8 @@
 
         // Initialize
         function init() {
+            loadSoundPreference(); // V3: Load sound preference from localStorage
+            updateSoundButton(); // V3: Update sound button appearance
             initColorPalette();
             initStampPanel();
             initTracingPanel();
