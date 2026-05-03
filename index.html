@@ -1460,6 +1460,119 @@
             text-shadow: 1px 1px 0 #495057;
         }
 
+        /* V12: Coloring Filter Bar */
+        .coloring-filter-bar {
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+            padding: 8px 8px 0;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .coloring-category-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .coloring-category-tab {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px 8px 0 0;
+            background: #E0E0E0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: bold;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .coloring-category-tab.selected {
+            background: #B197FC;
+            color: white;
+        }
+
+        .coloring-age-bar {
+            background: rgba(255,255,255,0.9);
+            border-bottom: 2px solid #495057;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .coloring-age-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .coloring-age-tab {
+            padding: 6px 16px;
+            border: 2px solid #495057;
+            border-radius: 20px;
+            background: #E0E0E0;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            font-weight: bold;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .coloring-age-tab.selected {
+            background: #69DB7C;
+            color: white;
+        }
+
+        .coloring-template-bar {
+            background: rgba(255,255,255,0.95);
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .coloring-template-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 10px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            min-width: 70px;
+            transition: all 0.2s;
+        }
+
+        .coloring-template-item:hover {
+            background: #F0F0F0;
+        }
+
+        .coloring-template-item.selected {
+            background: #FFE066;
+            box-shadow: 0 0 0 2px #495057;
+        }
+
+        .coloring-template-name {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #495057;
+            margin-top: 4px;
+        }
+
+        .coloring-template-difficulty {
+            font-size: 0.65rem;
+            color: #888;
+        }
+
+        .difficulty-stars {
+            color: #FFD700;
+            font-size: 0.7rem;
+        }
+
         .coloring-canvas-wrap {
             flex: 1;
             position: relative;
@@ -3362,10 +3475,23 @@
         <!-- Colors injected by JS -->
     </div>
 
+    <!-- V12: Highlighter sub-options -->
+    <div class="highlighter-options" id="highlighterOptions" style="display:none;">
+        <button class="highlighter-color-btn selected" data-color="#FFE066" style="background:#FFE066;" title="Yellow"></button>
+        <button class="highlighter-color-btn" data-color="#F783AC" style="background:#F783AC;" title="Pink"></button>
+        <button class="highlighter-color-btn" data-color="#69DB7C" style="background:#69DB7C;" title="Green"></button>
+        <button class="highlighter-color-btn" data-color="#74C0FC" style="background:#74C0FC;" title="Blue"></button>
+        <button class="highlighter-color-btn" data-color="rainbow" style="background:linear-gradient(90deg,red,orange,yellow,green,blue,purple);" title="Rainbow"></button>
+    </div>
+
     <div class="tools">
         <button class="tool-btn brush-btn selected" id="brushBtn">
             <span class="tool-icon">✏️</span>
             <span>Brush</span>
+        </button>
+        <button class="tool-btn highlighter-btn" id="highlighterBtn">
+            <span class="tool-icon">🖍️</span>
+            <span>Highlighter</span>
         </button>
         <button class="tool-btn stamp-btn" id="stampBtn">
             <span class="tool-icon">🎨</span>
@@ -3409,6 +3535,26 @@
             <div class="coloring-title" id="coloringTitle">Coloring Page</div>
             <button class="coloring-btn back-btn" onclick="exitColoringGame()">← Back</button>
         </div>
+        <!-- V12: Category and Age Filter Tabs -->
+        <div class="coloring-filter-bar">
+            <div class="coloring-category-tabs" id="coloringCategoryTabs">
+                <button class="coloring-category-tab selected" data-category="all">全部</button>
+                <button class="coloring-category-tab" data-category="animal">动物</button>
+                <button class="coloring-category-tab" data-category="food">食物</button>
+                <button class="coloring-category-tab" data-category="character">人物</button>
+                <button class="coloring-category-tab" data-category="scenery">风景</button>
+                <button class="coloring-category-tab" data-category="vehicle">交通工具</button>
+            </div>
+        </div>
+        <div class="coloring-age-bar">
+            <div class="coloring-age-tabs" id="coloringAgeTabs">
+                <button class="coloring-age-tab selected" data-age="all">全部</button>
+                <button class="coloring-age-tab" data-age="3-4">3-4岁 🐣</button>
+                <button class="coloring-age-tab" data-age="4-5">4-5岁 🐥</button>
+                <button class="coloring-age-tab" data-age="5+">5岁以上 🔥</button>
+            </div>
+        </div>
+        <div class="coloring-template-bar" id="coloringTemplateBar"></div>
         <div class="coloring-canvas-wrap" id="coloringWrap">
             <canvas id="coloringCanvas"></canvas>
         </div>
@@ -4298,11 +4444,16 @@
             { id: 'sunset', name: 'Sunset', class: 'bg-sunset' }
         ];
 
-        // Coloring pages (SVG paths with regions)
+        // Coloring pages (SVG paths with regions) - V12: 30 templates
+        // Categories: animal, food, character, scenery, vehicle
         const COLORING_PAGES = [
+            // Existing 10 templates (preserved)
             {
                 id: 'rainbow',
                 name: 'Rainbow',
+                category: 'scenery',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'r1', path: 'M10 75 Q50 20 90 75 L82 75 Q50 30 18 75 Z', color: '#FF6B6B' },
                     { id: 'r2', path: 'M18 75 Q50 30 82 75 L74 75 Q50 38 26 75 Z', color: '#FFA94D' },
@@ -4314,6 +4465,9 @@
             {
                 id: 'fish',
                 name: 'Fish',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'body', path: 'M20 50 Q50 20 80 50 Q50 80 20 50 M80 50 L95 35 L95 65 Z', color: '#74C0FC' },
                     { id: 'eye', path: 'M30 45 A5 5 0 1 1 30 46', color: 'white' },
@@ -4327,6 +4481,9 @@
             {
                 id: 'flower',
                 name: 'Flower',
+                category: 'scenery',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'center', path: 'M50 40 A12 12 0 1 1 50 41', color: '#FFE066' },
                     { id: 'petal1', path: 'M50 28 Q60 15 50 10 Q40 15 50 28', color: '#FF6B6B' },
@@ -4341,6 +4498,9 @@
             {
                 id: 'car',
                 name: 'Car',
+                category: 'vehicle',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'body', path: 'M10 55 L25 55 L30 40 L70 40 L75 55 L90 55 L90 70 L10 70 Z', color: '#FF6B6B' },
                     { id: 'window', path: 'M35 42 L45 42 L45 52 L30 52 Z', color: '#74C0FC' },
@@ -4355,6 +4515,9 @@
             {
                 id: 'dog',
                 name: 'Dog',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'body', path: 'M20 55 Q50 30 80 55 Q80 75 50 80 Q20 75 20 55Z', color: '#E5997F' },
                     { id: 'head', path: 'M50 30 Q35 20 30 35 Q25 50 50 50Z', color: '#E5997F' },
@@ -4367,6 +4530,9 @@
             {
                 id: 'cat',
                 name: 'Cat',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'body', path: 'M25 55 Q50 30 75 55 Q75 75 50 80 Q25 75 25 55Z', color: '#F8F0F0' },
                     { id: 'head', path: 'M50 28 Q30 20 28 40 Q30 52 50 50Z', color: '#F8F0F0' },
@@ -4380,6 +4546,9 @@
             {
                 id: 'bird',
                 name: 'Bird',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'body', path: 'M30 50 Q50 30 70 50 Q70 70 50 75 Q30 70 30 50Z', color: '#69DB7C' },
                     { id: 'head', path: 'M65 40 Q80 30 75 50 Q70 60 65 50Z', color: '#69DB7C' },
@@ -4391,6 +4560,9 @@
             {
                 id: 'apple_color',
                 name: 'Apple',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'fruit', path: 'M50 25 Q20 40 25 65 Q30 85 50 85 Q70 85 75 65 Q80 40 50 25Z', color: '#FF6B6B' },
                     { id: 'stem', path: 'M50 25 L50 15', color: '#8B4513', strokeWidth: 4 },
@@ -4400,6 +4572,9 @@
             {
                 id: 'orange_color',
                 name: 'Orange',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'fruit', path: 'M50 20 Q20 30 20 55 Q20 80 50 85 Q80 80 80 55 Q80 30 50 20Z', color: '#FFA94D' },
                     { id: 'stem', path: 'M50 20 L50 12', color: '#8B4513', strokeWidth: 3 },
@@ -4409,12 +4584,314 @@
             {
                 id: 'pumpkin_color',
                 name: 'Pumpkin',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
                 regions: [
                     { id: 'p1', path: 'M50 25 Q25 45 30 55 Q35 45 50 50Z', color: '#FFA94D' },
                     { id: 'p2', path: 'M50 25 Q75 45 70 55 Q65 45 50 50Z', color: '#FFA94D' },
                     { id: 'p3', path: 'M50 50 Q35 65 35 80 Q40 90 50 90 Q60 90 65 80 Q65 65 50 50Z', color: '#FF8C00' },
                     { id: 'stem', path: 'M48 20 L52 20 L52 28 L48 28Z', color: '#8B4513' },
                     { id: 'leaf', path: 'M52 22 Q62 18 58 28 Q54 30 52 25', color: '#69DB7C' }
+                ]
+            },
+            // V12: New 20 templates
+            {
+                id: 'butterfly',
+                name: '蝴蝶',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'left_wing_top', path: 'M50 50 Q30 30 20 45 Q15 60 30 65 Q40 60 50 55', color: '#B197FC' },
+                    { id: 'right_wing_top', path: 'M50 50 Q70 30 80 45 Q85 60 70 65 Q60 60 50 55', color: '#F783AC' },
+                    { id: 'left_wing_bottom', path: 'M30 65 Q15 70 20 85 Q30 90 40 75 Q35 68 30 65', color: '#74C0FC' },
+                    { id: 'right_wing_bottom', path: 'M70 65 Q85 70 80 85 Q70 90 60 75 Q65 68 70 65', color: '#FFE066' }
+                ]
+            },
+            {
+                id: 'rocket',
+                name: '火箭',
+                category: 'vehicle',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M50 10 Q60 30 60 60 L40 60 Q40 30 50 10Z', color: '#E0E0E0' },
+                    { id: 'nose', path: 'M50 10 Q45 20 50 25 Q55 20 50 10Z', color: '#FF6B6B' },
+                    { id: 'window', path: 'M50 35 A8 8 0 1 1 50 36', color: '#74C0FC' },
+                    { id: 'fin_left', path: 'M40 55 L25 75 L40 65Z', color: '#FF6B6B' },
+                    { id: 'fin_right', path: 'M60 55 L75 75 L60 65Z', color: '#FF6B6B' },
+                    { id: 'flame', path: 'M45 60 Q50 80 55 60 Q50 70 45 60Z', color: '#FFA94D' }
+                ]
+            },
+            {
+                id: 'dinosaur',
+                name: '恐龙',
+                category: 'animal',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M25 55 Q50 40 75 55 Q75 70 50 75 Q25 70 25 55Z', color: '#69DB7C' },
+                    { id: 'head', path: 'M75 45 Q90 35 85 50 Q80 60 75 55Z', color: '#69DB7C' },
+                    { id: 'eye', path: 'M80 42 A3 3 0 1 1 80 43', color: '#495057' },
+                    { id: 'back_spike1', path: 'M35 42 L38 32 L42 42Z', color: '#40C057' },
+                    { id: 'back_spike2', path: 'M45 40 L48 28 L52 40Z', color: '#40C057' },
+                    { id: 'tail', path: 'M25 55 Q10 50 5 60 Q15 65 25 60Z', color: '#69DB7C' },
+                    { id: 'leg', path: 'M40 70 L38 82 L45 82 L48 70Z', color: '#40C057' }
+                ]
+            },
+            {
+                id: 'unicorn',
+                name: '独角兽',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'body', path: 'M25 55 Q50 40 75 55 Q75 70 50 75 Q25 70 25 55Z', color: '#F8F0F0' },
+                    { id: 'head', path: 'M75 45 Q90 35 85 55 Q80 60 75 55Z', color: '#F8F0F0' },
+                    { id: 'horn', path: 'M82 35 L85 15 L88 35Z', color: '#FFE066' },
+                    { id: 'mane', path: 'M70 40 Q80 30 75 50 Q85 45 80 55Z', color: '#F783AC' },
+                    { id: 'tail', path: 'M25 55 Q10 50 5 65 Q15 70 25 60Z', color: '#F783AC' }
+                ]
+            },
+            {
+                id: 'elephant',
+                name: '大象',
+                category: 'animal',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M20 50 Q50 30 80 50 Q80 70 50 75 Q20 70 20 50Z', color: '#B0B0B0' },
+                    { id: 'head', path: 'M75 40 Q90 30 85 55 Q80 60 75 55Z', color: '#B0B0B0' },
+                    { id: 'ear_left', path: 'M70 40 Q60 25 65 50 Q70 55 75 50Z', color: '#E5997F' },
+                    { id: 'trunk', path: 'M85 55 Q95 65 90 80 Q85 85 80 75 Q85 65 85 55Z', color: '#B0B0B0' },
+                    { id: 'eye', path: 'M82 42 A3 3 0 1 1 82 43', color: '#495057' },
+                    { id: 'tusk', path: 'M88 58 L95 65 L88 62Z', color: '#F8F0F0' }
+                ]
+            },
+            {
+                id: 'lion',
+                name: '狮子',
+                category: 'animal',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'mane', path: 'M50 25 Q25 30 25 50 Q25 75 50 75 Q75 75 75 50 Q75 30 50 25Z', color: '#FFA94D' },
+                    { id: 'face', path: 'M50 35 Q35 40 35 55 Q35 65 50 65 Q65 65 65 55 Q65 40 50 35Z', color: '#FFE066' },
+                    { id: 'eye_left', path: 'M40 45 A3 3 0 1 1 40 46', color: '#495057' },
+                    { id: 'eye_right', path: 'M60 45 A3 3 0 1 1 60 46', color: '#495057' },
+                    { id: 'nose', path: 'M50 55 L47 58 L53 58Z', color: '#495057' }
+                ]
+            },
+            {
+                id: 'whale',
+                name: '鲸鱼',
+                category: 'animal',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M10 50 Q50 25 85 50 Q85 70 50 75 Q10 70 10 50Z', color: '#74C0FC' },
+                    { id: 'belly', path: 'M20 60 Q50 65 80 60 Q75 70 50 72 Q25 70 20 60Z', color: '#A5D8FF' },
+                    { id: 'eye', path: 'M25 48 A3 3 0 1 1 25 49', color: '#495057' },
+                    { id: 'spray', path: 'M50 25 Q48 15 50 10 Q52 15 50 25Z', color: '#E0E0E0' }
+                ]
+            },
+            {
+                id: 'penguin',
+                name: '企鹅',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'body', path: 'M30 40 Q50 30 70 40 Q70 70 50 75 Q30 70 30 40Z', color: '#495057' },
+                    { id: 'belly', path: 'M38 50 Q50 45 62 50 Q62 65 50 68 Q38 65 38 50Z', color: '#F8F0F0' },
+                    { id: 'eye', path: 'M42 42 A3 3 0 1 1 42 43', color: '#495057' },
+                    { id: 'beak', path: 'M48 50 L55 52 L48 54Z', color: '#FFA94D' }
+                ]
+            },
+            {
+                id: 'owl',
+                name: '猫头鹰',
+                category: 'animal',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M25 55 Q50 35 75 55 Q75 75 50 80 Q25 75 25 55Z', color: '#8B4513' },
+                    { id: 'head', path: 'M50 30 Q35 25 35 45 Q35 55 50 55 Q65 55 65 45 Q65 25 50 30Z', color: '#8B4513' },
+                    { id: 'eye_left', path: 'M40 40 A8 8 0 1 1 40 41', color: '#FFE066' },
+                    { id: 'eye_right', path: 'M60 40 A8 8 0 1 1 60 41', color: '#FFE066' },
+                    { id: 'beak', path: 'M50 50 L47 55 L53 55Z', color: '#FFA94D' }
+                ]
+            },
+            {
+                id: 'frog',
+                name: '青蛙',
+                category: 'animal',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'body', path: 'M25 55 Q50 40 75 55 Q75 70 50 75 Q25 70 25 55Z', color: '#69DB7C' },
+                    { id: 'head', path: 'M30 45 Q50 30 70 45 Q70 55 50 58 Q30 55 30 45Z', color: '#69DB7C' },
+                    { id: 'eye_left', path: 'M35 40 A5 5 0 1 1 35 41', color: '#F8F0F0' },
+                    { id: 'eye_right', path: 'M65 40 A5 5 0 1 1 65 41', color: '#F8F0F0' }
+                ]
+            },
+            {
+                id: 'pizza',
+                name: '披萨',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'crust', path: 'M50 15 Q15 50 50 85 Q85 50 50 15Z', color: '#FFE066' },
+                    { id: 'sauce', path: 'M50 22 Q25 50 50 78 Q75 50 50 22Z', color: '#FF6B6B' },
+                    { id: 'cheese1', path: 'M40 35 Q50 30 55 40 Q45 45 40 35Z', color: '#FFE066' },
+                    { id: 'cheese2', path: 'M55 55 Q65 50 60 60 Q50 65 55 55Z', color: '#FFE066' },
+                    { id: 'pepperoni', path: 'M35 55 A5 5 0 1 1 35 56', color: '#8B4513' }
+                ]
+            },
+            {
+                id: 'cupcake',
+                name: '杯子蛋糕',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'cake', path: 'M30 55 Q50 50 70 55 Q70 80 50 85 Q30 80 30 55Z', color: '#F783AC' },
+                    { id: 'frosting', path: 'M30 55 Q35 40 50 35 Q65 40 70 55 Q60 50 50 52 Q40 50 30 55Z', color: '#FF6B6B' },
+                    { id: 'cherry', path: 'M50 32 A5 5 0 1 1 50 33', color: '#FF6B6B' },
+                    { id: 'wrapper', path: 'M32 60 L35 80 M68 60 L65 80 M40 58 L42 78 M60 58 L58 78', color: '#FFE066', strokeWidth: 2 }
+                ]
+            },
+            {
+                id: 'icecream_cone',
+                name: '冰淇淋',
+                category: 'food',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'cone', path: 'M35 55 L50 90 L65 55 Z', color: '#FFE066' },
+                    { id: 'scoop_top', path: 'M50 30 A12 12 0 1 1 50 31', color: '#F783AC' },
+                    { id: 'scoop_middle', path: 'M42 45 A10 10 0 1 1 42 46', color: '#FFE066' },
+                    { id: 'scoop_bottom', path: 'M50 55 A10 10 0 1 1 50 56', color: '#69DB7C' }
+                ]
+            },
+            {
+                id: 'rainbow_new',
+                name: '彩虹',
+                category: 'scenery',
+                difficulty: 'easy',
+                ageGroup: '3-4',
+                regions: [
+                    { id: 'r1', path: 'M50 85 Q15 50 50 15 Q85 50 50 85', color: '#FF6B6B' },
+                    { id: 'r2', path: 'M50 80 Q22 50 50 20 Q78 50 50 80', color: '#FFA94D' },
+                    { id: 'r3', path: 'M50 75 Q28 50 50 25 Q72 50 50 75', color: '#FFE066' },
+                    { id: 'r4', path: 'M50 70 Q35 50 50 30 Q65 50 50 70', color: '#69DB7C' },
+                    { id: 'r5', path: 'M50 65 Q40 50 50 35 Q60 50 50 65', color: '#74C0FC' },
+                    { id: 'r6', path: 'M50 60 Q45 50 50 40 Q55 50 50 60', color: '#B197FC' },
+                    { id: 'r7', path: 'M50 55 L52 55 L52 45 L50 45Z', color: '#F783AC' }
+                ]
+            },
+            {
+                id: 'hot_air_balloon',
+                name: '热气球',
+                category: 'vehicle',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'balloon', path: 'M50 10 Q25 30 25 50 Q25 70 50 75 Q75 70 75 50 Q75 30 50 10Z', color: '#FF6B6B' },
+                    { id: 'stripe1', path: 'M50 15 Q40 30 40 50 Q40 65 50 70 Q55 65 55 50 Q55 30 50 15Z', color: '#FFE066' },
+                    { id: 'stripe2', path: 'M50 15 Q60 30 60 50 Q60 65 50 70 Q45 65 45 50 Q45 30 50 15Z', color: '#FFE066' },
+                    { id: 'basket', path: 'M40 75 L60 75 L55 90 L45 90Z', color: '#8B4513' },
+                    { id: 'rope_left', path: 'M40 75 L35 70', color: '#495057', strokeWidth: 2 },
+                    { id: 'rope_right', path: 'M60 75 L65 70', color: '#495057', strokeWidth: 2 }
+                ]
+            },
+            {
+                id: 'spaceship',
+                name: '宇宙飞船',
+                category: 'vehicle',
+                difficulty: 'medium',
+                ageGroup: '4-5',
+                regions: [
+                    { id: 'body', path: 'M50 10 Q65 30 65 60 L35 60 Q35 30 50 10Z', color: '#E0E0E0' },
+                    { id: 'window', path: 'M50 30 A8 8 0 1 1 50 31', color: '#74C0FC' },
+                    { id: 'wing_left', path: 'M35 50 L15 70 L35 65Z', color: '#74C0FC' },
+                    { id: 'wing_right', path: 'M65 50 L85 70 L65 65Z', color: '#74C0FC' },
+                    { id: 'engine1', path: 'M40 60 L38 75 L45 75 L43 60Z', color: '#FFA94D' },
+                    { id: 'engine2', path: 'M60 60 L62 75 L55 75 L57 60Z', color: '#FFA94D' },
+                    { id: 'button', path: 'M50 50 A3 3 0 1 1 50 51', color: '#FF6B6B' }
+                ]
+            },
+            {
+                id: 'mermaid',
+                name: '美人鱼',
+                category: 'character',
+                difficulty: 'hard',
+                ageGroup: '5+',
+                regions: [
+                    { id: 'hair', path: 'M30 35 Q25 20 35 15 Q45 10 55 15 Q65 10 70 20 Q80 25 75 40 Q70 50 65 45 Q55 35 50 40 Q45 35 35 45 Q30 50 30 35Z', color: '#F783AC' },
+                    { id: 'face', path: 'M40 38 Q50 32 60 38 Q62 48 50 52 Q38 48 40 38Z', color: '#FFE066' },
+                    { id: 'tail_top', path: 'M35 55 Q50 45 65 55 Q70 70 50 80 Q30 70 35 55Z', color: '#74C0FC' },
+                    { id: 'tail_fin', path: 'M50 80 L35 95 L50 85 L65 95 Z', color: '#B197FC' },
+                    { id: 'shell', path: 'M40 52 Q35 55 38 60 Q42 58 40 52Z', color: '#F783AC' },
+                    { id: 'starfish', path: 'M70 60 L72 65 L77 65 L73 68 L75 73 L70 70 L65 73 L67 68 L63 65 L68 65Z', color: '#FF6B6B' },
+                    { id: 'pearl', path: 'M55 55 A3 3 0 1 1 55 56', color: '#F8F0F0' },
+                    { id: 'seaweed', path: 'M15 80 Q20 65 15 50 Q10 65 15 80Z', color: '#69DB7C' }
+                ]
+            },
+            {
+                id: 'dragon',
+                name: '龙',
+                category: 'character',
+                difficulty: 'hard',
+                ageGroup: '5+',
+                regions: [
+                    { id: 'body', path: 'M20 55 Q50 40 80 55 Q80 70 50 75 Q20 70 20 55Z', color: '#69DB7C' },
+                    { id: 'head', path: 'M75 40 Q95 30 90 55 Q85 65 75 60Z', color: '#69DB7C' },
+                    { id: 'horn1', path: 'M80 35 L75 20 L82 32Z', color: '#FFE066' },
+                    { id: 'horn2', path: 'M88 33 L85 18 L90 30Z', color: '#FFE066' },
+                    { id: 'eye', path: 'M82 42 A3 3 0 1 1 82 43', color: '#FF6B6B' },
+                    { id: 'wing', path: 'M35 45 Q20 25 25 50 Q15 55 30 60 Q25 50 35 55Z', color: '#8CE99A' },
+                    { id: 'fire', path: 'M90 55 Q95 50 100 55 Q95 60 90 55 Q93 52 90 55Z', color: '#FFA94D' },
+                    { id: 'scale1', path: 'M40 55 L42 52 L45 55 L42 58Z', color: '#40C057' },
+                    { id: 'scale2', path: 'M50 53 L52 50 L55 53 L52 56Z', color: '#40C057' }
+                ]
+            },
+            {
+                id: 'garden',
+                name: '花园',
+                category: 'scenery',
+                difficulty: 'hard',
+                ageGroup: '5+',
+                regions: [
+                    { id: 'flower1_center', path: 'M25 35 A8 8 0 1 1 25 36', color: '#FFE066' },
+                    { id: 'flower1_petal', path: 'M25 25 Q30 15 25 12 Q20 15 25 25Z M35 35 Q45 30 48 40 Q40 42 35 35Z M25 45 Q30 55 25 58 Q20 55 25 45Z M15 35 Q5 30 2 40 Q10 42 15 35Z', color: '#FF6B6B' },
+                    { id: 'flower2_center', path: 'M70 30 A8 8 0 1 1 70 31', color: '#FFE066' },
+                    { id: 'flower2_petal', path: 'M70 20 Q75 10 70 7 Q65 10 70 20Z M80 30 Q90 25 93 35 Q85 37 80 30Z M70 40 Q75 50 70 53 Q65 50 70 40Z M60 30 Q50 25 47 35 Q55 37 60 30Z', color: '#F783AC' },
+                    { id: 'stem1', path: 'M25 43 L25 75', color: '#69DB7C', strokeWidth: 3 },
+                    { id: 'stem2', path: 'M70 38 L70 75', color: '#69DB7C', strokeWidth: 3 },
+                    { id: 'leaf1', path: 'M25 60 Q15 55 10 65 Q20 68 25 62', color: '#69DB7C' },
+                    { id: 'leaf2', path: 'M70 55 Q80 50 85 60 Q75 63 70 57', color: '#69DB7C' },
+                    { id: 'ground', path: 'M5 75 Q50 70 95 75 L95 95 L5 95Z', color: '#8B4513' },
+                    { id: 'sun', path: 'M85 15 A10 10 0 1 1 85 16', color: '#FFE066' }
+                ]
+            },
+            {
+                id: 'castle',
+                name: '城堡',
+                category: 'scenery',
+                difficulty: 'hard',
+                ageGroup: '5+',
+                regions: [
+                    { id: 'main_tower', path: 'M35 30 L65 30 L65 75 L35 75Z', color: '#E0E0E0' },
+                    { id: 'main_roof', path: 'M30 30 L50 10 L70 30 Z', color: '#FF6B6B' },
+                    { id: 'side_tower_left', path: 'M15 45 L30 45 L30 75 L15 75Z', color: '#B0B0B0' },
+                    { id: 'side_tower_right', path: 'M70 45 L85 45 L85 75 L70 75Z', color: '#B0B0B0' },
+                    { id: 'roof_left', path: 'M12 45 L22 25 L32 45Z', color: '#9775FA' },
+                    { id: 'roof_right', path: 'M68 45 L78 25 L88 45Z', color: '#9775FA' },
+                    { id: 'door', path: 'M45 55 L55 55 L55 75 L45 75Z', color: '#8B4513' },
+                    { id: 'window1', path: 'M40 40 L50 40 L50 48 L40 48Z', color: '#74C0FC' }
                 ]
             }
         ];
@@ -4452,6 +4929,18 @@
         let bubbleAnimations = [];
         let bubbleFloatTexts = [];
         let bubbleGameActive = false;
+
+        // V12: Highlighter state
+        let currentHighlighterColor = '#FFE066'; // yellow default
+        let rainbowHue = 0;
+        let rainbowAnimationId = null;
+        const HIGHLIGHTER_COLORS = [
+            { name: 'yellow', hex: '#FFE066' },
+            { name: 'pink', hex: '#F783AC' },
+            { name: 'green', hex: '#69DB7C' },
+            { name: 'blue', hex: '#74C0FC' },
+            { name: 'rainbow', hex: 'rainbow' }
+        ];
 
         // V2 State
         let stamps = [];
@@ -4887,7 +5376,7 @@
                 return;
             }
 
-            if (currentTool === 'brush' || currentTool === 'eraser') {
+            if (currentTool === 'brush' || currentTool === 'eraser' || currentTool === 'highlighter') {
                 saveUndoState();
                 trackDrawing();
             }
@@ -4900,17 +5389,32 @@
         function draw(e) {
             if (!isDrawing || bubbleMode) return;
             e.preventDefault();
-            
+
             const pos = getPos(e);
             const ctx = drawingCanvas.getContext('2d');
-            
+
             ctx.beginPath();
-            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
-            ctx.lineWidth = currentSize;
+
+            // V12: Handle highlighter brush
+            if (currentTool === 'highlighter') {
+                let color = currentHighlighterColor;
+                if (color === 'rainbow') {
+                    color = `hsl(${rainbowHue}, 100%, 50%)`;
+                }
+                ctx.globalAlpha = 0.4;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = currentSize * 3; // Wider for highlighter
+            } else {
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+                ctx.lineWidth = currentSize;
+            }
+
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
-            
+            ctx.globalAlpha = 1.0;
+
             lastX = pos.x;
             lastY = pos.y;
         }
@@ -4918,6 +5422,16 @@
         function stopDrawing() {
             isDrawing = false;
         }
+
+        // V12: Rainbow highlighter animation
+        let rainbowAnimRunning = false;
+        function animateRainbowHighlighter() {
+            if (!rainbowAnimRunning) return;
+            rainbowHue = (rainbowHue + 2) % 360;
+            requestAnimationFrame(animateRainbowHighlighter);
+        }
+
+        // Start rainbow animation when rainbow highlighter selected
 
         // ===== M3: Flood Fill =====
         function performFloodFill(startX, startY) {
@@ -5429,10 +5943,79 @@
         }
 
         // ===== M5: Coloring Game =====
+
+        // V12: Coloring filter state
+        let coloringCategoryFilter = 'all';
+        let coloringAgeFilter = 'all';
+
         function initColoringGame() {
             coloringCanvas = document.getElementById('coloringCanvas');
             coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+            initColoringFilters();
+            renderColoringTemplateBar();
             renderColoringPage();
+        }
+
+        function initColoringFilters() {
+            // Category tabs
+            const categoryTabs = document.querySelectorAll('.coloring-category-tab');
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    categoryTabs.forEach(t => t.classList.remove('selected'));
+                    tab.classList.add('selected');
+                    coloringCategoryFilter = tab.dataset.category;
+                    renderColoringTemplateBar();
+                });
+            });
+
+            // Age tabs
+            const ageTabs = document.querySelectorAll('.coloring-age-tab');
+            ageTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    ageTabs.forEach(t => t.classList.remove('selected'));
+                    tab.classList.add('selected');
+                    coloringAgeFilter = tab.dataset.age;
+                    renderColoringTemplateBar();
+                });
+            });
+        }
+
+        function renderColoringTemplateBar() {
+            const bar = document.getElementById('coloringTemplateBar');
+            bar.innerHTML = '';
+
+            const filtered = COLORING_PAGES.filter(page => {
+                const catMatch = coloringCategoryFilter === 'all' || page.category === coloringCategoryFilter;
+                const ageMatch = coloringAgeFilter === 'all' || page.ageGroup === coloringAgeFilter;
+                return catMatch && ageMatch;
+            });
+
+            filtered.forEach(page => {
+                const item = document.createElement('div');
+                item.className = 'coloring-template-item' + (page.id === COLORING_PAGES[coloringPage].id ? ' selected' : '');
+                item.dataset.id = page.id;
+
+                const stars = page.difficulty === 'easy' ? '★' : page.difficulty === 'medium' ? '★★' : '★★★';
+
+                item.innerHTML = `
+                    <span class="coloring-template-name">${page.name}</span>
+                    <span class="coloring-template-difficulty"><span class="difficulty-stars">${stars}</span></span>
+                `;
+
+                item.addEventListener('click', () => {
+                    const idx = COLORING_PAGES.findIndex(p => p.id === page.id);
+                    if (idx >= 0) {
+                        coloringPage = idx;
+                        coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
+                        document.getElementById('coloringTitle').textContent = COLORING_PAGES[coloringPage].name;
+                        renderColoringPage();
+                        renderColoringTemplateBar();
+                        playSound(playBtnClick);
+                    }
+                });
+
+                bar.appendChild(item);
+            });
         }
 
         function enterColoringGame() {
@@ -5440,11 +6023,13 @@
             coloringRegions = JSON.parse(JSON.stringify(COLORING_PAGES[coloringPage].regions));
             document.getElementById('coloringTitle').textContent = COLORING_PAGES[coloringPage].name;
             document.getElementById('coloringOverlay').classList.add('active');
-            
+
             const wrap = document.getElementById('coloringWrap');
             coloringCanvas.width = wrap.offsetWidth;
             coloringCanvas.height = wrap.offsetHeight;
-            
+
+            initColoringFilters();
+            renderColoringTemplateBar();
             renderColoringPage();
             playSound(playBtnClick);
         }
@@ -5526,6 +6111,71 @@
         function completeColoring() {
             document.getElementById('completeOverlay').classList.add('active');
             playSound(playColoringComplete);
+            playColoringCompleteMelody();
+            triggerColoringCelebration();
+        }
+
+        function playColoringCompleteMelody() {
+            const notes = [523, 659, 784, 1047];
+            notes.forEach((freq, i) => {
+                setTimeout(() => playTone(freq, 0.15), i * 100);
+            });
+        }
+
+        function playTone(freq, duration) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function triggerColoringCelebration() {
+            const canvas = document.getElementById('mainCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            // Particle explosion
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                const hue = Math.random() * 360;
+                p.style.cssText = `position:fixed;width:10px;height:10px;background:hsl(${hue},90%,60%);border-radius:50%;left:${cx}px;top:${cy}px;pointer-events:none;z-index:99999;transition:all ${0.5+Math.random()}s ease-out`;
+                document.body.appendChild(p);
+                requestAnimationFrame(() => {
+                    p.style.left = (cx + (Math.random()-0.5)*400) + 'px';
+                    p.style.top = (cy + (Math.random()-0.5)*400) + 'px';
+                    p.style.opacity = '0';
+                    p.style.transform = 'scale(0)';
+                });
+                setTimeout(() => p.remove(), 2000);
+            }
+            // Screen flash
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const flash = document.createElement('div');
+                    flash.style.cssText = 'position:fixed;inset:0;background:white;opacity:0.3;z-index:99998;pointer-events:none;transition:opacity 0.2s';
+                    document.body.appendChild(flash);
+                    setTimeout(() => { flash.style.opacity='0'; setTimeout(()=>flash.remove(),200); }, 200);
+                }, i * 250);
+            }
+            // Star falling
+            for (let i = 0; i < 10; i++) {
+                const star = document.createElement('div');
+                star.textContent = '⭐';
+                star.style.cssText = `position:fixed;font-size:24px;left:${Math.random()*window.innerWidth}px;top:-30px;pointer-events:none;z-index:99997;transition:all ${1+Math.random()*0.5}s ease-in`;
+                document.body.appendChild(star);
+                requestAnimationFrame(() => {
+                    star.style.top = (window.innerHeight + 30) + 'px';
+                    star.style.transform = `rotate(${Math.random()*360}deg)`;
+                });
+                setTimeout(() => star.remove(), 2000);
+            }
         }
 
         function closeComplete() {
@@ -6115,6 +6765,29 @@
             // Tool buttons
             brushBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('brush'); });
             eraserBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('eraser'); });
+            const highlighterBtn = document.getElementById('highlighterBtn');
+            if (highlighterBtn) {
+                highlighterBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('highlighter'); });
+                document.querySelectorAll('.highlighter-color-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        initAudio();
+                        document.querySelectorAll('.highlighter-color-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        currentHighlighterColor = btn.dataset.color;
+                        if (currentHighlighterColor === 'rainbow') {
+                            // Start rainbow animation
+                            if (!rainbowAnimRunning) {
+                                rainbowAnimRunning = true;
+                                animateRainbowHighlighter();
+                            }
+                        } else {
+                            // Stop rainbow animation
+                            rainbowAnimRunning = false;
+                        }
+                        document.getElementById('highlighterOptions').style.display = 'none';
+                    });
+                });
+            }
             stampBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('stamp'); });
             fillBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('fill'); });
             tracingBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('tracing'); });
