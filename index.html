@@ -5006,6 +5006,233 @@
             margin-bottom: 10px;
             color: #333;
         }
+        .panel-close:hover {
+            background: #f0f0f0;
+        }
+
+        /* V23: Layer System Panel */
+        .layer-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .layer-item.active {
+            background: #e8f5e9;
+        }
+        .layer-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 6px;
+        }
+        .layer-name {
+            flex: 1;
+            font-size: 14px;
+            color: #495057;
+        }
+        .layer-item .layer-up, .layer-item .layer-down {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+        .layer-item .layer-up:hover, .layer-item .layer-down:hover {
+            opacity: 1;
+        }
+
+        /* V23: Gradient Panel */
+        .gradient-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+        }
+        .gradient-type {
+            margin: 10px 0;
+            display: flex;
+            gap: 15px;
+        }
+        .gradient-type label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .gradient-angle {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .gradient-angle select {
+            padding: 4px 8px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+        .color-stops {
+            margin: 10px 0;
+        }
+        .color-stop {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .color-stop input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .color-stop input[type="range"] {
+            flex: 1;
+            accent-color: #4CAF50;
+        }
+        .color-stop span {
+            font-size: 12px;
+            color: #666;
+            width: 35px;
+        }
+        #gradientPanel button, #textPanel button, #shapeLibraryPanel button {
+            margin: 4px;
+            padding: 8px 12px;
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        #gradientPanel button:active, #textPanel button:active, #shapeLibraryPanel button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* V23: Text Panel */
+        .text-input-area textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: none;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .text-font, .text-size, .text-color {
+            margin: 8px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .text-font select, .text-size input {
+            padding: 4px 8px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+        }
+        .text-color input[type="color"] {
+            width: 40px;
+            height: 32px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .text-align {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .align-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .align-btn.active {
+            background: #FFE066;
+        }
+        .text-style {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .text-style label {
+            margin-right: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        /* V23: Shape Library Panel */
+        .shape-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 10px;
+        }
+        .shape-item {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s;
+        }
+        .shape-item:hover {
+            background: #f5f5f5;
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+        .shape-item svg {
+            width: 40px;
+            height: 40px;
+        }
+        .shape-item.selected {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px #4CAF50;
+        }
+        .shape-name {
+            font-size: 11px;
+            text-align: center;
+            margin-top: 2px;
+            color: #666;
+        }
+        .shape-item-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* V23: Layer canvas container */
+        #layerContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #layerContainer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
@@ -5504,6 +5731,91 @@
             <div class="theme-header" id="holidayHeader">节日主题</div>
             <div class="holiday-panel-grid" id="holidayGrid"></div>
         </div>
+
+        <!-- V23: Gradient Panel -->
+        <div class="panel" id="gradientPanel">
+            <div class="panel-header">🎨 渐变填充 <button class="panel-close" onclick="closeGradientPanel()">×</button></div>
+            <div class="gradient-preview" id="gradientPreview" style="background: linear-gradient(0deg, #ff0000, #0000ff);"></div>
+            <div class="gradient-type">
+                <label><input type="radio" name="gradientType" value="linear" checked onchange="updateGradientPreview()"> 线性</label>
+                <label><input type="radio" name="gradientType" value="radial" onchange="updateGradientPreview()"> 径向</label>
+            </div>
+            <div class="gradient-angle" id="gradientAngleDiv">
+                角度: <select id="gradientAngle" onchange="updateGradientPreview()">
+                    <option value="0">0°</option>
+                    <option value="45">45°</option>
+                    <option value="90">90°</option>
+                    <option value="135">135°</option>
+                    <option value="180">180°</option>
+                    <option value="225">225°</option>
+                    <option value="270" selected>270°</option>
+                    <option value="315">315°</option>
+                </select>
+            </div>
+            <div class="color-stops" id="colorStops">
+                <div class="color-stop">
+                    <input type="color" value="#ff0000" onchange="updateGradientPreview()">
+                    <input type="range" min="0" max="100" value="0" onchange="updateGradientPreview()">
+                    <span>0%</span>
+                </div>
+                <div class="color-stop">
+                    <input type="color" value="#0000ff" onchange="updateGradientPreview()">
+                    <input type="range" min="0" max="100" value="100" onchange="updateGradientPreview()">
+                    <span>100%</span>
+                </div>
+            </div>
+            <button onclick="addColorStop()">+ 添加色标</button>
+            <button onclick="applyGradient()">应用到填充</button>
+        </div>
+
+        <!-- V23: Text Input Panel -->
+        <div class="panel" id="textPanel">
+            <div class="panel-header">T 文字 <button class="panel-close" onclick="closeTextPanel()">×</button></div>
+            <div class="text-input-area">
+                <textarea id="textInput" placeholder="请输入文字..." rows="3"></textarea>
+            </div>
+            <div class="text-font">
+                字体: 
+                <select id="textFont">
+                    <option value="SimHei">黑体</option>
+                    <option value="SimSun">宋体</option>
+                    <option value="KaiTi">楷体</option>
+                    <option value="Microsoft YaHei">微软雅黑</option>
+                </select>
+            </div>
+            <div class="text-size">
+                字号: <input type="number" id="textSize" value="24" min="8" max="200">
+            </div>
+            <div class="text-color">
+                颜色: <input type="color" id="textColor" value="#333333">
+            </div>
+            <div class="text-align">
+                对齐: <button class="align-btn active" data-align="left">左</button>
+                <button class="align-btn" data-align="center">中</button>
+                <button class="align-btn" data-align="right">右</button>
+            </div>
+            <div class="text-style">
+                样式: <label><input type="checkbox" id="textBold"> 粗体</label>
+                <label><input type="checkbox" id="textItalic"> 斜体</label>
+            </div>
+            <p style="font-size:12px;color:#666;margin-top:8px;">点击画布放置文字</p>
+        </div>
+
+        <!-- V23: Shape Library Panel -->
+        <div class="panel" id="shapeLibraryPanel">
+            <div class="panel-header">⬜ 形状库 <button class="panel-close" onclick="closeShapeLibrary()">×</button></div>
+            <div class="shape-grid" id="shapeGrid"></div>
+        </div>
+
+        <!-- V23: Layer System Panel -->
+        <div class="panel" id="layerPanel">
+            <div class="panel-header">📑 图层 <button class="panel-close" onclick="closeLayerPanel()">×</button></div>
+            <button class="tool-btn" onclick="addNewLayer()" style="margin:8px 0;">+ 新建图层</button>
+            <div class="layer-list" id="layerList"></div>
+        </div>
+
+        <!-- V23: Layer Canvas Container -->
+        <div id="layerContainer"></div>
     </div>
 
     <div class="color-palette" id="colorPalette">
@@ -5539,6 +5851,22 @@
         <button class="tool-btn fill-btn" id="fillBtn">
             <span class="tool-icon">🪣</span>
             <span data-i18n="fill">Fill</span>
+        </button>
+        <!-- V23: Gradient Fill Button -->
+        <button class="tool-btn gradient-btn" id="gradientBtn" title="渐变填充">
+            <span class="tool-icon">🌈</span>
+        </button>
+        <!-- V23: Text Tool Button -->
+        <button class="tool-btn text-btn" id="textBtn" title="文字">
+            <span class="tool-icon">T</span>
+        </button>
+        <!-- V23: Shape Library Button -->
+        <button class="tool-btn shape-library-btn" id="shapeLibraryBtn" title="形状库">
+            <span class="tool-icon">⬜</span>
+        </button>
+        <!-- V23: Layer Button -->
+        <button class="tool-btn layer-btn" id="layerBtn" title="图层">
+            <span class="tool-icon">📑</span>
         </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
@@ -8345,6 +8673,14 @@
             const bubbleCtx2 = bubbleCanvas.getContext('2d');
             bubbleCtx2.scale(dpr, dpr);
 
+            // V23: Resize layer canvases
+            Object.keys(layerCanvases).forEach(layerId => {
+                layerCanvases[layerId].width = rect.width * dpr;
+                layerCanvases[layerId].height = rect.height * dpr;
+                layerContexts[layerId].scale(dpr, dpr);
+            });
+            compositeLayers();
+
             // Redraw background
             drawBackground();
 
@@ -8466,7 +8802,7 @@
 
         // V16: Draw dot with symmetry support
         function drawDot(x, y, color, size) {
-            const ctx = drawingCanvas.getContext('2d');
+            const ctx = getActiveContext();
             const points = getSymmetryPoints(x, y);
             points.forEach(p => {
                 ctx.beginPath();
@@ -8478,7 +8814,7 @@
 
         // V16: Draw line with symmetry support
         function drawLine(x1, y1, x2, y2, color, size) {
-            const ctx = drawingCanvas.getContext('2d');
+            const ctx = getActiveContext();
             const startPoints = getSymmetryPoints(x1, y1);
             const endPoints = getSymmetryPoints(x2, y2);
             
@@ -8691,7 +9027,7 @@
             e.preventDefault();
 
             const pos = getPos(e);
-            const ctx = drawingCanvas.getContext('2d');
+            const ctx = getActiveContext();
 
             // V16: Smart Shapes - show preview
             if (isDrawingShape && shapeType !== 'free') {
@@ -8751,6 +9087,8 @@
                 isDrawingShape = false;
                 saveState(); // Save after shape finalization
             }
+            // V23: Composite layers after drawing
+            compositeLayers();
             isDrawing = false;
         }
 
@@ -10759,6 +11097,9 @@
             tracingBtn.classList.toggle('selected', tool === 'tracing');
             bgBtn.classList.toggle('selected', tool === 'bg');
             document.getElementById('customStickerBtn').classList.toggle('selected', tool === 'customSticker');
+            if (document.getElementById('gradientBtn')) document.getElementById('gradientBtn').classList.toggle('selected', tool === 'gradient');
+            if (document.getElementById('textBtn')) document.getElementById('textBtn').classList.toggle('selected', tool === 'text');
+            if (document.getElementById('shapeLibraryBtn')) document.getElementById('shapeLibraryBtn').classList.toggle('selected', tool === 'shapeLibrary');
             
             closeAllPanels();
             
@@ -10770,6 +11111,14 @@
                 togglePanel('fill');
             } else if (tool === 'bg') {
                 togglePanel('bg');
+            } else if (tool === 'gradient') {
+                togglePanel('gradient');
+            } else if (tool === 'text') {
+                togglePanel('text');
+            } else if (tool === 'shapeLibrary') {
+                togglePanel('shapeLibrary');
+            } else if (tool === 'layer') {
+                togglePanel('layer');
             }
             
             if (tool !== 'stamp') {
@@ -10855,11 +11204,15 @@
 
             // Click on empty canvas area to deselect stamps
             drawingCanvas.addEventListener('click', (e) => {
+                const rect = drawingCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 if (currentTool === 'stamp' && selectedStamp) {
-                    const rect = drawingCanvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
                     placeStamp(x, y);
+                } else if (currentTool === 'text') {
+                    handleTextPlacement(x, y);
+                } else if (currentTool === 'shapeLibrary' && currentShapeKey) {
+                    drawShapeOnCanvas(currentShapeKey, x, y);
                 } else if (currentTool !== 'stamp') {
                     deselectAllStamps();
                 }
@@ -12654,6 +13007,8 @@
             initBackgroundPanel();
             initThemeSystem(); // V8: Initialize theme system
             initHolidaySystem(); // V19: Initialize holiday system
+            initLayers(); // V23: Initialize layer system
+            initShapeLibrary(); // V23: Initialize shape library
             resizeCanvas();
             initEventListeners();
             initColoringGame();
@@ -17688,6 +18043,407 @@
             </div>
         </div>
     </div>
+
+    <!-- V23: Advanced Drawing Tools -->
+    <script>
+        // ===== V23: Layer System =====
+        const layerSystem = {
+            layers: [
+                { id: 'layer_1', name: '图层 1', visible: true, locked: false }
+            ],
+            activeLayerId: 'layer_1',
+            layerCounter: 1
+        };
+
+        let layerCanvases = {};
+        let layerContexts = {};
+        let selectedShape = null;
+        let currentShapeKey = null;
+
+        function initLayers() {
+            // Create layer canvases
+            layerSystem.layers.forEach(layer => {
+                createLayerCanvas(layer.id);
+            });
+            renderLayerList();
+        }
+
+        function createLayerCanvas(layerId) {
+            const layerContainer = document.getElementById('layerContainer');
+            if (!layerContainer) return;
+            const c = document.createElement('canvas');
+            c.id = 'layerCanvas_' + layerId;
+            c.width = drawingCanvas.width;
+            c.height = drawingCanvas.height;
+            c.style.position = 'absolute';
+            c.style.top = '0';
+            c.style.left = '0';
+            c.style.pointerEvents = 'none';
+            layerContainer.appendChild(c);
+            layerCanvases[layerId] = c;
+            layerContexts[layerId] = c.getContext('2d');
+        }
+
+        function addNewLayer() {
+            layerSystem.layerCounter++;
+            const newLayer = {
+                id: 'layer_' + layerSystem.layerCounter,
+                name: '图层 ' + layerSystem.layerCounter,
+                visible: true,
+                locked: false
+            };
+            layerSystem.layers.push(newLayer);
+            createLayerCanvas(newLayer.id);
+            setActiveLayer(newLayer.id);
+            renderLayerList();
+            playSound(playBtnClick);
+        }
+
+        function setActiveLayer(layerId) {
+            layerSystem.activeLayerId = layerId;
+            renderLayerList();
+        }
+
+        function toggleLayerVisibility(layerId) {
+            const layer = layerSystem.layers.find(l => l.id === layerId);
+            if (layer) {
+                layer.visible = !layer.visible;
+                if (layerCanvases[layerId]) {
+                    layerCanvases[layerId].style.display = layer.visible ? 'block' : 'none';
+                }
+                renderLayerList();
+                compositeLayers();
+            }
+        }
+
+        function toggleLayerLock(layerId) {
+            const layer = layerSystem.layers.find(l => l.id === layerId);
+            if (layer) {
+                layer.locked = !layer.locked;
+                if (layerCanvases[layerId]) {
+                    layerCanvases[layerId].style.pointerEvents = layer.locked ? 'none' : 'auto';
+                }
+                renderLayerList();
+            }
+        }
+
+        function deleteLayer(layerId) {
+            if (layerSystem.layers.length <= 1) return; // Keep at least 1 layer
+            const idx = layerSystem.layers.findIndex(l => l.id === layerId);
+            if (idx !== -1) {
+                const layer = layerSystem.layers[idx];
+                if (layerCanvases[layerId]) {
+                    layerCanvases[layerId].remove();
+                    delete layerCanvases[layerId];
+                    delete layerContexts[layerId];
+                }
+                layerSystem.layers.splice(idx, 1);
+                if (layerSystem.activeLayerId === layerId) {
+                    setActiveLayer(layerSystem.layers[Math.max(0, idx - 1)].id);
+                }
+                renderLayerList();
+                compositeLayers();
+            }
+        }
+
+        function moveLayer(layerId, direction) {
+            const idx = layerSystem.layers.findIndex(l => l.id === layerId);
+            const newIdx = direction === 'up' ? idx + 1 : idx - 1;
+            if (newIdx < 0 || newIdx >= layerSystem.layers.length) return;
+            
+            const temp = layerSystem.layers[idx];
+            layerSystem.layers[idx] = layerSystem.layers[newIdx];
+            layerSystem.layers[newIdx] = temp;
+            
+            // Reorder canvas DOM elements
+            const container = document.getElementById('layerContainer');
+            if (container) {
+                layerSystem.layers.forEach(l => {
+                    if (layerCanvases[l.id]) {
+                        container.appendChild(layerCanvases[l.id]);
+                    }
+                });
+            }
+            
+            renderLayerList();
+            compositeLayers();
+        }
+
+        function renderLayerList() {
+            const list = document.getElementById('layerList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            [...layerSystem.layers].reverse().forEach(layer => {
+                const div = document.createElement('div');
+                div.className = 'layer-item' + (layer.id === layerSystem.activeLayerId ? ' active' : '');
+                div.innerHTML = `
+                    <button onclick="toggleLayerVisibility('${layer.id}')" title="${layer.visible ? '隐藏' : '显示'}">${layer.visible ? '👁️' : '🔲'}</button>
+                    <button onclick="toggleLayerLock('${layer.id}')" title="${layer.locked ? '解锁' : '锁定'}">${layer.locked ? '🔒' : '🔓'}</button>
+                    <span class="layer-name" onclick="setActiveLayer('${layer.id}')">${layer.name}</span>
+                    <button class="layer-up" onclick="moveLayer('${layer.id}', 'up')" title="上移">▲</button>
+                    <button class="layer-down" onclick="moveLayer('${layer.id}', 'down')" title="下移">▼</button>
+                    <button onclick="deleteLayer('${layer.id}')" title="删除">🗑️</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function compositeLayers() {
+            // Composite all visible layers to main canvas
+            const mainCtx = drawingCanvas.getContext('2d');
+            mainCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            layerSystem.layers.forEach(layer => {
+                if (layer.visible && layerCanvases[layer.id]) {
+                    mainCtx.drawImage(layerCanvases[layer.id], 0, 0);
+                }
+            });
+        }
+
+        function getActiveContext() {
+            return layerContexts[layerSystem.activeLayerId] || drawingCanvas.getContext('2d');
+        }
+
+        function closeLayerPanel() {
+            document.getElementById('layerPanel').classList.remove('active');
+        }
+
+        // ===== V23: Gradient Fill Tool =====
+        let currentGradient = null;
+
+        function updateGradientPreview() {
+            const type = document.querySelector('input[name="gradientType"]:checked').value;
+            const preview = document.getElementById('gradientPreview');
+            const angle = parseInt(document.getElementById('gradientAngle').value);
+            const stops = getColorStops();
+            
+            if (type === 'linear') {
+                const rad = angle * Math.PI / 180;
+                const x2 = Math.cos(rad) * 100;
+                const y2 = Math.sin(rad) * 100;
+                currentGradient = ctx.createLinearGradient(50, 50, 50 + x2, 50 + y2);
+            } else {
+                currentGradient = ctx.createRadialGradient(50, 50, 0, 50, 50, 50);
+            }
+            
+            stops.forEach(s => currentGradient.addColorStop(s.pos, s.color));
+            preview.style.background = currentGradient;
+        }
+
+        function getColorStops() {
+            const stops = [];
+            document.querySelectorAll('.color-stop').forEach(el => {
+                const color = el.querySelector('input[type="color"]').value;
+                const pos = parseInt(el.querySelector('input[type="range"]').value) / 100;
+                stops.push({ color, pos });
+            });
+            return stops.sort((a, b) => a.pos - b.pos);
+        }
+
+        function addColorStop() {
+            const container = document.getElementById('colorStops');
+            const newStop = document.createElement('div');
+            newStop.className = 'color-stop';
+            newStop.innerHTML = `
+                <input type="color" value="#ff6600" onchange="updateGradientPreview()">
+                <input type="range" min="0" max="100" value="50" onchange="updateGradientPreview()">
+                <span>50%</span>
+            `;
+            container.appendChild(newStop);
+            updateGradientPreview();
+        }
+
+        function applyGradient() {
+            currentTool.fillGradient = currentGradient;
+            currentTool.fillType = 'gradient';
+            closeGradientPanel();
+            selectTool('fill');
+        }
+
+        function closeGradientPanel() {
+            document.getElementById('gradientPanel').classList.remove('active');
+        }
+
+        // ===== V23: Text Input Tool =====
+        let textInputActive = false;
+
+        function openTextPanel() {
+            document.getElementById('textPanel').classList.add('active');
+            textInputActive = true;
+        }
+
+        function closeTextPanel() {
+            document.getElementById('textPanel').classList.remove('active');
+            textInputActive = false;
+        }
+
+        function handleTextPlacement(x, y) {
+            const text = document.getElementById('textInput').value;
+            if (!text.trim()) return;
+            
+            const font = document.getElementById('textFont').value;
+            const size = document.getElementById('textSize').value;
+            const color = document.getElementById('textColor').value;
+            const align = document.querySelector('.align-btn.active').dataset.align;
+            const bold = document.getElementById('textBold').checked;
+            const italic = document.getElementById('textItalic').checked;
+            
+            const activeCtx = getActiveContext();
+            activeCtx.font = `${bold ? 'bold ' : ''}${italic ? 'italic ' : ''}${size}px ${font}`;
+            activeCtx.fillStyle = color;
+            activeCtx.textAlign = align;
+            activeCtx.textBaseline = 'top';
+            
+            const lines = text.split('\n');
+            const lineHeight = parseInt(size) * 1.2;
+            
+            lines.forEach((line, i) => {
+                let tx = x;
+                if (align === 'center') {
+                    tx = x - activeCtx.measureText(line).width / 2;
+                } else if (align === 'right') {
+                    tx = x - activeCtx.measureText(line).width;
+                }
+                activeCtx.fillText(line, tx, y + i * lineHeight);
+            });
+            
+            compositeLayers();
+            saveState();
+            document.getElementById('textInput').value = '';
+            playSound(playBtnClick);
+        }
+
+        // ===== V23: Shape Library =====
+        const SHAPE_LIBRARY = {
+            circle: { name: '圆形', svg: '<circle cx="50" cy="50" r="45" stroke-width="3"/>', w: 100, h: 100 },
+            ellipse: { name: '椭圆', svg: '<ellipse cx="50" cy="50" rx="45" ry="30" stroke-width="3"/>', w: 100, h: 60 },
+            rectangle: { name: '矩形', svg: '<rect x="5" y="5" width="90" height="90" stroke-width="3"/>', w: 100, h: 100 },
+            roundedRect: { name: '圆角矩形', svg: '<rect x="5" y="5" width="90" height="90" rx="15" ry="15" stroke-width="3"/>', w: 100, h: 100 },
+            triangle: { name: '三角形', svg: '<polygon points="50,5 95,95 5,95" stroke-width="3"/>', w: 100, h: 100 },
+            diamond: { name: '菱形', svg: '<polygon points="50,5 95,50 50,95 5,50" stroke-width="3"/>', w: 100, h: 100 },
+            star5: { name: '五角星', svg: '<polygon points="50,5 61,35 95,35 68,57 79,90 50,70 21,90 32,57 5,35 39,35" stroke-width="2"/>', w: 100, h: 100 },
+            line: { name: '直线', svg: '<line x1="5" y1="50" x2="95" y2="50" stroke-width="3"/>', w: 100, h: 100 },
+            arrow: { name: '箭头', svg: '<line x1="5" y1="50" x2="80" y2="50" stroke-width="3"/><polygon points="80,45 95,50 80,55"/>', w: 100, h: 100 },
+            heart: { name: '爱心', svg: '<path d="M50,88 C20,60 5,40 5,25 C5,10 20,5 35,5 C45,5 50,12 50,12 C50,12 55,5 65,5 C80,5 95,10 95,25 C95,40 80,60 50,88 Z" stroke-width="2"/>', w: 100, h: 100 },
+            cloud: { name: '云朵', svg: '<path d="M25,70 Q5,70 5,50 Q5,30 25,30 Q30,10 50,10 Q70,10 75,30 Q95,30 95,50 Q95,70 75,70 Z" stroke-width="2"/>', w: 100, h: 100 },
+            speechBubble: { name: '对话气泡', svg: '<path d="M5,5 L95,5 L95,65 L30,65 L20,85 L25,65 L5,65 Z" stroke-width="2"/>', w: 100, h: 100 },
+        };
+
+        function initShapeLibrary() {
+            renderShapeGrid();
+        }
+
+        function renderShapeGrid() {
+            const grid = document.getElementById('shapeGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            Object.entries(SHAPE_LIBRARY).forEach(([key, shape]) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'shape-item-wrap';
+                
+                const item = document.createElement('div');
+                item.className = 'shape-item';
+                item.dataset.shape = key;
+                item.innerHTML = `<svg viewBox="0 0 100 100" fill="none" stroke="#495057">${shape.svg}</svg>`;
+                item.onclick = () => selectLibraryShape(key);
+                
+                const name = document.createElement('div');
+                name.className = 'shape-name';
+                name.textContent = shape.name;
+                
+                wrap.appendChild(item);
+                wrap.appendChild(name);
+                grid.appendChild(wrap);
+            });
+        }
+
+        function selectLibraryShape(shapeKey) {
+            selectedShape = SHAPE_LIBRARY[shapeKey];
+            currentShapeKey = shapeKey;
+            document.querySelectorAll('.shape-item').forEach(el => el.classList.remove('selected'));
+            const selectedEl = document.querySelector(`[data-shape="${shapeKey}"]`);
+            if (selectedEl) selectedEl.classList.add('selected');
+            
+            // Auto close panel and start drawing
+            closeShapeLibrary();
+            selectTool('shapeLibrary');
+            playSound(playBtnClick);
+        }
+
+        function drawShapeOnCanvas(shape, x, y, w, h, color, strokeWidth) {
+            const activeCtx = getActiveContext();
+            activeCtx.strokeStyle = color;
+            activeCtx.lineWidth = strokeWidth || 3;
+            activeCtx.lineCap = 'round';
+            activeCtx.lineJoin = 'round';
+            
+            const svg = shape.svg;
+            const tempSvg = svg.replace(/stroke-width="[^"]*"/g, '');
+            
+            // Create a temporary canvas to render the SVG shape
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            const img = new Image();
+            const svgBlob = new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${shape.w} ${shape.h}" width="${w}" height="${h}">${tempSvg}</svg>`, { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = () => {
+                tempCtx.drawImage(img, 0, 0, w, h);
+                activeCtx.drawImage(tempCanvas, x - w/2, y - h/2);
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        }
+
+        function closeShapeLibrary() {
+            document.getElementById('shapeLibraryPanel').classList.remove('active');
+        }
+
+        // ===== V23: Initialize Button Event Listeners =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gradient button
+            const gradientBtn = document.getElementById('gradientBtn');
+            if (gradientBtn) {
+                gradientBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('gradient'); });
+            }
+            
+            // Text button
+            const textBtn = document.getElementById('textBtn');
+            if (textBtn) {
+                textBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('text'); });
+            }
+            
+            // Shape Library button
+            const shapeLibraryBtn = document.getElementById('shapeLibraryBtn');
+            if (shapeLibraryBtn) {
+                shapeLibraryBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('shapeLibrary'); });
+            }
+            
+            // Layer button
+            const layerBtn = document.getElementById('layerBtn');
+            if (layerBtn) {
+                layerBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('layer'); });
+            }
+            
+            // Text alignment buttons
+            document.querySelectorAll('.align-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Initial gradient preview update
+            setTimeout(updateGradientPreview, 100);
+        });
+
+        // Override draw function to handle shape library and text placement
+        const originalDraw = window.draw;
+    </script>
 
     <!-- PWA Service Worker Registration -->
     <script>
