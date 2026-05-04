@@ -3103,6 +3103,17 @@
             margin-top: 2px;
         }
 
+        .animabook-play-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .animabook-play-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         .animabook-tools {
             display: flex;
             gap: 12px;
@@ -7883,6 +7894,7 @@
             <div class="animabook-timeline" id="animabookTimeline"></div>
         </div>
         <div class="animabook-tools">
+            <button onclick="toggleAnimabookPlay()" id="animabookPlayBtn" class="animabook-play-btn" title="自动播放">▶</button>
             <button onclick="animabookDrawCurrentPage()">✏️ 编辑当前页</button>
             <button onclick="animabookClearPage()">🗑️ 清除当前页</button>
             <button onclick="animabookDeletePage()">❌ 删除当前页</button>
@@ -23455,6 +23467,11 @@
         let animabookAudioElements = [];
         const ANIMABOOK_STORAGE_KEY = 'animation_book_data';
 
+        // V45: Animation Book playback state
+        let animabookIsPlaying = false;
+        let animabookPlayTimer = null;
+        let animabookPlaybackInterval = null;
+
         // V43: Voice Effect Types
         const VOICE_EFFECTS = {
             'none': { name: '原声', icon: '🎤', description: '保持原始声音' },
@@ -23906,6 +23923,7 @@
         function closeAnimabook() {
             document.getElementById('animabookOverlay').classList.remove('active');
             stopAnimabookRecording();
+            stopAnimabook(); // V45: stop playback when closing
         }
 
         function loadAnimabook() {
@@ -24191,6 +24209,141 @@
 
         function onVoiceEnded(pageIdx) {
             // Reset effect when voice ends
+        }
+
+        // V45: Animation Book Auto-Play with voice overlay
+        function playAnimabook() {
+            if (animabookData.pages.length < 2) {
+                showToast('至少需要2页才能播放');
+                return;
+            }
+            
+            // Check if any page has voice or canvas content
+            let hasContent = animabookData.pages.some(p => p.voiceData || p.canvasData);
+            if (!hasContent) {
+                showToast('请先添加声音或绘画内容');
+                return;
+            }
+            
+            animabookIsPlaying = true;
+            updateAnimabookPlayButton();
+            
+            // Switch to playful BGM during playback
+            const prevBGM = currentBGMType;
+            switchBGM('playful');
+            
+            // Start playback from current page
+            playAnimabookCurrentPage();
+        }
+
+        function playAnimabookCurrentPage() {
+            const idx = animabookData.currentPage;
+            const page = animabookData.pages[idx];
+            
+            // Stop any previous playback
+            stopAnimabookPageAudio(idx);
+            
+            if (page.voiceData) {
+                // Get the effect selected for this page
+                const effectSelect = document.getElementById('voiceEffect' + idx);
+                const effectName = effectSelect ? effectSelect.value : 'none';
+                
+                // Play voice with effect
+                const audio = document.getElementById('voiceAudio' + idx);
+                if (audio) {
+                    initAudio();
+                    
+                    // Reset audio position
+                    audio.currentTime = 0;
+                    
+                    // Wait for metadata if not ready
+                    if (audio.readyState >= 1) {
+                        playPageAudio(idx, effectName, audio);
+                    } else {
+                        audio.onloadedmetadata = () => {
+                            playPageAudio(idx, effectName, audio);
+                        };
+                    }
+                }
+            } else if (page.canvasData) {
+                // Just advance after a delay if no voice but has content
+                animabookPlayTimer = setTimeout(() => {
+                    goToNextAnimabookPage();
+                }, 2000);
+            }
+        }
+
+        function goToNextAnimabookPage() {
+            if (!animabookIsPlaying) return;
+            
+            if (animabookData.currentPage < animabookData.pages.length - 1) {
+                animabookSaveCurrentPage();
+                animabookData.currentPage++;
+                updateAnimabookFlip();
+                updateAnimabookNav();
+                renderAnimabookTimeline();
+                playAnimabookCurrentPage();
+            } else {
+                // End of book
+                stopAnimabook();
+            }
+        }
+
+        function stopAnimabook() {
+            animabookIsPlaying = false;
+            
+            if (animabookPlayTimer) {
+                clearTimeout(animabookPlayTimer);
+                animabookPlayTimer = null;
+            }
+            
+            // Stop all audio
+            animabookData.pages.forEach((page, idx) => {
+                stopAnimabookPageAudio(idx);
+            });
+            
+            updateAnimabookPlayButton();
+            showToast('播放结束');
+        }
+
+        function stopAnimabookPageAudio(idx) {
+            const audio = document.getElementById('voiceAudio' + idx);
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        }
+
+        function playPageAudio(idx, effectName, audio) {
+            if (effectName === 'none') {
+                audio.play();
+            } else {
+                playVoiceWithEffect(idx, effectName);
+            }
+            
+            // Get actual duration
+            const duration = audio.duration || 2;
+            
+            // Schedule next page after voice ends + buffer
+            animabookPlayTimer = setTimeout(() => {
+                goToNextAnimabookPage();
+            }, duration * 1000 + 500);
+        }
+
+        function toggleAnimabookPlay() {
+            if (animabookIsPlaying) {
+                stopAnimabook();
+            } else {
+                playAnimabook();
+            }
+        }
+
+        function updateAnimabookPlayButton() {
+            const btn = document.getElementById('animabookPlayBtn');
+            if (btn) {
+                btn.textContent = animabookIsPlaying ? '⏹' : '▶';
+                btn.title = animabookIsPlaying ? '停止播放' : '自动播放';
+            }
         }
 
         function animabookRecordVoice(pageIdx) {
