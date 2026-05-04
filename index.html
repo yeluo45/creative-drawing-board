@@ -499,6 +499,92 @@
             gap: 2px;
         }
 
+        /* V56: Background Selector Panel */
+        .bg-selector-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 400px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bg-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .bg-category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .bg-tab {
+            padding: 4px 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .bg-tab.active {
+            background: #40c057;
+            color: white;
+            border-color: #40c057;
+        }
+
+        .bg-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 12px;
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+
+        .bg-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+
+        .bg-item:hover {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+
+        .bg-preview {
+            width: 60px;
+            height: 40px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .bg-item span {
+            font-size: 0.7rem;
+            margin-top: 4px;
+            text-align: center;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -8316,6 +8402,7 @@
             <span data-i18n="theme">Theme</span>
         </button>
         <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
+        <button class="tool-btn" id="bgSelectBtn" onclick="showBackgroundSelector()" title="背景选择">🎨</button>
         <button class="tool-btn eraser-btn" id="eraserBtn">
             <span class="tool-icon">🧹</span>
             <span data-i18n="eraser">Eraser</span>
@@ -13475,6 +13562,338 @@
             }
 
             container.appendChild(canvas);
+        }
+
+        // V56: Background Selector
+        const BG_PRESETS = [
+            // 纯色
+            { id: 'solid_white', name: '白色', color: '#ffffff', type: 'solid' },
+            { id: 'solid_lightgray', name: '浅灰', color: '#f5f5f5', type: 'solid' },
+            { id: 'solid_cream', name: '米白', color: '#fff8e7', type: 'solid' },
+            { id: 'solid_pink', name: '粉色', color: '#ffe4ec', type: 'solid' },
+            { id: 'solid_lightblue', name: '淡蓝', color: '#e4f0ff', type: 'solid' },
+            { id: 'solid_lightgreen', name: '淡绿', color: '#e4fff0', type: 'solid' },
+            { id: 'solid_lightyellow', name: '淡黄', color: '#fffce4', type: 'solid' },
+            { id: 'solid_coral', name: '珊瑚', color: '#ffe4e1', type: 'solid' },
+            { id: 'solid_mint', name: '薄荷', color: '#e0fff0', type: 'solid' },
+            { id: 'solid_lavender', name: '薰衣草', color: '#f0e4ff', type: 'solid' },
+            // 格子
+            { id: 'plaid_red', name: '红格', colors: ['#ffcccc', '#ff6666'], type: 'plaid' },
+            { id: 'plaid_blue', name: '蓝格', colors: ['#cce4ff', '#6699cc'], type: 'plaid' },
+            { id: 'plaid_green', name: '绿格', colors: ['#ccffdd', '#66cc66'], type: 'plaid' },
+            { id: 'plaid_orange', name: '橙格', colors: ['#ffe4cc', '#ff9966'], type: 'plaid' },
+            { id: 'plaid_purple', name: '紫格', colors: ['#e4ccff', '#9966cc'], type: 'plaid' },
+            // 条纹
+            { id: 'stripe_horizontal', name: '横纹', colors: ['#ffffff', '#e0e0e0'], type: 'stripe', direction: 'horizontal' },
+            { id: 'stripe_vertical', name: '竖纹', colors: ['#ffffff', '#e0e0e0'], type: 'stripe', direction: 'vertical' },
+            { id: 'stripe_diagonal', name: '斜纹', colors: ['#ffffff', '#e0e0e0'], type: 'stripe', direction: 'diagonal' },
+            { id: 'stripe_wave', name: '波浪纹', colors: ['#e4f8ff', '#b8e8ff'], type: 'stripe', direction: 'wave' },
+            // 圆点
+            { id: 'dots_white', name: '白点', bg: '#1a1a1a', dot: '#ffffff', type: 'dots' },
+            { id: 'dots_black', name: '黑点', bg: '#ffffff', dot: '#1a1a1a', type: 'dots' },
+            { id: 'dots_colorful', name: '彩点', bg: '#f0f0ff', dot: '#ff6b9d', type: 'dots' },
+            { id: 'dots_rainbow', name: '彩虹点', bg: '#ffffff', dot: 'rainbow', type: 'dots' },
+            // 渐变
+            { id: 'gradient_sunrise', name: '日出', colors: ['#ff7e5f', '#feb47b'], direction: 'vertical', type: 'gradient' },
+            { id: 'gradient_sunset', name: '黄昏', colors: ['#2c3e50', '#fd746c'], direction: 'vertical', type: 'gradient' },
+            { id: 'gradient_ocean', name: '海洋', colors: ['#1a2980', '#26d0ce'], direction: 'vertical', type: 'gradient' },
+            { id: 'gradient_forest', name: '森林', colors: ['#134e5e', '#71b280'], direction: 'vertical', type: 'gradient' },
+            { id: 'gradient_stars', name: '星空', colors: ['#0f0c29', '#302b63'], direction: 'vertical', type: 'gradient' },
+            { id: 'gradient_rainbow', name: '彩虹', colors: ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#8b00ff'], direction: 'vertical', type: 'gradient' },
+            // 纹理
+            { id: 'texture_paper', name: '纸纹', baseColor: '#f5f5dc', type: 'texture' },
+            { id: 'texture_canvas', name: '布纹', baseColor: '#faebd7', type: 'texture' },
+            { id: 'texture_wood', name: '木纹', baseColor: '#deb887', type: 'texture' },
+            { id: 'texture_marble', name: '大理石', baseColor: '#faf0e6', type: 'texture' },
+            { id: 'texture_clouds', name: '云朵', baseColor: '#e8f4f8', type: 'texture' },
+            { id: 'texture_bubbles', name: '泡泡', baseColor: '#e0f7fa', type: 'texture' },
+        ];
+
+        function showBackgroundSelector() {
+            const existing = document.querySelector('.bg-selector-panel');
+            if (existing) existing.remove();
+
+            const panel = document.createElement('div');
+            panel.className = 'bg-selector-panel';
+            panel.innerHTML = `
+                <div class="bg-selector-header">
+                    <span>🎨 背景选择</span>
+                    <button class="panel-close" onclick="this.closest('.bg-selector-panel').remove()">×</button>
+                </div>
+                <div class="bg-category-tabs">
+                    <button class="bg-tab active" onclick="switchBgCategory('all')">全部</button>
+                    <button class="bg-tab" onclick="switchBgCategory('solid')">纯色</button>
+                    <button class="bg-tab" onclick="switchBgCategory('plaid')">格子</button>
+                    <button class="bg-tab" onclick="switchBgCategory('stripe')">条纹</button>
+                    <button class="bg-tab" onclick="switchBgCategory('dots')">圆点</button>
+                    <button class="bg-tab" onclick="switchBgCategory('gradient')">渐变</button>
+                    <button class="bg-tab" onclick="switchBgCategory('texture')">纹理</button>
+                </div>
+                <div class="bg-grid" id="bgGrid"></div>
+            `;
+            document.body.appendChild(panel);
+            renderBgGrid('all');
+        }
+
+        function renderBgGrid(category) {
+            const grid = document.getElementById('bgGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const filtered = category === 'all'
+                ? BG_PRESETS
+                : BG_PRESETS.filter(p => p.type === category);
+
+            filtered.forEach(bg => {
+                const item = document.createElement('div');
+                item.className = 'bg-item';
+                item.onclick = () => selectBackground(bg);
+                item.innerHTML = `<span>${bg.name}</span>`;
+
+                const preview = document.createElement('div');
+                preview.className = 'bg-preview';
+                preview.style.width = '60px';
+                preview.style.height = '40px';
+                preview.style.borderRadius = '4px';
+                preview.style.marginBottom = '4px';
+                applyBgPreview(preview, bg);
+
+                item.insertBefore(preview, item.firstChild);
+                grid.appendChild(item);
+            });
+        }
+
+        function applyBgPreview(element, bg) {
+            switch (bg.type) {
+                case 'solid':
+                    element.style.backgroundColor = bg.color;
+                    break;
+                case 'plaid':
+                    element.style.background = `repeating-linear-gradient(0deg, ${bg.colors[0]} 0px, ${bg.colors[0]} 10px, ${bg.colors[1]} 10px, ${bg.colors[1]} 20px), repeating-linear-gradient(90deg, ${bg.colors[0]} 0px, ${bg.colors[0]} 10px, ${bg.colors[1]} 10px, ${bg.colors[1]} 20px)`;
+                    element.style.backgroundBlendMode = 'multiply';
+                    break;
+                case 'stripe':
+                    if (bg.direction === 'horizontal') {
+                        element.style.background = `repeating-linear-gradient(0deg, ${bg.colors[0]} 0px, ${bg.colors[0]} 8px, ${bg.colors[1]} 8px, ${bg.colors[1]} 16px)`;
+                    } else if (bg.direction === 'vertical') {
+                        element.style.background = `repeating-linear-gradient(90deg, ${bg.colors[0]} 0px, ${bg.colors[0]} 8px, ${bg.colors[1]} 8px, ${bg.colors[1]} 16px)`;
+                    } else if (bg.direction === 'diagonal') {
+                        element.style.background = `repeating-linear-gradient(45deg, ${bg.colors[0]} 0px, ${bg.colors[0]} 8px, ${bg.colors[1]} 8px, ${bg.colors[1]} 16px)`;
+                    } else if (bg.direction === 'wave') {
+                        element.style.background = `linear-gradient(180deg, ${bg.colors[0]}, ${bg.colors[1]})`;
+                    }
+                    break;
+                case 'dots':
+                    if (bg.dot === 'rainbow') {
+                        element.style.background = `radial-gradient(circle, #ff0000 2px, transparent 3px), radial-gradient(circle, #ff7f00 2px, transparent 3px), radial-gradient(circle, #ffff00 2px, transparent 3px), radial-gradient(circle, #00ff00 2px, transparent 3px), radial-gradient(circle, #0000ff 2px, transparent 3px)`;
+                        element.style.backgroundSize = '20px 20px';
+                        element.style.backgroundColor = bg.bg;
+                    } else {
+                        element.style.background = `radial-gradient(circle, ${bg.dot} 2px, transparent 3px)`;
+                        element.style.backgroundSize = '12px 12px';
+                        element.style.backgroundColor = bg.bg;
+                    }
+                    break;
+                case 'gradient':
+                    if (bg.colors.length > 2) {
+                        const stops = bg.colors.map((c, i) => `${c} ${Math.round(100 * i / (bg.colors.length - 1))}%`).join(', ');
+                        element.style.background = `linear-gradient(${bg.direction || 'vertical'}, ${stops})`;
+                    } else {
+                        element.style.background = `linear-gradient(${bg.direction || 'vertical'}, ${bg.colors[0]}, ${bg.colors[1]})`;
+                    }
+                    break;
+                case 'texture':
+                    applyTexturePreview(element, bg);
+                    break;
+            }
+        }
+
+        function applyTexturePreview(element, bg) {
+            switch (bg.id) {
+                case 'texture_paper':
+                    element.style.backgroundColor = bg.baseColor;
+                    element.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E")`;
+                    break;
+                case 'texture_canvas':
+                    element.style.backgroundColor = bg.baseColor;
+                    element.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23d4c4b0'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23d4c4b0'/%3E%3C/svg%3E")`;
+                    element.style.backgroundSize = '4px 4px';
+                    break;
+                case 'texture_wood':
+                    element.style.background = `linear-gradient(90deg, ${bg.baseColor} 0%, #c4a67c 50%, ${bg.baseColor} 100%)`;
+                    break;
+                case 'texture_marble':
+                    element.style.backgroundColor = bg.baseColor;
+                    element.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Cpath d='M0 50 Q50 30 100 50 T200 50' stroke='%23d4cfc4' fill='none' stroke-width='3'/%3E%3Cpath d='M0 70 Q80 50 150 70' stroke='%23e8e4dc' fill='none' stroke-width='2'/%3E%3C/svg%3E")`;
+                    break;
+                case 'texture_clouds':
+                    element.style.backgroundColor = bg.baseColor;
+                    element.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Cellipse cx='50' cy='50' rx='40' ry='20' fill='%23ffffff' opacity='0.6'/%3E%3Cellipse cx='100' cy='40' rx='50' ry='25' fill='%23ffffff' opacity='0.5'/%3E%3Cellipse cx='150' cy='55' rx='35' ry='18' fill='%23ffffff' opacity='0.7'/%3E%3C/svg%3E")`;
+                    break;
+                case 'texture_bubbles':
+                    element.style.backgroundColor = bg.baseColor;
+                    element.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='15' cy='15' r='8' fill='none' stroke='%23a8d8ea' stroke-width='1'/%3E%3Ccircle cx='40' cy='25' r='6' fill='none' stroke='%23a8d8ea' stroke-width='1'/%3E%3Ccircle cx='25' cy='45' r='10' fill='none' stroke='%23a8d8ea' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='5' fill='none' stroke='%23a8d8ea' stroke-width='1'/%3E%3C/svg%3E")`;
+                    break;
+            }
+        }
+
+        function selectBackground(bg) {
+            const ctx = bgCanvas.getContext('2d');
+            const rect = canvasContainer.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+
+            ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+            switch (bg.type) {
+                case 'solid':
+                    ctx.fillStyle = bg.color;
+                    ctx.fillRect(0, 0, w, h);
+                    break;
+                case 'plaid':
+                    const tileSize = 20;
+                    for (let y = 0; y < h; y += tileSize) {
+                        for (let x = 0; x < w; x += tileSize) {
+                            const isEven = ((x / tileSize) + (y / tileSize)) % 2 === 0;
+                            ctx.fillStyle = isEven ? bg.colors[0] : bg.colors[1];
+                            ctx.fillRect(x, y, tileSize, tileSize);
+                        }
+                    }
+                    break;
+                case 'stripe':
+                    const stripeW = 16;
+                    ctx.fillStyle = bg.colors[0];
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.fillStyle = bg.colors[1];
+                    if (bg.direction === 'horizontal') {
+                        for (let y = 0; y < h; y += stripeW * 2) {
+                            ctx.fillRect(0, y, w, stripeW);
+                        }
+                    } else if (bg.direction === 'vertical') {
+                        for (let x = 0; x < w; x += stripeW * 2) {
+                            ctx.fillRect(x, 0, stripeW, h);
+                        }
+                    } else if (bg.direction === 'diagonal') {
+                        for (let i = -h; i < w; i += stripeW * 2) {
+                            ctx.beginPath();
+                            ctx.moveTo(i, 0);
+                            ctx.lineTo(i + h, h);
+                            ctx.lineTo(i + h + stripeW, h);
+                            ctx.lineTo(i + stripeW, 0);
+                            ctx.fill();
+                        }
+                    }
+                    break;
+                case 'dots':
+                    const spacing = 24;
+                    const dotR = 4;
+                    ctx.fillStyle = bg.bg;
+                    ctx.fillRect(0, 0, w, h);
+                    if (bg.dot === 'rainbow') {
+                        const colors = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#8b00ff'];
+                        for (let y = 0; y < h; y += spacing) {
+                            for (let x = 0; x < w; x += spacing) {
+                                const ci = Math.floor((x + y) / spacing) % colors.length;
+                                ctx.fillStyle = colors[ci];
+                                ctx.beginPath();
+                                ctx.arc(x + spacing / 2, y + spacing / 2, dotR, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                    } else {
+                        ctx.fillStyle = bg.dot;
+                        for (let y = 0; y < h; y += spacing) {
+                            for (let x = 0; x < w; x += spacing) {
+                                ctx.beginPath();
+                                ctx.arc(x + spacing / 2, y + spacing / 2, dotR, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                    }
+                    break;
+                case 'gradient':
+                    const grad = bg.direction === 'horizontal'
+                        ? ctx.createLinearGradient(0, 0, w, 0)
+                        : ctx.createLinearGradient(0, 0, 0, h);
+                    if (bg.colors.length > 2) {
+                        bg.colors.forEach((c, i) => grad.addColorStop(i / (bg.colors.length - 1), c));
+                    } else {
+                        grad.addColorStop(0, bg.colors[0]);
+                        grad.addColorStop(1, bg.colors[1]);
+                    }
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, w, h);
+                    break;
+                case 'texture':
+                    ctx.fillStyle = bg.baseColor;
+                    ctx.fillRect(0, 0, w, h);
+                    if (bg.id === 'texture_paper') {
+                        for (let i = 0; i < 3000; i++) {
+                            const x = Math.random() * w;
+                            const y = Math.random() * h;
+                            ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.05})`;
+                            ctx.fillRect(x, y, 1, 1);
+                        }
+                    } else if (bg.id === 'texture_canvas') {
+                        ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+                        ctx.lineWidth = 1;
+                        for (let i = 0; i < w; i += 4) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, h); ctx.stroke(); }
+                        for (let i = 0; i < h; i += 4) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke(); }
+                    } else if (bg.id === 'texture_wood') {
+                        ctx.strokeStyle = 'rgba(139, 90, 43, 0.2)';
+                        ctx.lineWidth = 2;
+                        for (let i = 0; i < h; i += 30) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, i);
+                            for (let x = 0; x < w; x += 10) ctx.lineTo(x, i + Math.sin(x / 30) * 5);
+                            ctx.stroke();
+                        }
+                    } else if (bg.id === 'texture_marble') {
+                        ctx.strokeStyle = 'rgba(200, 200, 190, 0.3)';
+                        ctx.lineWidth = 3;
+                        for (let i = 0; i < 5; i++) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, Math.random() * h);
+                            for (let x = 0; x < w; x += 20) ctx.lineTo(x, h * Math.random());
+                            ctx.stroke();
+                        }
+                    } else if (bg.id === 'texture_clouds') {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                        for (let i = 0; i < 6; i++) {
+                            drawCloud(ctx, Math.random() * w, Math.random() * h * 0.5, 30 + Math.random() * 30);
+                        }
+                    } else if (bg.id === 'texture_bubbles') {
+                        ctx.strokeStyle = 'rgba(168, 216, 234, 0.6)';
+                        ctx.lineWidth = 1;
+                        for (let i = 0; i < 15; i++) {
+                            ctx.beginPath();
+                            ctx.arc(Math.random() * w, Math.random() * h, 10 + Math.random() * 25, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                    }
+                    break;
+            }
+
+            const panel = document.querySelector('.bg-selector-panel');
+            if (panel) panel.remove();
+            showToast('背景已应用: ' + bg.name);
+        }
+
+        function drawCloud(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.4, y - size * 0.1, size * 0.4, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.7, y + size * 0.1, size * 0.35, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.3, y + size * 0.2, size * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function switchBgCategory(category) {
+            document.querySelectorAll('.bg-tab').forEach(tab => {
+                const cats = { 'all': '全部', 'solid': '纯色', 'plaid': '格子', 'stripe': '条纹', 'dots': '圆点', 'gradient': '渐变', 'texture': '纹理' };
+                tab.classList.toggle('active', tab.textContent.includes(cats[category]));
+            });
+            renderBgGrid(category);
         }
 
         // V16: Draw center guide lines when symmetry is active
