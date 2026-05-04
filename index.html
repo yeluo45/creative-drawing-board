@@ -5600,6 +5600,66 @@
             font-size: 11px;
         }
         .speed-btn.active { background: #4CAF50; }
+
+        /* V28: Audio Recording Status Bar */
+        .audio-record-status-bar {
+            position: fixed;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .audio-record-indicator { display: flex; align-items: center; gap: 8px; }
+        .audio-rec-dot {
+            width: 12px;
+            height: 12px;
+            background: #f44336;
+            border-radius: 50%;
+            animation: audioPulse 1s infinite;
+        }
+        @keyframes audioPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .audio-record-actions { display: flex; gap: 8px; }
+        .audio-record-actions button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .audio-recordings-list { padding: 10px; max-height: 500px; overflow-y: auto; }
+        .audio-recording-item {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        .audio-recording-header { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .audio-recording-meta { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .audio-recording-actions { display: flex; gap: 8px; }
+        .audio-recording-actions button {
+            flex: 1;
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -6443,6 +6503,8 @@
         <button class="tool-btn" id="arBtn" title="AR绘画">📷</button>
         <button class="tool-btn" id="recordBtn" title="录制绘画">●</button>
         <button class="tool-btn" id="recordingsBtn" title="我的录像">📹</button>
+        <button class="tool-btn" id="audioRecBtn" title="录音">🎙️</button>
+        <button class="tool-btn" id="audioListBtn" title="我的录音">🎤</button>
     </div>
 
     <!-- AR Panel (V26) -->
@@ -8527,6 +8589,17 @@
         let currentRecording = null;
         let recordingTimerInterval = null;
         let recordedActions = [];
+
+        // V28: Audio Recording State
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingStream = null;
+        let isAudioRecording = false;
+        let audioBlob = null;
+        let audioStartTime = 0;
+        let audioDuration = 0;
+        let audioTimerInterval = null;
+        const AUDIO_RECORDINGS_KEY = 'drawing_audio_recordings';
 
         const ACTION_TYPES = {
             STROKE_START: 'stroke_start',
@@ -12171,6 +12244,21 @@
                 closeAllPanels();
                 showRecordingsList();
                 document.getElementById('recordingsPanel').style.display = 'block';
+            });
+
+            // V28: Audio Recording Event Listeners
+            document.getElementById('audioRecBtn').addEventListener('click', () => {
+                if (isAudioRecording) {
+                    stopAudioRecording();
+                } else {
+                    startAudioRecording();
+                }
+            });
+
+            document.getElementById('audioListBtn').addEventListener('click', () => {
+                closeAllPanels();
+                showAudioRecordingsList();
+                document.getElementById('audioRecordingsPanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
@@ -20388,6 +20476,169 @@
             }
         }
 
+        // ===== V28: Audio Recording Functions =====
+        async function startAudioRecording() {
+            try {
+                recordingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(recordingStream, { mimeType: 'audio/webm;codecs=opus' });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    audioDuration = Math.floor((Date.now() - audioStartTime) / 1000);
+                    saveAudioRecordingBlob(audioBlob, audioDuration);
+                    showToast('录音已保存！时长: ' + formatTime(audioDuration));
+                };
+
+                mediaRecorder.start(100);
+                isAudioRecording = true;
+                audioStartTime = Date.now();
+                updateAudioRecordTimer();
+                updateAudioRecordButton();
+                document.getElementById('audioRecordStatusBar').style.display = 'flex';
+                showToast('开始录音');
+            } catch (err) {
+                showToast('无法访问麦克风，请检查权限设置');
+            }
+        }
+
+        function stopAudioRecording() {
+            if (!isAudioRecording) return;
+            isAudioRecording = false;
+            mediaRecorder.stop();
+            recordingStream.getTracks().forEach(track => track.stop());
+            if (audioTimerInterval) clearTimeout(audioTimerInterval);
+            updateAudioRecordButton();
+            document.getElementById('audioRecordStatusBar').style.display = 'none';
+        }
+
+        function pauseAudioRecording() {
+            if (!isAudioRecording) return;
+            if (mediaRecorder.state === 'recording') {
+                mediaRecorder.pause();
+                document.getElementById('audioPauseBtn').textContent = '▶';
+                showToast('录音已暂停');
+            } else if (mediaRecorder.state === 'paused') {
+                mediaRecorder.resume();
+                document.getElementById('audioPauseBtn').textContent = '⏸';
+                showToast('继续录音');
+            }
+        }
+
+        function updateAudioRecordTimer() {
+            if (!isAudioRecording) return;
+            const elapsed = Math.floor((Date.now() - audioStartTime) / 1000);
+            document.getElementById('audioRecordTimer').textContent = formatTime(elapsed);
+            audioTimerInterval = setTimeout(updateAudioRecordTimer, 1000);
+        }
+
+        function updateAudioRecordButton() {
+            const btn = document.getElementById('audioRecBtn');
+            if (isAudioRecording) {
+                btn.style.color = '#f44336';
+                btn.style.fontWeight = 'bold';
+            } else {
+                btn.style.color = '';
+                btn.style.fontWeight = '';
+            }
+        }
+
+        function showAudioRecordStatus() {
+            document.getElementById('audioRecordStatusBar').style.display = 'flex';
+        }
+
+        function hideAudioRecordStatus() {
+            document.getElementById('audioRecordStatusBar').style.display = 'none';
+        }
+
+        // V28: Save/Load Audio Recordings
+        function saveAudioRecordingBlob(blob, duration) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const recordings = getAllAudioRecordings();
+                const newRecording = {
+                    id: 'audio_' + Date.now(),
+                    name: '录音 ' + new Date().toLocaleString(),
+                    duration: duration,
+                    dataUrl: reader.result
+                };
+                recordings.unshift(newRecording);
+                if (recordings.length > 20) recordings.pop();
+                localStorage.setItem(AUDIO_RECORDINGS_KEY, JSON.stringify(recordings));
+                showAudioRecordingsList();
+            };
+            reader.readAsDataURL(blob);
+        }
+
+        function getAllAudioRecordings() {
+            const data = localStorage.getItem(AUDIO_RECORDINGS_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function deleteAudioRecording(id) {
+            const recordings = getAllAudioRecordings();
+            const filtered = recordings.filter(r => r.id !== id);
+            localStorage.setItem(AUDIO_RECORDINGS_KEY, JSON.stringify(filtered));
+        }
+
+        function playAudioRecording(id) {
+            const recordings = getAllAudioRecordings();
+            const recording = recordings.find(r => r.id === id);
+            if (!recording) return;
+            const audio = new Audio(recording.dataUrl);
+            audio.play();
+            showToast('正在播放: ' + recording.name);
+        }
+
+        function showAudioRecordingsList() {
+            const recordings = getAllAudioRecordings();
+            const list = document.getElementById('audioRecordingsList');
+
+            if (recordings.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">暂无录音</p>';
+                return;
+            }
+
+            list.innerHTML = recordings.map(r => `
+                <div class="audio-recording-item">
+                    <div class="audio-recording-header">${r.name}</div>
+                    <div class="audio-recording-meta">时长: ${formatTime(r.duration)}</div>
+                    <div class="audio-recording-actions">
+                        <button class="playback-btn" onclick="playAudioRecording('${r.id}')">▶ 播放</button>
+                        <button class="export-btn" onclick="exportAudioRecording('${r.id}')">📤 导出</button>
+                        <button class="delete-btn" onclick="deleteAudioRecordingConfirm('${r.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeAudioRecordingsPanel() {
+            document.getElementById('audioRecordingsPanel').style.display = 'none';
+        }
+
+        function deleteAudioRecordingConfirm(id) {
+            if (confirm('确定删除这个录音吗？')) {
+                deleteAudioRecording(id);
+                showAudioRecordingsList();
+                showToast('已删除');
+            }
+        }
+
+        function exportAudioRecording(id) {
+            const recordings = getAllAudioRecordings();
+            const recording = recordings.find(r => r.id === id);
+            if (!recording) return;
+            const a = document.createElement('a');
+            a.href = recording.dataUrl;
+            a.download = `recording_${Date.now()}.webm`;
+            a.click();
+            showToast('导出成功');
+        }
+
         // Override draw function to handle shape library and text placement
         const originalDraw = window.draw;
     </script>
@@ -20410,6 +20661,24 @@
         <div class="recordings-list" id="recordingsList">
             <!-- Populated by JS -->
         </div>
+    </div>
+
+    <!-- V28: Audio Record Status Bar -->
+    <div id="audioRecordStatusBar" class="audio-record-status-bar" style="display:none;">
+        <div class="audio-record-indicator">
+            <span class="audio-rec-dot"></span>
+            <span id="audioRecordTimer">00:00</span>
+        </div>
+        <div class="audio-record-actions">
+            <button onclick="pauseAudioRecording()" id="audioPauseBtn">⏸</button>
+            <button onclick="stopAudioRecording()">⏹</button>
+        </div>
+    </div>
+
+    <!-- V28: Audio Recordings List Panel -->
+    <div class="panel" id="audioRecordingsPanel" style="display:none;">
+        <div class="panel-header">🎤 我的录音 <button class="close-btn" onclick="closeAudioRecordingsPanel()">×</button></div>
+        <div class="audio-recordings-list" id="audioRecordingsList"></div>
     </div>
 
     <!-- V27: Playback Panel -->
