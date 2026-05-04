@@ -5975,6 +5975,68 @@
             cursor: pointer;
             font-size: 14px;
         }
+        .gesture-controls {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  justify-content: center;
+}
+.gesture-controls button {
+  padding: 8px 16px;
+  background: #ff7043;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.gesture-controls button:disabled { background: #ccc; }
+.gesture-preview {
+  text-align: center;
+  padding: 5px;
+}
+.gesture-preview canvas {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: #000;
+}
+.gesture-colors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  justify-content: center;
+  font-size: 13px;
+}
+.gesture-color-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  cursor: pointer;
+}
+.gesture-color-btn.active { border-color: #333; border-width: 3px; }
+.gesture-guide {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0 10px;
+}
+.gesture-guide h4 { margin: 0 0 8px 0; font-size: 13px; }
+.gesture-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #666;
+}
+.gesture-list li { margin-bottom: 4px; }
+.gesture-status {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #ff7043;
+  font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -6790,6 +6852,8 @@
         <button class="tool-btn ar-sticker-btn" id="arStickerBtn" title="AR贴纸">🎭</button>
         <!-- V33: Smart Suggestion Button -->
         <button class="tool-btn" id="suggestionBtn" title="智能建议">💡</button>
+        <!-- V34: Gesture Button -->
+        <button class="tool-btn" id="gestureBtn" title="手势控制">🤚</button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -6908,6 +6972,40 @@
 
         <div class="ar-actions">
             <button onclick="saveARPhoto()">📸 保存 AR 照片</button>
+        </div>
+    </div>
+
+    <!-- V34: Gesture Panel -->
+    <div class="panel" id="gesturePanel" style="display:none;">
+        <div class="panel-header">🤚 手势控制 <button class="close-btn" onclick="closeGesturePanel()">×</button></div>
+
+        <div class="gesture-controls">
+            <button onclick="startGestureMode()" id="gestureStartBtn">📷 开启摄像头</button>
+            <button onclick="stopGestureMode()" id="gestureStopBtn" disabled>⏸ 关闭摄像头</button>
+        </div>
+
+        <div class="gesture-preview">
+            <canvas id="gesturePreview" width="160" height="120"></canvas>
+        </div>
+
+        <div class="gesture-colors">
+            <span>追踪颜色:</span>
+            <button class="gesture-color-btn active" style="background:#e53935" onclick="setTrackedColor('#e53935', this)"></button>
+            <button class="gesture-color-btn" style="background:#43a047" onclick="setTrackedColor('#43a047', this)"></button>
+            <button class="gesture-color-btn" style="background:#1e88e5" onclick="setTrackedColor('#1e88e5', this)"></button>
+            <button class="gesture-color-btn" style="background:#fdd835" onclick="setTrackedColor('#fdd835', this)"></button>
+        </div>
+
+        <div class="gesture-guide">
+            <h4>🖐️ 手势操作</h4>
+            <ul class="gesture-list">
+                <li>✋ 大面积 → 画笔模式</li>
+                <li>✊ 小面积 → 橡皮擦模式</li>
+            </ul>
+        </div>
+
+        <div class="gesture-status">
+            状态: <span id="gestureStatusText">等待检测...</span>
         </div>
     </div>
 
@@ -7654,6 +7752,19 @@
         let arStickerPositions = {};
         let currentARFilter = 'all';
 
+        // V34: Gesture state variables
+        let gestureStream = null;
+        let gestureVideo = null;
+        let gestureCanvas = null;
+        let gestureCtx = null;
+        let gestureAnimationId = null;
+        let isGestureMode = false;
+        let trackedColor = { r: 220, g: 50, b: 50 };
+        let lastGesturePosition = { x: 0, y: 0 };
+        let gestureState = 'idle';
+        let fingerCount = 1;
+        let gestureHistory = [];
+
         const AR_STICKERS = [
             { id: 'smile', name: '笑脸', emoji: '😊', scale: 1.0 },
             { id: 'laugh', name: '大笑', emoji: '😂', scale: 1.0 },
@@ -7835,6 +7946,159 @@
 
         function closeARStickerPanel() {
             document.getElementById('arStickerPanel').style.display = 'none';
+        }
+
+        // V34: Gesture functions
+        async function startGestureMode() {
+            try {
+                gestureStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: 640, height: 480 }
+                });
+
+                gestureVideo = document.createElement('video');
+                gestureVideo.srcObject = gestureStream;
+                gestureVideo.style.display = 'none';
+                document.body.appendChild(gestureVideo);
+
+                gestureCanvas = document.createElement('canvas');
+                gestureCanvas.width = 320;
+                gestureCanvas.height = 240;
+                gestureCtx = gestureCanvas.getContext('2d');
+
+                gestureVideo.addEventListener('loadedmetadata', () => {
+                    gestureVideo.play();
+                    updateGestureDetection();
+                });
+
+                isGestureMode = true;
+                document.getElementById('gestureStartBtn').disabled = true;
+                document.getElementById('gestureStopBtn').disabled = false;
+                showToast('手势模式已启动');
+            } catch (err) {
+                showToast('无法访问摄像头，请检查权限设置');
+            }
+        }
+
+        function updateGestureDetection() {
+            if (!isGestureMode || !gestureVideo || !gestureCtx) return;
+
+            gestureCtx.drawImage(gestureVideo, 0, 0, gestureCanvas.width, gestureCanvas.height);
+
+            const imageData = gestureCtx.getImageData(0, 0, gestureCanvas.width, gestureCanvas.height);
+            const data = imageData.data;
+
+            let maxArea = 0;
+            let trackedX = 0;
+            let trackedY = 0;
+
+            for (let y = 0; y < gestureCanvas.height; y += 4) {
+                for (let x = 0; x < gestureCanvas.width; x += 4) {
+                    const i = (y * gestureCanvas.width + x) * 4;
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    const dist = Math.sqrt(
+                        Math.pow(r - trackedColor.r, 2) +
+                        Math.pow(g - trackedColor.g, 2) +
+                        Math.pow(b - trackedColor.b, 2)
+                    );
+
+                    if (dist < 60) {
+                        trackedX += x;
+                        trackedY += y;
+                        maxArea++;
+                    }
+                }
+            }
+
+            if (maxArea > 50) {
+                trackedX /= maxArea;
+                trackedY /= maxArea;
+                handleGestureMove(trackedX, trackedY, maxArea);
+                document.getElementById('gestureStatusText').textContent = '检测到手势 ✋';
+            } else {
+                document.getElementById('gestureStatusText').textContent = '等待检测...';
+            }
+
+            gestureAnimationId = requestAnimationFrame(updateGestureDetection);
+        }
+
+        function handleGestureMove(x, y, area) {
+            const canvasX = (x / gestureCanvas.width) * canvas.width;
+            const canvasY = (y / gestureCanvas.height) * canvas.height;
+
+            gestureHistory.push({ x, y, time: Date.now() });
+            if (gestureHistory.length > 10) gestureHistory.shift();
+
+            const gesture = detectGesture(area);
+
+            if (gesture === 'draw') {
+                if (gestureState !== 'drawing') {
+                    ctx.beginPath();
+                    ctx.moveTo(canvasX, canvasY);
+                    gestureState = 'drawing';
+                    selectTool('brush');
+                    document.getElementById('gestureStatusText').textContent = '画笔模式 ✋';
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                    ctx.stroke();
+                }
+            } else if (gesture === 'erase') {
+                if (gestureState !== 'erasing') {
+                    gestureState = 'erasing';
+                    selectTool('eraser');
+                    document.getElementById('gestureStatusText').textContent = '橡皮模式 ✊';
+                }
+                ctx.beginPath();
+                ctx.arc(canvasX, canvasY, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            lastGesturePosition = { x: canvasX, y: canvasY };
+        }
+
+        function detectGesture(area) {
+            if (area > 200) return 'draw';
+            else if (area > 100) return 'erase';
+            return 'idle';
+        }
+
+        function stopGestureMode() {
+            isGestureMode = false;
+            if (gestureAnimationId) {
+                cancelAnimationFrame(gestureAnimationId);
+                gestureAnimationId = null;
+            }
+            if (gestureStream) {
+                gestureStream.getTracks().forEach(track => track.stop());
+                gestureStream = null;
+            }
+            if (gestureVideo) {
+                gestureVideo.remove();
+                gestureVideo = null;
+            }
+            gestureState = 'idle';
+            document.getElementById('gestureStartBtn').disabled = false;
+            document.getElementById('gestureStopBtn').disabled = true;
+            document.getElementById('gestureStatusText').textContent = '等待检测...';
+            showToast('手势模式已关闭');
+        }
+
+        function setTrackedColor(color, btn) {
+            const hex = color.replace('#', '');
+            trackedColor = {
+                r: parseInt(hex.substr(0, 2), 16),
+                g: parseInt(hex.substr(2, 2), 16),
+                b: parseInt(hex.substr(4, 2), 16)
+            };
+            document.querySelectorAll('.gesture-color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showToast('追踪颜色已切换');
+        }
+
+        function closeGesturePanel() {
+            document.getElementById('gesturePanel').style.display = 'none';
         }
 
         // Particle functions
@@ -13869,6 +14133,12 @@
                 closeAllPanels();
                 updateSuggestions();
                 document.getElementById('suggestionPanel').style.display = 'block';
+            });
+
+            // V34: Gesture Button Event
+            document.getElementById('gestureBtn').addEventListener('click', () => {
+                closeAllPanels();
+                document.getElementById('gesturePanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
