@@ -162,6 +162,65 @@
         .music-icon { font-size: 1.1rem; }
         .music-name { font-size: 0.6rem; margin-top: 2px; color: #495057; }
 
+        /* V52: SFX Preset Selector */
+        .sfx-preset-section {
+            padding: 8px;
+            border-top: 1px solid #dee2e6;
+            margin-top: 4px;
+        }
+        .sfx-preset-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .sfx-preset-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        .sfx-preset-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 2px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sfx-preset-item:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        .sfx-preset-item.selected {
+            background: #fff3bf;
+            border-color: #fab005;
+        }
+        .sfx-icon { font-size: 1rem; }
+        .sfx-name { font-size: 0.55rem; margin-top: 1px; color: #495057; }
+        .sfx-preview-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #dee2e6;
+        }
+        .sfx-preview-btn {
+            background: #e7f5ff;
+            border: 2px solid #1971c2;
+            border-radius: 6px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .sfx-current-name {
+            font-size: 0.8rem;
+            color: #495057;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -7120,6 +7179,15 @@
                     <span>🔊 音效</span>
                     <input type="range" id="sfxVolumeSlider" min="0" max="100" value="80">
                 </div>
+                <!-- V52: SFX Preset Selector -->
+                <div class="sfx-preset-section" id="sfxPresetSection">
+                    <div class="sfx-preset-label">🔊 音效选择</div>
+                    <div class="sfx-preset-grid"></div>
+                    <div class="sfx-preview-row">
+                        <button class="sfx-preview-btn" onclick="previewCurrentSFX()">▶ 试听</button>
+                        <span class="sfx-current-name" id="sfxCurrentName">气泡</span>
+                    </div>
+                </div>
             </div>
             <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
@@ -12277,6 +12345,220 @@
 
         function initMusicStyleSelector() {
             updateMusicStyleUI();
+        }
+
+        // V52: SFX Preset System
+        let currentSFXPreset = localStorage.getItem('sfxPreset') || 'bubble';
+
+        const SFX_PRESETS = {
+            bubble: { name: '气泡', icon: '🫧', fn: () => playSFXBubble() },
+            ding: { name: '叮咚', icon: '🔔', fn: () => playSFXDing() },
+            pop: { name: '弹出', icon: '🎈', fn: () => playSFXPop() },
+            whoosh: { name: '嗖', icon: '💨', fn: () => playSFXWhoosh() },
+            complete: { name: '完成', icon: '✅', fn: () => playSFXComplete() },
+            error: { name: '错误', icon: '❌', fn: () => playSFXError() },
+            spark: { name: '火花', icon: '✨', fn: () => playSFXSpark() },
+            magic: { name: '魔法', icon: '🌟', fn: () => playSFXMagic() },
+            coin: { name: '金币', icon: '🪙', fn: () => playSFXCoin() },
+            jump: { name: '跳跃', icon: '🦘', fn: () => playSFXJump() },
+            stamp: { name: '印章', icon: '🔖', fn: () => playStampPlace() },
+            levelup: { name: '成就', icon: '🏆', fn: () => playLevelUp() }
+        };
+
+        function playSFXBubble() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playSFXDing() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function playSFXPop() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playSFXWhoosh() {
+            initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.15;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 1000;
+            filter.Q.value = 0.5;
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.2;
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(sfxGainNode);
+            noise.start();
+        }
+
+        function playSFXComplete() {
+            initAudio();
+            const notes = [523.25, 659.25, 783.99];
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(sfxGainNode);
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.2);
+                osc.start(audioCtx.currentTime + i * 0.1);
+                osc.stop(audioCtx.currentTime + i * 0.1 + 0.2);
+            });
+        }
+
+        function playSFXError() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function playSFXSpark() {
+            initAudio();
+            for (let i = 0; i < 3; i++) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(sfxGainNode);
+                osc.type = 'sine';
+                osc.frequency.value = 2000 + Math.random() * 1000;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.05 + 0.05);
+                osc.start(audioCtx.currentTime + i * 0.05);
+                osc.stop(audioCtx.currentTime + i * 0.05 + 0.05);
+            }
+        }
+
+        function playSFXMagic() {
+            initAudio();
+            const notes = [800, 1000, 1200, 1600];
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(sfxGainNode);
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.08 + 0.15);
+                osc.start(audioCtx.currentTime + i * 0.08);
+                osc.stop(audioCtx.currentTime + i * 0.08 + 0.15);
+            });
+        }
+
+        function playSFXCoin() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        function playSFXJump() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(sfxGainNode);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function selectSFXPreset(preset) {
+            currentSFXPreset = preset;
+            localStorage.setItem('sfxPreset', preset);
+            updateSFXPresetUI();
+            document.getElementById('sfxCurrentName').textContent = SFX_PRESETS[preset].name;
+        }
+
+        function previewCurrentSFX() {
+            if (SFX_PRESETS[currentSFXPreset]) {
+                SFX_PRESETS[currentSFXPreset].fn();
+            }
+        }
+
+        function updateSFXPresetUI() {
+            document.querySelectorAll('.sfx-preset-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.preset === currentSFXPreset);
+            });
+        }
+
+        function initSFXPresetSelector() {
+            const grid = document.querySelector('.sfx-preset-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            Object.entries(SFX_PRESETS).forEach(([key, val]) => {
+                const item = document.createElement('div');
+                item.className = 'sfx-preset-item' + (key === currentSFXPreset ? ' selected' : '');
+                item.dataset.preset = key;
+                item.onclick = () => selectSFXPreset(key);
+                item.innerHTML = '<span class="sfx-icon">' + val.icon + '</span><span class="sfx-name">' + val.name + '</span>';
+                grid.appendChild(item);
+            });
+            document.getElementById('sfxCurrentName').textContent = SFX_PRESETS[currentSFXPreset].name;
         }
 
         // Load BGM preferences from localStorage
@@ -17530,6 +17812,7 @@
             initShapeLibrary(); // V23: Initialize shape library
             initCanvasSizeButton(); // V50: Initialize canvas size
             initMusicStyleSelector(); // V51: Initialize music style selector
+            initSFXPresetSelector(); // V52: Initialize SFX preset selector
             resizeCanvas();
             initEventListeners();
             initColoringGame();
