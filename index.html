@@ -221,6 +221,70 @@
             color: #495057;
         }
 
+        /* V53: Brush Style Selector */
+        .brush-style-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .brush-style-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brush-style-btn:hover {
+            background: #e9ecef;
+        }
+
+        .brush-style-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 2px solid #adb5bd;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            padding: 8px;
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            min-width: 160px;
+        }
+
+        .brush-style-panel.open {
+            display: grid;
+        }
+
+        .brush-style-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .brush-style-item:hover {
+            background: #f1f3f5;
+        }
+
+        .brush-style-item.selected {
+            background: #d3f9d8;
+        }
+
+        .bs-icon { font-size: 1.2rem; }
+        .bs-name { font-size: 0.6rem; margin-top: 2px; }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -7934,6 +7998,32 @@
             <span class="tool-icon">✏️</span>
             <span data-i18n="brush">Brush</span>
         </button>
+        <!-- V53: Brush Style Selector -->
+        <div class="brush-style-selector" id="brushStyleSelector">
+            <button class="brush-style-btn" id="brushStyleBtn" onclick="toggleBrushStylePanel()">
+                <span id="brushStyleIcon">✏️</span>
+            </button>
+            <div class="brush-style-panel" id="brushStylePanel">
+                <div class="brush-style-item" data-style="normal" onclick="selectBrushStyle('normal')">
+                    <span class="bs-icon">✏️</span><span class="bs-name">普通</span>
+                </div>
+                <div class="brush-style-item" data-style="crayon" onclick="selectBrushStyle('crayon')">
+                    <span class="bs-icon">🖍️</span><span class="bs-name">蜡笔</span>
+                </div>
+                <div class="brush-style-item" data-style="watercolor" onclick="selectBrushStyle('watercolor')">
+                    <span class="bs-icon">🎨</span><span class="bs-name">水彩</span>
+                </div>
+                <div class="brush-style-item" data-style="marker" onclick="selectBrushStyle('marker')">
+                    <span class="bs-icon">🖊️</span><span class="bs-name">马克笔</span>
+                </div>
+                <div class="brush-style-item" data-style="neon" onclick="selectBrushStyle('neon')">
+                    <span class="bs-icon">💡</span><span class="bs-name">霓虹</span>
+                </div>
+                <div class="brush-style-item" data-style="galaxy" onclick="selectBrushStyle('galaxy')">
+                    <span class="bs-icon">🌌</span><span class="bs-name">银河</span>
+                </div>
+            </div>
+        </div>
         <button class="tool-btn highlighter-btn" id="highlighterBtn">
             <span class="tool-icon">🖍️</span>
             <span data-i18n="highlighter">Highlighter</span>
@@ -12814,19 +12904,207 @@
         }
 
         // V16: Draw line with symmetry support
+        let currentBrushStyle = localStorage.getItem('brushStyle') || 'normal';
+
         function drawLine(x1, y1, x2, y2, color, size) {
             const ctx = getActiveContext();
             const startPoints = getSymmetryPoints(x1, y1);
             const endPoints = getSymmetryPoints(x2, y2);
-            
+
             startPoints.forEach((sp, i) => {
                 const ep = endPoints[i];
+                ctx.save();
+
+                switch (currentBrushStyle) {
+                    case 'crayon':
+                        drawCrayonLine(ctx, sp, ep, color, size);
+                        break;
+                    case 'watercolor':
+                        drawWatercolorLine(ctx, sp, ep, color, size);
+                        break;
+                    case 'marker':
+                        drawMarkerLine(ctx, sp, ep, color, size);
+                        break;
+                    case 'neon':
+                        drawNeonLine(ctx, sp, ep, color, size);
+                        break;
+                    case 'galaxy':
+                        drawGalaxyLine(ctx, sp, ep, color, size);
+                        break;
+                    default:
+                        drawNormalLine(ctx, sp, ep, color, size);
+                }
+
+                ctx.restore();
+            });
+        }
+
+        function drawNormalLine(ctx, sp, ep, color, size) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+        }
+
+        function drawCrayonLine(ctx, sp, ep, color, size) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.7;
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+
+            // Add texture noise
+            const dist = Math.hypot(ep.x - sp.x, ep.y - sp.y);
+            const steps = Math.max(1, Math.floor(dist / 3));
+            for (let i = 0; i < steps; i++) {
+                const t = i / steps;
+                const x = sp.x + (ep.x - sp.x) * t;
+                const y = sp.y + (ep.y - sp.y) * t;
                 ctx.beginPath();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = size;
-                ctx.moveTo(sp.x, sp.y);
-                ctx.lineTo(ep.x, ep.y);
-                ctx.stroke();
+                ctx.fillStyle = color;
+                ctx.globalAlpha = 0.3;
+                const r = size * 0.3 * Math.random();
+                ctx.arc(x + (Math.random() - 0.5) * size * 0.5,
+                        y + (Math.random() - 0.5) * size * 0.5,
+                        r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawWatercolorLine(ctx, sp, ep, color, size) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size * 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.3;
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+
+            // Second pass with blur
+            ctx.filter = 'blur(2px)';
+            ctx.globalAlpha = 0.2;
+            ctx.lineWidth = size * 2;
+            ctx.stroke();
+            ctx.filter = 'none';
+
+            ctx.globalAlpha = 1;
+        }
+
+        function drawMarkerLine(ctx, sp, ep, color, size) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size * 1.2;
+            ctx.lineCap = 'square';
+            ctx.lineJoin = 'miter';
+            ctx.globalAlpha = 0.6;
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        }
+
+        function drawNeonLine(ctx, sp, ep, color, size) {
+            // Glow effect
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size * 3;
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = 0.3;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = size * 2;
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+
+            // Core line
+            ctx.beginPath();
+            ctx.lineWidth = size;
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+        }
+
+        function drawGalaxyLine(ctx, sp, ep, color, size) {
+            const gradient = ctx.createLinearGradient(sp.x, sp.y, ep.x, ep.y);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(0.5, '#9b59b6');
+            gradient.addColorStop(1, color);
+
+            ctx.beginPath();
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+
+            // Add sparkles
+            const dist = Math.hypot(ep.x - sp.x, ep.y - sp.y);
+            const steps = Math.max(1, Math.floor(dist / 5));
+            for (let i = 0; i < steps; i++) {
+                const t = i / steps;
+                const x = sp.x + (ep.x - sp.x) * t;
+                const y = sp.y + (ep.y - sp.y) * t;
+                ctx.beginPath();
+                ctx.fillStyle = '#fff';
+                ctx.globalAlpha = Math.random() * 0.8;
+                const r = size * 0.2 * Math.random();
+                ctx.arc(x + (Math.random() - 0.5) * size,
+                        y + (Math.random() - 0.5) * size,
+                        r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        // V53: Brush Style Functions
+        function toggleBrushStylePanel() {
+            const panel = document.getElementById('brushStylePanel');
+            panel.classList.toggle('open');
+        }
+
+        function selectBrushStyle(style) {
+            currentBrushStyle = style;
+            localStorage.setItem('brushStyle', style);
+            updateBrushStyleUI();
+            document.getElementById('brushStylePanel').classList.remove('open');
+            showToast('已切换为' + getBrushStyleName(style));
+        }
+
+        function updateBrushStyleUI() {
+            const icons = { normal: '✏️', crayon: '🖍️', watercolor: '🎨', marker: '🖊️', neon: '💡', galaxy: '🌌' };
+            document.getElementById('brushStyleIcon').textContent = icons[currentBrushStyle] || '✏️';
+            document.querySelectorAll('.brush-style-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.style === currentBrushStyle);
+            });
+        }
+
+        function getBrushStyleName(style) {
+            const names = { normal: '普通', crayon: '蜡笔', watercolor: '水彩', marker: '马克笔', neon: '霓虹', galaxy: '银河' };
+            return names[style] || '普通';
+        }
+
+        function initBrushStyleSelector() {
+            updateBrushStyleUI();
+            document.addEventListener('click', (e) => {
+                const selector = document.getElementById('brushStyleSelector');
+                const panel = document.getElementById('brushStylePanel');
+                if (selector && !selector.contains(e.target)) {
+                    panel.classList.remove('open');
+                }
             });
         }
 
@@ -17813,6 +18091,7 @@
             initCanvasSizeButton(); // V50: Initialize canvas size
             initMusicStyleSelector(); // V51: Initialize music style selector
             initSFXPresetSelector(); // V52: Initialize SFX preset selector
+            initBrushStyleSelector(); // V53: Initialize brush style selector
             resizeCanvas();
             initEventListeners();
             initColoringGame();
