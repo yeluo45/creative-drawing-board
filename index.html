@@ -3925,6 +3925,57 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
+        /* V38: Daily Challenge Panel Styles */
+        #challengePanel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 3000;
+            box-shadow: 8px 8px 0 #495057;
+        }
+
+        .challenge-stats { display:flex; justify-content:space-around; padding:12px; background:linear-gradient(135deg,#ff6b6b,#ee5a24); color:#fff; font-size:13px; font-weight:bold; }
+        .daily-challenge-section, .timed-tasks-section, .leaderboard-section { padding:10px; border-bottom:1px solid #eee; }
+        .daily-challenge-section h4, .timed-tasks-section h4, .leaderboard-section h4 { margin:0 0 8px 0; font-size:14px; color:#333; }
+        .daily-challenge-card { background:linear-gradient(135deg,#667eea,#764ba2); border-radius:12px; padding:15px; color:#fff; text-align:center; }
+        .daily-challenge-icon { font-size:48px; margin-bottom:8px; }
+        .daily-challenge-name { font-size:18px; font-weight:bold; margin-bottom:4px; }
+        .daily-challenge-desc { font-size:13px; opacity:0.9; margin-bottom:8px; }
+        .daily-challenge-meta { display:flex; justify-content:center; gap:15px; font-size:12px; margin-bottom:12px; }
+        .daily-challenge-btn { padding:10px 30px; background:#fff; color:#667eea; border:none; border-radius:25px; font-size:14px; font-weight:bold; cursor:pointer; }
+        .daily-challenge-btn.completed, .daily-challenge-btn:disabled { background:#4CAF50; color:#fff; cursor:default; }
+        .timed-tasks-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+        .timed-task-item { display:flex; flex-direction:column; align-items:center; padding:10px; background:#fff3e0; border-radius:10px; cursor:pointer; border:2px solid transparent; transition:all 0.2s; }
+        .timed-task-item:hover { border-color:#ff9800; transform:scale(1.02); }
+        .timed-task-item-icon { font-size:24px; margin-bottom:4px; }
+        .timed-task-item-name { font-size:12px; font-weight:bold; color:#333; }
+        .timed-task-item-time { font-size:11px; color:#888; }
+        .timed-task-item-reward { font-size:11px; color:#ff9800; }
+        .leaderboard-list { max-height:200px; overflow-y:auto; }
+        .leaderboard-item { display:flex; align-items:center; gap:8px; padding:8px; background:#f9f9f9; border-radius:8px; margin-bottom:4px; }
+        .leaderboard-item.highlight { background:#e3f2fd; border:2px solid #2196F3; }
+        .leaderboard-rank { font-size:16px; width:24px; text-align:center; }
+        .leaderboard-avatar { font-size:20px; }
+        .leaderboard-name { flex:1; font-size:13px; font-weight:bold; }
+        .leaderboard-score { font-size:13px; color:#ff9800; font-weight:bold; }
+        #timedTaskDisplay { position:fixed; bottom:0; left:0; right:0; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; padding:10px; z-index:1000; box-shadow:0 -2px 10px rgba(0,0,0,0.3); }
+        .timed-task-info { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+        .timed-task-icon { font-size:24px; }
+        .timed-task-name { flex:1; font-weight:bold; }
+        .timed-task-timer { font-size:24px; font-family:monospace; }
+        .timed-task-cancel { padding:5px 10px; background:rgba(255,255,255,0.2); color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:12px; }
+        .timed-task-progress { height:4px; background:rgba(255,255,255,0.3); border-radius:2px; overflow:hidden; }
+        .timed-task-bar { height:100%; background:#fff; transition:width 1s linear; }
+
         /* Smooth progress bar animation */
         .progress-animated {
             animation: progressGrow 0.5s ease-out;
@@ -7448,6 +7499,34 @@
             </div>
         </div>
     </div>
+
+    <!-- V38: Daily Challenge Panel -->
+    <div class="panel" id="challengePanel" style="display:none;">
+        <div class="panel-header">📅 每日挑战 <button class="close-btn" onclick="closeChallengePanelV38()">×</button></div>
+
+        <div class="challenge-stats">
+            <span>🔥 连续 <span id="streakDays">0</span> 天</span>
+            <span>📊 完成率 <span id="completionRate">0</span>%</span>
+            <span>🏆 排名 #<span id="myRank">-</span></span>
+        </div>
+
+        <div class="daily-challenge-section">
+            <h4>🎯 今日挑战</h4>
+            <div class="daily-challenge-card" id="dailyChallengeCard"></div>
+        </div>
+
+        <div class="timed-tasks-section">
+            <h4>⏱️ 限时任务</h4>
+            <div class="timed-tasks-grid" id="timedTasksGrid"></div>
+        </div>
+
+        <div class="leaderboard-section">
+            <h4>🏆 排行榜</h4>
+            <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+    </div>
+
+    <div id="timedTaskDisplay" style="display:none; position:fixed; bottom:0; left:0; right:0; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; padding:10px; z-index:1000;"></div>
 
     <!-- Stats & Achievements Overlay -->
     <div id="statsOverlay">
@@ -14535,6 +14614,41 @@
             { type: 'guided', description: '完成一次引导教程', target: 1 }
         ];
 
+        // ===== V38: Daily Challenge State =====
+        const DAILY_CHALLENGES = [
+            { id: 'challenge_selfie', name: '自画像', desc: '画一幅自己的肖像', icon: '🪞', difficulty: 'easy', timeLimit: 300, reward: 20 },
+            { id: 'challenge_animal', name: '动物画家', desc: '画一种你喜欢的动物', icon: '🦁', difficulty: 'easy', timeLimit: 300, reward: 20 },
+            { id: 'challenge_landscape', name: '风景画', desc: '画一幅美丽的风景', icon: '🏔️', difficulty: 'medium', timeLimit: 480, reward: 35 },
+            { id: 'challenge_food', name: '美食家', desc: '画一道你喜欢的美食', icon: '🍜', difficulty: 'easy', timeLimit: 300, reward: 20 },
+            { id: 'challenge_vehicle', name: '载具设计', desc: '设计一个未来的交通工具', icon: '🚀', difficulty: 'medium', timeLimit: 480, reward: 35 },
+            { id: 'challenge_abstract', name: '抽象艺术', desc: '用形状和颜色表达情感', icon: '🎭', difficulty: 'hard', timeLimit: 600, reward: 50 },
+            { id: 'challenge_character', name: '创作角色', desc: '创作一个原创角色', icon: '🦸', difficulty: 'medium', timeLimit: 480, reward: 40 },
+            { id: 'challenge_story', name: '故事插画', desc: '为你的故事画一幅插画', icon: '📖', difficulty: 'hard', timeLimit: 600, reward: 50 },
+            { id: 'challenge_fantasy', name: '幻想世界', desc: '画一个你想象中的奇幻世界', icon: '🌟', difficulty: 'hard', timeLimit: 600, reward: 50 },
+            { id: 'challenge_season', name: '四季变换', desc: '画一个季节的场景', icon: '🍂', difficulty: 'medium', timeLimit: 480, reward: 35 },
+            { id: 'challenge_music', name: '音乐可视化', desc: '用绘画表现音乐', icon: '🎵', difficulty: 'hard', timeLimit: 600, reward: 45 },
+            { id: 'challenge_dream', name: '梦境再现', desc: '画一个你做过的梦', icon: '💭', difficulty: 'hard', timeLimit: 600, reward: 55 }
+        ];
+
+        const TIMED_TASKS = [
+            { id: 'timed_quick', name: '快速绘画', desc: '在60秒内完成一幅简单画作', icon: '⚡', duration: 60, reward: 15 },
+            { id: 'timed_sprint', name: '绘画冲刺', desc: '在120秒内画5个物体', icon: '🏃', duration: 120, reward: 25 },
+            { id: 'timed_color', name: '色彩挑战', desc: '使用所有颜色各画一笔', icon: '🌈', duration: 180, reward: 30 },
+            { id: 'timed_blind', name: '闭眼绘画', desc: '不看屏幕画一个圆形', icon: '🙈', duration: 60, reward: 20 }
+        ];
+
+        let challengeLeaderboard = [
+            { id: 'user_001', name: '小明', avatar: '😊', score: 150, completedChallenges: 12 },
+            { id: 'user_002', name: '小红', avatar: '😍', score: 140, completedChallenges: 11 },
+            { id: 'user_003', name: '小华', avatar: '🤗', score: 130, completedChallenges: 10 },
+            { id: 'local', name: '我', avatar: '😊', score: 0, completedChallenges: 0 }
+        ];
+
+        var dailyChallengeCompleted = false;
+        var currentTimedTask = null;
+        var timedTaskTimer = null;
+        var timedTaskRemaining = 0;
+
         // Get date string (YYYY-MM-DD)
         function getDateStr(date) {
             const d = date || new Date();
@@ -14991,6 +15105,230 @@
                 
                 localStorage.setItem('daily_stickers', JSON.stringify(dailyStickers));
             } catch (e) {}
+        }
+
+        // ===== V38: Daily Challenge Functions =====
+
+        function getTodayChallenge() {
+            var today = new Date().toDateString();
+            var seed = today.split('').reduce(function(acc, c) { return acc + c.charCodeAt(0); }, 0);
+            return DAILY_CHALLENGES[seed % DAILY_CHALLENGES.length];
+        }
+
+        function formatTime(seconds) {
+            var m = Math.floor(seconds / 60);
+            var s = seconds % 60;
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+
+        function openChallengePanelV38() {
+            closeAllPanels();
+            renderDailyChallenge();
+            renderTimedTasks();
+            renderLeaderboard();
+            updateChallengeStats();
+            document.getElementById('challengePanel').style.display = 'block';
+        }
+
+        function renderDailyChallenge() {
+            var challenge = getTodayChallenge();
+            var card = document.getElementById('dailyChallengeCard');
+            var difficultyStars = challenge.difficulty === 'easy' ? '⭐⭐' : (challenge.difficulty === 'medium' ? '⭐⭐⭐' : '⭐⭐⭐⭐');
+            var isCompleted = dailyChallengeCompleted || isChallengeCompletedToday(challenge.id);
+
+            card.innerHTML =
+                '<div class="daily-challenge-icon">' + challenge.icon + '</div>' +
+                '<div class="daily-challenge-name">' + challenge.name + '</div>' +
+                '<div class="daily-challenge-desc">' + challenge.desc + '</div>' +
+                '<div class="daily-challenge-meta">' +
+                    '<span>' + difficultyStars + '</span>' +
+                    '<span>⏱️ ' + formatTime(challenge.timeLimit) + '</span>' +
+                    '<span>🎁 ' + challenge.reward + ' 💰</span>' +
+                '</div>' +
+                '<button class="daily-challenge-btn' + (isCompleted ? ' completed' : '') + '"' +
+                    (isCompleted ? ' disabled' : ' onclick="startDailyChallenge(\'' + challenge.id + '\')"') + '>' +
+                    (isCompleted ? '✓ 已完成' : '开始挑战') +
+                '</button>';
+        }
+
+        function renderTimedTasks() {
+            var grid = document.getElementById('timedTasksGrid');
+            grid.innerHTML = TIMED_TASKS.map(function(task) {
+                return '<div class="timed-task-item" onclick="startTimedTask(\'' + task.id + '\')">' +
+                    '<span class="timed-task-item-icon">' + task.icon + '</span>' +
+                    '<span class="timed-task-item-name">' + task.name + '</span>' +
+                    '<span class="timed-task-item-time">' + task.duration + '秒</span>' +
+                    '<span class="timed-task-item-reward">+' + task.reward + ' 💰</span>' +
+                '</div>';
+            }).join('');
+        }
+
+        function renderLeaderboard() {
+            var list = document.getElementById('leaderboardList');
+            list.innerHTML = challengeLeaderboard.map(function(entry, idx) {
+                var rank = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : (idx + 1) + '.'));
+                return '<div class="leaderboard-item' + (entry.id === 'local' ? ' highlight' : '') + '">' +
+                    '<span class="leaderboard-rank">' + rank + '</span>' +
+                    '<span class="leaderboard-avatar">' + entry.avatar + '</span>' +
+                    '<span class="leaderboard-name">' + entry.name + '</span>' +
+                    '<span class="leaderboard-score">' + entry.score + '分</span>' +
+                '</div>';
+            }).join('');
+        }
+
+        function updateChallengeStats() {
+            document.getElementById('streakDays').textContent = getStreakDays();
+            document.getElementById('completionRate').textContent = getCompletionRate();
+            document.getElementById('myRank').textContent = getMyRank();
+        }
+
+        function startDailyChallenge(challengeId) {
+            var challenge = DAILY_CHALLENGES.find(function(c) { return c.id === challengeId; });
+            if (!challenge) return;
+            showToast('🎯 挑战开始！' + challenge.name);
+            closeChallengePanelV38();
+
+            setTimeout(function() {
+                if (confirm('⏰ 时间到！挑战完成了吗？\n\n点击确定标记为完成，点击取消放弃。')) {
+                    completeDailyChallenge(challenge);
+                }
+            }, Math.min(challenge.timeLimit * 1000, 60000)); // Use 60s max for testing
+        }
+
+        function completeDailyChallenge(challenge) {
+            dailyChallengeCompleted = true;
+            userRewards.coins += challenge.reward;
+            saveChallengeData();
+            saveShopData();
+            updateAchievementStats();
+
+            var localEntry = challengeLeaderboard.find(function(e) { return e.id === 'local'; });
+            if (localEntry) {
+                localEntry.score += challenge.reward * 10;
+                localEntry.completedChallenges++;
+            }
+            challengeLeaderboard.sort(function(a, b) { return b.score - a.score; });
+            if (challengeLeaderboard.length > 10) challengeLeaderboard = challengeLeaderboard.slice(0, 10);
+
+            showToast('🎉 挑战完成！+' + challenge.reward + ' 💰');
+        }
+
+        function startTimedTask(taskId) {
+            var task = TIMED_TASKS.find(function(t) { return t.id === taskId; });
+            if (!task) return;
+            if (currentTimedTask) { showToast('已有任务进行中'); return; }
+
+            currentTimedTask = task;
+            timedTaskRemaining = task.duration;
+            showToast('⏱️ ' + task.name + ' 开始！' + task.duration + '秒');
+
+            var display = document.getElementById('timedTaskDisplay');
+            display.style.display = 'block';
+            updateTimedTaskDisplay();
+
+            timedTaskTimer = setInterval(function() {
+                timedTaskRemaining--;
+                updateTimedTaskDisplay();
+                if (timedTaskRemaining <= 0) { completeTimedTask(false); }
+            }, 1000);
+        }
+
+        function updateTimedTaskDisplay() {
+            var display = document.getElementById('timedTaskDisplay');
+            if (!display || !currentTimedTask) return;
+            var pct = (timedTaskRemaining / currentTimedTask.duration) * 100;
+            display.innerHTML =
+                '<div class="timed-task-info">' +
+                    '<span class="timed-task-icon">' + currentTimedTask.icon + '</span>' +
+                    '<span class="timed-task-name">' + currentTimedTask.name + '</span>' +
+                    '<span class="timed-task-timer">' + formatTime(timedTaskRemaining) + '</span>' +
+                    '<button class="timed-task-cancel" onclick="cancelTimedTask()">放弃</button>' +
+                '</div>' +
+                '<div class="timed-task-progress">' +
+                    '<div class="timed-task-bar" style="width:' + pct + '%"></div>' +
+                '</div>';
+        }
+
+        function completeTimedTask(success) {
+            if (timedTaskTimer) { clearInterval(timedTaskTimer); timedTaskTimer = null; }
+            if (success && currentTimedTask) {
+                userRewards.coins += currentTimedTask.reward;
+                saveShopData();
+                updateAchievementStats();
+                showToast('🎉 任务完成！+' + currentTimedTask.reward + ' 💰');
+            } else if (currentTimedTask) {
+                showToast('⏰ 时间到！任务失败');
+            }
+            currentTimedTask = null;
+            timedTaskRemaining = 0;
+            var display = document.getElementById('timedTaskDisplay');
+            if (display) display.style.display = 'none';
+        }
+
+        function cancelTimedTask() {
+            if (confirm('确定要放弃当前任务吗？')) { completeTimedTask(false); }
+        }
+
+        function isChallengeCompletedToday(challengeId) {
+            var data = localStorage.getItem('cdb_challenge_' + challengeId);
+            if (!data) return false;
+            return JSON.parse(data).date === new Date().toDateString();
+        }
+
+        function getStreakDays() {
+            var data = localStorage.getItem('cdb_challenges');
+            return data ? (JSON.parse(data).streakDays || 0) : 0;
+        }
+
+        function getCompletionRate() {
+            return Math.min(100, Math.round((getCompletedChallengesCount() / 30) * 100));
+        }
+
+        function getCompletedChallengesCount() {
+            var count = 0;
+            DAILY_CHALLENGES.forEach(function(c) {
+                if (isChallengeCompletedToday(c.id)) count++;
+            });
+            return count;
+        }
+
+        function getMyRank() {
+            return challengeLeaderboard.findIndex(function(e) { return e.id === 'local'; }) + 1;
+        }
+
+        function saveChallengeData() {
+            var data = {
+                dailyChallengeCompleted: dailyChallengeCompleted,
+                lastChallengeDate: new Date().toDateString(),
+                streakDays: getStreakDays(),
+                completedChallenges: getCompletedChallengesCount(),
+                leaderboard: challengeLeaderboard
+            };
+            localStorage.setItem('cdb_challenges', JSON.stringify(data));
+        }
+
+        function loadChallengeData() {
+            var data = localStorage.getItem('cdb_challenges');
+            if (data) {
+                var parsed = JSON.parse(data);
+                dailyChallengeCompleted = parsed.dailyChallengeCompleted || false;
+                if (parsed.leaderboard) challengeLeaderboard = parsed.leaderboard;
+            }
+            checkDailyReset();
+        }
+
+        function checkDailyReset() {
+            var today = new Date().toDateString();
+            var lastDate = localStorage.getItem('cdb_lastChallengeDate');
+            if (lastDate !== today) {
+                dailyChallengeCompleted = false;
+                localStorage.setItem('cdb_lastChallengeDate', today);
+                saveChallengeData();
+            }
+        }
+
+        function closeChallengePanelV38() {
+            document.getElementById('challengePanel').style.display = 'none';
         }
 
         // Open challenge panel
@@ -16126,8 +16464,10 @@
 
         // Init challenge button
         function initChallengeButton() {
-            document.getElementById('challengeBtn').addEventListener('click', openChallengePanel);
+            document.getElementById('challengeBtn').addEventListener('click', openChallengePanelV38);
             document.getElementById('challengeCloseBtn').addEventListener('click', closeChallengePanel);
+            // Load V38 challenge data
+            loadChallengeData();
             // Generate or restore daily challenge on load
             generateDailyChallenge();
             // Update unread dot
@@ -23550,6 +23890,9 @@
 
             // ===== V37: Load Shop Data on Page Load =====
             loadShopData();
+
+            // ===== V38: Load Challenge Data on Page Load =====
+            loadChallengeData();
 
             // Apply saved theme on load
             (function() {
