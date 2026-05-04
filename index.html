@@ -3149,6 +3149,44 @@
 
         .animabook-template-panel.active {
             display: flex;
+            flex-direction: column;
+        }
+
+        .animabook-tpl-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 8px;
+            border-bottom: 2px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+
+        .tpl-tab {
+            padding: 6px 12px;
+            border: 2px solid #adb5bd;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .tpl-tab.active {
+            background: #4dabf7;
+            border-color: #4dabf7;
+            color: white;
+        }
+
+        .tpl-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        #animabookTplsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            overflow-y: auto;
+            max-height: 300px;
         }
 
         .animabook-template-btn {
@@ -23574,11 +23612,14 @@
         }
 
         // V41: Preset Animation Book Templates
+        const ANIMABOOK_TEMPLATE_CATEGORIES = ['all', 'story', 'creative', 'animal'];
+        
         const ANIMABOOK_PRESET_TEMPLATES = [
             {
                 id: 'story_4page',
                 name: '四格故事',
                 icon: '📖',
+                category: 'story',
                 pages: [
                     { hint: '第1页：开头', desc: '从前有只小兔子...' },
                     { hint: '第2页：经过', desc: '小兔子遇见了一只会说话的猫...' },
@@ -23590,6 +23631,7 @@
                 id: 'life_4page',
                 name: '成长日记',
                 icon: '🌱',
+                category: 'story',
                 pages: [
                     { hint: '第1页：种子', desc: '我种下了一颗小种子' },
                     { hint: '第2页：发芽', desc: '种子慢慢发芽了' },
@@ -23601,6 +23643,7 @@
                 id: 'trip_4page',
                 name: '旅行日记',
                 icon: '✈️',
+                category: 'story',
                 pages: [
                     { hint: '第1页：出发', desc: '我们出发去旅行啦' },
                     { hint: '第2页：途中', desc: '一路上看到了美丽的风景' },
@@ -23612,6 +23655,7 @@
                 id: 'friendship_4page',
                 name: '友谊故事',
                 icon: '❤️',
+                category: 'story',
                 pages: [
                     { hint: '第1页：相遇', desc: '两个小朋友在公园相遇' },
                     { hint: '第2页：游戏', desc: '他们一起玩得很开心' },
@@ -23623,6 +23667,7 @@
                 id: 'rainbow_6page',
                 name: '彩虹梦',
                 icon: '🌈',
+                category: 'creative',
                 pages: [
                     { hint: '第1页', desc: '天空下起了小雨' },
                     { hint: '第2页', desc: '雨停了，太阳出来了' },
@@ -23636,6 +23681,7 @@
                 id: 'seasons_4page',
                 name: '四季变化',
                 icon: '🍃',
+                category: 'creative',
                 pages: [
                     { hint: '第1页：春天', desc: '春天来了，花儿开了' },
                     { hint: '第2页：夏天', desc: '夏天阳光明媚' },
@@ -23647,6 +23693,7 @@
                 id: 'caterpillar_6page',
                 name: '毛毛虫历险记',
                 icon: '🐛',
+                category: 'creative',
                 pages: [
                     { hint: '第1页', desc: '一颗小小的蛋' },
                     { hint: '第2页', desc: '毛毛虫孵化出来了' },
@@ -23660,6 +23707,7 @@
                 id: 'ocean_4page',
                 name: '海底世界',
                 icon: '🐠',
+                category: 'animal',
                 pages: [
                     { hint: '第1页', desc: '蔚蓝的大海' },
                     { hint: '第2页', desc: '小鱼在水中游泳' },
@@ -23671,6 +23719,7 @@
                 id: 'fish_swim',
                 name: '小鱼游',
                 icon: '🐟',
+                category: 'animal',
                 pages: [
                     { hint: '小鱼游 1/4', desc: '小鱼向右游', bg: 'water' },
                     { hint: '小鱼游 2/4', desc: '尾巴左摆', bg: 'water' },
@@ -23682,6 +23731,7 @@
                 id: 'bird_fly',
                 name: '小鸟飞',
                 icon: '🐦',
+                category: 'animal',
                 pages: [
                     { hint: '小鸟飞 1/4', desc: '翅膀向上', bg: 'sky' },
                     { hint: '小鸟飞 2/4', desc: '翅膀中间', bg: 'sky' },
@@ -23693,6 +23743,7 @@
                 id: 'butterfly_fly',
                 name: '蝴蝶飞',
                 icon: '🦋',
+                category: 'animal',
                 pages: [
                     { hint: '蝴蝶飞 1/3', desc: '翅膀张开', bg: 'flower' },
                     { hint: '蝴蝶飞 2/3', desc: '翅膀合拢', bg: 'flower' },
@@ -23703,6 +23754,7 @@
                 id: 'cat_run',
                 name: '小猫跑',
                 icon: '🐱',
+                category: 'animal',
                 pages: [
                     { hint: '小猫跑 1/4', desc: '前腿伸出', bg: 'grass' },
                     { hint: '小猫跑 2/4', desc: '身体伸直', bg: 'grass' },
@@ -23714,6 +23766,7 @@
                 id: 'dog_run',
                 name: '小狗跑',
                 icon: '🐶',
+                category: 'animal',
                 pages: [
                     { hint: '小狗跑 1/4', desc: '后腿蹬地', bg: 'grass' },
                     { hint: '小狗跑 2/4', desc: '腾空跳跃', bg: 'grass' },
@@ -23725,6 +23778,7 @@
                 id: 'frog_jump',
                 name: '青蛙跳',
                 icon: '🐸',
+                category: 'animal',
                 pages: [
                     { hint: '青蛙跳 1/3', desc: '蹲下蓄力', bg: 'pond' },
                     { hint: '青蛙跳 2/3', desc: '弹跳空中', bg: 'pond' },
@@ -23735,6 +23789,7 @@
                 id: 'rabbit_hop',
                 name: '兔子跳',
                 icon: '🐰',
+                category: 'animal',
                 pages: [
                     { hint: '兔子跳 1/3', desc: '蹲着准备', bg: 'carrot' },
                     { hint: '兔子跳 2/3', desc: '蹦蹦跳起', bg: 'carrot' },
@@ -23745,6 +23800,7 @@
                 id: 'chicken_peck',
                 name: '小鸡啄米',
                 icon: '🐤',
+                category: 'animal',
                 pages: [
                     { hint: '小鸡啄米 1/3', desc: '抬头看', bg: 'coop' },
                     { hint: '小鸡啄米 2/3', desc: '低头啄', bg: 'coop' },
@@ -23766,15 +23822,45 @@
             }
         }
 
+        let currentAnimabookCategory = 'all';
+        
         function renderAnimabookTemplates() {
             const panel = document.getElementById('animabookTemplatePanel');
-            panel.innerHTML = '';
-            ANIMABOOK_PRESET_TEMPLATES.forEach(tpl => {
+            // Build tabs HTML
+            const categoryNames = { all: '全部', story: '故事', creative: '创意', animal: '动物' };
+            let tabsHtml = '<div class="animabook-tpl-tabs">';
+            ANIMABOOK_TEMPLATE_CATEGORIES.forEach(cat => {
+                const count = cat === 'all' ? ANIMABOOK_PRESET_TEMPLATES.length : 
+                    ANIMABOOK_PRESET_TEMPLATES.filter(t => t.category === cat).length;
+                const active = cat === currentAnimabookCategory ? 'active' : '';
+                tabsHtml += '<button class="tpl-tab ' + active + '" onclick="switchAnimabookCategory(\'' + cat + '\')">' + categoryNames[cat] + '(' + count + ')</button>';
+            });
+            tabsHtml += '</div>';
+            panel.innerHTML = tabsHtml;
+            // Add templates container
+            const tplsContainer = document.createElement('div');
+            tplsContainer.id = 'animabookTplsContainer';
+            panel.appendChild(tplsContainer);
+            renderAnimabookTplsList();
+        }
+        
+        function switchAnimabookCategory(cat) {
+            currentAnimabookCategory = cat;
+            renderAnimabookTemplates();
+        }
+        
+        function renderAnimabookTplsList() {
+            const container = document.getElementById('animabookTplsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            const filtered = currentAnimabookCategory === 'all' ? ANIMABOOK_PRESET_TEMPLATES : 
+                ANIMABOOK_PRESET_TEMPLATES.filter(t => t.category === currentAnimabookCategory);
+            filtered.forEach(tpl => {
                 const btn = document.createElement('button');
                 btn.className = 'animabook-template-btn';
                 btn.innerHTML = '<span class="tpl-icon">' + tpl.icon + '</span><span class="tpl-name">' + tpl.name + '</span><span class="tpl-pages">' + tpl.pages.length + '页</span>';
                 btn.onclick = () => applyAnimabookTemplate(tpl);
-                panel.appendChild(btn);
+                container.appendChild(btn);
             });
         }
 
