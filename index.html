@@ -394,6 +394,111 @@
             cursor: pointer;
         }
 
+        /* V55: Enhanced Layer Panel */
+        .layer-actions {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .layer-action-btn {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .layer-action-btn:hover {
+            background: #e9ecef;
+        }
+
+        .layer-item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+
+        .layer-item.active {
+            border-color: #40c057;
+            background: #d3f9d8;
+        }
+
+        .layer-item.hidden-layer {
+            opacity: 0.5;
+        }
+
+        .layer-item.locked-layer {
+            background: #fff3bf;
+        }
+
+        .layer-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .layer-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layer-btn:hover {
+            background: #dee2e6;
+        }
+
+        .layer-name {
+            flex: 1;
+            font-size: 0.85rem;
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: text;
+        }
+
+        .layer-name-input {
+            flex: 1;
+            font-size: 0.85rem;
+            padding: 2px 4px;
+            border: 1px solid #adb5bd;
+            border-radius: 4px;
+        }
+
+        .layer-opacity-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #868e96;
+        }
+
+        .layer-opacity-slider {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #dee2e6;
+            border-radius: 2px;
+        }
+
+        .layer-move-btns {
+            display: flex;
+            gap: 2px;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -8080,8 +8185,11 @@
 
         <!-- V23: Layer System Panel -->
         <div class="panel" id="layerPanel">
-            <div class="panel-header">📑 图层 <button class="panel-close" onclick="closeLayerPanel()">×</button></div>
-            <button class="tool-btn" onclick="addNewLayer()" style="margin:8px 0;">+ 新建图层</button>
+            <div class="panel-header">📑 图层 <span id="layerCount">(1/20)</span> <button class="panel-close" onclick="closeLayerPanel()">×</button></div>
+            <div class="layer-actions">
+                <button class="layer-action-btn" onclick="addNewLayer()">+ 新建</button>
+                <button class="layer-action-btn" onclick="mergeVisibleLayers()">⬇️ 合并</button>
+            </div>
             <div class="layer-list" id="layerList"></div>
         </div>
 
@@ -24168,10 +24276,11 @@
 
         const layerSystem = {
             layers: [
-                { id: 'layer_1', name: '图层 1', visible: true, locked: false }
+                { id: 'layer_1', name: '图层 1', visible: true, locked: false, opacity: 100 }
             ],
             activeLayerId: 'layer_1',
-            layerCounter: 1
+            layerCounter: 1,
+            maxLayers: 20
         };
 
         let layerCanvases = {};
@@ -24204,12 +24313,17 @@
         }
 
         function addNewLayer() {
+            if (layerSystem.layers.length >= layerSystem.maxLayers) {
+                showToast('图层数量已达上限 (' + layerSystem.maxLayers + ')');
+                return;
+            }
             layerSystem.layerCounter++;
             const newLayer = {
                 id: 'layer_' + layerSystem.layerCounter,
                 name: '图层 ' + layerSystem.layerCounter,
                 visible: true,
-                locked: false
+                locked: false,
+                opacity: 100
             };
             layerSystem.layers.push(newLayer);
             createLayerCanvas(newLayer.id);
@@ -24223,89 +24337,61 @@
             renderLayerList();
         }
 
-        function toggleLayerVisibility(layerId) {
-            const layer = layerSystem.layers.find(l => l.id === layerId);
-            if (layer) {
-                layer.visible = !layer.visible;
-                if (layerCanvases[layerId]) {
-                    layerCanvases[layerId].style.display = layer.visible ? 'block' : 'none';
-                }
-                renderLayerList();
-                compositeLayers();
-            }
-        }
-
-        function toggleLayerLock(layerId) {
-            const layer = layerSystem.layers.find(l => l.id === layerId);
-            if (layer) {
-                layer.locked = !layer.locked;
-                if (layerCanvases[layerId]) {
-                    layerCanvases[layerId].style.pointerEvents = layer.locked ? 'none' : 'auto';
-                }
-                renderLayerList();
-            }
-        }
-
-        function deleteLayer(layerId) {
-            if (layerSystem.layers.length <= 1) return; // Keep at least 1 layer
-            const idx = layerSystem.layers.findIndex(l => l.id === layerId);
-            if (idx !== -1) {
-                const layer = layerSystem.layers[idx];
-                if (layerCanvases[layerId]) {
-                    layerCanvases[layerId].remove();
-                    delete layerCanvases[layerId];
-                    delete layerContexts[layerId];
-                }
-                layerSystem.layers.splice(idx, 1);
-                if (layerSystem.activeLayerId === layerId) {
-                    setActiveLayer(layerSystem.layers[Math.max(0, idx - 1)].id);
-                }
-                renderLayerList();
-                compositeLayers();
-            }
-        }
-
-        function moveLayer(layerId, direction) {
-            const idx = layerSystem.layers.findIndex(l => l.id === layerId);
-            const newIdx = direction === 'up' ? idx + 1 : idx - 1;
-            if (newIdx < 0 || newIdx >= layerSystem.layers.length) return;
-            
-            const temp = layerSystem.layers[idx];
-            layerSystem.layers[idx] = layerSystem.layers[newIdx];
-            layerSystem.layers[newIdx] = temp;
-            
-            // Reorder canvas DOM elements
-            const container = document.getElementById('layerContainer');
-            if (container) {
-                layerSystem.layers.forEach(l => {
-                    if (layerCanvases[l.id]) {
-                        container.appendChild(layerCanvases[l.id]);
-                    }
-                });
-            }
-            
-            renderLayerList();
-            compositeLayers();
-        }
-
         function renderLayerList() {
             const list = document.getElementById('layerList');
             if (!list) return;
             list.innerHTML = '';
-            
-            [...layerSystem.layers].reverse().forEach(layer => {
-                const div = document.createElement('div');
-                div.className = 'layer-item' + (layer.id === layerSystem.activeLayerId ? ' active' : '');
-                div.innerHTML = `
-                    <button onclick="toggleLayerVisibility('${layer.id}')" title="${layer.visible ? '隐藏' : '显示'}">${layer.visible ? '👁️' : '🔲'}</button>
-                    <button onclick="toggleLayerLock('${layer.id}')" title="${layer.locked ? '解锁' : '锁定'}">${layer.locked ? '🔒' : '🔓'}</button>
-                    <span class="layer-name" onclick="setActiveLayer('${layer.id}')">${layer.name}</span>
-                    <button class="layer-up" onclick="moveLayer('${layer.id}', 'up')" title="上移">▲</button>
-                    <button class="layer-down" onclick="moveLayer('${layer.id}', 'down')" title="下移">▼</button>
-                    <button onclick="deleteLayer('${layer.id}')" title="删除">🗑️</button>
+
+            const layerIds = Object.keys(layerSystem.layers);
+            layerIds.forEach((id, index) => {
+                const layer = layerSystem.layers.find(l => l.id === id);
+                if (!layer) return;
+
+                const item = document.createElement('div');
+                item.className = 'layer-item' +
+                    (id === layerSystem.activeLayerId ? ' active' : '') +
+                    (!layer.visible ? ' hidden-layer' : '') +
+                    (layer.locked ? ' locked-layer' : '');
+                item.dataset.layerId = id;
+
+                item.innerHTML = `
+                    <div class="layer-header">
+                        <button class="layer-btn" onclick="toggleLayerVisibility('${id}', event)" title="${layer.visible ? '隐藏' : '显示'}">
+                            ${layer.visible ? '👁️' : '👁️‍🗨️'}
+                        </button>
+                        <button class="layer-btn" onclick="startRenameLayer('${id}')" title="重命名">📝</button>
+                        <button class="layer-btn" onclick="toggleLayerLock('${id}', event)" title="${layer.locked ? '解锁' : '锁定'}">
+                            ${layer.locked ? '🔒' : '🔓'}
+                        </button>
+                        <button class="layer-btn" onclick="duplicateLayer('${id}', event)" title="复制">📋</button>
+                        <div class="layer-move-btns">
+                            <button class="layer-btn" onclick="moveLayer('${id}', 'up', event)" title="上移" ${index === 0 ? 'disabled' : ''}>⬆️</button>
+                            <button class="layer-btn" onclick="moveLayer('${id}', 'down', event)" title="下移" ${index === layerIds.length - 1 ? 'disabled' : ''}>⬇️</button>
+                        </div>
+                        <button class="layer-btn" onclick="deleteLayer('${id}', event)" title="删除">🗑️</button>
+                        <span class="layer-name" id="layerName_${id}">${layer.name}</span>
+                    </div>
+                    <div class="layer-opacity-row">
+                        <span>透明度</span>
+                        <input type="range" class="layer-opacity-slider"
+                            min="0" max="100" value="${layer.opacity || 100}"
+                            onchange="setLayerOpacity('${id}', this.value)">
+                        <span>${layer.opacity || 100}%</span>
+                    </div>
                 `;
-                list.appendChild(div);
+
+                item.onclick = (e) => {
+                    if (!e.target.closest('.layer-btn') && !e.target.closest('.layer-opacity-slider')) {
+                        setActiveLayer(id);
+                    }
+                };
+
+                list.appendChild(item);
             });
+
+            // Update count
+            const countEl = document.getElementById('layerCount');
+            if (countEl) countEl.textContent = `(${layerIds.length}/${layerSystem.maxLayers})`;
         }
 
         function compositeLayers() {
@@ -24314,9 +24400,172 @@
             mainCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
             layerSystem.layers.forEach(layer => {
                 if (layer.visible && layerCanvases[layer.id]) {
+                    mainCtx.save();
+                    mainCtx.globalAlpha = (layer.opacity || 100) / 100;
                     mainCtx.drawImage(layerCanvases[layer.id], 0, 0);
+                    mainCtx.restore();
                 }
             });
+        }
+
+        // V55: Enhanced Layer Functions
+        function toggleLayerVisibility(id, event) {
+            event.stopPropagation();
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (layer) {
+                layer.visible = !layer.visible;
+                if (layerCanvases[id]) {
+                    layerCanvases[id].style.display = layer.visible ? 'block' : 'none';
+                }
+                renderLayerList();
+                compositeLayers();
+            }
+        }
+
+        function toggleLayerLock(id, event) {
+            event.stopPropagation();
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (layer) {
+                layer.locked = !layer.locked;
+                if (layerCanvases[id]) {
+                    layerCanvases[id].style.pointerEvents = layer.locked ? 'none' : 'auto';
+                }
+                renderLayerList();
+            }
+        }
+
+        function startRenameLayer(id) {
+            const nameEl = document.getElementById('layerName_' + id);
+            if (!nameEl) return;
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (!layer) return;
+            nameEl.innerHTML = `<input type="text" class="layer-name-input" value="${layer.name}"
+                onblur="finishRenameLayer('${id}', this.value)"
+                onkeydown="if(event.key==='Enter')this.blur()">`;
+            nameEl.querySelector('input').focus();
+            nameEl.querySelector('input').select();
+        }
+
+        function finishRenameLayer(id, newName) {
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (layer && newName.trim()) {
+                layer.name = newName.trim();
+            }
+            renderLayerList();
+        }
+
+        function duplicateLayer(id, event) {
+            event.stopPropagation();
+            if (layerSystem.layers.length >= layerSystem.maxLayers) {
+                showToast('图层数量已达上限');
+                return;
+            }
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (!layer) return;
+            const newId = 'layer_' + Date.now();
+            const newCanvas = document.createElement('canvas');
+            newCanvas.width = layerCanvases[id].width;
+            newCanvas.height = layerCanvases[id].height;
+            const ctx = newCanvas.getContext('2d');
+            ctx.drawImage(layerCanvases[id], 0, 0);
+            const newLayer = {
+                id: newId,
+                name: layer.name + ' (副本)',
+                visible: true,
+                locked: false,
+                opacity: layer.opacity || 100
+            };
+            layerCanvases[newId] = newCanvas;
+            layerContexts[newId] = newCanvas.getContext('2d');
+            const idx = layerSystem.layers.findIndex(l => l.id === id);
+            layerSystem.layers.splice(idx + 1, 0, newLayer);
+            const container = document.getElementById('layerContainer');
+            if (container) {
+                layerSystem.layers.forEach(l => {
+                    if (layerCanvases[l.id]) container.appendChild(layerCanvases[l.id]);
+                });
+            }
+            layerSystem.activeLayerId = newId;
+            renderLayerList();
+            showToast('图层已复制');
+        }
+
+        function moveLayer(id, direction, event) {
+            event.stopPropagation();
+            const idx = layerSystem.layers.findIndex(l => l.id === id);
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+            if (newIdx < 0 || newIdx >= layerSystem.layers.length) return;
+            const temp = layerSystem.layers[idx];
+            layerSystem.layers[idx] = layerSystem.layers[newIdx];
+            layerSystem.layers[newIdx] = temp;
+            const container = document.getElementById('layerContainer');
+            if (container) {
+                layerSystem.layers.forEach(l => {
+                    if (layerCanvases[l.id]) container.appendChild(layerCanvases[l.id]);
+                });
+            }
+            renderLayerList();
+            compositeLayers();
+        }
+
+        function setLayerOpacity(id, value) {
+            const layer = layerSystem.layers.find(l => l.id === id);
+            if (layer) {
+                layer.opacity = parseInt(value, 10);
+                compositeLayers();
+                renderLayerList();
+            }
+        }
+
+        function deleteLayer(id, event) {
+            event.stopPropagation();
+            if (layerSystem.layers.length <= 1) {
+                showToast('至少保留一个图层');
+                return;
+            }
+            const idx = layerSystem.layers.findIndex(l => l.id === id);
+            if (idx !== -1) {
+                const layer = layerSystem.layers[idx];
+                if (layerCanvases[id]) {
+                    layerCanvases[id].remove();
+                    delete layerCanvases[id];
+                    delete layerContexts[id];
+                }
+                layerSystem.layers.splice(idx, 1);
+                if (layerSystem.activeLayerId === id) {
+                    const newIdx = Math.min(idx, layerSystem.layers.length - 1);
+                    layerSystem.activeLayerId = layerSystem.layers[newIdx].id;
+                }
+                renderLayerList();
+                compositeLayers();
+            }
+        }
+
+        function mergeVisibleLayers() {
+            const visibleLayers = layerSystem.layers.filter(l => l.visible);
+            if (visibleLayers.length < 2) {
+                showToast('需要至少2个可见图层才能合并');
+                return;
+            }
+            const lastLayer = visibleLayers[visibleLayers.length - 1];
+            const ctx = layerCanvases[lastLayer.id].getContext('2d');
+            visibleLayers.slice(0, -1).forEach(layer => {
+                ctx.drawImage(layerCanvases[layer.id], 0, 0);
+                const idx = layerSystem.layers.findIndex(l => l.id === layer.id);
+                if (idx !== -1) {
+                    layerSystem.layers.splice(idx, 1);
+                    if (layerCanvases[layer.id]) {
+                        layerCanvases[layer.id].remove();
+                        delete layerCanvases[layer.id];
+                        delete layerContexts[layer.id];
+                    }
+                }
+            });
+            lastLayer.name = '合并图层';
+            layerSystem.activeLayerId = lastLayer.id;
+            renderLayerList();
+            compositeLayers();
+            showToast('图层已合并');
         }
 
         function getActiveContext() {
