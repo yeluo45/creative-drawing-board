@@ -6480,6 +6480,161 @@
             font-size: 12px;
             color: #fff;
         }
+        .edit-btn { background: #FF9800; }
+
+        /* V49: Audio Editing Styles */
+        .audio-editor-panel {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            color: #fff;
+        }
+        .audio-editor-panel.open { display: flex; }
+        .audio-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #1a1a2e;
+        }
+        .audio-editor-header h3 { margin: 0; font-size: 16px; }
+        .audio-editor-header button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .audio-editor-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .audio-waveform-container {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .audio-waveform-canvas {
+            width: 100%;
+            height: 100px;
+            background: #0f0f1a;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+        .trim-handle {
+            position: absolute;
+            top: 15px;
+            width: 4px;
+            height: 100px;
+            background: #FF9800;
+            cursor: ew-resize;
+            border-radius: 2px;
+        }
+        .trim-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 24px;
+            background: #FF9800;
+            border-radius: 3px;
+        }
+        .trim-handle.left { left: 15px; }
+        .trim-handle.left::after { left: -4px; }
+        .trim-handle.right { right: 15px; }
+        .trim-handle.right::after { right: -4px; }
+        .trim-region {
+            position: absolute;
+            top: 15px;
+            height: 100px;
+            background: rgba(76, 175, 80, 0.3);
+            border-top: 2px solid #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            pointer-events: none;
+        }
+        .audio-editor-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .audio-editor-info span { color: #4CAF50; font-weight: bold; }
+        .audio-editor-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .audio-editor-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+            transition: transform 0.1s;
+        }
+        .audio-editor-controls button:active { transform: scale(0.95); }
+        .audio-editor-controls button:disabled { background: #555; cursor: not-allowed; }
+        .btn-trim { background: linear-gradient(180deg, #4CAF50, #388E3C); }
+        .btn-split { background: linear-gradient(180deg, #2196F3, #1976D2); }
+        .btn-save { background: linear-gradient(180deg, #FF9800, #F57C00); }
+        .btn-cancel { background: #666; }
+        .audio-editor-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #16213e;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .audio-editor-preview audio { flex: 1; height: 36px; }
+        .audio-editor-time {
+            font-size: 12px;
+            color: #aaa;
+            text-align: center;
+        }
+        .split-points-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: #16213e;
+            border-radius: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .split-points-list h4 { margin: 0 0 8px 0; font-size: 13px; color: #aaa; }
+        .split-point-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: #0f0f1a;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .split-point-item button {
+            background: #f44336;
+            border: none;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
 
         /* V32: AR Sticker styles */
         .ar-controls {
@@ -25821,6 +25976,7 @@
                     <div class="audio-recording-meta">时长: ${formatTime(r.duration)}</div>
                     <div class="audio-recording-actions">
                         <button class="playback-btn" onclick="playAudioRecording('${r.id}')">▶ 播放</button>
+                        <button class="edit-btn" onclick="openAudioEditor('${r.id}')">✂️ 编辑</button>
                         <button class="export-btn" onclick="exportAudioRecording('${r.id}')">📤 导出</button>
                         <button class="delete-btn" onclick="deleteAudioRecordingConfirm('${r.id}')">🗑️</button>
                     </div>
@@ -25849,6 +26005,348 @@
             a.download = `recording_${Date.now()}.webm`;
             a.click();
             showToast('导出成功');
+        }
+
+        // ===== V49: Audio Editing Functions =====
+        let audioEditorState = {
+            recordingId: null,
+            audioBuffer: null,
+            originalDuration: 0,
+            trimStart: 0,
+            trimEnd: 100,
+            splitPoints: [],
+            hasTrimmed: false,
+            isDragging: null,
+            dragStartX: 0
+        };
+
+        function openAudioEditor(id) {
+            const recordings = getAllAudioRecordings();
+            const recording = recordings.find(r => r.id === id);
+            if (!recording) return;
+
+            audioEditorState.recordingId = id;
+            audioEditorState.trimStart = 0;
+            audioEditorState.trimEnd = 100;
+            audioEditorState.splitPoints = [];
+            audioEditorState.hasTrimmed = false;
+
+            document.getElementById('audioEditorPanel').classList.add('open');
+            document.getElementById('editorOriginalTime').textContent = formatTime(recording.duration);
+            document.getElementById('editorTrimmedTime').textContent = formatTime(recording.duration);
+            document.getElementById('splitPointsList').style.display = 'none';
+            document.getElementById('splitPointsContainer').innerHTML = '';
+
+            const audio = new Audio(recording.dataUrl);
+            audio.addEventListener('loadedmetadata', async () => {
+                audioEditorState.originalDuration = audio.duration;
+                try {
+                    const response = await fetch(recording.dataUrl);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioEditorState.audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    audioContext.close();
+                    drawWaveform();
+                    updateTrimHandles();
+                } catch (err) {
+                    showToast('无法加载音频进行编辑');
+                    closeAudioEditor();
+                }
+            });
+            audio.src = recording.dataUrl;
+
+            document.getElementById('editorAudioPreview').src = recording.dataUrl;
+            setupTrimHandles();
+        }
+
+        function closeAudioEditor() {
+            document.getElementById('audioEditorPanel').classList.remove('open');
+            audioEditorState.audioBuffer = null;
+            audioEditorState.recordingId = null;
+        }
+
+        function drawWaveform() {
+            const canvas = document.getElementById('waveformCanvas');
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = rect.height;
+            const buffer = audioEditorState.audioBuffer;
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / width);
+
+            ctx.fillStyle = '#0f0f1a';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+
+            for (let i = 0; i < width; i++) {
+                let min = 1.0, max = -1.0;
+                for (let j = 0; j < step; j++) {
+                    const datum = data[(i * step) + j];
+                    if (datum < min) min = datum;
+                    if (datum > max) max = datum;
+                }
+                const yMin = ((min + 1) / 2) * height;
+                const yMax = ((max + 1) / 2) * height;
+                ctx.moveTo(i, yMin);
+                ctx.lineTo(i, yMax);
+            }
+            ctx.stroke();
+        }
+
+        function updateTrimHandles() {
+            const container = document.getElementById('waveformContainer');
+            const canvas = document.getElementById('waveformCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const offsetX = rect.left - containerRect.left;
+            const offsetY = rect.top - containerRect.top;
+
+            const leftPos = offsetX + (audioEditorState.trimStart / 100) * rect.width;
+            const rightPos = offsetX + (audioEditorState.trimEnd / 100) * rect.width;
+
+            document.getElementById('trimHandleLeft').style.left = (leftPos - 2) + 'px';
+            document.getElementById('trimHandleRight').style.left = (rightPos - 2) + 'px';
+
+            const trimRegion = document.getElementById('trimRegion');
+            trimRegion.style.left = leftPos + 'px';
+            trimRegion.style.width = (rightPos - leftPos) + 'px';
+
+            const trimmedDuration = ((audioEditorState.trimEnd - audioEditorState.trimStart) / 100) * audioEditorState.originalDuration;
+            document.getElementById('editorTrimmedTime').textContent = formatTime(trimmedDuration);
+            document.getElementById('editorTimeDisplay').textContent =
+                `开始: ${formatTime((audioEditorState.trimStart / 100) * audioEditorState.originalDuration)} | ` +
+                `结束: ${formatTime((audioEditorState.trimEnd / 100) * audioEditorState.originalDuration)}`;
+        }
+
+        function setupTrimHandles() {
+            const leftHandle = document.getElementById('trimHandleLeft');
+            const rightHandle = document.getElementById('trimHandleRight');
+
+            function startDrag(e, handle) {
+                e.preventDefault();
+                audioEditorState.isDragging = handle;
+                audioEditorState.dragStartX = e.clientX || e.touches[0].clientX;
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag);
+                document.addEventListener('touchend', stopDrag);
+            }
+
+            function onDrag(e) {
+                if (!audioEditorState.isDragging || !audioEditorState.audioBuffer) return;
+                const clientX = e.clientX || e.touches[0].clientX;
+                const canvas = document.getElementById('waveformCanvas');
+                const rect = canvas.getBoundingClientRect();
+                const deltaX = clientX - audioEditorState.dragStartX;
+                const deltaPercent = (deltaX / rect.width) * 100;
+
+                if (audioEditorState.isDragging === 'left') {
+                    audioEditorState.trimStart = Math.max(0, Math.min(audioEditorState.trimEnd - 5, audioEditorState.trimStart + deltaPercent));
+                } else if (audioEditorState.isDragging === 'right') {
+                    audioEditorState.trimEnd = Math.min(100, Math.max(audioEditorState.trimStart + 5, audioEditorState.trimEnd + deltaPercent));
+                }
+
+                audioEditorState.dragStartX = clientX;
+                updateTrimHandles();
+            }
+
+            function stopDrag() {
+                audioEditorState.isDragging = null;
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('touchend', stopDrag);
+            }
+
+            leftHandle.addEventListener('mousedown', (e) => startDrag(e, 'left'));
+            leftHandle.addEventListener('touchstart', (e) => startDrag(e, 'left'));
+            rightHandle.addEventListener('mousedown', (e) => startDrag(e, 'right'));
+            rightHandle.addEventListener('touchstart', (e) => startDrag(e, 'right'));
+        }
+
+        async function trimAudio() {
+            if (!audioEditorState.audioBuffer) return;
+
+            const startPercent = audioEditorState.trimStart / 100;
+            const endPercent = audioEditorState.trimEnd / 100;
+            const sampleRate = audioEditorState.audioBuffer.sampleRate;
+            const startSample = Math.floor(startPercent * audioEditorState.audioBuffer.length);
+            const endSample = Math.floor(endPercent * audioEditorState.audioBuffer.length);
+            const newLength = endSample - startSample;
+
+            const newBuffer = new AudioContext().createBuffer(
+                audioEditorState.audioBuffer.numberOfChannels,
+                newLength,
+                sampleRate
+            );
+
+            for (let channel = 0; channel < audioEditorState.audioBuffer.numberOfChannels; channel++) {
+                const newData = newBuffer.getChannelData(channel);
+                const oldData = audioEditorState.audioBuffer.getChannelData(channel);
+                for (let i = 0; i < newLength; i++) {
+                    newData[i] = oldData[startSample + i];
+                }
+            }
+
+            audioEditorState.audioBuffer = newBuffer;
+            audioEditorState.trimStart = 0;
+            audioEditorState.trimEnd = 100;
+            audioEditorState.hasTrimmed = true;
+            audioEditorState.originalDuration = newBuffer.duration;
+
+            document.getElementById('editorOriginalTime').textContent = formatTime(newBuffer.duration);
+            drawWaveform();
+            updateTrimHandles();
+            await updatePreviewFromBuffer();
+            showToast('剪辑成功！');
+        }
+
+        async function splitAudio() {
+            if (!audioEditorState.audioBuffer) return;
+
+            const currentTime = document.getElementById('editorAudioPreview').currentTime;
+            const currentPercent = (currentTime / audioEditorState.originalDuration) * 100;
+
+            if (currentPercent <= audioEditorState.trimStart + 1 || currentPercent >= audioEditorState.trimEnd - 1) {
+                showToast('请在有效范围内添加分割点');
+                return;
+            }
+
+            audioEditorState.splitPoints.push(currentPercent);
+            audioEditorState.splitPoints.sort((a, b) => a - b);
+
+            document.getElementById('splitPointsList').style.display = 'block';
+            document.getElementById('splitPointsContainer').innerHTML = audioEditorState.splitPoints.map((p, i) => `
+                <div class="split-point-item">
+                    <span>分割点 ${i + 1}: ${formatTime((p / 100) * audioEditorState.originalDuration)}</span>
+                    <button onclick="removeSplitPoint(${i})">删除</button>
+                </div>
+            `).join('');
+
+            showToast('分割点已添加');
+        }
+
+        function removeSplitPoint(index) {
+            audioEditorState.splitPoints.splice(index, 1);
+            if (audioEditorState.splitPoints.length === 0) {
+                document.getElementById('splitPointsList').style.display = 'none';
+            } else {
+                document.getElementById('splitPointsContainer').innerHTML = audioEditorState.splitPoints.map((p, i) => `
+                    <div class="split-point-item">
+                        <span>分割点 ${i + 1}: ${formatTime((p / 100) * audioEditorState.originalDuration)}</span>
+                        <button onclick="removeSplitPoint(${i})">删除</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function updatePreviewFromBuffer() {
+            const buffer = audioEditorState.audioBuffer;
+            const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+            const source = offlineCtx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(offlineCtx.destination);
+            source.start();
+
+            const renderedBuffer = await offlineCtx.startRendering();
+            const wav = audioBufferToWav(renderedBuffer);
+            const blob = new Blob([wav], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            document.getElementById('editorAudioPreview').src = url;
+        }
+
+        function audioBufferToWav(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1;
+            const bitDepth = 16;
+
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+
+            const dataLength = buffer.length * blockAlign;
+            const bufferLength = 44 + dataLength;
+
+            const arrayBuffer = new ArrayBuffer(bufferLength);
+            const view = new DataView(arrayBuffer);
+
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, bufferLength - 8, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            writeString(36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            const channels = [];
+            for (let i = 0; i < numChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+
+            let offset = 44;
+            for (let i = 0; i < buffer.length; i++) {
+                for (let ch = 0; ch < numChannels; ch++) {
+                    let sample = channels[ch][i];
+                    sample = Math.max(-1, Math.min(1, sample));
+                    sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(offset, sample, true);
+                    offset += 2;
+                }
+            }
+
+            return arrayBuffer;
+        }
+
+        async function saveEditedAudio() {
+            if (!audioEditorState.audioBuffer || !audioEditorState.recordingId) return;
+
+            try {
+                const wav = audioBufferToWav(audioEditorState.audioBuffer);
+                const blob = new Blob([wav], { type: 'audio/wav' });
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    const recordings = getAllAudioRecordings();
+                    const index = recordings.findIndex(r => r.id === audioEditorState.recordingId);
+
+                    if (index !== -1) {
+                        recordings[index].dataUrl = reader.result;
+                        recordings[index].duration = Math.floor(audioEditorState.audioBuffer.duration);
+                        recordings[index].name = '录音 ' + new Date().toLocaleString() + ' (已剪辑)';
+                        localStorage.setItem(AUDIO_RECORDINGS_KEY, JSON.stringify(recordings));
+                    }
+
+                    closeAudioEditor();
+                    showAudioRecordingsList();
+                    showToast('编辑已保存！');
+                };
+
+                reader.readAsDataURL(blob);
+            } catch (err) {
+                showToast('保存失败');
+            }
         }
 
         // Override draw function to handle shape library and text placement
@@ -25934,6 +26432,40 @@
     <div class="panel" id="audioRecordingsPanel" style="display:none;">
         <div class="panel-header">🎤 我的录音 <button class="close-btn" onclick="closeAudioRecordingsPanel()">×</button></div>
         <div class="audio-recordings-list" id="audioRecordingsList"></div>
+    </div>
+
+    <!-- V49: Audio Editor Panel -->
+    <div class="audio-editor-panel" id="audioEditorPanel">
+        <div class="audio-editor-header">
+            <h3>✂️ 录音剪辑</h3>
+            <button onclick="closeAudioEditor()">×</button>
+        </div>
+        <div class="audio-editor-body">
+            <div class="audio-waveform-container" id="waveformContainer">
+                <canvas class="audio-waveform-canvas" id="waveformCanvas"></canvas>
+                <div class="trim-region" id="trimRegion"></div>
+                <div class="trim-handle left" id="trimHandleLeft"></div>
+                <div class="trim-handle right" id="trimHandleRight"></div>
+            </div>
+            <div class="audio-editor-info">
+                <div>原始时长: <span id="editorOriginalTime">00:00</span></div>
+                <div>剪辑后: <span id="editorTrimmedTime">00:00</span></div>
+            </div>
+            <div class="audio-editor-preview">
+                <audio id="editorAudioPreview" controls></audio>
+            </div>
+            <div class="audio-editor-time" id="editorTimeDisplay">拖动橙色手柄选择剪辑范围 | 点击"剪辑"按钮裁剪选中区域</div>
+            <div class="audio-editor-controls">
+                <button class="btn-trim" id="btnTrimAudio" onclick="trimAudio()">✂️ 剪辑</button>
+                <button class="btn-split" id="btnSplitAudio" onclick="splitAudio()">🔪 分割</button>
+                <button class="btn-save" id="btnSaveAudio" onclick="saveEditedAudio()">💾 保存</button>
+                <button class="btn-cancel" onclick="closeAudioEditor()">取消</button>
+            </div>
+            <div class="split-points-list" id="splitPointsList" style="display:none;">
+                <h4>📍 分割点列表</h4>
+                <div id="splitPointsContainer"></div>
+            </div>
+        </div>
     </div>
 
     <!-- V27: Playback Panel -->

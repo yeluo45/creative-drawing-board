@@ -115,6 +115,14 @@ creative-drawing-board/
 - Effect selector dropdown appears next to each voice recording button
 - Real-time preview when changing effects
 
+### V49: Audio Recording Editing (录音剪辑功能)
+- **Waveform Visualization**: Displays audio waveform on canvas for visual editing
+- **Trim/Cut**: Drag orange handles to select region, click "剪辑" to cut and keep selected portion
+- **Split**: Add split points at any playback position, view list of split points with delete option
+- **Save**: Exports edited audio as WAV format and updates the original recording
+- **Edit Button**: Orange "✂️ 编辑" button appears next to each recording in the list
+- Full-screen editor panel with dark theme and responsive controls
+
 ### Responsive Design
 - Canvas resizes on window resize
 - UI scales appropriately for different screen sizes
