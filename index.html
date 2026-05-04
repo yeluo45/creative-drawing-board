@@ -6174,6 +6174,66 @@
         .achievement-toast .achievement-title { font-size: 15px; font-weight: bold; }
         .achievement-toast .achievement-reward { font-size: 13px; color: #ffd700; }
 
+        /* V37: Theme Shop Styles */
+        .shop-balance {
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff9800;
+            background: #fff3e0;
+            border-bottom: 1px solid #eee;
+        }
+        .shop-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+        }
+        .shop-tab-btn {
+            flex: 1;
+            padding: 10px 5px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .shop-tab-btn.active {
+            border-bottom-color: #ff7043;
+            color: #ff7043;
+            font-weight: bold;
+        }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .shop-item:hover { transform: scale(1.03); border-color: #ff7043; }
+        .shop-item.owned {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: #4CAF50;
+        }
+        .shop-item-icon { font-size: 32px; margin-bottom: 6px; }
+        .shop-item-name { font-size: 12px; font-weight: bold; text-align: center; color: #333; margin-bottom: 4px; }
+        .shop-item-price { font-size: 11px; color: #ff9800; font-weight: bold; }
+        .shop-item.owned .shop-item-price { color: #4CAF50; }
+        .shop-item-owned-badge { font-size: 10px; color: #4CAF50; margin-top: 2px; }
+
     </style>
 </head>
 <body>
@@ -6205,6 +6265,7 @@
             <button class="tool-btn" id="langBtn" title="Language">🌐</button>
             <button class="tool-btn" id="friendsBtn" title="好友系统">👥</button>
             <button class="tool-btn" id="achievementBtn" title="成就中心">🏆</button>
+            <button class="tool-btn" id="shopBtn" title="主题商店">🛒</button>
         </div>
     </header>
 
@@ -21068,6 +21129,240 @@
         let friendsData = {};
         let localCoins = 100;
 
+        // ===== V37: Theme Shop State =====
+        const THEMES = [
+            { id: 'theme_default', name: '默认主题', icon: '🎨', price: 0, type: 'theme', colors: { primary: '#4CAF50', secondary: '#8BC34A', bg: '#ffffff', text: '#333333' } },
+            { id: 'theme_ocean', name: '海洋主题', icon: '🌊', price: 50, type: 'theme', colors: { primary: '#0077B6', secondary: '#00B4D8', bg: '#CAF0F8', text: '#023E8A' } },
+            { id: 'theme_sunset', name: '日落主题', icon: '🌅', price: 50, type: 'theme', colors: { primary: '#FF6B35', secondary: '#F7C59F', bg: '#2F2F2F', text: '#FFFFFF' } },
+            { id: 'theme_forest', name: '森林主题', icon: '🌲', price: 60, type: 'theme', colors: { primary: '#2D6A4F', secondary: '#40916C', bg: '#D8F3DC', text: '#1B4332' } },
+            { id: 'theme_pink', name: '粉色少女', icon: '💗', price: 40, type: 'theme', colors: { primary: '#FF69B4', secondary: '#FFC0CB', bg: '#FFF0F5', text: '#DB7093' } },
+            { id: 'theme_space', name: '太空主题', icon: '🚀', price: 80, type: 'theme', colors: { primary: '#7B2CBF', secondary: '#9D4EDD', bg: '#0D0221', text: '#E0AAFF' } },
+            { id: 'theme_gold', name: '金色奢华', icon: '👑', price: 100, type: 'theme', colors: { primary: '#FFD700', secondary: '#FFA500', bg: '#1A1A1A', text: '#FFD700' } },
+            { id: 'theme_rainbow', name: '彩虹主题', icon: '🌈', price: 120, type: 'theme', colors: { primary: '#FF0000', secondary: '#00FF00', bg: '#FFFFFF', text: '#333333' } }
+        ];
+
+        const BRUSH_SKINS = [
+            { id: 'brush_default', name: '默认画笔', icon: '✏️', price: 0, type: 'brush' },
+            { id: 'brush_pencil', name: '铅笔', icon: '✏️', price: 20, type: 'brush' },
+            { id: 'brush_marker', name: '马克笔', icon: '🖊️', price: 30, type: 'brush' },
+            { id: 'brush_crayon', name: '蜡笔', icon: '🖍️', price: 30, type: 'brush' },
+            { id: 'brush_neon', name: '霓虹灯', icon: '💡', price: 50, type: 'brush' },
+            { id: 'brush_galaxy', name: '银河', icon: '🌌', price: 60, type: 'brush' },
+            { id: 'brush_fire', name: '火焰', icon: '🔥', price: 70, type: 'brush' },
+            { id: 'brush_ice', name: '冰晶', icon: '❄️', price: 70, type: 'brush' },
+            { id: 'brush_rainbow', name: '彩虹', icon: '🌈', price: 80, type: 'brush' }
+        ];
+
+        const BACKGROUNDS = [
+            { id: 'bg_default', name: '空白背景', icon: '📄', price: 0, type: 'background', url: null },
+            { id: 'bg_paper', name: '纸张', icon: '📜', price: 10, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="#FFF8E7" width="100" height="100"/></svg>') },
+            { id: 'bg_grid', name: '网格纸', icon: '📐', price: 15, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect fill="#FFF" width="20" height="20"/><path d="M20 0L0 0 0 20" fill="none" stroke="#E0E0E0" stroke-width="0.5"/></svg>') },
+            { id: 'bg_dots', name: '点格纸', icon: '⚫', price: 15, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect fill="#FFF" width="20" height="20"/><circle cx="10" cy="10" r="1" fill="#CCC"/></svg>') },
+            { id: 'bg_notebook', name: '笔记本', icon: '📓', price: 20, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="#FFFEF0" width="100" height="100"/><line x1="0" y1="20" x2="100" y2="20" stroke="#87CEEB" stroke-width="1"/><line x1="0" y1="40" x2="100" y2="40" stroke="#87CEEB" stroke-width="1"/><line x1="0" y1="60" x2="100" y2="60" stroke="#87CEEB" stroke-width="1"/><line x1="0" y1="80" x2="100" y2="80" stroke="#87CEEB" stroke-width="1"/></svg>') },
+            { id: 'bg_card', name: '卡片纸', icon: '🃏', price: 25, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="#F5F5DC" width="100" height="100" rx="5"/><rect fill="#DEB887" x="5" y="5" width="90" height="90" rx="3" stroke="#8B7355" stroke-width="2"/></svg>') },
+            { id: 'bg_sea', name: '海洋', icon: '🌊', price: 50, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><linearGradient id="g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#0077B6"/><stop offset="100%" style="stop-color:#00B4D8"/></linearGradient></defs><rect fill="url(#g)" width="100" height="100"/></svg>') },
+            { id: 'bg_forest', name: '森林', icon: '🌲', price: 50, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><linearGradient id="g" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#2D6A4F"/><stop offset="100%" style="stop-color:#40916C"/></linearGradient></defs><rect fill="url(#g)" width="100" height="100"/></svg>') },
+            { id: 'bg_space', name: '星空', icon: '⭐', price: 60, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="#0D0221" width="100" height="100"/><circle cx="20" cy="20" r="1" fill="#fff"/><circle cx="50" cy="30" r="0.5" fill="#fff"/><circle cx="80" cy="15" r="1" fill="#fff"/><circle cx="30" cy="60" r="0.5" fill="#fff"/><circle cx="70" cy="70" r="1" fill="#fff"/><circle cx="15" cy="80" r="0.5" fill="#fff"/><circle cx="90" cy="50" r="0.5" fill="#fff"/></svg>') },
+            { id: 'bg_rainbow', name: '彩虹', icon: '🌈', price: 70, type: 'background', url: 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF0000"/><stop offset="20%" style="stop-color:#FF7F00"/><stop offset="40%" style="stop-color:#FFFF00"/><stop offset="60%" style="stop-color:#00FF00"/><stop offset="80%" style="stop-color:#0000FF"/><stop offset="100%" style="stop-color:#8B00FF"/></linearGradient></defs><rect fill="url(#g)" width="100" height="100"/></svg>') }
+        ];
+
+        let shopData = {
+            ownedThemes: ['theme_default'],
+            ownedBrushes: ['brush_default'],
+            ownedBackgrounds: ['bg_default'],
+            currentTheme: 'theme_default',
+            currentBrush: 'brush_default',
+            currentBackground: 'bg_default'
+        };
+
+        var currentShopTab = 'theme';
+
+        function saveShopData() {
+            localStorage.setItem('cdb_shop', JSON.stringify(shopData));
+        }
+
+        function loadShopData() {
+            var data = localStorage.getItem('cdb_shop');
+            if (data) {
+                shopData = JSON.parse(data);
+            } else {
+                shopData = {
+                    ownedThemes: ['theme_default'],
+                    ownedBrushes: ['brush_default'],
+                    ownedBackgrounds: ['bg_default'],
+                    currentTheme: 'theme_default',
+                    currentBrush: 'brush_default',
+                    currentBackground: 'bg_default'
+                };
+                saveShopData();
+            }
+        }
+
+        function switchShopTab(tab, evt) {
+            currentShopTab = tab;
+            document.querySelectorAll('.shop-tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+            evt.target.classList.add('active');
+            renderShopGrid(tab);
+        }
+
+        function renderShopGrid(tab) {
+            var grid = document.getElementById('shopGrid');
+            var items = [];
+            var owned = [];
+
+            if (tab === 'theme') {
+                items = THEMES;
+                owned = shopData.ownedThemes;
+            } else if (tab === 'brush') {
+                items = BRUSH_SKINS;
+                owned = shopData.ownedBrushes;
+            } else if (tab === 'background') {
+                items = BACKGROUNDS;
+                owned = shopData.ownedBackgrounds;
+            } else if (tab === 'owned') {
+                var allOwned = [];
+                shopData.ownedThemes.forEach(function(id) {
+                    var t = THEMES.find(function(x) { return x.id === id; });
+                    if (t) allOwned.push({ item: t, type: 'theme' });
+                });
+                shopData.ownedBrushes.forEach(function(id) {
+                    var b = BRUSH_SKINS.find(function(x) { return x.id === id; });
+                    if (b) allOwned.push({ item: b, type: 'brush' });
+                });
+                shopData.ownedBackgrounds.forEach(function(id) {
+                    var bg = BACKGROUNDS.find(function(x) { return x.id === id; });
+                    if (bg) allOwned.push({ item: bg, type: 'background' });
+                });
+                grid.innerHTML = allOwned.length === 0
+                    ? '<div class="empty-tip">还没有购买任何物品</div>'
+                    : allOwned.map(function(o) {
+                        return '<div class="shop-item owned" onclick="showOwnedDetail(\'' + o.item.id + '\', \'' + o.type + '\')">' +
+                            '<span class="shop-item-icon">' + o.item.icon + '</span>' +
+                            '<span class="shop-item-name">' + o.item.name + '</span>' +
+                            '<span class="shop-item-owned-badge">✓ 已拥有</span>' +
+                        '</div>';
+                    }).join('');
+                return;
+            }
+
+            grid.innerHTML = items.map(function(item) {
+                var isOwned = owned.includes(item.id);
+                return '<div class="shop-item' + (isOwned ? ' owned' : '') + '"' +
+                    ' onclick="' + (isOwned ? 'showOwnedDetail' : 'purchaseItem') + '(\'' + item.id + '\', \'' + tab + '\')">' +
+                    '<span class="shop-item-icon">' + item.icon + '</span>' +
+                    '<span class="shop-item-name">' + item.name + '</span>' +
+                    (isOwned
+                        ? '<span class="shop-item-price">✓ 已拥有</span>'
+                        : '<span class="shop-item-price">💰 ' + item.price + '</span>') +
+                '</div>';
+            }).join('');
+        }
+
+        function purchaseItem(itemId, itemType) {
+            var item;
+            if (itemType === 'theme') {
+                item = THEMES.find(function(t) { return t.id === itemId; });
+            } else if (itemType === 'brush') {
+                item = BRUSH_SKINS.find(function(b) { return b.id === itemId; });
+            } else if (itemType === 'background') {
+                item = BACKGROUNDS.find(function(b) { return b.id === itemId; });
+            }
+
+            if (!item) { showToast('商品不存在'); return; }
+            if (item.price === 0) { showToast('这是免费商品'); return; }
+            if (userRewards.coins < item.price) { showToast('金币不足，需要 ' + item.price + ' 💰'); return; }
+
+            var owned = getOwnedList(itemType);
+            if (owned.includes(itemId)) { showToast('已拥有此商品'); return; }
+
+            userRewards.coins -= item.price;
+            saveShopData();
+            updateAchievementStats();
+
+            if (itemType === 'theme') shopData.ownedThemes.push(itemId);
+            else if (itemType === 'brush') shopData.ownedBrushes.push(itemId);
+            else if (itemType === 'background') shopData.ownedBackgrounds.push(itemId);
+            saveShopData();
+
+            showToast('购买成功！获得 ' + item.icon + ' ' + item.name);
+            renderShopGrid(itemType);
+            document.getElementById('shopCoins').textContent = userRewards.coins;
+        }
+
+        function getOwnedList(type) {
+            if (type === 'theme') return shopData.ownedThemes;
+            if (type === 'brush') return shopData.ownedBrushes;
+            if (type === 'background') return shopData.ownedBackgrounds;
+            return [];
+        }
+
+        function applyTheme(themeId) {
+            if (!shopData.ownedThemes.includes(themeId)) { showToast('请先购买此主题'); return; }
+            var theme = THEMES.find(function(t) { return t.id === themeId; });
+            if (!theme) return;
+            shopData.currentTheme = themeId;
+            saveShopData();
+            document.documentElement.style.setProperty('--primary-color', theme.colors.primary);
+            document.documentElement.style.setProperty('--secondary-color', theme.colors.secondary);
+            document.body.style.background = theme.colors.bg;
+            document.body.style.color = theme.colors.text;
+            showToast('主题已应用: ' + theme.icon + ' ' + theme.name);
+        }
+
+        function applyBrush(brushId) {
+            if (!shopData.ownedBrushes.includes(brushId)) { showToast('请先购买此画笔'); return; }
+            shopData.currentBrush = brushId;
+            saveShopData();
+            showToast('画笔皮肤已应用');
+        }
+
+        function applyBackground(bgId) {
+            if (!shopData.ownedBackgrounds.includes(bgId)) { showToast('请先购买此背景'); return; }
+            var bg = BACKGROUNDS.find(function(b) { return b.id === bgId; });
+            if (!bg) return;
+            shopData.currentBackground = bgId;
+            saveShopData();
+            if (bg.url) {
+                canvas.style.backgroundImage = 'url(' + bg.url + ')';
+                canvas.style.backgroundSize = 'cover';
+            } else {
+                canvas.style.backgroundImage = 'none';
+                canvas.style.backgroundColor = '#ffffff';
+            }
+            showToast('背景已应用');
+        }
+
+        function showOwnedDetail(itemId, itemType) {
+            var item;
+            if (itemType === 'theme') item = THEMES.find(function(t) { return t.id === itemId; });
+            else if (itemType === 'brush') item = BRUSH_SKINS.find(function(b) { return b.id === itemId; });
+            else if (itemType === 'background') item = BACKGROUNDS.find(function(b) { return b.id === itemId; });
+            if (!item) return;
+
+            var msg = item.icon + ' ' + item.name + '\n\n分类: ' + itemType + '\n价格: ' + (item.price === 0 ? '免费' : item.price + ' 💰');
+            if (item.colors) {
+                msg += '\n\n颜色预览:\n主色: ' + item.colors.primary + '\n背景: ' + item.colors.bg;
+                msg += '\n\n[确定] 应用主题';
+                if (confirm(msg)) {
+                    applyTheme(itemId);
+                }
+            } else if (itemType === 'brush') {
+                if (confirm(msg + '\n\n确定应用此画笔?')) {
+                    applyBrush(itemId);
+                }
+            } else if (itemType === 'background') {
+                if (confirm(msg + '\n\n确定应用此背景?')) {
+                    applyBackground(itemId);
+                }
+            } else {
+                alert(msg);
+            }
+        }
+
+        function closeShopPanel() {
+            document.getElementById('shopPanel').style.display = 'none';
+        }
+
         // ===== V36: Achievement System State =====
         const ACHIEVEMENTS = [
           { id: 'first_draw', name: '初次作画', desc: '完成你的第一幅画', icon: '🎨', category: '绘画', reward: 10 },
@@ -23160,6 +23455,24 @@
         </div>
     </div>
 
+    <!-- V37: Theme Shop Panel -->
+    <div class="panel" id="shopPanel" style="display:none;">
+      <div class="panel-header">🛒 主题商店 <button class="close-btn" onclick="closeShopPanel()">×</button></div>
+
+      <div class="shop-balance">
+        💰 <span id="shopCoins">100</span> 金币
+      </div>
+
+      <div class="shop-tabs">
+        <button class="shop-tab-btn active" onclick="switchShopTab('theme', event)">🎨 主题</button>
+        <button class="shop-tab-btn" onclick="switchShopTab('brush', event)">✏️ 画笔</button>
+        <button class="shop-tab-btn" onclick="switchShopTab('background', event)">🖼️ 背景</button>
+        <button class="shop-tab-btn" onclick="switchShopTab('owned', event)">✨ 我的</button>
+      </div>
+
+      <div class="shop-grid" id="shopGrid"></div>
+    </div>
+
     <!-- V36: Achievement Panel -->
     <div class="panel" id="achievementPanel" style="display:none;">
         <div class="panel-header">🏆 成就中心 <button class="close-btn" onclick="closeAchievementPanel()">×</button></div>
@@ -23226,6 +23539,28 @@
                 updateAchievementStats();
                 document.getElementById('achievementPanel').style.display = 'block';
             });
+
+            // ===== V37: Shop Button Event =====
+            document.getElementById('shopBtn').addEventListener('click', function() {
+                closeAllPanels();
+                document.getElementById('shopCoins').textContent = userRewards.coins;
+                switchShopTab('theme', { target: document.querySelector('.shop-tab-btn') });
+                document.getElementById('shopPanel').style.display = 'block';
+            });
+
+            // ===== V37: Load Shop Data on Page Load =====
+            loadShopData();
+
+            // Apply saved theme on load
+            (function() {
+                var theme = THEMES.find(function(t) { return t.id === shopData.currentTheme; });
+                if (theme && theme.colors) {
+                    document.documentElement.style.setProperty('--primary-color', theme.colors.primary);
+                    document.documentElement.style.setProperty('--secondary-color', theme.colors.secondary);
+                    document.body.style.background = theme.colors.bg;
+                    document.body.style.color = theme.colors.text;
+                }
+            })();
         });
     </script>
 </body>
