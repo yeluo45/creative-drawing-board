@@ -5840,6 +5840,84 @@
             font-size: 12px;
             color: #fff;
         }
+
+        /* V32: AR Sticker styles */
+        .ar-controls {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+        .ar-controls button {
+            padding: 8px 16px;
+            background: #e91e63;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .ar-controls button:disabled { background: #ccc; }
+        .ar-category {
+            display: flex;
+            gap: 5px;
+            padding: 5px 10px;
+            justify-content: center;
+        }
+        .ar-cat-btn {
+            padding: 5px 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .ar-cat-btn.active { background: #fce4ec; border-color: #e91e63; }
+        .ar-sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .ar-sticker-item {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .ar-sticker-item:hover { background: #fce4ec; }
+        .ar-sticker-item.active { border-color: #e91e63; background: #fce4ec; }
+        .ar-active {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #888;
+        }
+        .ar-active-list { display: flex; gap: 5px; }
+        .ar-active-list span { font-size: 20px; }
+        .ar-actions {
+            padding: 10px;
+            text-align: center;
+        }
+        .ar-actions button {
+            padding: 10px 24px;
+            background: #e91e63;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -6651,6 +6729,8 @@
         <button class="tool-btn visualizer-btn" id="visualizerBtn" title="音频可视化">
             <span class="tool-icon">📊</span>
         </button>
+        <!-- V32: AR Sticker Button -->
+        <button class="tool-btn ar-sticker-btn" id="arStickerBtn" title="AR贴纸">🎭</button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -6741,6 +6821,34 @@
         <div class="particle-controls">
             <button onclick="toggleParticleAnimation()">▶ 开始</button>
             <button onclick="clearParticles()">✖ 清除</button>
+        </div>
+    </div>
+
+    <!-- V32: AR Sticker Panel -->
+    <div class="panel" id="arStickerPanel" style="display:none;">
+        <div class="panel-header">🎭 AR 贴纸 <button class="close-btn" onclick="closeARStickerPanel()">×</button></div>
+
+        <div class="ar-controls">
+            <button onclick="startARBackground()" id="arStartBtn">📷 开启摄像头</button>
+            <button onclick="stopARBackground()" id="arStopBtn" disabled>⏸ 关闭摄像头</button>
+        </div>
+
+        <div class="ar-category">
+            <button class="ar-cat-btn active" onclick="filterARStickers('all')">全部</button>
+            <button class="ar-cat-btn" onclick="filterARStickers('emoji')">表情</button>
+            <button class="ar-cat-btn" onclick="filterARStickers('props')">道具</button>
+            <button class="ar-cat-btn" onclick="filterARStickers('animal')">动物</button>
+        </div>
+
+        <div class="ar-sticker-grid" id="arStickerGrid"></div>
+
+        <div class="ar-active">
+            <span>已选:</span>
+            <div id="arActiveList" class="ar-active-list"></div>
+        </div>
+
+        <div class="ar-actions">
+            <button onclick="saveARPhoto()">📸 保存 AR 照片</button>
         </div>
     </div>
 
@@ -7416,6 +7524,200 @@
         let visualizerMode = 'waveform';
         let visualizerColorTheme = 'rainbow';
         let visualizerPosition = 'overlay';
+
+        // V32: AR Sticker state variables
+        let arStream = null;
+        let arVideo = null;
+        let arCanvas = null;
+        let arCtx = null;
+        let isARMode = false;
+        let arDragging = null;
+        let activeARStickers = [];
+        let arStickerPositions = {};
+        let currentARFilter = 'all';
+
+        const AR_STICKERS = [
+            { id: 'smile', name: '笑脸', emoji: '😊', scale: 1.0 },
+            { id: 'laugh', name: '大笑', emoji: '😂', scale: 1.0 },
+            { id: 'heart', name: '爱心', emoji: '❤️', scale: 1.2 },
+            { id: 'star', name: '星星', emoji: '⭐', scale: 1.0 },
+            { id: 'fire', name: '火焰', emoji: '🔥', scale: 1.2 },
+            { id: 'rainbow', name: '彩虹', emoji: '🌈', scale: 1.5 },
+            { id: 'crown', name: '皇冠', emoji: '👑', scale: 0.8 },
+            { id: 'party', name: '派对', emoji: '🎉', scale: 1.2 },
+            { id: 'hat', name: '帽子', emoji: '🎩', scale: 0.7 },
+            { id: 'glasses', name: '眼镜', emoji: '🕶️', scale: 0.6 },
+            { id: 'horns', name: '角', emoji: '👿', scale: 0.7 },
+            { id: 'tail', name: '尾巴', emoji: '🐾', scale: 1.0 },
+            { id: 'wings', name: '翅膀', emoji: '🪽', scale: 1.5 },
+            { id: 'halo', name: '光环', emoji: '😇', scale: 0.8 },
+            { id: 'mask', name: '面具', emoji: '🎭', scale: 0.9 },
+            { id: 'bow', name: '蝴蝶结', emoji: '🎀', scale: 0.5 },
+            { id: 'cat', name: '猫', emoji: '🐱', scale: 1.0 },
+            { id: 'dog', name: '狗', emoji: '🐶', scale: 1.0 },
+            { id: 'rabbit', name: '兔子', emoji: '🐰', scale: 0.9 },
+            { id: 'bear', name: '熊', emoji: '🐻', scale: 1.1 },
+            { id: 'panda', name: '熊猫', emoji: '🐼', scale: 1.0 },
+            { id: 'fox', name: '狐狸', emoji: '🦊', scale: 1.0 },
+            { id: 'unicorn', name: '独角兽', emoji: '🦄', scale: 1.2 },
+            { id: 'butterfly', name: '蝴蝶', emoji: '🦋', scale: 0.8 }
+        ];
+
+        // V32: AR Sticker functions
+        async function startARBackground() {
+            try {
+                arStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: 1280, height: 720 }
+                });
+
+                arVideo = document.createElement('video');
+                arVideo.srcObject = arStream;
+                arVideo.style.display = 'none';
+                document.body.appendChild(arVideo);
+
+                arCanvas = document.createElement('canvas');
+                arCanvas.width = canvas.width;
+                arCanvas.height = canvas.height;
+                arCtx = arCanvas.getContext('2d');
+
+                arVideo.addEventListener('loadedmetadata', () => {
+                    arVideo.play();
+                    updateARFrame();
+                });
+
+                isARMode = true;
+                document.getElementById('arStartBtn').disabled = true;
+                document.getElementById('arStopBtn').disabled = false;
+                showToast('AR 模式已启动');
+            } catch (err) {
+                showToast('无法访问摄像头，请检查权限设置');
+            }
+        }
+
+        function updateARFrame() {
+            if (!isARMode || !arVideo || !arCtx) return;
+
+            // Draw video frame scaled to canvas
+            arCtx.drawImage(arVideo, 0, 0, arCanvas.width, arCanvas.height);
+
+            // Draw AR stickers on top
+            drawARStickers();
+
+            requestAnimationFrame(updateARFrame);
+        }
+
+        function drawARStickers() {
+            if (activeARStickers.length === 0 || !arCtx) return;
+
+            activeARStickers.forEach(id => {
+                const sticker = AR_STICKERS.find(s => s.id === id);
+                if (!sticker) return;
+
+                const pos = arStickerPositions[id] || {
+                    x: arCanvas.width / 2,
+                    y: arCanvas.height / 2
+                };
+
+                const fontSize = 60 * sticker.scale;
+                arCtx.font = `${fontSize}px serif`;
+                arCtx.textAlign = 'center';
+                arCtx.textBaseline = 'middle';
+                arCtx.fillText(sticker.emoji, pos.x, pos.y);
+            });
+        }
+
+        function stopARBackground() {
+            isARMode = false;
+            if (arStream) {
+                arStream.getTracks().forEach(track => track.stop());
+                arStream = null;
+            }
+            if (arVideo) {
+                arVideo.remove();
+                arVideo = null;
+            }
+            arCanvas = null;
+            arCtx = null;
+            document.getElementById('arStartBtn').disabled = false;
+            document.getElementById('arStopBtn').disabled = true;
+            showToast('AR 模式已关闭');
+        }
+
+        function filterARStickers(category) {
+            currentARFilter = category;
+            document.querySelectorAll('.ar-cat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderARStickerGrid();
+        }
+
+        function renderARStickerGrid() {
+            const grid = document.getElementById('arStickerGrid');
+            const filtered = currentARFilter === 'all'
+                ? AR_STICKERS
+                : AR_STICKERS.filter(s => {
+                    if (currentARFilter === 'emoji') return ['smile','laugh','heart','star','fire','rainbow','crown','party'].includes(s.id);
+                    if (currentARFilter === 'props') return ['hat','glasses','horns','tail','wings','halo','mask','bow'].includes(s.id);
+                    if (currentARFilter === 'animal') return ['cat','dog','rabbit','bear','panda','fox','unicorn','butterfly'].includes(s.id);
+                    return true;
+                });
+
+            grid.innerHTML = filtered.map(s => `
+                <div class="ar-sticker-item ${activeARStickers.includes(s.id) ? 'active' : ''}"
+                     onclick="toggleARSticker('${s.id}')">${s.emoji}</div>
+            `).join('');
+        }
+
+        function toggleARSticker(id) {
+            const sticker = AR_STICKERS.find(s => s.id === id);
+            if (!sticker) return;
+
+            if (activeARStickers.includes(id)) {
+                activeARStickers = activeARStickers.filter(s => s !== id);
+            } else {
+                activeARStickers.push(id);
+                arStickerPositions[id] = {
+                    x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+                    y: canvas.height / 2 + (Math.random() - 0.5) * 200
+                };
+            }
+
+            renderARStickerGrid();
+            updateARActiveList();
+        }
+
+        function updateARActiveList() {
+            const list = document.getElementById('arActiveList');
+            list.innerHTML = activeARStickers.map(id => {
+                const s = AR_STICKERS.find(st => st.id === id);
+                return `<span>${s.emoji}</span>`;
+            }).join('');
+        }
+
+        function saveARPhoto() {
+            if (!isARMode || !arCanvas) {
+                showToast('请先开启摄像头');
+                return;
+            }
+
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = arCanvas.width;
+            exportCanvas.height = arCanvas.height;
+            const exportCtx = exportCanvas.getContext('2d');
+
+            exportCtx.drawImage(arCanvas, 0, 0);
+            exportCtx.drawImage(canvas, 0, 0);
+
+            const link = document.createElement('a');
+            link.download = `ar_photo_${Date.now()}.png`;
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+
+            showToast('AR 照片已保存！');
+        }
+
+        function closeARStickerPanel() {
+            document.getElementById('arStickerPanel').style.display = 'none';
+        }
 
         // Particle functions
         function launchFirework(x, y) {
@@ -13204,6 +13506,13 @@
                 if (isFireworkMode) {
                     launchFirework(x, y);
                 }
+                // V32: AR sticker click to place/move
+                if (isARMode && activeARStickers.length > 0) {
+                    const lastSticker = activeARStickers[activeARStickers.length - 1];
+                    if (lastSticker) {
+                        arStickerPositions[lastSticker] = { x, y };
+                    }
+                }
             });
 
             // Also handle clicks on other canvases to deselect
@@ -13302,6 +13611,14 @@
             document.getElementById('visualizerBtn').addEventListener('click', () => {
                 closeAllPanels();
                 document.getElementById('visualizerPanel').style.display = 'block';
+            });
+
+            // V32: AR Sticker Button Event
+            document.getElementById('arStickerBtn').addEventListener('click', () => {
+                closeAllPanels();
+                renderARStickerGrid();
+                updateARActiveList();
+                document.getElementById('arStickerPanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
