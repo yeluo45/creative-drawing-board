@@ -213,6 +213,24 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        .animabook-btn {
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .animabook-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         .bubbles-btn:active, .coloring-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0 #495057;
@@ -2817,6 +2835,163 @@
         .gallery-close:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* V39: Animation Book Styles */
+        #animabookOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #animabookOverlay.active {
+            display: flex;
+        }
+
+        .animabook-header {
+            height: 50px;
+            background: linear-gradient(180deg, #FF922B 0%, #E8590C 100%);
+            border-bottom: 3px solid #495057;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .animabook-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .animabook-header-actions button {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .animabook-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .animabook-book {
+            perspective: 1500px;
+            width: 360px;
+            height: 480px;
+            position: relative;
+        }
+
+        .animabook-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border: 4px solid #8B4513;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
+            transform-origin: left center;
+            transition: transform 0.6s ease-in-out;
+            overflow: hidden;
+        }
+
+        .animabook-page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .animabook-page canvas {
+            width: 100%;
+            height: 85%;
+            display: block;
+        }
+
+        .animabook-page-voice {
+            height: 15%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 4px;
+            background: #f5f5f5;
+        }
+
+        .animabook-voice-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: #FFE066;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .animabook-voice-btn.recording {
+            background: #FF6B6B;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        .animabook-page-num {
+            position: absolute;
+            bottom: 4px;
+            right: 8px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .animabook-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .animabook-nav button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #495057;
+            background: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .animabook-nav button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .animabook-tools {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            justify-content: center;
+            background: white;
+            border-top: 3px solid #495057;
+        }
+
+        .animabook-tools button {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 3px solid #495057;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
         }
 
         /* V11: Export and Share Buttons */
@@ -6309,6 +6484,7 @@
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
             <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
+            <button class="animabook-btn" id="animabookBtn" title="Animation Book">📖</button>
             <button class="export-btn" id="exportBtn" title="Export">📥</button>
             <button class="share-btn" id="shareBtn" title="Share">🔗</button>
             <button class="game-btn" id="gameBtn" title="Games">🧩</button>
@@ -7432,6 +7608,41 @@
         <div class="gallery-grid" id="galleryGrid"></div>
         <div class="gallery-empty" id="galleryEmpty" style="display:none;">还没有保存的画作，快去画画吧！</div>
         <button class="gallery-close" onclick="closeGallery()">关闭</button>
+    </div>
+
+    <!-- V39: Animation Book Overlay -->
+    <div id="animabookOverlay">
+        <div class="animabook-header">
+            <span>📖 动画书</span>
+            <div class="animabook-header-actions">
+                <button onclick="animabookAddPage()">+ 添加页面</button>
+                <button onclick="animabookSave()">💾 保存</button>
+                <button onclick="animabookExport()">📤 导出</button>
+                <button onclick="closeAnimabook()">×</button>
+            </div>
+        </div>
+        <div class="animabook-container">
+            <div class="animabook-book" id="animabookBook">
+                <div class="animabook-page" id="animabookPage0">
+                    <canvas id="animabookCanvas0"></canvas>
+                    <div class="animabook-page-voice">
+                        <button class="animabook-voice-btn" id="voiceBtn0" onclick="animabookRecordVoice(0)">🎙️ 录音</button>
+                        <audio id="voiceAudio0" controls style="display:none;"></audio>
+                    </div>
+                    <div class="animabook-page-num">1</div>
+                </div>
+            </div>
+            <div class="animabook-nav">
+                <button onclick="animabookPrevPage()" id="animabookPrevBtn">◀</button>
+                <span id="animabookPageInfo">1 / 1</span>
+                <button onclick="animabookNextPage()" id="animabookNextBtn">▶</button>
+            </div>
+        </div>
+        <div class="animabook-tools">
+            <button onclick="animabookDrawCurrentPage()">✏️ 编辑当前页</button>
+            <button onclick="animabookClearPage()">🗑️ 清除当前页</button>
+            <button onclick="animabookDeletePage()">❌ 删除当前页</button>
+        </div>
     </div>
 
     <!-- Export Panel (floating) -->
@@ -22478,7 +22689,13 @@
             if (animationBtn) {
                 animationBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); openAnimationEditor(); loadAnimation(); });
             }
-            
+
+            // V39: Animation Book button
+            const animabookBtn = document.getElementById('animabookBtn');
+            if (animabookBtn) {
+                animabookBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); openAnimabook(); });
+            }
+
             // V25: Music button
             const musicBtn = document.getElementById('musicBtn');
             if (musicBtn) {
@@ -22828,6 +23045,331 @@
                 renderCurrentFrame();
                 updateFrameCounter();
             }
+        }
+
+        // ===== V39: Animation Book System =====
+        let animabookData = {
+            pages: [
+                { canvasData: null, voiceData: null }
+            ],
+            currentPage: 0
+        };
+        let animabookCanvases = [];
+        let animabookContexts = [];
+        let animabookMediaRecorder = null;
+        let animabookAudioChunks = [];
+        let animabookRecordingStream = null;
+        let animabookIsRecording = false;
+        let animabookRecordingPage = -1;
+        let animabookAudioElements = [];
+        const ANIMABOOK_STORAGE_KEY = 'animation_book_data';
+
+        function openAnimabook() {
+            document.getElementById('animabookOverlay').classList.add('active');
+            loadAnimabook();
+            renderAnimabookPages();
+            updateAnimabookNav();
+        }
+
+        function closeAnimabook() {
+            document.getElementById('animabookOverlay').classList.remove('active');
+            stopAnimabookRecording();
+        }
+
+        function loadAnimabook() {
+            const data = localStorage.getItem(ANIMABOOK_STORAGE_KEY);
+            if (data) {
+                try {
+                    animabookData = JSON.parse(data);
+                    if (!animabookData.pages || animabookData.pages.length === 0) {
+                        animabookData = { pages: [{ canvasData: null, voiceData: null }], currentPage: 0 };
+                    }
+                } catch(e) {
+                    animabookData = { pages: [{ canvasData: null, voiceData: null }], currentPage: 0 };
+                }
+            }
+            animabookData.currentPage = 0;
+        }
+
+        function saveAnimabook() {
+            // Save current page canvas data before saving
+            saveAnimabookCurrentPage();
+            localStorage.setItem(ANIMABOOK_STORAGE_KEY, JSON.stringify(animabookData));
+            showToast('动画书已保存');
+        }
+
+        function renderAnimabookPages() {
+            const book = document.getElementById('animabookBook');
+            book.innerHTML = '';
+            animabookCanvases = [];
+            animabookContexts = [];
+            animabookAudioElements = [];
+
+            animabookData.pages.forEach((page, idx) => {
+                const pageEl = document.createElement('div');
+                pageEl.className = 'animabook-page';
+                pageEl.id = 'animabookPage' + idx;
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'animabookCanvas' + idx;
+                canvas.width = 352;
+                canvas.height = 400;
+                pageEl.appendChild(canvas);
+                animabookCanvases.push(canvas);
+
+                const voiceDiv = document.createElement('div');
+                voiceDiv.className = 'animabook-page-voice';
+
+                const voiceBtn = document.createElement('button');
+                voiceBtn.className = 'animabook-voice-btn';
+                voiceBtn.id = 'voiceBtn' + idx;
+                voiceBtn.textContent = page.voiceData ? '🔊 播放录音' : '🎙️ 录音';
+                voiceBtn.onclick = () => animabookRecordVoice(idx);
+                voiceDiv.appendChild(voiceBtn);
+
+                if (page.voiceData) {
+                    const audio = document.createElement('audio');
+                    audio.id = 'voiceAudio' + idx;
+                    audio.src = page.voiceData;
+                    audio.controls = true;
+                    audio.style.display = 'none';
+                    voiceDiv.appendChild(audio);
+                    animabookAudioElements.push(audio);
+                } else {
+                    animabookAudioElements.push(null);
+                }
+
+                pageEl.appendChild(voiceDiv);
+
+                const pageNum = document.createElement('div');
+                pageNum.className = 'animabook-page-num';
+                pageNum.textContent = (idx + 1);
+                pageEl.appendChild(pageNum);
+
+                book.appendChild(pageEl);
+
+                // Draw initial content
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if (page.canvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    };
+                    img.src = page.canvasData;
+                }
+            });
+
+            updateAnimabookFlip();
+        }
+
+        function updateAnimabookFlip() {
+            animabookData.pages.forEach((page, idx) => {
+                const pageEl = document.getElementById('animabookPage' + idx);
+                if (pageEl) {
+                    if (idx < animabookData.currentPage) {
+                        pageEl.classList.add('flipped');
+                    } else {
+                        pageEl.classList.remove('flipped');
+                    }
+                }
+            });
+        }
+
+        function updateAnimabookNav() {
+            const prevBtn = document.getElementById('animabookPrevBtn');
+            const nextBtn = document.getElementById('animabookNextBtn');
+            const pageInfo = document.getElementById('animabookPageInfo');
+
+            if (prevBtn) prevBtn.disabled = animabookData.currentPage <= 0;
+            if (nextBtn) nextBtn.disabled = animabookData.currentPage >= animabookData.pages.length - 1;
+            if (pageInfo) pageInfo.textContent = (animabookData.currentPage + 1) + ' / ' + animabookData.pages.length;
+        }
+
+        function animabookPrevPage() {
+            if (animabookData.currentPage > 0) {
+                animabookSaveCurrentPage();
+                animabookData.currentPage--;
+                updateAnimabookFlip();
+                updateAnimabookNav();
+            }
+        }
+
+        function animabookNextPage() {
+            if (animabookData.currentPage < animabookData.pages.length - 1) {
+                animabookSaveCurrentPage();
+                animabookData.currentPage++;
+                updateAnimabookFlip();
+                updateAnimabookNav();
+            }
+        }
+
+        function animabookAddPage() {
+            animabookSaveCurrentPage();
+            animabookData.pages.push({ canvasData: null, voiceData: null });
+            animabookData.currentPage = animabookData.pages.length - 1;
+            renderAnimabookPages();
+            updateAnimabookNav();
+            showToast('已添加新页面');
+        }
+
+        function animabookDeletePage() {
+            if (animabookData.pages.length <= 1) {
+                showToast('至少需要保留一页');
+                return;
+            }
+            if (confirm('确定删除当前页吗？')) {
+                animabookData.pages.splice(animabookData.currentPage, 1);
+                if (animabookData.currentPage >= animabookData.pages.length) {
+                    animabookData.currentPage = animabookData.pages.length - 1;
+                }
+                renderAnimabookPages();
+                updateAnimabookNav();
+                showToast('已删除页面');
+            }
+        }
+
+        function animabookSaveCurrentPage() {
+            const idx = animabookData.currentPage;
+            if (animabookCanvases[idx]) {
+                animabookData.pages[idx].canvasData = animabookCanvases[idx].toDataURL();
+            }
+        }
+
+        function animabookClearPage() {
+            const idx = animabookData.currentPage;
+            const ctx = animabookCanvases[idx].getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, animabookCanvases[idx].width, animabookCanvases[idx].height);
+            animabookData.pages[idx].canvasData = null;
+            showToast('已清除当前页');
+        }
+
+        function animabookDrawCurrentPage() {
+            // Copy current drawing canvas to this page
+            const mainCanvas = document.getElementById('drawingCanvas');
+            const idx = animabookData.currentPage;
+            if (mainCanvas && animabookCanvases[idx]) {
+                const ctx = animabookCanvases[idx].getContext('2d');
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, animabookCanvases[idx].width, animabookCanvases[idx].height);
+                ctx.drawImage(mainCanvas, 0, 0, animabookCanvases[idx].width, animabookCanvases[idx].height);
+                animabookData.pages[idx].canvasData = animabookCanvases[idx].toDataURL();
+                showToast('已复制到动画书当前页');
+            }
+            closeAnimabook();
+        }
+
+        function animabookRecordVoice(pageIdx) {
+            const page = animabookData.pages[pageIdx];
+
+            // If already has voice, play it
+            if (page.voiceData) {
+                const audio = document.getElementById('voiceAudio' + pageIdx);
+                if (audio) {
+                    if (audio.paused) {
+                        audio.play();
+                        showToast('正在播放录音');
+                    } else {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                }
+                return;
+            }
+
+            // Start recording
+            if (animabookIsRecording) {
+                stopAnimabookRecording();
+                return;
+            }
+
+            initAudio();
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                animabookRecordingStream = stream;
+                animabookMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                animabookAudioChunks = [];
+
+                animabookMediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) animabookAudioChunks.push(e.data);
+                };
+
+                animabookMediaRecorder.onstop = () => {
+                    const blob = new Blob(animabookAudioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        animabookData.pages[pageIdx].voiceData = reader.result;
+                        const voiceBtn = document.getElementById('voiceBtn' + pageIdx);
+                        if (voiceBtn) {
+                            voiceBtn.textContent = '🔊 播放录音';
+                            voiceBtn.classList.remove('recording');
+                        }
+                        // Add audio element
+                        const voiceDiv = voiceBtn.parentElement;
+                        const audio = document.createElement('audio');
+                        audio.id = 'voiceAudio' + pageIdx;
+                        audio.src = reader.result;
+                        audio.controls = true;
+                        audio.style.display = 'none';
+                        voiceDiv.appendChild(audio);
+                        animabookAudioElements[pageIdx] = audio;
+                        showToast('录音已保存');
+                    };
+                    reader.readAsDataURL(blob);
+                };
+
+                animabookMediaRecorder.start(100);
+                animabookIsRecording = true;
+                animabookRecordingPage = pageIdx;
+                const voiceBtn = document.getElementById('voiceBtn' + pageIdx);
+                if (voiceBtn) {
+                    voiceBtn.textContent = '⏹ 停止';
+                    voiceBtn.classList.add('recording');
+                }
+                showToast('开始录音...');
+            }).catch(err => {
+                showToast('无法访问麦克风');
+            });
+        }
+
+        function stopAnimabookRecording() {
+            if (animabookMediaRecorder && animabookIsRecording) {
+                animabookMediaRecorder.stop();
+                animabookRecordingStream.getTracks().forEach(track => track.stop());
+                animabookIsRecording = false;
+                animabookRecordingPage = -1;
+            }
+        }
+
+        function animabookExport() {
+            animabookSaveCurrentPage();
+            showToast('正在导出...');
+            // Create a simple PDF-like page sequence
+            let html = '<!DOCTYPE html><html><head><title>Animation Book</title>';
+            html += '<style>body{margin:0;display:flex;flex-direction:column;align-items:center;padding:20px}';
+            html += 'canvas{border:2px solid #333;margin:10px}audio{margin:10px}</style></head><body>';
+            html += '<h1>📖 Animation Book</h1>';
+            animabookData.pages.forEach((page, idx) => {
+                html += '<div><h3>Page ' + (idx + 1) + '</h3>';
+                if (page.canvasData) {
+                    html += '<img src="' + page.canvasData + '" style="width:400px;height:450px;"><br>';
+                }
+                if (page.voiceData) {
+                    html += '<audio controls src="' + page.voiceData + '"></audio>';
+                }
+                html += '</div>';
+            });
+            html += '</body></html>';
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'animation_book_' + Date.now() + '.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('导出成功！');
         }
 
         // ===== V25: Music/Sound System =====
