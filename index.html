@@ -1037,6 +1037,231 @@
             animation: rewardFloat 2s ease-out forwards;
         }
 
+        /* V18: Bubble Game Level UI */
+        .bubble-level-display {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            margin-top: 4px;
+            text-shadow: 1px 1px 0 white;
+        }
+        .bubble-lives-display {
+            font-size: 0.9rem;
+            color: #FF6B6B;
+            margin-top: 2px;
+            text-shadow: 1px 1px 0 white;
+        }
+        .bubble-pass-score {
+            font-size: 0.8rem;
+            color: #74C0FC;
+            margin-top: 2px;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        /* V18: Item Bar */
+        .bubble-item-bar {
+            position: absolute;
+            bottom: 80px;
+            right: 10px;
+            z-index: 15;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            pointer-events: auto;
+        }
+        .bubble-item-row {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+        .bubble-item-btn {
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.1s, box-shadow 0.1s;
+            box-shadow: 2px 2px 0 #495057;
+            user-select: none;
+        }
+        .bubble-item-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #495057;
+        }
+        .bubble-item-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .bubble-item-btn.active {
+            background: #FFE066;
+            box-shadow: 3px 3px 0 #495057, inset 0 0 0 2px #FF6B6B;
+        }
+        .bubble-item-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .bubble-item-btn .item-count {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #495057;
+            margin-left: 2px;
+        }
+        .bubble-start-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            text-shadow: 1px 1px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .bubble-start-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #495057;
+        }
+        .bubble-start-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* V18: Level Complete / Game Over Overlay */
+        .bubble-level-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 24px 32px;
+            z-index: 25;
+            text-align: center;
+            box-shadow: 6px 6px 0 #495057;
+            display: none;
+            min-width: 280px;
+        }
+        .bubble-level-panel.show {
+            display: block;
+            animation: popIn 0.4s ease-out;
+        }
+        .bubble-level-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+        .bubble-level-title.pass {
+            color: #40C057;
+        }
+        .bubble-level-title.fail {
+            color: #FF6B6B;
+        }
+        .bubble-level-score {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .bubble-level-reward {
+            font-size: 1rem;
+            color: #FFA94D;
+            margin-bottom: 12px;
+        }
+        .bubble-level-btn {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            margin: 4px;
+        }
+        .bubble-level-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .bubble-level-btn.green {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+        }
+        .bubble-level-btn.red {
+            background: linear-gradient(180deg, #FF6B6B 0%, #E03131 100%);
+        }
+
+        /* V18: Leaderboard */
+        .bubble-leaderboard {
+            position: absolute;
+            top: 55px;
+            right: 10px;
+            z-index: 15;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #495057;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            color: #495057;
+            box-shadow: 2px 2px 0 #495057;
+            pointer-events: none;
+            min-width: 140px;
+        }
+        .bubble-leaderboard-title {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #495057;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        .bubble-leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+        .bubble-leaderboard-entry.top1 { color: #FFD700; font-weight: bold; }
+        .bubble-leaderboard-entry.top2 { color: #C0C0C0; }
+        .bubble-leaderboard-entry.top3 { color: #CD7F32; }
+
+        /* V18: New Record Animation */
+        .bubble-new-record-anim {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFE066;
+            text-shadow: 3px 3px 0 #FF6B6B, -1px -1px 0 #FF6B6B;
+            z-index: 26;
+            pointer-events: none;
+            animation: newRecordBounce 1s ease-out forwards;
+            white-space: nowrap;
+        }
+        @keyframes newRecordBounce {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* V18: Active item indicator */
+        .bubble-active-item-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2rem;
+            opacity: 0.7;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        .bubble-active-item-cursor.show {
+            display: block;
+        }
+
         @keyframes rewardFloat {
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-60px) scale(1.1); }
@@ -3951,9 +4176,45 @@
             <div class="bubble-score-display">
                 <div id="bubbleScoreText">Score: 0</div>
                 <div id="bubbleHighScoreText">Best: 0</div>
+                <div class="bubble-level-display" id="bubbleLevelText">Level 1</div>
+                <div class="bubble-lives-display" id="bubbleLivesText">❤️❤️❤️</div>
+                <div class="bubble-pass-score" id="bubblePassScoreText">Pass: 50+</div>
             </div>
             <div class="bubble-combo-display" id="bubbleComboDisplay">Combo x1.0</div>
         </div>
+        <div class="bubble-item-bar" id="bubbleItemBar">
+            <div class="bubble-item-row">
+                <button class="bubble-item-btn" id="bubbleItemBomb" onclick="useBubbleItem('bomb')" title="Bomb 💣">
+                    💣<span class="item-count" id="bubbleItemBombCount">×0</span>
+                </button>
+                <button class="bubble-item-btn" id="bubbleItemShield" onclick="useBubbleItem('shield')" title="Shield 🛡️">
+                    🛡️<span class="item-count" id="bubbleItemShieldCount">×0</span>
+                </button>
+                <button class="bubble-item-btn" id="bubbleItemSpeed" onclick="useBubbleItem('speed')" title="Speed ⚡">
+                    ⚡<span class="item-count" id="bubbleItemSpeedCount">×0</span>
+                </button>
+            </div>
+            <div class="bubble-item-row">
+                <button class="bubble-item-btn" id="bubbleItemDouble" onclick="useBubbleItem('double')" title="Double ✨">
+                    ✨<span class="item-count" id="bubbleItemDoubleCount">×0</span>
+                </button>
+                <button class="bubble-item-btn" id="bubbleItemMagic" onclick="useBubbleItem('magic')" title="Magic 🪄">
+                    🪄<span class="item-count" id="bubbleItemMagicCount">×0</span>
+                </button>
+                <button class="bubble-start-btn" id="bubbleStartBtn" onclick="handleBubbleStartBtn()">开始</button>
+            </div>
+        </div>
+        <div class="bubble-leaderboard" id="bubbleLeaderboard">
+            <div class="bubble-leaderboard-title">🏆 Leaderboard</div>
+            <div id="bubbleLeaderboardEntries"></div>
+        </div>
+        <div class="bubble-level-panel" id="bubbleLevelPanel">
+            <div class="bubble-level-title" id="bubbleLevelTitle">Level 1 Complete!</div>
+            <div class="bubble-level-score" id="bubbleLevelScore">Score: 100</div>
+            <div class="bubble-level-reward" id="bubbleLevelReward"></div>
+            <div id="bubbleLevelBtns"></div>
+        </div>
+        <div class="bubble-active-item-cursor" id="bubbleActiveItemCursor"></div>
         <div class="bubble-game-over-panel" id="bubbleGameOverPanel">
             <div class="bubble-game-over-title">Game Over!</div>
             <div class="bubble-new-record" id="bubbleNewRecord">NEW RECORD!</div>
@@ -5726,6 +5987,34 @@
         let bubbleAnimations = [];
         let bubbleFloatTexts = [];
         let bubbleGameActive = false;
+        let bubbleGameStarted = false;
+
+        // V18: Level System
+        let bubbleLevel = 1;
+        let bubbleLives = 3;
+        let bubblePassScore = 50;
+        let bubbleLevelStarted = false;
+        let bubbleLevelComplete = false;
+        let bubbleMissCount = 0;
+
+        // V18: Item System
+        const BUBBLE_ITEMS = {
+            bomb: { emoji: '💣', name: 'bomb', count: 0, trigger: 500 },
+            shield: { emoji: '🛡️', name: 'shield', count: 0, trigger: 300 },
+            speed: { emoji: '⚡', name: 'speed', count: 0, trigger: 400 },
+            double: { emoji: '✨', name: 'double', count: 0, trigger: 600 },
+            magic: { emoji: '🪄', name: 'magic', count: 0, trigger: 1000 }
+        };
+        let activeBubbleItem = null; // currently selected item
+        let scoreMultiplier = 1;
+        let speedSlowTimer = 0;
+        let speedSlowEndTime = 0;
+
+        // V18: Leaderboard
+        let bubbleLeaderboard = [];
+
+        // V18: Special bubble spawn timer
+        let lastSpecialSpawnTime = 0;
 
         // V12: Highlighter state
         let currentHighlighterColor = '#FFE066'; // yellow default
@@ -7722,12 +8011,20 @@
         function loadBubbleStats() {
             try {
                 bubbleHighScore = parseInt(localStorage.getItem('bubble_high_score') || '0');
-            } catch (e) { bubbleHighScore = 0; }
+                bubbleLevel = parseInt(localStorage.getItem('bubbleLevel') || '1');
+                bubbleLeaderboard = JSON.parse(localStorage.getItem('bubbleLeaderboard') || '[]');
+            } catch (e) { 
+                bubbleHighScore = 0;
+                bubbleLevel = 1;
+                bubbleLeaderboard = [];
+            }
         }
 
         function saveBubbleStats() {
             try {
                 localStorage.setItem('bubble_high_score', bubbleHighScore.toString());
+                localStorage.setItem('bubbleLevel', bubbleLevel.toString());
+                localStorage.setItem('bubbleLeaderboard', JSON.stringify(bubbleLeaderboard));
                 const recent = JSON.parse(localStorage.getItem('bubble_recent_scores') || '[]');
                 recent.unshift(bubbleScore);
                 if (recent.length > 10) recent.pop();
@@ -7750,6 +8047,385 @@
             }
         }
 
+        function updateBubbleLivesDisplay() {
+            const hearts = '❤️'.repeat(Math.max(0, bubbleLives)) + '🖤'.repeat(Math.max(0, 3 - bubbleLives));
+            document.getElementById('bubbleLivesText').textContent = hearts;
+        }
+
+        function updateBubbleLevelDisplay() {
+            document.getElementById('bubbleLevelText').textContent = 'Level ' + bubbleLevel;
+            document.getElementById('bubblePassScoreText').textContent = 'Pass: ' + bubblePassScore + '+';
+        }
+
+        function updateBubbleItemDisplay() {
+            document.getElementById('bubbleItemBombCount').textContent = '×' + BUBBLE_ITEMS.bomb.count;
+            document.getElementById('bubbleItemShieldCount').textContent = '×' + BUBBLE_ITEMS.shield.count;
+            document.getElementById('bubbleItemSpeedCount').textContent = '×' + BUBBLE_ITEMS.speed.count;
+            document.getElementById('bubbleItemDoubleCount').textContent = '×' + BUBBLE_ITEMS.double.count;
+            document.getElementById('bubbleItemMagicCount').textContent = '×' + BUBBLE_ITEMS.magic.count;
+        }
+
+        // V18: Handle Start button
+        function handleBubbleStartBtn() {
+            initAudio();
+            playSound(playBtnClick);
+            if (!bubbleGameStarted) {
+                // Start the game
+                bubbleGameStarted = true;
+                bubbleGameActive = true;
+                bubbleLevelStarted = true;
+                bubbleLevelComplete = false;
+                bubbleLevel = parseInt(localStorage.getItem('bubbleLevel') || '1');
+                bubblePassScore = getBubblePassScore(bubbleLevel);
+                bubbleLives = 3;
+                bubbleMissCount = 0;
+                bubbleScore = 0;
+                bubbleCombo = 0;
+                bubbles = [];
+                scoreMultiplier = 1;
+                speedSlowEndTime = 0;
+                updateBubbleLevelDisplay();
+                updateBubbleLivesDisplay();
+                updateBubbleScoreDisplay();
+                updateBubbleItemDisplay();
+                lastSpecialSpawnTime = Date.now();
+                document.getElementById('bubbleStartBtn').textContent = '进行中';
+                document.getElementById('bubbleStartBtn').style.background = 'linear-gradient(180deg, #FFA94D 0%, #FF6B6B 100%)';
+                startBubbleSpawning();
+            }
+        }
+
+        // V18: Use item
+        function useBubbleItem(itemKey) {
+            if (!bubbleMode || !bubbleGameActive) return;
+            initAudio();
+            playSound(playBtnClick);
+
+            if (activeBubbleItem === itemKey) {
+                // Cancel item
+                activeBubbleItem = null;
+                updateBubbleItemButtonState();
+                hideBubbleCursor();
+                return;
+            }
+
+            if (BUBBLE_ITEMS[itemKey].count <= 0) return;
+
+            activeBubbleItem = itemKey;
+            updateBubbleItemButtonState();
+            showBubbleCursor(itemKey);
+        }
+
+        function updateBubbleItemButtonState() {
+            const items = ['bomb', 'shield', 'speed', 'double', 'magic'];
+            for (const key of items) {
+                const btn = document.getElementById('bubbleItem' + key.charAt(0).toUpperCase() + key.slice(1));
+                btn.classList.toggle('active', activeBubbleItem === key);
+                btn.classList.toggle('disabled', BUBBLE_ITEMS[key].count <= 0);
+            }
+        }
+
+        function showBubbleCursor(itemKey) {
+            const cursor = document.getElementById('bubbleActiveItemCursor');
+            cursor.textContent = BUBBLE_ITEMS[itemKey].emoji;
+            cursor.classList.add('show');
+            document.addEventListener('mousemove', updateBubbleCursorPos);
+        }
+
+        function hideBubbleCursor() {
+            const cursor = document.getElementById('bubbleActiveItemCursor');
+            cursor.classList.remove('show');
+            document.removeEventListener('mousemove', updateBubbleCursorPos);
+        }
+
+        function updateBubbleCursorPos(e) {
+            const cursor = document.getElementById('bubbleActiveItemCursor');
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        }
+
+        // V18: Handle item usage on canvas click
+        function handleBubbleCanvasClick(e) {
+            if (!bubbleMode || !bubbleGameActive) return;
+
+            const rect = bubbleCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // If item is active, use it
+            if (activeBubbleItem) {
+                useActiveItem(x, y);
+                return;
+            }
+
+            // Normal bubble click
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                const dx = x - b.x;
+                const dy = y - b.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < b.radius) {
+                    popBubble(b, i);
+                    return;
+                }
+            }
+        }
+
+        function useActiveItem(x, y) {
+            if (!activeBubbleItem) return;
+
+            BUBBLE_ITEMS[activeBubbleItem].count--;
+            updateBubbleItemDisplay();
+
+            switch (activeBubbleItem) {
+                case 'bomb':
+                    // Clear all bubbles
+                    for (let i = bubbles.length - 1; i >= 0; i--) {
+                        const b = bubbles[i];
+                        createParticles(b.x, b.y, b.baseColor, b.radius * 0.4);
+                        bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius, alpha: 1, scale: 1 });
+                        const pts = getBubblePoints(b.type);
+                        if (pts > 0) {
+                            bubbleScore += Math.round(pts * scoreMultiplier);
+                        }
+                    }
+                    bubbles = [];
+                    bubbleFloatTexts.push({ x: x, y: y - 20, text: '💥 BOOM!', alpha: 1, vy: -1.5, color: '#FF0000' });
+                    updateBubbleScoreDisplay();
+                    break;
+
+                case 'shield':
+                    // Add extra life (max 3)
+                    if (bubbleLives < 3) {
+                        bubbleLives++;
+                        updateBubbleLivesDisplay();
+                        bubbleFloatTexts.push({ x: x, y: y - 20, text: '🛡️ +1 Life!', alpha: 1, vy: -1.5, color: '#74C0FC' });
+                    }
+                    break;
+
+                case 'speed':
+                    // Slow bubbles for 10 seconds
+                    speedSlowEndTime = Date.now() + 10000;
+                    bubbleFloatTexts.push({ x: x, y: y - 20, text: '⚡ SLOW!', alpha: 1, vy: -1.5, color: '#FFE066' });
+                    break;
+
+                case 'double':
+                    // 2x score for 10 seconds
+                    scoreMultiplier = 2;
+                    setTimeout(() => { scoreMultiplier = 1; }, 10000);
+                    bubbleFloatTexts.push({ x: x, y: y - 20, text: '✨ 2X SCORE!', alpha: 1, vy: -1.5, color: '#FFD700' });
+                    break;
+
+                case 'magic':
+                    // Destroy all bubbles within 30px radius
+                    for (let i = bubbles.length - 1; i >= 0; i--) {
+                        const b = bubbles[i];
+                        const dx = b.x - x;
+                        const dy = b.y - y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 30 + b.radius) {
+                            createParticles(b.x, b.y, b.baseColor, b.radius * 0.4);
+                            bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius, alpha: 1, scale: 1 });
+                            const pts = getBubblePoints(b.type);
+                            if (pts > 0) {
+                                bubbleScore += Math.round(pts * scoreMultiplier);
+                            }
+                            bubbles.splice(i, 1);
+                        }
+                    }
+                    bubbleFloatTexts.push({ x: x, y: y - 20, text: '🪄 MAGIC!', alpha: 1, vy: -1.5, color: '#B197FC' });
+                    updateBubbleScoreDisplay();
+                    break;
+            }
+
+            // Cancel item after use
+            activeBubbleItem = null;
+            updateBubbleItemButtonState();
+            hideBubbleCursor();
+        }
+
+        // V18: Show level pass
+        function showBubbleLevelPass() {
+            bubbleLevelComplete = true;
+            bubbleGameActive = false;
+            stopBubbleSpawning();
+
+            // Check for new high score
+            const isNewRecord = checkBubbleLeaderboard();
+
+            // Save high score
+            if (bubbleScore > bubbleHighScore) {
+                bubbleHighScore = bubbleScore;
+                saveBubbleStats();
+            }
+
+            // Show level pass panel
+            const panel = document.getElementById('bubbleLevelPanel');
+            const title = document.getElementById('bubbleLevelTitle');
+            const score = document.getElementById('bubbleLevelScore');
+            const reward = document.getElementById('bubbleLevelReward');
+            const btns = document.getElementById('bubbleLevelBtns');
+
+            title.textContent = '🎉 Level ' + bubbleLevel + ' Complete!';
+            title.className = 'bubble-level-title pass';
+            score.textContent = 'Score: ' + bubbleScore;
+            reward.textContent = 'Pass Score: ' + bubblePassScore + ' ✓';
+
+            // Reward: give a random item
+            const items = ['bomb', 'shield', 'speed', 'double', 'magic'];
+            const rewardItem = items[Math.floor(Math.random() * items.length)];
+            BUBBLE_ITEMS[rewardItem].count++;
+            reward.textContent += ' | Reward: ' + BUBBLE_ITEMS[rewardItem].emoji;
+            updateBubbleItemDisplay();
+
+            btns.innerHTML = '<button class="bubble-level-btn green" onclick="startNextLevel()">Next Level →</button>';
+
+            panel.classList.add('show');
+
+            if (isNewRecord) {
+                showBubbleNewRecordAnim();
+            }
+        }
+
+        // V18: Show level fail
+        function showBubbleLevelFail() {
+            bubbleLevelComplete = true;
+            bubbleGameActive = false;
+            stopBubbleSpawning();
+
+            // Check for new high score
+            const isNewRecord = checkBubbleLeaderboard();
+
+            // Save high score
+            if (bubbleScore > bubbleHighScore) {
+                bubbleHighScore = bubbleScore;
+                saveBubbleStats();
+            }
+
+            // Show level fail panel
+            const panel = document.getElementById('bubbleLevelPanel');
+            const title = document.getElementById('bubbleLevelTitle');
+            const score = document.getElementById('bubbleLevelScore');
+            const reward = document.getElementById('bubbleLevelReward');
+            const btns = document.getElementById('bubbleLevelBtns');
+
+            title.textContent = '💔 Game Over!';
+            title.className = 'bubble-level-title fail';
+            score.textContent = 'Score: ' + bubbleScore + ' (Level ' + bubbleLevel + ')';
+            reward.textContent = 'You needed: ' + bubblePassScore + '+';
+
+            btns.innerHTML = '<button class="bubble-level-btn green" onclick="restartLevel()">Try Again</button>' +
+                             '<button class="bubble-level-btn" onclick="resetGame()">New Game</button>';
+
+            panel.classList.add('show');
+
+            if (isNewRecord) {
+                showBubbleNewRecordAnim();
+            }
+        }
+
+        function startNextLevel() {
+            document.getElementById('bubbleLevelPanel').classList.remove('show');
+            bubbleLevel++;
+            localStorage.setItem('bubbleLevel', bubbleLevel.toString());
+            bubblePassScore = getBubblePassScore(bubbleLevel);
+            bubbleLives = 3;
+            bubbleMissCount = 0;
+            bubbleScore = 0;
+            bubbleCombo = 0;
+            bubbles = [];
+            bubbleLevelComplete = false;
+            bubbleGameActive = true;
+            scoreMultiplier = 1;
+            speedSlowEndTime = 0;
+            updateBubbleLevelDisplay();
+            updateBubbleLivesDisplay();
+            updateBubbleScoreDisplay();
+            document.getElementById('bubbleStartBtn').textContent = '进行中';
+            lastSpecialSpawnTime = Date.now();
+            startBubbleSpawning();
+        }
+
+        function restartLevel() {
+            document.getElementById('bubbleLevelPanel').classList.remove('show');
+            bubbleLives = 3;
+            bubbleMissCount = 0;
+            bubbleScore = 0;
+            bubbleCombo = 0;
+            bubbles = [];
+            bubbleLevelComplete = false;
+            bubbleGameActive = true;
+            scoreMultiplier = 1;
+            speedSlowEndTime = 0;
+            updateBubbleLivesDisplay();
+            updateBubbleScoreDisplay();
+            document.getElementById('bubbleStartBtn').textContent = '进行中';
+            lastSpecialSpawnTime = Date.now();
+            startBubbleSpawning();
+        }
+
+        function resetGame() {
+            document.getElementById('bubbleLevelPanel').classList.remove('show');
+            bubbleLevel = 1;
+            localStorage.setItem('bubbleLevel', '1');
+            bubblePassScore = getBubblePassScore(1);
+            bubbleLives = 3;
+            bubbleMissCount = 0;
+            bubbleScore = 0;
+            bubbleCombo = 0;
+            bubbles = [];
+            bubbleLevelComplete = false;
+            bubbleGameStarted = false;
+            bubbleGameActive = true;
+            scoreMultiplier = 1;
+            speedSlowEndTime = 0;
+            updateBubbleLevelDisplay();
+            updateBubbleLivesDisplay();
+            updateBubbleScoreDisplay();
+            document.getElementById('bubbleStartBtn').textContent = '开始';
+            document.getElementById('bubbleStartBtn').style.background = 'linear-gradient(180deg, #69DB7C 0%, #40C057 100%)';
+        }
+
+        // V18: Leaderboard
+        function checkBubbleLeaderboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const entry = { score: bubbleScore, level: bubbleLevel, date: today };
+            bubbleLeaderboard.push(entry);
+            bubbleLeaderboard.sort((a, b) => b.score - a.score);
+            if (bubbleLeaderboard.length > 10) {
+                bubbleLeaderboard = bubbleLeaderboard.slice(0, 10);
+            }
+            updateBubbleLeaderboardDisplay();
+            saveBubbleStats();
+
+            // Check if this is a new record (top score)
+            return bubbleLeaderboard[0].score === bubbleScore && bubbleLeaderboard[0].level === bubbleLevel;
+        }
+
+        function updateBubbleLeaderboardDisplay() {
+            const container = document.getElementById('bubbleLeaderboardEntries');
+            if (!container) return;
+            let html = '';
+            for (let i = 0; i < Math.min(bubbleLeaderboard.length, 5); i++) {
+                const entry = bubbleLeaderboard[i];
+                const rankClass = i === 0 ? 'top1' : (i === 1 ? 'top2' : (i === 2 ? 'top3' : ''));
+                html += '<div class="bubble-leaderboard-entry ' + rankClass + '">';
+                html += '<span>' + (i + 1) + '. ' + entry.score + '</span>';
+                html += '<span>L' + entry.level + '</span>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function showBubbleNewRecordAnim() {
+            const anim = document.createElement('div');
+            anim.className = 'bubble-new-record-anim';
+            anim.textContent = '🏆 NEW RECORD!';
+            canvasContainer.appendChild(anim);
+            setTimeout(() => { if (anim.parentNode) anim.parentNode.removeChild(anim); }, 1000);
+        }
+
         function showBubbleGameOver() {
             const isNewRecord = bubbleScore > bubbleHighScore;
             if (isNewRecord) {
@@ -7765,61 +8441,140 @@
         }
 
         function continueBubbleGame() {
+            // V18: Now redirects to resetGame for the new level system
             document.getElementById('bubbleGameOverPanel').classList.remove('show');
-            bubbleScore = 0;
-            bubbleCombo = 0;
-            bubbleGameOver = false;
-            bubbleLastRewardScore = 0;
-            bubbleAnimations = [];
-            bubbleFloatTexts = [];
-            updateBubbleScoreDisplay();
-            bubbles = [];
-            const ctx = bubbleCanvas.getContext('2d');
-            ctx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
-            bubbleGameActive = true;
+            resetGame();
         }
 
         function getBubbleType() {
-            const r = Math.random();
-            if (r < 0.05) return 'star';
-            if (r < 0.10) return 'rainbow';
-            if (r < 0.20) return 'gold';
+            // V18: 7 bubble types with weighted random
+            const levelConfig = getBubbleLevelConfig(bubbleLevel);
+            const roll = Math.random();
+            if (roll < levelConfig.specialChance) {
+                const specialRoll = Math.random();
+                if (specialRoll < 0.20) return 'explosion';
+                if (specialRoll < 0.35) return 'chain';
+                if (specialRoll < 0.45) return 'rainbow';
+                if (specialRoll < 0.65) return 'timed';
+                if (specialRoll < 0.85) return 'frozen';
+                return 'shrink';
+            }
             return 'normal';
         }
 
         function getBubblePoints(type) {
-            if (type === 'star') return 0;
-            if (type === 'gold' || type === 'rainbow') return 5;
-            return 1;
+            // V18: Updated point values
+            const points = {
+                normal: 10,
+                explosion: 20,
+                chain: 30,
+                rainbow: 50,
+                timed: 40,
+                frozen: 15,
+                shrink: 25
+            };
+            return points[type] || 10;
         }
 
         function getBubbleColor(type, baseColor) {
-            if (type === 'gold') return '#FFD700';
+            if (type === 'explosion') return '#FF0000';
+            if (type === 'chain') return '#FFD700';
             if (type === 'rainbow') return baseColor;
+            if (type === 'frozen') return '#74C0FC';
+            if (type === 'shrink') return '#B197FC';
             return baseColor;
         }
 
-        function spawnBubble() {
-            if (!bubbleGameActive || bubbles.length >= 8) return;
-            const rect = canvasContainer.getBoundingClientRect();
-            const roll = Math.random();
-            let type = 'normal';
-            if (roll < 0.05) type = 'star';
-            else if (roll < 0.10) type = 'rainbow';
-            else if (roll < 0.20) type = 'gold';
+        // V18: Get level configuration
+        function getBubbleLevelConfig(level) {
+            const configs = {
+                1: { bubbles: 5, speed: 1.0, specialChance: 0 },
+                2: { bubbles: 8, speed: 1.1, specialChance: 0.05 },
+                3: { bubbles: 12, speed: 1.2, specialChance: 0.10 },
+                4: { bubbles: 15, speed: 1.3, specialChance: 0.15 },
+                5: { bubbles: 18, speed: 1.4, specialChance: 0.20 }
+            };
+            if (level <= 5) return configs[level];
+            return {
+                bubbles: 18 + (level - 5) * 3,
+                speed: 1.4 + (level - 5) * 0.1,
+                specialChance: Math.min(0.20 + (level - 5) * 0.02, 0.5)
+            };
+        }
 
-            const radius = 15 + Math.random() * 25;
+        function getBubblePassScore(level) {
+            if (level === 1) return 50;
+            if (level === 2) return 100;
+            if (level === 3) return 180;
+            if (level === 4) return 280;
+            if (level === 5) return 400;
+            return Math.round(getBubblePassScore(level - 1) * 1.4);
+        }
+
+        // V18: Spawn a special bubble every 15 seconds
+        function trySpawnSpecialBubble(now) {
+            if (now - lastSpecialSpawnTime > 15000) {
+                lastSpecialSpawnTime = now;
+                const types = ['explosion', 'chain', 'rainbow', 'timed', 'frozen', 'shrink'];
+                const weights = [0.20, 0.15, 0.10, 0.20, 0.20, 0.15];
+                const roll = Math.random();
+                let cumulative = 0;
+                let selectedType = 'explosion';
+                for (let i = 0; i < types.length; i++) {
+                    cumulative += weights[i];
+                    if (roll < cumulative) {
+                        selectedType = types[i];
+                        break;
+                    }
+                }
+                spawnSpecialBubble(selectedType);
+            }
+        }
+
+        function spawnSpecialBubble(type) {
+            if (!bubbleGameActive) return;
+            const rect = canvasContainer.getBoundingClientRect();
+            const radius = 20 + Math.random() * 20;
             const bubble = {
-                x: Math.random() * rect.width,
+                x: Math.random() * (rect.width - radius * 2) + radius,
                 y: rect.height + radius + 10,
                 radius: radius,
                 type: type,
                 baseColor: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
                 wobbleOffset: Math.random() * Math.PI * 2,
                 wobbleSpeed: 0.5 + Math.random() * 0.5,
-                riseSpeed: 1 + Math.random() * 1.5,
+                riseSpeed: (1 + Math.random() * 1.5) * getBubbleLevelConfig(bubbleLevel).speed,
+                opacity: 0.9,
+                rainbowHue: 0,
+                frozen: false,
+                frozenEnd: 0,
+                countdown: type === 'timed' ? 5000 : 0
+            };
+            bubbles.push(bubble);
+        }
+
+        function spawnBubble() {
+            if (!bubbleGameActive || bubbleGameStarted === false) return;
+            const config = getBubbleLevelConfig(bubbleLevel);
+            if (bubbles.length >= config.bubbles) return;
+            
+            const rect = canvasContainer.getBoundingClientRect();
+            const type = getBubbleType();
+            const radius = 15 + Math.random() * 25;
+            const bubble = {
+                x: Math.random() * (rect.width - radius * 2) + radius,
+                y: rect.height + radius + 10,
+                radius: radius,
+                type: type,
+                baseColor: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
+                wobbleOffset: Math.random() * Math.PI * 2,
+                wobbleSpeed: 0.5 + Math.random() * 0.5,
+                riseSpeed: (1 + Math.random() * 1.5) * config.speed,
                 opacity: 0.85,
-                rainbowHue: 0
+                rainbowHue: 0,
+                frozen: false,
+                frozenEnd: 0,
+                countdown: type === 'timed' ? 5000 : 0
             };
             bubbles.push(bubble);
         }
@@ -7829,31 +8584,159 @@
             createParticles(b.x, b.y, b.color || b.baseColor, b.radius * 0.6);
             bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius, alpha: 1, scale: 1 });
             const pts = getBubblePoints(b.type);
+
+            // V18: Handle special bubble effects on pop
+            if (b.type === 'explosion') {
+                // Explosion: area explosion 50px radius
+                triggerExplosion(b.x, b.y, 50);
+            } else if (b.type === 'chain') {
+                // Chain: triggers chain reaction to adjacent bubbles
+                triggerChainReaction(b.x, b.y, b.radius * 3);
+            } else if (b.type === 'timed') {
+                // Timed: auto-explosion clears nearby bubbles
+                triggerTimedExplosion(b);
+            } else if (b.type === 'frozen') {
+                // Frozen: freezes surrounding bubbles for 3 seconds
+                triggerFreeze(b.x, b.y, b.radius * 4);
+            } else if (b.type === 'shrink') {
+                // Shrink: shrinks ALL bubbles by 30%
+                triggerShrink();
+            }
+
+            // V18: Score with multiplier
             if (pts > 0) {
                 bubbleCombo++;
-                const mult = Math.min(1 + (bubbleCombo - 1) * 0.1, 2);
+                const mult = Math.min(1 + (bubbleCombo - 1) * 0.1, 2) * scoreMultiplier;
                 const earned = Math.round(pts * mult);
                 bubbleScore += earned;
-                bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: '+' + earned, alpha: 1, vy: -1.5, color: b.type === 'gold' ? '#FFD700' : '#FF6B6B' });
+                const colorMap = { explosion: '#FF0000', chain: '#FFD700', rainbow: '#FF6B6B', timed: '#FFA94D', frozen: '#74C0FC', shrink: '#B197FC', normal: '#FF6B6B' };
+                bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: '+' + earned, alpha: 1, vy: -1.5, color: colorMap[b.type] || '#FF6B6B' });
                 if (bubbleScore > bubbleHighScore) {
                     bubbleHighScore = bubbleScore;
                 }
                 updateBubbleScoreDisplay();
-                if (bubbleScore >= bubbleLastRewardScore + 50) {
-                    bubbleLastRewardScore = Math.floor(bubbleScore / 50) * 50;
-                    giveStickerReward(false);
-                }
-                if (bubbleScore >= bubbleLastRewardScore + 150 && bubbleLastRewardScore > 0) {
-                    bubbleLastRewardScore += 150;
-                    giveStickerReward(true);
-                }
-            } else if (b.type === 'star') {
-                bubbleCombo++;
-                bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: 'STAR!', alpha: 1, vy: -1.5, color: '#FFE066' });
-                updateBubbleScoreDisplay();
-                giveStickerReward(true);
+                checkBubbleRewards();
             }
             bubbles.splice(idx, 1);
+        }
+
+        // V18: Explosion bubble effect
+        function triggerExplosion(x, y, radius) {
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                const dx = b.x - x;
+                const dy = b.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < radius + b.radius) {
+                    createParticles(b.x, b.y, b.baseColor, b.radius * 0.4);
+                    bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius, alpha: 1, scale: 1 });
+                    const pts = getBubblePoints(b.type);
+                    if (pts > 0) {
+                        const mult = scoreMultiplier;
+                        bubbleScore += Math.round(pts * mult);
+                        bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: '+' + Math.round(pts * mult), alpha: 1, vy: -1.5, color: '#FF0000' });
+                    }
+                    bubbles.splice(i, 1);
+                }
+            }
+            updateBubbleScoreDisplay();
+        }
+
+        // V18: Chain reaction effect
+        function triggerChainReaction(x, y, radius) {
+            let chainCount = 0;
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                const dx = b.x - x;
+                const dy = b.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < radius + b.radius && chainCount < 8) {
+                    createParticles(b.x, b.y, '#FFD700', b.radius * 0.4);
+                    bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius, alpha: 1, scale: 1 });
+                    const pts = getBubblePoints(b.type);
+                    if (pts > 0) {
+                        const mult = scoreMultiplier;
+                        bubbleScore += Math.round(pts * mult);
+                        bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: '+' + Math.round(pts * mult), alpha: 1, vy: -1.5, color: '#FFD700' });
+                    }
+                    bubbles.splice(i, 1);
+                    chainCount++;
+                    // Continue chain from this bubble's position
+                    x = b.x;
+                    y = b.y;
+                    radius = b.radius * 2.5;
+                }
+            }
+            updateBubbleScoreDisplay();
+        }
+
+        // V18: Timed bubble auto-explosion
+        function triggerTimedExplosion(b) {
+            const idx = bubbles.indexOf(b);
+            if (idx !== -1) {
+                createParticles(b.x, b.y, '#FFA94D', b.radius);
+                bubbleAnimations.push({ x: b.x, y: b.y, radius: b.radius * 1.5, alpha: 1, scale: 1 });
+                // Clear nearby bubbles
+                for (let i = bubbles.length - 1; i >= 0; i--) {
+                    const tb = bubbles[i];
+                    if (tb === b) continue;
+                    const dx = tb.x - b.x;
+                    const dy = tb.y - b.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < b.radius * 3) {
+                        createParticles(tb.x, tb.y, tb.baseColor, tb.radius * 0.4);
+                        bubbleAnimations.push({ x: tb.x, y: tb.y, radius: tb.radius, alpha: 1, scale: 1 });
+                        const pts = getBubblePoints(tb.type);
+                        if (pts > 0) {
+                            const mult = scoreMultiplier;
+                            bubbleScore += Math.round(pts * mult);
+                            bubbleFloatTexts.push({ x: tb.x, y: tb.y - 20, text: '+' + Math.round(pts * mult), alpha: 1, vy: -1.5, color: '#FFA94D' });
+                        }
+                        bubbles.splice(i, 1);
+                    }
+                }
+                const pts = getBubblePoints('timed');
+                bubbleScore += Math.round(pts * scoreMultiplier);
+                bubbleFloatTexts.push({ x: b.x, y: b.y - 20, text: '+' + Math.round(pts * scoreMultiplier), alpha: 1, vy: -1.5, color: '#FFA94D' });
+                bubbles.splice(idx, 1);
+            }
+            updateBubbleScoreDisplay();
+        }
+
+        // V18: Freeze effect
+        function triggerFreeze(x, y, radius) {
+            for (const b of bubbles) {
+                const dx = b.x - x;
+                const dy = b.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < radius + b.radius) {
+                    b.frozen = true;
+                    b.frozenEnd = Date.now() + 3000;
+                }
+            }
+        }
+
+        // V18: Shrink all bubbles
+        function triggerShrink() {
+            for (const b of bubbles) {
+                b.radius *= 0.7;
+                if (b.radius < 8) b.radius = 8;
+            }
+        }
+
+        // V18: Check and give item rewards
+        function checkBubbleRewards() {
+            const items = ['bomb', 'shield', 'speed', 'double', 'magic'];
+            const triggers = [500, 300, 400, 600, 1000];
+            for (let i = 0; i < items.length; i++) {
+                const itemKey = items[i];
+                const trigger = triggers[i];
+                if (bubbleScore >= trigger && BUBBLE_ITEMS[itemKey].count === 0) {
+                    BUBBLE_ITEMS[itemKey].count++;
+                    updateBubbleItemDisplay();
+                    showBubbleRewardPopup(BUBBLE_ITEMS[itemKey].emoji + ' Get!', false);
+                }
+            }
         }
 
         function giveStickerReward(rare) {
@@ -7893,17 +8776,55 @@
             const rect = canvasContainer.getBoundingClientRect();
             ctx.clearRect(0, 0, rect.width, rect.height);
 
+            const now = Date.now();
+
+            // V18: Try spawn special bubble every 15 seconds
+            if (bubbleGameActive && bubbleGameStarted) {
+                trySpawnSpecialBubble(now);
+            }
+
+            // V18: Speed slow effect timer
+            if (speedSlowEndTime > 0 && now > speedSlowEndTime) {
+                speedSlowEndTime = 0;
+                speedSlowTimer = 0;
+            }
+
             for (let i = bubbles.length - 1; i >= 0; i--) {
                 const b = bubbles[i];
-                b.y -= b.riseSpeed;
+
+                // V18: Unfreeze frozen bubbles
+                if (b.frozen && now > b.frozenEnd) {
+                    b.frozen = false;
+                }
+
+                // V18: Timed bubble countdown
+                if (b.type === 'timed' && !b.frozen) {
+                    b.countdown -= 16; // approximate frame time
+                    if (b.countdown <= 0) {
+                        triggerTimedExplosion(b);
+                        continue;
+                    }
+                }
+
+                if (!b.frozen) {
+                    const speedMult = speedSlowEndTime > 0 ? 0.5 : 1;
+                    b.y -= b.riseSpeed * speedMult;
+                }
                 b.wobbleOffset += 0.03;
                 if (b.type === 'rainbow') b.rainbowHue = (b.rainbowHue + 2) % 360;
 
+                // V18: Check if bubble missed (fell below canvas)
                 if (b.y + b.radius < 0) {
                     bubbles.splice(i, 1);
-                    if (bubbleGameActive) {
+                    if (bubbleGameActive && bubbleGameStarted) {
+                        bubbleMissCount++;
+                        bubbleLives--;
+                        updateBubbleLivesDisplay();
                         bubbleCombo = 0;
                         updateBubbleScoreDisplay();
+                        if (bubbleLives <= 0) {
+                            showBubbleLevelFail();
+                        }
                     }
                     continue;
                 }
@@ -7911,15 +8832,27 @@
                 ctx.save();
                 ctx.globalAlpha = b.opacity;
 
-                if (b.type === 'gold') {
+                // V18: Special bubble visual effects
+                if (b.type === 'explosion') {
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#FF0000';
+                } else if (b.type === 'chain') {
                     ctx.shadowBlur = 20;
                     ctx.shadowColor = '#FFD700';
                 } else if (b.type === 'rainbow') {
                     ctx.shadowBlur = 25;
                     ctx.shadowColor = 'hsl(' + b.rainbowHue + ',80%,60%)';
-                } else if (b.type === 'star') {
-                    ctx.shadowBlur = 25;
-                    ctx.shadowColor = '#FFE066';
+                } else if (b.type === 'frozen') {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#74C0FC';
+                } else if (b.type === 'shrink') {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#B197FC';
+                }
+
+                // V18: Frozen effect - ice overlay
+                if (b.frozen) {
+                    ctx.globalAlpha = 0.6;
                 }
 
                 const gradient = ctx.createRadialGradient(
@@ -7929,9 +8862,13 @@
                 gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
 
                 let mainColor = b.baseColor;
-                if (b.type === 'gold') mainColor = '#FFD700';
+                if (b.type === 'explosion') {
+                    // Flashing red for explosion bubbles
+                    mainColor = Math.floor(now / 200) % 2 === 0 ? '#FF0000' : '#FF4444';
+                } else if (b.type === 'chain') mainColor = '#FFD700';
                 else if (b.type === 'rainbow') mainColor = 'hsl(' + b.rainbowHue + ',80%,60%)';
-                else if (b.type === 'star') mainColor = '#FFE066';
+                else if (b.type === 'frozen') mainColor = '#74C0FC';
+                else if (b.type === 'shrink') mainColor = '#B197FC';
 
                 gradient.addColorStop(0.5, mainColor + 'CC');
                 gradient.addColorStop(1, mainColor + '44');
@@ -7946,25 +8883,8 @@
                 ctx.fillStyle = 'rgba(255,255,255,0.7)';
                 ctx.fill();
 
-                if (b.type === 'star') {
-                    ctx.save();
-                    ctx.translate(b.x, b.y);
-                    ctx.rotate(b.wobbleOffset * 0.5);
-                    ctx.beginPath();
-                    for (let si = 0; si < 5; si++) {
-                        const angle = (si * Math.PI * 2 / 5) - Math.PI / 2;
-                        const r = si % 2 === 0 ? b.radius * 0.5 : b.radius * 0.2;
-                        if (si === 0) ctx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);
-                        else ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r);
-                        const nextAngle = ((si + 0.5) * Math.PI * 2 / 5) - Math.PI / 2;
-                        const nextR = si % 2 === 0 ? b.radius * 0.2 : b.radius * 0.5;
-                        ctx.lineTo(Math.cos(nextAngle) * nextR, Math.sin(nextAngle) * nextR);
-                    }
-                    ctx.closePath();
-                    ctx.fillStyle = '#FFE066';
-                    ctx.fill();
-                    ctx.restore();
-                } else if (b.type === 'rainbow') {
+                // V18: Rainbow bubble inner circle
+                if (b.type === 'rainbow') {
                     ctx.save();
                     ctx.beginPath();
                     ctx.arc(b.x, b.y, b.radius * 0.5, 0, Math.PI * 2);
@@ -7977,6 +8897,28 @@
                     rg.addColorStop(1, '#B197FC');
                     ctx.fillStyle = rg;
                     ctx.fill();
+                    ctx.restore();
+                }
+
+                // V18: Timed bubble countdown display
+                if (b.type === 'timed') {
+                    ctx.save();
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold ' + Math.max(10, b.radius * 0.5) + 'px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(Math.ceil(b.countdown / 1000), b.x, b.y);
+                    ctx.restore();
+                }
+
+                // V18: Frozen bubble ice crystals overlay
+                if (b.frozen) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#74C0FC';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
                     ctx.restore();
                 }
 
@@ -8039,10 +8981,11 @@
                 ctx.restore();
             }
 
-            if (bubbleGameActive) {
-                const hasTopBubble = bubbles.some(b => b.y - b.radius < 40);
-                if (hasTopBubble && bubbleScore > 0) {
-                    showBubbleGameOver();
+            // V18: Check level completion
+            if (bubbleGameActive && bubbleGameStarted && !bubbleLevelComplete) {
+                const config = getBubbleLevelConfig(bubbleLevel);
+                if (bubbles.length === 0 && bubbleScore >= bubblePassScore) {
+                    showBubbleLevelPass();
                 }
             }
 
@@ -8067,16 +9010,41 @@
                 bubbleAnimations = [];
                 bubbleFloatTexts = [];
                 bubbleGameActive = true;
+                bubbleGameStarted = false;
+                bubbleLevelComplete = false;
+                bubbleLives = 3;
+                bubbleMissCount = 0;
+                bubbleLevel = parseInt(localStorage.getItem('bubbleLevel') || '1');
+                bubblePassScore = getBubblePassScore(bubbleLevel);
+                scoreMultiplier = 1;
+                speedSlowEndTime = 0;
+                activeBubbleItem = null;
+                // Reset items
+                BUBBLE_ITEMS.bomb.count = 0;
+                BUBBLE_ITEMS.shield.count = 0;
+                BUBBLE_ITEMS.speed.count = 0;
+                BUBBLE_ITEMS.double.count = 0;
+                BUBBLE_ITEMS.magic.count = 0;
                 updateBubbleScoreDisplay();
-                startBubbleSpawning();
+                updateBubbleLivesDisplay();
+                updateBubbleLevelDisplay();
+                updateBubbleItemDisplay();
+                updateBubbleLeaderboardDisplay();
+                document.getElementById('bubbleGameOverPanel').classList.remove('show');
+                document.getElementById('bubbleLevelPanel').classList.remove('show');
+                document.getElementById('bubbleStartBtn').textContent = '开始';
+                document.getElementById('bubbleStartBtn').style.background = 'linear-gradient(180deg, #69DB7C 0%, #40C057 100%)';
                 requestAnimationFrame(animateBubbles);
             } else {
                 stopBubbleSpawning();
                 bubbleGameActive = false;
+                bubbleGameStarted = false;
                 bubbles = [];
                 const ctx = bubbleCanvas.getContext('2d');
                 ctx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
                 document.getElementById('bubbleGameOverPanel').classList.remove('show');
+                document.getElementById('bubbleLevelPanel').classList.remove('show');
+                hideBubbleCursor();
             }
         }
 
@@ -8095,13 +9063,20 @@
         let bubbleCtx;
         const BUBBLE_COLORS = ['#FF6B6B', '#FFA94D', '#FFE066', '#69DB7C', '#74C0FC', '#B197FC', '#F783AC'];
 
-        function handleBubbleClick(e) {
+        function handleBubbleCanvasClick(e) {
             if (!bubbleMode || !bubbleGameActive) return;
 
             const rect = bubbleCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
+            // If item is active, use it
+            if (activeBubbleItem) {
+                useActiveItem(x, y);
+                return;
+            }
+
+            // Normal bubble click
             for (let i = bubbles.length - 1; i >= 0; i--) {
                 const b = bubbles[i];
                 const dx = x - b.x;
@@ -8113,6 +9088,11 @@
                     return;
                 }
             }
+        }
+
+        function handleBubbleClick(e) {
+            if (!bubbleMode) return;
+            handleBubbleCanvasClick(e);
         }
 
         function createParticles(x, y, color, size) {
@@ -8445,6 +9425,12 @@
                 if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
                     e.preventDefault();
                     redo();
+                }
+                // V18: ESC to cancel active bubble item
+                if (e.key === 'Escape' && activeBubbleItem) {
+                    activeBubbleItem = null;
+                    updateBubbleItemButtonState();
+                    hideBubbleCursor();
                 }
             });
 
