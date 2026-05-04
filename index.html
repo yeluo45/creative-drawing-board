@@ -6037,6 +6037,49 @@
   color: #ff7043;
   font-weight: bold;
 }
+
+/* V35: Friends System Styles */
+.friend-invite-section { padding: 10px; background: #f9f9f9; border-radius: 10px; margin: 10px; }
+.friend-invite-code { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+.friend-invite-code input { flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 16px; letter-spacing: 2px; text-align: center; background: #fff; }
+.friend-invite-code button { padding: 6px 12px; background: #4CAF50; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.friend-coins { font-size: 13px; color: #ff9800; font-weight: bold; }
+.friend-add-section { padding: 10px; }
+.friend-add-section h4 { margin: 0 0 8px 0; font-size: 14px; color: #333; }
+.friend-add-form { display: flex; gap: 8px; }
+.friend-add-form input { flex: 1; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; text-transform: uppercase; }
+.friend-add-form button { padding: 8px 16px; background: #2196F3; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.friend-list-section, .friend-gifts-section { padding: 10px; border-top: 1px solid #eee; }
+.friend-list-section h4, .friend-gifts-section h4 { margin: 0 0 8px 0; font-size: 14px; color: #333; }
+.friend-list, .gift-list, .friend-gallery-grid { max-height: 200px; overflow-y: auto; }
+.friend-item { display: flex; align-items: center; gap: 8px; padding: 8px; background: #f5f5f5; border-radius: 8px; margin-bottom: 6px; }
+.friend-item-avatar { font-size: 24px; }
+.friend-item-info { flex: 1; }
+.friend-item-name { font-size: 13px; font-weight: bold; }
+.friend-item-code { font-size: 11px; color: #888; font-family: monospace; }
+.friend-item-actions { display: flex; gap: 5px; }
+.friend-item-actions button { padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 11px; }
+.friend-gallery-btn { background: #e3f2fd; color: #1976D2; }
+.friend-gift-btn { background: #fce4ec; color: #c2185b; }
+.gift-item { display: flex; align-items: center; gap: 8px; padding: 8px; background: #fff3e0; border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+.gift-item-emoji { font-size: 20px; }
+.gift-item-text { flex: 1; }
+.gift-item-time { font-size: 11px; color: #888; }
+.gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+.gift-item-btn { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: #f5f5f5; border: 2px solid transparent; border-radius: 10px; cursor: pointer; font-size: 12px; }
+.gift-item-btn:hover { background: #fce4ec; border-color: #e91e63; }
+.gift-item-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+.gift-emoji { font-size: 28px; margin-bottom: 4px; }
+.gift-name { font-size: 12px; color: #333; }
+.gift-price { font-size: 11px; color: #ff9800; }
+.gift-balance { padding: 10px; text-align: center; font-size: 14px; color: #ff9800; font-weight: bold; border-top: 1px solid #eee; }
+.friend-gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; }
+.friend-gallery-item { background: #f5f5f5; border-radius: 8px; overflow: hidden; }
+.friend-work-thumb { height: 80px; display: flex; align-items: center; justify-content: center; background: #e3f2fd; }
+.friend-work-thumb span { font-size: 12px; color: #666; }
+.friend-work-info { padding: 6px; font-size: 11px; text-align: center; }
+.empty-tip { text-align: center; color: #888; font-size: 13px; padding: 20px; }
+
     </style>
 </head>
 <body>
@@ -6066,6 +6109,7 @@
             <button class="game-btn" id="gameBtn" title="Games">🧩</button>
             <button class="parent-ctrl-btn" id="parentCtrlBtn" title="家长控制">👨‍👩‍👧</button>
             <button class="tool-btn" id="langBtn" title="Language">🌐</button>
+            <button class="tool-btn" id="friendsBtn" title="好友系统">👥</button>
         </div>
     </header>
 
@@ -20924,6 +20968,228 @@
     <!-- V23: Advanced Drawing Tools -->
     <script>
         // ===== V23: Layer System =====
+        // ===== V35: Friends System State =====
+        let localUser = null;
+        let friendsData = {};
+        let localCoins = 100;
+
+        const FRIEND_STATUS = {
+          NONE: 'none',
+          PENDING: 'pending',
+          FRIENDS: 'friends',
+          VISITED: 'visited'
+        };
+
+        const VIRTUAL_GIFTS = [
+          { id: 'star', name: '星星', emoji: '⭐', price: 10 },
+          { id: 'heart', name: '爱心', emoji: '❤️', price: 20 },
+          { id: 'crown', name: '皇冠', emoji: '👑', price: 50 },
+          { id: 'cake', name: '蛋糕', emoji: '🎂', price: 30 },
+          { id: 'flower', name: '花束', emoji: '💐', price: 25 },
+          { id: 'rocket', name: '火箭', emoji: '🚀', price: 100 }
+        ];
+
+        function generateInviteCode() {
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          let code = '';
+          for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return code;
+        }
+
+        function initLocalUser() {
+          const data = localStorage.getItem('cdb_localUser');
+          if (data) {
+            localUser = JSON.parse(data);
+          } else {
+            localUser = {
+              id: 'user_' + Date.now(),
+              name: '我',
+              avatar: '😊',
+              inviteCode: generateInviteCode(),
+              friends: [],
+              gallery: []
+            };
+            localStorage.setItem('cdb_localUser', JSON.stringify(localUser));
+          }
+          const coins = localStorage.getItem('cdb_coins');
+          if (coins) localCoins = parseInt(coins);
+        }
+
+        function saveLocalCoins() {
+          localStorage.setItem('cdb_coins', localCoins.toString());
+        }
+
+        function getMyInviteCode() {
+          if (!localUser.inviteCode) {
+            localUser.inviteCode = generateInviteCode();
+            localStorage.setItem('cdb_localUser', JSON.stringify(localUser));
+          }
+          return localUser.inviteCode;
+        }
+
+        function copyInviteCode() {
+          const code = getMyInviteCode();
+          document.getElementById('myInviteCodeDisplay').value = code;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(() => showToast('邀请码已复制！')).catch(() => showToast('复制成功'));
+          } else {
+            showToast('邀请码: ' + code);
+          }
+        }
+
+        function addFriendByCodeInput() {
+          const input = document.getElementById('friendCodeInput');
+          const code = input.value.trim().toUpperCase();
+          if (!code) return;
+          addFriendByCode(code);
+          input.value = '';
+        }
+
+        function addFriendByCode(code) {
+          const mockUsers = {
+            'USER01': { id: 'user_001', name: '小明', avatar: '😊', inviteCode: 'USER01', gallery: ['作品1', '作品2'] },
+            'USER02': { id: 'user_002', name: '小红', avatar: '😍', inviteCode: 'USER02', gallery: ['作品3', '作品4'] },
+            'USER03': { id: 'user_003', name: '小华', avatar: '🤗', inviteCode: 'USER03', gallery: ['作品5'] }
+          };
+
+          const friend = mockUsers[code];
+          if (!friend) {
+            showToast('无效的邀请码');
+            return;
+          }
+          if (friend.id === localUser.id) {
+            showToast('不能添加自己为好友');
+            return;
+          }
+          if (localUser.friends.includes(friend.id)) {
+            showToast('已经是好友了');
+            return;
+          }
+
+          localUser.friends.push(friend.id);
+          localStorage.setItem('cdb_localUser', JSON.stringify(localUser));
+          friendsData[friend.id] = { ...friend, status: FRIEND_STATUS.FRIENDS, addedAt: Date.now(), gifts: [] };
+          localStorage.setItem('cdb_friends', JSON.stringify(friendsData));
+          showToast('已添加 ' + friend.name + ' 为好友！');
+          updateFriendsList();
+        }
+
+        function updateFriendsList() {
+          const container = document.getElementById('friendListContainer');
+          const friendIds = localUser ? localUser.friends : [];
+          document.getElementById('friendCount').textContent = friendIds.length;
+
+          if (friendIds.length === 0) {
+            container.innerHTML = '<div class="empty-tip">还没有好友，快添加吧！</div>';
+            return;
+          }
+
+          container.innerHTML = friendIds.map(fid => {
+            const friend = friendsData[fid] || {};
+            return '<div class="friend-item">' +
+              '<span class="friend-item-avatar">' + (friend.avatar || '😊') + '</span>' +
+              '<div class="friend-item-info">' +
+                '<div class="friend-item-name">' + (friend.name || '好友') + '</div>' +
+                '<div class="friend-item-code">' + (friend.inviteCode || '') + '</div>' +
+              '</div>' +
+              '<div class="friend-item-actions">' +
+                '<button class="friend-gallery-btn" onclick="visitFriendGallery(\'' + fid + '\')">画廊</button>' +
+                '<button class="friend-gift-btn" onclick="showGiftPanel(\'' + fid + '\')">送礼</button>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+
+        function visitFriendGallery(friendId) {
+          const friend = friendsData[friendId];
+          if (!friend) return;
+          closeAllPanels();
+          const panel = document.getElementById('friendGalleryPanel');
+          document.getElementById('friendGalleryTitle').textContent = (friend.name || '好友') + ' 的画廊';
+          document.getElementById('friendGalleryTitle').setAttribute('data-friend-id', friendId);
+          const grid = document.getElementById('friendGalleryGrid');
+          const works = friend.gallery || [];
+          if (works.length === 0) {
+            grid.innerHTML = '<div class="empty-tip">好友还没有作品哦</div>';
+          } else {
+            grid.innerHTML = works.map((w, i) =>
+              '<div class="friend-gallery-item"><div class="friend-work-thumb"><span>作品 ' + (i+1) + '</span></div><div class="friend-work-info"><span>' + (friend.name || '') + '</span></div></div>'
+            ).join('');
+          }
+          panel.style.display = 'block';
+        }
+
+        function showGiftPanel(friendId) {
+          const friend = friendsData[friendId];
+          if (!friend) return;
+          closeAllPanels();
+          document.getElementById('giftPanel').setAttribute('data-friend-id', friendId);
+          document.getElementById('giftBalanceDisplay').textContent = localCoins;
+          const grid = document.getElementById('giftGrid');
+          grid.innerHTML = VIRTUAL_GIFTS.map(g => {
+            const disabled = localCoins < g.price;
+            return '<div class="gift-item-btn' + (disabled ? ' disabled' : '') + '"' +
+              (disabled ? '' : ' onclick="sendGiftToFriend(\'' + friendId + '\', \'' + g.id + '\')"') + '>' +
+              '<span class="gift-emoji">' + g.emoji + '</span>' +
+              '<span class="gift-name">' + g.name + '</span>' +
+              '<span class="gift-price">💰' + g.price + '</span>' +
+            '</div>';
+          }).join('');
+          document.getElementById('giftPanel').style.display = 'block';
+        }
+
+        function sendGiftToFriend(friendId, giftId) {
+          const friend = friendsData[friendId];
+          if (!friend) { showToast('好友不存在'); return; }
+          const gift = VIRTUAL_GIFTS.find(g => g.id === giftId);
+          if (!gift) return;
+          if (localCoins < gift.price) { showToast('金币不足'); return; }
+          localCoins -= gift.price;
+          saveLocalCoins();
+          document.getElementById('localCoinsDisplay').textContent = localCoins;
+          if (!friend.gifts) friend.gifts = [];
+          friend.gifts.push({ gift: gift, from: localUser.name, at: Date.now() });
+          localStorage.setItem('cdb_friends', JSON.stringify(friendsData));
+          showToast('已赠送 ' + gift.emoji + ' 给 ' + friend.name + '！');
+          updateReceivedGifts();
+          showGiftPanel(friendId);
+        }
+
+        function updateReceivedGifts() {
+          const container = document.getElementById('receivedGiftsList');
+          let allGifts = [];
+          Object.values(friendsData).forEach(f => {
+            if (f.gifts && f.gifts.length > 0) {
+              f.gifts.forEach(g => allGifts.push({ ...g, friendName: f.name }));
+            }
+          });
+          document.getElementById('giftCount').textContent = allGifts.length;
+          if (allGifts.length === 0) {
+            container.innerHTML = '<div class="empty-tip">还没有收到礼物</div>';
+            return;
+          }
+          allGifts.sort((a, b) => b.at - a.at);
+          container.innerHTML = allGifts.map(g => {
+            const d = new Date(g.at);
+            const time = (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+            return '<div class="gift-item"><span class="gift-item-emoji">' + g.gift.emoji + '</span>' +
+              '<span class="gift-item-text">' + g.friendName + ' 赠送了 ' + g.gift.name + '</span>' +
+              '<span class="gift-item-time">' + time + '</span></div>';
+          }).join('');
+        }
+
+        function closeFriendsPanel() { document.getElementById('friendsPanel').style.display = 'none'; }
+        function closeGiftPanel() { document.getElementById('giftPanel').style.display = 'none'; }
+        function closeFriendGalleryPanel() { document.getElementById('friendGalleryPanel').style.display = 'none'; }
+
+        function closeAllPanels() {
+          closeFriendsPanel(); closeGiftPanel(); closeFriendGalleryPanel();
+          const panels = ['suggestionPanel','gesturePanel','arStickerPanel','visualizerPanel','particlePanel'];
+          panels.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+        }
+
         const layerSystem = {
             layers: [
                 { id: 'layer_1', name: '图层 1', visible: true, locked: false }
@@ -22555,6 +22821,49 @@
         </div>
     </div>
 
+    <!-- V35: Friends System Panels -->
+    <div class="panel" id="friendsPanel" style="display:none;">
+      <div class="panel-header">👥 好友系统 <button class="close-btn" onclick="closeFriendsPanel()">×</button></div>
+
+      <div class="friend-invite-section">
+        <div class="friend-invite-code">
+          <span>我的邀请码:</span>
+          <input type="text" id="myInviteCodeDisplay" readonly value="------">
+          <button onclick="copyInviteCode()">📋 复制</button>
+        </div>
+        <div class="friend-coins">💰 金币: <span id="localCoinsDisplay">100</span></div>
+      </div>
+
+      <div class="friend-add-section">
+        <h4>📝 添加好友</h4>
+        <div class="friend-add-form">
+          <input type="text" id="friendCodeInput" placeholder="输入好友邀请码" maxlength="6">
+          <button onclick="addFriendByCodeInput()">添加</button>
+        </div>
+      </div>
+
+      <div class="friend-list-section">
+        <h4>👥 好友列表 (<span id="friendCount">0</span>)</h4>
+        <div class="friend-list" id="friendListContainer"><div class="empty-tip">还没有好友，快添加吧！</div></div>
+      </div>
+
+      <div class="friend-gifts-section">
+        <h4>💝 收到礼物 (<span id="giftCount">0</span>)</h4>
+        <div class="gift-list" id="receivedGiftsList"><div class="empty-tip">还没有收到礼物</div></div>
+      </div>
+    </div>
+
+    <div class="panel" id="giftPanel" style="display:none;">
+      <div class="panel-header">🎁 送礼 <button class="close-btn" onclick="closeGiftPanel()">×</button></div>
+      <div class="gift-grid" id="giftGrid"></div>
+      <div class="gift-balance">💰 金币余额: <span id="giftBalanceDisplay">100</span></div>
+    </div>
+
+    <div class="panel" id="friendGalleryPanel" style="display:none;">
+      <div class="panel-header"><span id="friendGalleryTitle">好友画廊</span> <button class="close-btn" onclick="closeFriendGalleryPanel()">×</button></div>
+      <div class="friend-gallery-grid" id="friendGalleryGrid"></div>
+    </div>
+
     <!-- V28: Audio Recordings List Panel -->
     <div class="panel" id="audioRecordingsPanel" style="display:none;">
         <div class="panel-header">🎤 我的录音 <button class="close-btn" onclick="closeAudioRecordingsPanel()">×</button></div>
@@ -22598,6 +22907,23 @@
                     });
             });
         }
+
+        // ===== V35: Friends System Initialization =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initLocalUser();
+            const savedFriends = localStorage.getItem('cdb_friends');
+            if (savedFriends) friendsData = JSON.parse(savedFriends);
+
+            document.getElementById('friendsBtn').addEventListener('click', () => {
+                closeAllPanels();
+                initLocalUser();
+                document.getElementById('myInviteCodeDisplay').value = getMyInviteCode();
+                document.getElementById('localCoinsDisplay').textContent = localCoins;
+                updateFriendsList();
+                updateReceivedGifts();
+                document.getElementById('friendsPanel').style.display = 'block';
+            });
+        });
     </script>
 </body>
 </html>
