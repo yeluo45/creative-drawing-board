@@ -6080,6 +6080,100 @@
 .friend-work-info { padding: 6px; font-size: 11px; text-align: center; }
 .empty-tip { text-align: center; color: #888; font-size: 13px; padding: 20px; }
 
+        /* V36: Achievement System Styles */
+        .achievement-stats {
+            display: flex;
+            gap: 15px;
+            padding: 12px;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .achievement-stats span { margin: 0 5px; }
+        .daily-tasks { padding: 10px; border-bottom: 1px solid #eee; }
+        .daily-tasks h4 { margin: 0 0 8px 0; font-size: 14px; color: #333; }
+        .daily-task-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .daily-task-item.completed { background: #e8f5e9; }
+        .daily-task-item .task-icon { font-size: 18px; }
+        .daily-task-item .task-info { flex: 1; }
+        .daily-task-item .task-name { font-weight: bold; }
+        .daily-task-item .task-progress { font-size: 11px; color: #888; }
+        .daily-task-item .task-reward { color: #ff9800; font-weight: bold; }
+        .daily-task-item .task-check { color: #4CAF50; font-size: 16px; }
+        .achievement-filter {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            overflow-x: auto;
+            border-bottom: 1px solid #eee;
+        }
+        .ach-filter-btn {
+            padding: 6px 12px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .ach-filter-btn.active { background: #667eea; color: #fff; }
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .ach-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .ach-item:hover { transform: scale(1.05); }
+        .ach-item.locked { opacity: 0.5; }
+        .ach-item.unlocked { background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); border: 2px solid #667eea; }
+        .ach-item-icon { font-size: 28px; margin-bottom: 4px; }
+        .ach-item-name { font-size: 10px; text-align: center; color: #333; }
+        .ach-item.locked .ach-item-icon { filter: grayscale(1); }
+        .achievement-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .achievement-toast.show { transform: translateX(0); }
+        .achievement-toast .achievement-icon { font-size: 36px; }
+        .achievement-toast .achievement-name { font-size: 11px; opacity: 0.9; }
+        .achievement-toast .achievement-title { font-size: 15px; font-weight: bold; }
+        .achievement-toast .achievement-reward { font-size: 13px; color: #ffd700; }
+
     </style>
 </head>
 <body>
@@ -6110,6 +6204,7 @@
             <button class="parent-ctrl-btn" id="parentCtrlBtn" title="家长控制">👨‍👩‍👧</button>
             <button class="tool-btn" id="langBtn" title="Language">🌐</button>
             <button class="tool-btn" id="friendsBtn" title="好友系统">👥</button>
+            <button class="tool-btn" id="achievementBtn" title="成就中心">🏆</button>
         </div>
     </header>
 
@@ -20973,6 +21068,43 @@
         let friendsData = {};
         let localCoins = 100;
 
+        // ===== V36: Achievement System State =====
+        const ACHIEVEMENTS = [
+          { id: 'first_draw', name: '初次作画', desc: '完成你的第一幅画', icon: '🎨', category: '绘画', reward: 10 },
+          { id: 'colorful', name: '五彩缤纷', desc: '使用过5种不同颜色', icon: '🌈', category: '绘画', reward: 20 },
+          { id: 'master', name: '绘画大师', desc: '完成10幅作品', icon: '👨‍🎨', category: '绘画', reward: 50 },
+          { id: 'gallery_keeper', name: '画廊主人', desc: '画廊收藏达到10幅', icon: '🏛️', category: '绘画', reward: 30 },
+          { id: 'tool_collector', name: '工具收藏家', desc: '使用过所有基础工具', icon: '🔧', category: '工具', reward: 25 },
+          { id: 'brush_master', name: '画笔大师', desc: '使用画笔画满1000px', icon: '✏️', category: '工具', reward: 30 },
+          { id: 'eraser_clean', name: '一尘不染', desc: '橡皮擦除500px', icon: '🧹', category: '工具', reward: 20 },
+          { id: 'creative', name: '创意达人', desc: '使用过所有创意功能', icon: '💡', category: '创意', reward: 40 },
+          { id: 'particle_lover', name: '粒子爱好者', desc: '体验过所有粒子效果', icon: '✨', category: '创意', reward: 25 },
+          { id: 'ar_explorer', name: 'AR探险家', desc: '使用AR功能10次', icon: '📱', category: '创意', reward: 30 },
+          { id: 'social_star', name: '社交达人', desc: '添加5个好友', icon: '⭐', category: '社交', reward: 30 },
+          { id: 'gift_giver', name: '大方之人', desc: '赠送10次礼物', icon: '🎁', category: '社交', reward: 35 },
+          { id: 'popular', name: '人见人爱', desc: '收到5个礼物', icon: '💝', category: '社交', reward: 25 },
+          { id: 'game_player', name: '游戏玩家', desc: '体验过所有游戏', icon: '🎮', category: '游戏', reward: 20 },
+          { id: 'bubble_pop', name: '泡泡达人', desc: '消除100个泡泡', icon: '🫧', category: '游戏', reward: 25 },
+          { id: 'puzzle_solver', name: '解谜高手', desc: '完成2048游戏', icon: '🧩', category: '游戏', reward: 30 },
+          { id: 'early_bird', name: '早起鸟儿', desc: '早晨作画', icon: '🌅', category: '特殊', reward: 15 },
+          { id: 'night_owl', name: '夜猫子', desc: '深夜作画', icon: '🌙', category: '特殊', reward: 15 },
+          { id: 'streak_7', name: '连续7天', desc: '连续7天打开应用', icon: '🔥', category: '特殊', reward: 50 },
+          { id: 'all_complete', name: '全能选手', desc: '解锁所有成就', icon: '🏅', category: '特殊', reward: 100 }
+        ];
+
+        const DAILY_TASKS = [
+          { id: 'daily_draw', name: '每日一画', desc: '完成一幅作品', icon: '🎨', reward: 10, type: 'daily' },
+          { id: 'daily_try', name: '功能体验', desc: '使用一个新功能', icon: '🔍', reward: 5, type: 'daily' },
+          { id: 'daily_color', name: '色彩大师', desc: '使用5种颜色', icon: '🌈', reward: 8, type: 'daily' },
+          { id: 'daily_share', name: '分享作品', desc: '保存一幅作品', icon: '💾', reward: 5, type: 'daily' }
+        ];
+
+        let achievementProgress = {};
+        let unlockedAchievements = [];
+        let userRewards = { coins: 100, gems: 0, totalBadges: 0, unlockedFrames: ['default'] };
+        let dailyTaskProgress = {};
+        let currentAchFilter = 'all';
+
         const FRIEND_STATUS = {
           NONE: 'none',
           PENDING: 'pending',
@@ -21188,7 +21320,141 @@
           closeFriendsPanel(); closeGiftPanel(); closeFriendGalleryPanel();
           const panels = ['suggestionPanel','gesturePanel','arStickerPanel','visualizerPanel','particlePanel'];
           panels.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = 'none'; });
+
+        // ===== V36: Achievement Functions =====
+        function updateAchievement(id, value) {
+          const ach = ACHIEVEMENTS.find(a => a.id === id);
+          if (!ach) return;
+          if (achievementProgress[id]?.completed) return;
+
+          const prog = achievementProgress[id] || { progress: 0, completed: false, colorsUsed: [] };
+          prog.progress = Math.min(value, 100);
+
+          if (prog.progress >= 100 && !prog.completed) {
+            prog.completed = true;
+            prog.unlocked = true;
+            if (!unlockedAchievements.includes(id)) {
+              unlockedAchievements.push(id);
+            }
+            userRewards.coins += ach.reward;
+            saveAchievementData();
+            showAchievementUnlocked(ach);
+            updateAchievementStats();
+          }
+          achievementProgress[id] = prog;
         }
+
+        function showAchievementUnlocked(ach) {
+          const toast = document.createElement('div');
+          toast.className = 'achievement-toast';
+          toast.innerHTML = '<div class="achievement-icon">' + ach.icon + '</div>' +
+            '<div class="achievement-info">' +
+              '<div class="achievement-name">🏆 成就解锁！</div>' +
+              '<div class="achievement-title">' + ach.name + '</div>' +
+              '<div class="achievement-reward">+' + ach.reward + ' 💰</div>' +
+            '</div>';
+          document.body.appendChild(toast);
+          setTimeout(function() { toast.classList.add('show'); }, 10);
+          setTimeout(function() {
+            toast.classList.remove('show');
+            setTimeout(function() { toast.remove(); }, 300);
+          }, 3000);
+        }
+
+        function filterAchievements(category) {
+          currentAchFilter = category;
+          document.querySelectorAll('.ach-filter-btn').forEach(function(btn) { btn.classList.remove('active'); });
+          event.target.classList.add('active');
+          renderAchievementGrid();
+        }
+
+        function renderAchievementGrid() {
+          const grid = document.getElementById('achievementGrid');
+          const filtered = currentAchFilter === 'all'
+            ? ACHIEVEMENTS
+            : ACHIEVEMENTS.filter(function(a) { return a.category === currentAchFilter; });
+
+          grid.innerHTML = filtered.map(function(ach) {
+            const prog = achievementProgress[ach.id] || { progress: 0, completed: false };
+            const locked = !prog.completed;
+            return '<div class="ach-item ' + (locked ? 'locked' : 'unlocked') + '" onclick="showAchievementDetail(\'' + ach.id + '\')">' +
+              '<span class="ach-item-icon">' + ach.icon + '</span>' +
+              '<span class="ach-item-name">' + ach.name + '</span>' +
+            '</div>';
+          }).join('');
+        }
+
+        function renderDailyTasks() {
+          const list = document.getElementById('dailyTaskList');
+          list.innerHTML = DAILY_TASKS.map(function(task) {
+            const prog = dailyTaskProgress[task.id] || { completed: false, progress: 0 };
+            return '<div class="daily-task-item' + (prog.completed ? ' completed' : '') + '">' +
+              '<span class="task-icon">' + task.icon + '</span>' +
+              '<div class="task-info">' +
+                '<div class="task-name">' + task.name + '</div>' +
+                '<div class="task-progress">' + (prog.completed ? '已完成' : task.desc) + '</div>' +
+              '</div>' +
+              '<span class="task-reward">+' + task.reward + ' 💰</span>' +
+              (prog.completed ? '<span class="task-check">✓</span>' : '') +
+            '</div>';
+          }).join('');
+        }
+
+        function updateAchievementStats() {
+          document.getElementById('achCoins').textContent = userRewards.coins;
+          document.getElementById('achGems').textContent = userRewards.gems;
+          document.getElementById('achBadgeCount').textContent = unlockedAchievements.length;
+        }
+
+        function showAchievementDetail(id) {
+          const ach = ACHIEVEMENTS.find(function(a) { return a.id === id; });
+          if (!ach) return;
+          const prog = achievementProgress[id] || { progress: 0, completed: false };
+          const locked = !prog.completed;
+          alert(ach.icon + ' ' + ach.name + '\n\n' + ach.desc + '\n\n分类: ' + ach.category + '\n奖励: ' + ach.reward + ' 💰\n进度: ' + prog.progress + '%' + (locked ? '\n\n🔒 未解锁' : '\n\n✅ 已解锁'));
+        }
+
+        function closeAchievementPanel() {
+          document.getElementById('achievementPanel').style.display = 'none';
+        }
+
+        function saveAchievementData() {
+          var data = {
+            achievementProgress: achievementProgress,
+            unlockedAchievements: unlockedAchievements,
+            userRewards: userRewards,
+            dailyTaskProgress: dailyTaskProgress,
+            lastVisitDate: new Date().toDateString()
+          };
+          localStorage.setItem('cdb_achievements', JSON.stringify(data));
+        }
+
+        function loadAchievementData() {
+          var data = localStorage.getItem('cdb_achievements');
+          if (data) {
+            var parsed = JSON.parse(data);
+            achievementProgress = parsed.achievementProgress || {};
+            unlockedAchievements = parsed.unlockedAchievements || [];
+            if (parsed.userRewards) userRewards = { ...userRewards, ...parsed.userRewards };
+            dailyTaskProgress = parsed.dailyTaskProgress || {};
+            checkDailyReset();
+          }
+        }
+
+        function checkDailyReset() {
+          var today = new Date().toDateString();
+          var lastVisit = localStorage.getItem('cdb_lastVisit');
+          if (lastVisit !== today) {
+            DAILY_TASKS.forEach(function(task) {
+              dailyTaskProgress[task.id] = { completed: false, progress: 0 };
+            });
+            localStorage.setItem('cdb_lastVisit', today);
+            saveAchievementData();
+          }
+        }
+
+        // Load achievement data on page load
+        loadAchievementData();
 
         const layerSystem = {
             layers: [
@@ -22894,6 +23160,33 @@
         </div>
     </div>
 
+    <!-- V36: Achievement Panel -->
+    <div class="panel" id="achievementPanel" style="display:none;">
+        <div class="panel-header">🏆 成就中心 <button class="close-btn" onclick="closeAchievementPanel()">×</button></div>
+
+        <div class="achievement-stats">
+            <span>💰 <span id="achCoins">100</span></span>
+            <span>💎 <span id="achGems">0</span></span>
+            <span>🏅 <span id="achBadgeCount">0</span></span>
+        </div>
+
+        <div class="daily-tasks">
+            <h4>📋 今日任务</h4>
+            <div id="dailyTaskList"></div>
+        </div>
+
+        <div class="achievement-filter">
+            <button class="ach-filter-btn active" onclick="filterAchievements('all')">全部</button>
+            <button class="ach-filter-btn" onclick="filterAchievements('绘画')">🎨</button>
+            <button class="ach-filter-btn" onclick="filterAchievements('工具')">🔧</button>
+            <button class="ach-filter-btn" onclick="filterAchievements('创意')">💡</button>
+            <button class="ach-filter-btn" onclick="filterAchievements('社交')">⭐</button>
+            <button class="ach-filter-btn" onclick="filterAchievements('游戏')">🎮</button>
+        </div>
+
+        <div class="achievement-grid" id="achievementGrid"></div>
+    </div>
+
     <!-- PWA Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -22922,6 +23215,16 @@
                 updateFriendsList();
                 updateReceivedGifts();
                 document.getElementById('friendsPanel').style.display = 'block';
+            });
+
+            // ===== V36: Achievement Button Event =====
+            document.getElementById('achievementBtn').addEventListener('click', function() {
+                closeAllPanels();
+                loadAchievementData();
+                renderDailyTasks();
+                renderAchievementGrid();
+                updateAchievementStats();
+                document.getElementById('achievementPanel').style.display = 'block';
             });
         });
     </script>
