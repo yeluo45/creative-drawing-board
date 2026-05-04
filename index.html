@@ -2979,6 +2979,99 @@
             border-color: #007bff;
         }
 
+        /* V48: Cover customization styles */
+        .animabook-cover-settings {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+        .animabook-cover-settings-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .animabook-cover-settings-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .animabook-cover-panel {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: rgba(255,255,255,0.98);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 101;
+            box-shadow: 3px 3px 0 #495057;
+            min-width: 240px;
+        }
+        .animabook-cover-panel.active {
+            display: flex;
+        }
+        .cover-setting-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cover-setting-row label {
+            font-size: 0.85rem;
+            color: #495057;
+            min-width: 60px;
+        }
+        .cover-setting-row input[type="text"] {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .cover-setting-row input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: 2px solid #495057;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .cover-setting-row select {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+        }
+        .cover-setting-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 4px;
+        }
+        .cover-apply-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .cover-apply-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
         .animabook-page-num {
             position: absolute;
             bottom: 4px;
@@ -7887,6 +7980,41 @@
             </div>
         </div>
         <div class="animabook-template-panel" id="animabookTemplatePanel"></div>
+        <!-- V48: Cover Settings -->
+        <div class="animabook-cover-settings">
+            <button class="animabook-cover-settings-btn" onclick="toggleAnimabookCoverSettings()">🎨 封面</button>
+            <div class="animabook-cover-panel" id="animabookCoverPanel">
+                <div class="cover-setting-row">
+                    <label>标题</label>
+                    <input type="text" id="coverTitleInput" value="我的动画书" maxlength="20" placeholder="动画书标题">
+                </div>
+                <div class="cover-setting-row">
+                    <label>作者</label>
+                    <input type="text" id="coverAuthorInput" value="" maxlength="15" placeholder="作者名称">
+                </div>
+                <div class="cover-setting-row">
+                    <label>背景色</label>
+                    <input type="color" id="coverBgColorInput" value="#FFE4EC">
+                </div>
+                <div class="cover-setting-row">
+                    <label>文字色</label>
+                    <input type="color" id="coverTextColorInput" value="#495057">
+                </div>
+                <div class="cover-setting-row">
+                    <label>字体</label>
+                    <select id="coverFontSelect">
+                        <option value="Comic Neue">Comic Neue</option>
+                        <option value="Marker Felt">Marker Felt</option>
+                        <option value="Patrick Hand">Patrick Hand</option>
+                        <option value="Fredoka One">Fredoka One</option>
+                        <option value="Bubblegum Sans">Bubblegum Sans</option>
+                    </select>
+                </div>
+                <div class="cover-setting-actions">
+                    <button class="cover-apply-btn" onclick="applyAnimabookCover()">应用</button>
+                </div>
+            </div>
+        </div>
         <div class="animabook-container">
             <div class="animabook-book" id="animabookBook">
                 <div class="animabook-page" id="animabookPage0">
@@ -23477,7 +23605,13 @@
             pages: [
                 { canvasData: null, voiceData: null }
             ],
-            currentPage: 0
+            currentPage: 0,
+            // V48: Cover customization
+            title: '我的动画书',
+            author: '',
+            coverBgColor: '#FFE4EC',
+            coverTextColor: '#495057',
+            coverFont: 'Comic Neue'
         };
         let animabookCanvases = [];
         let animabookContexts = [];
@@ -24115,6 +24249,119 @@
             renderAnimabookPages();
             updateAnimabookNav();
             renderAnimabookTimeline();
+            renderAnimabookCover();
+        }
+
+        // V48: Cover rendering
+        function renderAnimabookCover() {
+            const book = document.getElementById('animabookBook');
+            // Remove existing cover if any
+            const existingCover = document.getElementById('animabookCover');
+            if (existingCover) existingCover.remove();
+
+            // Create cover element
+            const cover = document.createElement('div');
+            cover.id = 'animabookCover';
+            cover.className = 'animabook-page';
+            cover.style.cssText = `
+                background: ${animabookData.coverBgColor || '#FFE4EC'};
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: ${animabookData.currentPage === 0 ? 2 : 1};
+            `;
+
+            // Title
+            const title = document.createElement('div');
+            title.className = 'animabook-cover-title';
+            title.textContent = animabookData.title || '我的动画书';
+            title.style.cssText = `
+                font-size: 1.8rem;
+                font-weight: bold;
+                color: ${animabookData.coverTextColor || '#495057'};
+                font-family: '${animabookData.coverFont || 'Comic Neue'}', cursive;
+                text-align: center;
+                margin-bottom: 20px;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            `;
+
+            // Book icon
+            const icon = document.createElement('div');
+            icon.textContent = '📖';
+            icon.style.cssText = 'font-size: 4rem; margin-bottom: 20px;';
+
+            // Author
+            const author = document.createElement('div');
+            author.className = 'animabook-cover-author';
+            author.textContent = animabookData.author ? '✍️ ' + animabookData.author : '';
+            author.style.cssText = `
+                font-size: 1rem;
+                color: ${animabookData.coverTextColor || '#495057'};
+                font-family: '${animabookData.coverFont || 'Comic Neue'}', cursive;
+                opacity: 0.8;
+            `;
+
+            // Page count hint
+            const pageCount = document.createElement('div');
+            pageCount.textContent = `${animabookData.pages.length} 页`;
+            pageCount.style.cssText = `
+                position: absolute;
+                bottom: 40px;
+                font-size: 0.9rem;
+                color: ${animabookData.coverTextColor || '#495057'};
+                opacity: 0.6;
+            `;
+
+            cover.appendChild(icon);
+            cover.appendChild(title);
+            cover.appendChild(author);
+            cover.appendChild(pageCount);
+
+            // Insert at the beginning of the book
+            book.insertBefore(cover, book.firstChild);
+
+            // Handle flip state based on current page
+            updateAnimabookCoverFlip();
+        }
+
+        function updateAnimabookCoverFlip() {
+            const cover = document.getElementById('animabookCover');
+            if (cover) {
+                if (animabookData.currentPage >= 1) {
+                    cover.classList.add('flipped');
+                } else {
+                    cover.classList.remove('flipped');
+                }
+            }
+        }
+
+        // V48: Toggle cover settings panel
+        function toggleAnimabookCoverSettings() {
+            const panel = document.getElementById('animabookCoverPanel');
+            if (panel) {
+                panel.classList.toggle('active');
+                // Populate current values
+                if (panel.classList.contains('active')) {
+                    document.getElementById('coverTitleInput').value = animabookData.title || '';
+                    document.getElementById('coverAuthorInput').value = animabookData.author || '';
+                    document.getElementById('coverBgColorInput').value = animabookData.coverBgColor || '#FFE4EC';
+                    document.getElementById('coverTextColorInput').value = animabookData.coverTextColor || '#495057';
+                    document.getElementById('coverFontSelect').value = animabookData.coverFont || 'Comic Neue';
+                }
+            }
+        }
+
+        // V48: Apply cover settings
+        function applyAnimabookCover() {
+            animabookData.title = document.getElementById('coverTitleInput').value || '我的动画书';
+            animabookData.author = document.getElementById('coverAuthorInput').value || '';
+            animabookData.coverBgColor = document.getElementById('coverBgColorInput').value;
+            animabookData.coverTextColor = document.getElementById('coverTextColorInput').value;
+            animabookData.coverFont = document.getElementById('coverFontSelect').value;
+            renderAnimabookCover();
+            toggleAnimabookCoverSettings();
+            showToast('封面已更新');
         }
 
         function closeAnimabook() {
@@ -24136,6 +24383,12 @@
                 }
             }
             animabookData.currentPage = 0;
+            // V48: Initialize cover defaults
+            if (!animabookData.title) animabookData.title = '我的动画书';
+            if (!animabookData.author) animabookData.author = '';
+            if (!animabookData.coverBgColor) animabookData.coverBgColor = '#FFE4EC';
+            if (!animabookData.coverTextColor) animabookData.coverTextColor = '#495057';
+            if (!animabookData.coverFont) animabookData.coverFont = 'Comic Neue';
         }
 
         function saveAnimabook() {
@@ -24314,6 +24567,7 @@
             animabookSaveCurrentPage();
             animabookData.currentPage = idx;
             updateAnimabookFlip();
+            updateAnimabookCoverFlip();
             updateAnimabookNav();
             renderAnimabookTimeline();
         }
@@ -24323,6 +24577,7 @@
                 animabookSaveCurrentPage();
                 animabookData.currentPage--;
                 updateAnimabookFlip();
+                updateAnimabookCoverFlip();
                 updateAnimabookNav();
                 renderAnimabookTimeline();
             }
@@ -24333,6 +24588,7 @@
                 animabookSaveCurrentPage();
                 animabookData.currentPage++;
                 updateAnimabookFlip();
+                updateAnimabookCoverFlip();
                 updateAnimabookNav();
                 renderAnimabookTimeline();
             }
@@ -24620,13 +24876,19 @@
         function animabookExport() {
             animabookSaveCurrentPage();
             showToast('正在导出...');
-            // Create a simple PDF-like page sequence
-            let html = '<!DOCTYPE html><html><head><title>Animation Book</title>';
-            html += '<style>body{margin:0;display:flex;flex-direction:column;align-items:center;padding:20px}';
+            // V48: Use cover title
+            const title = animabookData.title || '我的动画书';
+            const author = animabookData.author ? '<p style="text-align:center;color:#666;">作者: ' + animabookData.author + '</p>' : '';
+            const bgColor = animabookData.coverBgColor || '#f5f5f5';
+            const textColor = animabookData.coverTextColor || '#333';
+            let html = '<!DOCTYPE html><html><head><title>' + title + '</title>';
+            html += '<style>body{margin:0;display:flex;flex-direction:column;align-items:center;padding:20px;background:' + bgColor + '}';
+            html += 'h1{color:' + textColor + ';text-align:center;}';
+            html += 'p{color:#666;}';
             html += 'canvas{border:2px solid #333;margin:10px}audio{margin:10px}</style></head><body>';
-            html += '<h1>📖 Animation Book</h1>';
+            html += '<h1>📖 ' + title + '</h1>' + author;
             animabookData.pages.forEach((page, idx) => {
-                html += '<div><h3>Page ' + (idx + 1) + '</h3>';
+                html += '<div><h3>第 ' + (idx + 1) + ' 页</h3>';
                 if (page.canvasData) {
                     html += '<img src="' + page.canvasData + '" style="width:400px;height:450px;"><br>';
                 }
