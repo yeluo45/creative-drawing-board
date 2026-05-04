@@ -4513,6 +4513,276 @@
             justify-content: flex-end;
             margin-bottom: 5px;
         }
+
+        /* ===== V21: Gallery Panel ===== */
+        .gallery-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-panel.open { right: 0; }
+        .gallery-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #B197FC 0%, #9775FA 100%);
+            border-bottom: 3px solid #495057;
+        }
+        .gallery-panel-header span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+        }
+        .gallery-close-btn {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid #495057;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #495057;
+            font-weight: bold;
+        }
+        .gallery-close-btn:hover { background: rgba(255,255,255,0.5); }
+        .gallery-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            background: #fafafa;
+        }
+        .gallery-tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .gallery-tab:hover { background: #f0f0f0; color: #333; }
+        .gallery-tab.active {
+            border-color: #9775FA;
+            color: #9775FA;
+            background: #fff;
+            font-weight: bold;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 12px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(100vh - 200px);
+            background: #fafafa;
+        }
+        .artwork-card {
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .artwork-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .artwork-thumb {
+            position: relative;
+            aspect-ratio: 1;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+        .artwork-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .artwork-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .artwork-card:hover .artwork-overlay { opacity: 1; }
+        .artwork-overlay button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 2px solid #fff;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .artwork-overlay button:hover { background: #fff; }
+        .artwork-info { padding: 10px; }
+        .artwork-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+        }
+        .artwork-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+        .like-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .like-btn:hover { background: #f0f0f0; }
+        .like-btn.liked { color: #e91e63; }
+        .like-count { font-weight: bold; }
+        .rating-display {
+            color: #ff9800;
+            font-size: 0.75rem;
+        }
+        .artwork-date {
+            font-size: 0.7rem;
+            color: #999;
+        }
+        .gallery-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 2px solid #eee;
+            background: #fff;
+            flex-wrap: wrap;
+        }
+        .gallery-actions button {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.1s;
+        }
+        .gallery-actions button:hover {
+            background: linear-gradient(180deg, #e8e8e8 0%, #d8d8d8 100%);
+            transform: translate(1px, 1px);
+        }
+        .gallery-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .gallery-empty-icon { font-size: 3rem; margin-bottom: 10px; }
+
+        /* Star rating in overlay */
+        .star-rating {
+            display: flex;
+            gap: 2px;
+        }
+        .star-rating button {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .star-rating button.filled { color: #ff9800; }
+        .star-rating button:hover { transform: scale(1.2); }
+
+        /* View artwork modal */
+        .artwork-view-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .artwork-view-modal.open { display: flex; }
+        .artwork-view-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: auto;
+            text-align: center;
+        }
+        .artwork-view-content img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+            border: 3px solid #eee;
+        }
+        .artwork-view-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .artwork-view-actions button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #495057;
+            background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .artwork-view-actions button.primary {
+            background: linear-gradient(180deg, #B197FC 0%, #9775FA 100%);
+            color: white;
+        }
+        .artwork-view-info {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .artwork-view-info h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -4992,6 +5262,7 @@
         <button class="tool-btn clear-btn" id="clearBtn" data-i18n="clear">Clear</button>
         <button class="tool-btn" id="saveBtn" title="Save">💾</button>
         <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
+        <button class="tool-btn" id="galleryBtn" title="Gallery">🖼️</button>
     </div>
 
     <!-- Coloring Game Overlay -->
@@ -5397,7 +5668,13 @@
                 // Shape dropdown
                 shapeLabel: 'Shape',
                 // Highlighter
-                highlighter: 'Highlighter', crayon: 'Crayon',
+                highlighter: '荧光笔', crayon: '蜡笔',
+                // V21 Gallery
+                gallery: '🖼️ Gallery', my_works: 'My Works', featured: 'Featured', popular: 'Popular', import: 'Import',
+                no_artworks_yet: 'No artworks yet. Go draw one!', no_featured: 'No featured this week', no_artworks: 'No artworks',
+                view: 'View', delete: 'Delete', share: 'Share', download: 'Download', edit: 'Edit',
+                rate: 'Rate', copied: 'Image copied to clipboard!', copy_link: 'Copy link to share:',
+                loaded: 'Loaded to canvas!', exported: 'Exported', imported: 'Import successful!', import_error: 'Import failed: Invalid file format',
             }
         };
 
@@ -10372,6 +10649,7 @@
                 if (symOpts && !e.target.closest('#symmetryDropdown')) symOpts.classList.remove('active');
             });
             saveBtn.addEventListener('click', saveDrawing);
+            document.getElementById('galleryBtn').addEventListener('click', openV21GalleryPanel);
             soundBtn.addEventListener('click', toggleSound);
 
             // V13: BGM button and volume controls
@@ -15873,6 +16151,388 @@
             }
         });
 
+        // ===== V21: Gallery System =====
+        const GALLERY_STORAGE_KEY = 'creative_drawing_gallery';
+        const WEEKLY_PICK_KEY = 'weekly_picks';
+
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('device_id');
+            if (!deviceId) {
+                deviceId = 'device_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        function generateThumbnail(canvas, maxSize = 200) {
+            const thumbCanvas = document.createElement('canvas');
+            const scale = Math.min(maxSize / canvas.width, maxSize / canvas.height);
+            thumbCanvas.width = canvas.width * scale;
+            thumbCanvas.height = canvas.height * scale;
+            const ctx = thumbCanvas.getContext('2d');
+            ctx.drawImage(canvas, 0, 0, thumbCanvas.width, thumbCanvas.height);
+            return thumbCanvas.toDataURL('image/png', 0.7);
+        }
+
+        function getCombinedCanvas() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = bgCanvas.width;
+            tempCanvas.height = bgCanvas.height;
+            const ctx = tempCanvas.getContext('2d');
+            ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
+                            currentBackground === 'sky' ? '#A5D8FF' :
+                            currentBackground === 'grass' ? '#69DB7C' :
+                            currentBackground === 'beach' ? '#FFE066' :
+                            currentBackground === 'night' ? '#1A1A2E' : '#FFFFFF';
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            ctx.drawImage(bgCanvas, 0, 0);
+            ctx.drawImage(drawingCanvas, 0, 0);
+            ctx.drawImage(stampCanvas, 0, 0);
+            return tempCanvas;
+        }
+
+        function saveArtworkToGallery(name) {
+            const canvas = getCombinedCanvas();
+            const artwork = {
+                id: 'art_' + Date.now(),
+                name: name || t('my_artwork') || '我的作品',
+                thumbnail: generateThumbnail(canvas, 200),
+                fullImage: canvas.toDataURL('image/png'),
+                createdAt: Date.now(),
+                likes: 0,
+                likedBy: [],
+                views: 0,
+                rating: 0,
+                ratingsCount: 0,
+                ratings: {},
+                tags: [],
+                isPublic: true
+            };
+            const gallery = JSON.parse(localStorage.getItem(GALLERY_STORAGE_KEY) || '[]');
+            gallery.unshift(artwork);
+            localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(gallery));
+            return artwork;
+        }
+
+        function getGallery() {
+            return JSON.parse(localStorage.getItem(GALLERY_STORAGE_KEY) || '[]');
+        }
+
+        function getArtwork(id) {
+            const gallery = getGallery();
+            return gallery.find(a => a.id === id);
+        }
+
+        function updateArtwork(artwork) {
+            const gallery = getGallery();
+            const idx = gallery.findIndex(a => a.id === artwork.id);
+            if (idx !== -1) {
+                gallery[idx] = artwork;
+                localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(gallery));
+            }
+        }
+
+        function deleteArtwork(id) {
+            const gallery = getGallery().filter(a => a.id !== id);
+            localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(gallery));
+            renderV21Gallery();
+            showToast(t('deleted') || '已删除');
+        }
+
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function checkWeeklyPicks() {
+            const now = new Date();
+            const weekNum = getWeekNumber(now);
+            const weekKey = now.getFullYear() + '-W' + weekNum;
+            const stored = JSON.parse(localStorage.getItem(WEEKLY_PICK_KEY) || '{}');
+
+            if (stored.week !== weekKey) {
+                const gallery = getGallery();
+                const publicArtworks = gallery.filter(a => a.isPublic).sort((a, b) => b.likes - a.likes);
+                const picks = publicArtworks.slice(0, 5).map(a => a.id);
+                localStorage.setItem(WEEKLY_PICK_KEY, JSON.stringify({ week: weekKey, picks, updatedAt: now.getTime() }));
+            }
+        }
+
+        function getWeeklyPicks() {
+            const stored = JSON.parse(localStorage.getItem(WEEKLY_PICK_KEY) || '{}');
+            return stored.picks || [];
+        }
+
+        function toggleLike(artworkId) {
+            const gallery = getGallery();
+            const artwork = gallery.find(a => a.id === artworkId);
+            if (!artwork) return;
+
+            const deviceId = getDeviceId();
+            if (artwork.likedBy.includes(deviceId)) {
+                artwork.likes--;
+                artwork.likedBy = artwork.likedBy.filter(id => id !== deviceId);
+            } else {
+                artwork.likes++;
+                artwork.likedBy.push(deviceId);
+            }
+
+            updateArtwork(artwork);
+            renderV21Gallery();
+        }
+
+        function rateArtwork(artworkId, stars) {
+            const gallery = getGallery();
+            const artwork = gallery.find(a => a.id === artworkId);
+            if (!artwork) return;
+
+            const deviceId = getDeviceId();
+            if (!artwork.ratings) artwork.ratings = {};
+
+            const prevRating = artwork.ratings[deviceId];
+            const prevCount = Object.keys(artwork.ratings).length;
+
+            if (prevRating) {
+                artwork.rating = ((artwork.rating * prevCount) - prevRating + stars) / prevCount;
+            } else {
+                artwork.rating = ((artwork.rating * prevCount) + stars) / (prevCount + 1);
+                artwork.ratingsCount = prevCount + 1;
+            }
+
+            artwork.ratings[deviceId] = stars;
+            updateArtwork(artwork);
+            renderV21Gallery();
+        }
+
+        function openV21GalleryPanel() {
+            checkWeeklyPicks();
+            const panel = document.getElementById('v21GalleryPanel');
+            panel.classList.add('open');
+            renderV21Gallery();
+        }
+
+        function closeV21GalleryPanel() {
+            const panel = document.getElementById('v21GalleryPanel');
+            panel.classList.remove('open');
+            closeV21ArtworkView();
+        }
+
+        function openV21GalleryTab(tab) {
+            document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.gallery-tab[data-tab="' + tab + '"]').classList.add('active');
+            renderV21Gallery();
+        }
+
+        function formatDate(timestamp) {
+            const d = new Date(timestamp);
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            return month + '/' + day;
+        }
+
+        function renderV21Gallery() {
+            const grid = document.getElementById('v21GalleryGrid');
+            const gallery = getGallery();
+            const deviceId = getDeviceId();
+            const activeTab = document.querySelector('.gallery-tab.active')?.dataset.tab || 'mine';
+
+            let artworks = [];
+            if (activeTab === 'mine') {
+                artworks = gallery;
+            } else if (activeTab === 'featured') {
+                const picks = getWeeklyPicks();
+                artworks = picks.map(id => gallery.find(a => a.id === id)).filter(Boolean);
+            } else if (activeTab === 'popular') {
+                artworks = [...gallery].sort((a, b) => b.likes - a.likes);
+            } else if (activeTab === 'import') {
+                artworks = gallery;
+            }
+
+            if (artworks.length === 0) {
+                const emptyMsg = activeTab === 'mine' ? t('no_artworks_yet') || '还没有作品，快去画一个吧！' :
+                                 activeTab === 'featured' ? t('no_featured') || '本周暂无精选' :
+                                 t('no_artworks') || '暂无作品';
+                grid.innerHTML = '<div class="gallery-empty"><div class="gallery-empty-icon">🖼️</div><div>' + emptyMsg + '</div></div>';
+                return;
+            }
+
+            grid.innerHTML = artworks.map(art => {
+                const isLiked = art.likedBy.includes(deviceId);
+                return '<div class="artwork-card" data-id="' + art.id + '">' +
+                    '<div class="artwork-thumb">' +
+                    '<img src="' + art.thumbnail + '" alt="' + art.name + '">' +
+                    '<div class="artwork-overlay">' +
+                    '<button onclick="viewV21Artwork(\'' + art.id + '\')">' + (t('view') || '查看') + '</button>' +
+                    '<button onclick="deleteArtwork(\'' + art.id + '\')">' + (t('delete') || '删除') + '</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="artwork-info">' +
+                    '<div class="artwork-name">' + art.name + '</div>' +
+                    '<div class="artwork-stats">' +
+                    '<button class="like-btn' + (isLiked ? ' liked' : '') + '" onclick="toggleLike(\'' + art.id + '\')">' +
+                    (isLiked ? '❤️' : '🤍') + ' <span class="like-count">' + art.likes + '</span></button>' +
+                    '<div class="rating-display">⭐ ' + (art.rating || 0).toFixed(1) + '</div>' +
+                    '</div>' +
+                    '<div class="artwork-date">' + formatDate(art.createdAt) + '</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function viewV21Artwork(artworkId) {
+            const artwork = getArtwork(artworkId);
+            if (!artwork) return;
+
+            artwork.views = (artwork.views || 0) + 1;
+            updateArtwork(artwork);
+
+            const modal = document.getElementById('v21ArtworkViewModal');
+            const img = document.getElementById('v21ArtworkViewImage');
+            const name = document.getElementById('v21ArtworkViewName');
+            const stats = document.getElementById('v21ArtworkViewStats');
+            const actions = document.getElementById('v21ArtworkViewActions');
+
+            img.src = artwork.fullImage;
+            name.textContent = artwork.name;
+            stats.innerHTML = '❤️ ' + artwork.likes + ' &nbsp; ⭐ ' + (artwork.rating || 0).toFixed(1) + ' (' + (artwork.ratingsCount || 0) + ') &nbsp; 👁 ' + artwork.views;
+
+            const deviceId = getDeviceId();
+            const userRating = artwork.ratings ? artwork.ratings[deviceId] : 0;
+
+            actions.innerHTML =
+                '<button class="primary" onclick="shareV21Artwork(\'' + artwork.id + '\')">' + (t('share') || '分享') + '</button>' +
+                '<button onclick="downloadV21Artwork(\'' + artwork.id + '\')">' + (t('download') || '下载') + '</button>' +
+                '<button onclick="loadV21ArtworkToCanvas(\'' + artwork.id + '\')">' + (t('edit') || '编辑') + '</button>' +
+                '<div class="star-rating" style="margin-top:10px; justify-content:center;">' +
+                '<span style="margin-right:8px;">' + (t('rate') || '评分') + ':</span>' +
+                [1,2,3,4,5].map(n => '<button onclick="rateArtwork(\'' + artwork.id + '\', ' + n + ')" class="' + (n <= userRating ? 'filled' : '') + '">' + (n <= userRating ? '⭐' : '☆') + '</button>').join('') +
+                '</div>';
+
+            modal.classList.add('open');
+        }
+
+        function closeV21ArtworkView() {
+            document.getElementById('v21ArtworkViewModal').classList.remove('open');
+        }
+
+        function shareV21Artwork(artworkId) {
+            const artwork = getArtwork(artworkId);
+            if (!artwork) return;
+
+            if (navigator.clipboard && navigator.clipboard.write) {
+                canvasToClipboard(artwork.fullImage);
+                showToast(t('copied') || '图片已复制到剪贴板！');
+            } else {
+                const shareUrl = window.location.origin + window.location.pathname + '?artwork=' + encodeURIComponent(artwork.id);
+                prompt(t('copy_link') || '复制链接分享：', shareUrl);
+            }
+        }
+
+        function canvasToClipboard(dataUrl) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas');
+                    c.width = img.width;
+                    c.height = img.height;
+                    c.getContext('2d').drawImage(img, 0, 0);
+                    c.toBlob(blob => {
+                        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                        resolve();
+                    });
+                };
+                img.onerror = reject;
+                img.src = dataUrl;
+            });
+        }
+
+        function downloadV21Artwork(artworkId) {
+            const artwork = getArtwork(artworkId);
+            if (!artwork) return;
+
+            const link = document.createElement('a');
+            link.download = artwork.name + '.png';
+            link.href = artwork.fullImage;
+            link.click();
+        }
+
+        function loadV21ArtworkToCanvas(artworkId) {
+            const artwork = getArtwork(artworkId);
+            if (!artwork) return;
+
+            const img = new Image();
+            img.onload = () => {
+                const ctx = drawingCanvas.getContext('2d');
+                ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                ctx.drawImage(img, 0, 0, drawingCanvas.width, drawingCanvas.height);
+                closeV21ArtworkView();
+                closeV21GalleryPanel();
+                showToast(t('loaded') || '已加载到画布！');
+            };
+            img.src = artwork.fullImage;
+        }
+
+        function exportV21Gallery() {
+            const gallery = getGallery();
+            const data = JSON.stringify(gallery, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'creative-gallery-' + Date.now() + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(t('exported') || '已导出 ' + gallery.length + ' 幅作品');
+        }
+
+        function importV21Gallery(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    const existing = getGallery();
+                    const merged = [...existing];
+                    let added = 0;
+                    imported.forEach(art => {
+                        if (!merged.find(a => a.id === art.id)) {
+                            merged.push(art);
+                            added++;
+                        }
+                    });
+                    localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(merged));
+                    renderV21Gallery();
+                    showToast(t('imported') || '导入成功！共导入 ' + added + ' 幅作品');
+                } catch (err) {
+                    showToast(t('import_error') || '导入失败：文件格式错误');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Gallery tab click handling
+        document.querySelectorAll('.gallery-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                openV21GalleryTab(tab.dataset.tab);
+            });
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('v21ArtworkViewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'v21ArtworkViewModal') {
+                closeV21ArtworkView();
+            }
+        });
+
+        // Override saveDrawing to also save to gallery
+        const originalSaveDrawing = saveDrawing;
+        saveDrawing = function() {
+            originalSaveDrawing();
+        };
+
     </script>
 
     <!-- Print Area (hidden, used for printing) -->
@@ -15973,6 +16633,42 @@
                 <div class="print-actions">
                     <button class="print-action-btn primary" id="printCurrentDrawing">打印当前画作</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V21: Gallery Panel -->
+    <div class="gallery-panel" id="v21GalleryPanel">
+        <div class="gallery-panel-header">
+            <span data-i18n="gallery">🖼️ 画廊</span>
+            <button class="gallery-close-btn" onclick="closeV21GalleryPanel()">×</button>
+        </div>
+        <div class="gallery-tabs">
+            <button class="gallery-tab active" data-tab="mine" data-i18n="my_works">我的作品</button>
+            <button class="gallery-tab" data-tab="featured" data-i18n="featured">精选</button>
+            <button class="gallery-tab" data-tab="popular" data-i18n="popular">热门</button>
+            <button class="gallery-tab" data-tab="import" data-i18n="import">导入</button>
+        </div>
+        <div class="gallery-grid" id="v21GalleryGrid">
+            <!-- Artwork cards rendered here -->
+        </div>
+        <div class="gallery-actions">
+            <button onclick="exportV21Gallery()">[导出全部]</button>
+            <button onclick="document.getElementById('v21ImportFile').click()">[导入]</button>
+            <input type="file" id="v21ImportFile" accept=".json" style="display:none" onchange="importV21Gallery(this.files[0])">
+        </div>
+    </div>
+
+    <!-- V21: Artwork View Modal -->
+    <div class="artwork-view-modal" id="v21ArtworkViewModal">
+        <div class="artwork-view-content">
+            <img id="v21ArtworkViewImage" src="" alt="Artwork">
+            <div class="artwork-view-info" id="v21ArtworkViewInfo">
+                <h3 id="v21ArtworkViewName"></h3>
+                <div id="v21ArtworkViewStats"></div>
+            </div>
+            <div class="artwork-view-actions" id="v21ArtworkViewActions">
+                <!-- Buttons added dynamically -->
             </div>
         </div>
     </div>
