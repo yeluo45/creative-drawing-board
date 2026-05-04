@@ -3448,6 +3448,60 @@
             font-size: 1.2rem;
         }
 
+        /* V31: Visualizer styles */
+        .visualizer-modes {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+        .vis-btn {
+            padding: 8px 14px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .vis-btn:hover, .vis-btn.active { background: #e3f2fd; border-color: #2196F3; }
+        .visualizer-pos {
+            display: flex;
+            gap: 15px;
+            padding: 8px 10px;
+            justify-content: center;
+            font-size: 13px;
+        }
+        .visualizer-colors {
+            display: flex;
+            gap: 8px;
+            padding: 8px 10px;
+            justify-content: center;
+        }
+        .color-theme {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        .color-theme.active { border-color: #333; }
+        .visualizer-controls {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+        .visualizer-controls button {
+            padding: 8px 16px;
+            background: #00bcd4;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .visualizer-controls button:disabled { background: #ccc; cursor: not-allowed; }
+
         .spacer {
             flex: 1;
         }
@@ -6593,6 +6647,10 @@
         <button class="tool-btn particle-btn" id="particleBtn" title="粒子特效">
             <span class="tool-icon">✨</span>
         </button>
+        <!-- V31: Visualizer Button -->
+        <button class="tool-btn visualizer-btn" id="visualizerBtn" title="音频可视化">
+            <span class="tool-icon">📊</span>
+        </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -6683,6 +6741,40 @@
         <div class="particle-controls">
             <button onclick="toggleParticleAnimation()">▶ 开始</button>
             <button onclick="clearParticles()">✖ 清除</button>
+        </div>
+    </div>
+
+    <!-- V31: Visualizer Panel -->
+    <div class="panel" id="visualizerPanel" style="display:none;">
+        <div class="panel-header">📊 音频可视化 <button class="close-btn" onclick="closeVisualizerPanel()">×</button></div>
+
+        <div class="visualizer-modes">
+            <button class="vis-btn active" onclick="setVisualizerMode('waveform')" id="waveformBtn">📈 波形</button>
+            <button class="vis-btn" onclick="setVisualizerMode('spectrum')" id="spectrumBtn">📊 频谱</button>
+        </div>
+
+        <div class="visualizer-pos">
+            <label>
+                <input type="radio" name="visPos" value="overlay" checked onclick="setVisualizerPosition('overlay')">
+                叠加画布
+            </label>
+            <label>
+                <input type="radio" name="visPos" value="window" onclick="setVisualizerPosition('window')">
+                独立窗口
+            </label>
+        </div>
+
+        <div class="visualizer-colors">
+            <button class="color-theme active" style="background:linear-gradient(red,yellow,green,cyan,blue,magenta)" onclick="setVisualizerColorTheme('rainbow')"></button>
+            <button class="color-theme" style="background:linear-gradient(red,orange,yellow)" onclick="setVisualizerColorTheme('fire')"></button>
+            <button class="color-theme" style="background:linear-gradient(blue,cyan,teal)" onclick="setVisualizerColorTheme('ocean')"></button>
+            <button class="color-theme" style="background:linear-gradient(green,lime,teal)" onclick="setVisualizerColorTheme('forest')"></button>
+        </div>
+
+        <div class="visualizer-controls">
+            <button onclick="startAudioVisualizer()" id="visStartBtn">🎤 开始</button>
+            <button onclick="pauseAudioVisualizer()" id="visPauseBtn" disabled>⏸ 暂停</button>
+            <button onclick="stopAudioVisualizer()" id="visStopBtn" disabled>✖ 停止</button>
         </div>
     </div>
 
@@ -7311,6 +7403,20 @@
         let particleColor = '#ff6b6b';
         let isParticlePaused = false;
 
+        // V31: Audio Visualizer state variables
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let timeDomainData = null;
+        let frequencyData = null;
+        let isVisualizerActive = false;
+        let visualizerCanvas = null;
+        let visualizerCtx = null;
+        let visualizerAnimationId = null;
+        let visualizerMode = 'waveform';
+        let visualizerColorTheme = 'rainbow';
+        let visualizerPosition = 'overlay';
+
         // Particle functions
         function launchFirework(x, y) {
             fireworkParticles.push(new Particle(x, y, {
@@ -7438,6 +7544,194 @@
 
         function closeParticlePanel() {
             document.getElementById('particlePanel').style.display = 'none';
+        }
+
+        // V31: Audio Visualizer functions
+        async function initAudioVisualizer() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.8;
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                const bufferLength = analyser.frequencyBinCount;
+                timeDomainData = new Uint8Array(bufferLength);
+                frequencyData = new Uint8Array(bufferLength);
+                isVisualizerActive = true;
+                createVisualizerCanvas();
+                updateVisualizer();
+                showToast('麦克风已连接');
+            } catch (err) {
+                showToast('无法访问麦克风，请检查权限设置');
+            }
+        }
+
+        function createVisualizerCanvas() {
+            visualizerCanvas = document.createElement('canvas');
+            visualizerCanvas.id = 'visualizerCanvas';
+            visualizerCanvas.width = canvas.width;
+            visualizerCanvas.height = canvas.height;
+            visualizerCanvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:10;';
+            visualizerCtx = visualizerCanvas.getContext('2d');
+            canvas.parentElement.appendChild(visualizerCanvas);
+        }
+
+        function drawWaveform() {
+            if (!analyser || !visualizerCtx) return;
+            analyser.getByteTimeDomainData(timeDomainData);
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            const gradient = visualizerCtx.createLinearGradient(0, 0, visualizerCanvas.width, 0);
+            if (visualizerColorTheme === 'fire') {
+                gradient.addColorStop(0, '#ff6b6b');
+                gradient.addColorStop(0.5, '#ffd93d');
+                gradient.addColorStop(1, '#ff6b6b');
+            } else if (visualizerColorTheme === 'ocean') {
+                gradient.addColorStop(0, '#4fc3f7');
+                gradient.addColorStop(0.5, '#00bcd4');
+                gradient.addColorStop(1, '#4fc3f7');
+            } else if (visualizerColorTheme === 'forest') {
+                gradient.addColorStop(0, '#81c784');
+                gradient.addColorStop(0.5, '#4caf50');
+                gradient.addColorStop(1, '#81c784');
+            } else {
+                gradient.addColorStop(0, '#ff6b6b');
+                gradient.addColorStop(0.2, '#ffd93d');
+                gradient.addColorStop(0.4, '#6bcb77');
+                gradient.addColorStop(0.6, '#4d96ff');
+                gradient.addColorStop(0.8, '#c9b1ff');
+                gradient.addColorStop(1, '#ff6b6b');
+            }
+
+            visualizerCtx.lineWidth = 2;
+            visualizerCtx.strokeStyle = gradient;
+            visualizerCtx.beginPath();
+
+            const sliceWidth = visualizerCanvas.width / timeDomainData.length;
+            let x = 0;
+
+            for (let i = 0; i < timeDomainData.length; i++) {
+                const v = timeDomainData[i] / 128.0;
+                const y = (v * visualizerCanvas.height) / 2;
+                if (i === 0) visualizerCtx.moveTo(x, y);
+                else visualizerCtx.lineTo(x, y);
+                x += sliceWidth;
+            }
+
+            visualizerCtx.lineTo(visualizerCanvas.width, visualizerCanvas.height / 2);
+            visualizerCtx.stroke();
+        }
+
+        function drawSpectrum() {
+            if (!analyser || !visualizerCtx) return;
+            analyser.getByteFrequencyData(frequencyData);
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            const barCount = frequencyData.length;
+            const barWidth = visualizerCanvas.width / barCount;
+            const maxHeight = visualizerCanvas.height;
+
+            for (let i = 0; i < barCount; i++) {
+                const barHeight = (frequencyData[i] / 255) * maxHeight;
+                const x = i * barWidth;
+                const hue = (i / barCount) * 360;
+
+                if (visualizerColorTheme === 'fire') {
+                    const t = i / barCount;
+                    visualizerCtx.fillStyle = `rgb(${255}, ${Math.floor(100 + t * 155)}, 0)`;
+                } else if (visualizerColorTheme === 'ocean') {
+                    visualizerCtx.fillStyle = `hsl(${200 + t * 60}, 80%, ${40 + (frequencyData[i] / 255) * 30}%)`;
+                } else if (visualizerColorTheme === 'forest') {
+                    visualizerCtx.fillStyle = `rgb(${Math.floor(100 + (frequencyData[i] / 255) * 55)}, ${150 + Math.floor((frequencyData[i] / 255) * 55)}, 0)`;
+                } else {
+                    visualizerCtx.fillStyle = `hsla(${hue}, 80%, 60%, 0.85)`;
+                }
+
+                visualizerCtx.fillRect(x, maxHeight - barHeight, Math.max(1, barWidth - 1), barHeight);
+            }
+        }
+
+        function updateVisualizer() {
+            if (!isVisualizerActive) return;
+            if (visualizerMode === 'waveform') drawWaveform();
+            else drawSpectrum();
+            visualizerAnimationId = requestAnimationFrame(updateVisualizer);
+        }
+
+        function setVisualizerMode(mode) {
+            visualizerMode = mode;
+            document.getElementById('waveformBtn').classList.toggle('active', mode === 'waveform');
+            document.getElementById('spectrumBtn').classList.toggle('active', mode === 'spectrum');
+        }
+
+        function setVisualizerColorTheme(theme) {
+            visualizerColorTheme = theme;
+            document.querySelectorAll('.color-theme').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function setVisualizerPosition(pos) {
+            visualizerPosition = pos;
+            if (visualizerCanvas) {
+                if (pos === 'window') {
+                    visualizerCanvas.style.position = 'fixed';
+                    visualizerCanvas.style.top = '50%';
+                    visualizerCanvas.style.left = '50%';
+                    visualizerCanvas.style.transform = 'translate(-50%, -50%)';
+                    visualizerCanvas.style.zIndex = '9999';
+                } else {
+                    visualizerCanvas.style.position = 'absolute';
+                    visualizerCanvas.style.top = '0';
+                    visualizerCanvas.style.left = '0';
+                    visualizerCanvas.style.transform = 'none';
+                    visualizerCanvas.style.zIndex = '10';
+                }
+            }
+        }
+
+        function startAudioVisualizer() {
+            if (isVisualizerActive) return;
+            initAudioVisualizer();
+            document.getElementById('visStartBtn').disabled = true;
+            document.getElementById('visPauseBtn').disabled = false;
+            document.getElementById('visStopBtn').disabled = false;
+        }
+
+        function pauseAudioVisualizer() {
+            if (!isVisualizerActive) return;
+            if (visualizerAnimationId) {
+                cancelAnimationFrame(visualizerAnimationId);
+                visualizerAnimationId = null;
+                document.getElementById('visPauseBtn').textContent = '▶ 继续';
+            } else {
+                updateVisualizer();
+                document.getElementById('visPauseBtn').textContent = '⏸ 暂停';
+            }
+        }
+
+        function stopAudioVisualizer() {
+            isVisualizerActive = false;
+            if (visualizerAnimationId) {
+                cancelAnimationFrame(visualizerAnimationId);
+                visualizerAnimationId = null;
+            }
+            if (microphone) { microphone.disconnect(); microphone = null; }
+            if (audioContext) { audioContext.close(); audioContext = null; }
+            if (visualizerCanvas && visualizerCanvas.parentElement) {
+                visualizerCanvas.parentElement.removeChild(visualizerCanvas);
+                visualizerCanvas = null;
+            }
+            document.getElementById('visStartBtn').disabled = false;
+            document.getElementById('visPauseBtn').disabled = true;
+            document.getElementById('visPauseBtn').textContent = '⏸ 暂停';
+            document.getElementById('visStopBtn').disabled = true;
+            showToast('音频可视化已停止');
+        }
+
+        function closeVisualizerPanel() {
+            document.getElementById('visualizerPanel').style.display = 'none';
         }
 
         let currentLang = localStorage.getItem('language') || 'zh';
@@ -13002,6 +13296,12 @@
             document.getElementById('particleBtn').addEventListener('click', () => {
                 closeAllPanels();
                 document.getElementById('particlePanel').style.display = 'block';
+            });
+
+            // V31: Visualizer Button Event
+            document.getElementById('visualizerBtn').addEventListener('click', () => {
+                closeAllPanels();
+                document.getElementById('visualizerPanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
