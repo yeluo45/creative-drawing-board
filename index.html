@@ -354,6 +354,229 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        /* V22: 2048 Game Styles */
+        .game-2048-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(4, 80px);
+            gap: 8px;
+            background: #bbada0;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0 #495057;
+        }
+        .game-2048-cell {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #776e65;
+            background: #cdc1b4;
+        }
+        .game-2048-score-panel {
+            display: flex;
+            gap: 16px;
+            margin: 12px 0;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .game-2048-controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        .game-2048-controls button {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .game-2048-controls button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .game-2048-hint {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #868e96;
+        }
+
+        /* V22: Tetris Game Styles */
+        .game-tetris-area {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .game-tetris-board-wrap {
+            position: relative;
+        }
+        .game-tetris-board {
+            border: 4px solid #495057;
+            border-radius: 4px;
+            box-shadow: 4px 4px 0 #495057;
+        }
+        .game-tetris-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 120px;
+        }
+        .game-tetris-info-box {
+            background: #fff;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .game-tetris-info-label {
+            font-size: 0.75rem;
+            color: #868e96;
+            margin-bottom: 4px;
+        }
+        .game-tetris-info-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .game-tetris-next-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+        #tetrisNextCanvas {
+            border: 2px solid #495057;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .game-tetris-controls {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            max-width: 200px;
+        }
+        .game-tetris-controls button {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .game-tetris-controls button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .game-tetris-hint {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #868e96;
+            text-align: center;
+        }
+
+        /* V22: Gomoku Game Styles */
+        .game-gomoku-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-gomoku-top {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .game-gomoku-status {
+            background: #fff;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            box-shadow: 2px 2px 0 #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .game-gomoku-stone-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+        }
+        .game-gomoku-board-wrap {
+            position: relative;
+        }
+        #gomokuCanvas {
+            border: 4px solid #495057;
+            border-radius: 4px;
+            box-shadow: 4px 4px 0 #495057;
+            background: #DEB887;
+        }
+        .game-gomoku-controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        .game-gomoku-controls button {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .game-gomoku-controls button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .game-gomoku-win-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            border: 4px solid #495057;
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 6px 6px 0 #495057;
+        }
+        .game-gomoku-win-msg h3 {
+            font-size: 1.5rem;
+            color: #495057;
+            margin: 0 0 8px 0;
+        }
+        .game-gomoku-win-msg button {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
         /* Game Overlay (shared) */
         .game-overlay {
             display: none;
@@ -4979,6 +5202,24 @@
                     <div class="game-card-desc" data-i18n="maze_desc">找到正确路径走出迷宫</div>
                     <button class="game-card-btn" data-i18n="start">开始</button>
                 </div>
+                <div class="game-card" onclick="start2048Game()">
+                    <div class="game-card-icon">🔢</div>
+                    <div class="game-card-name">2048</div>
+                    <div class="game-card-desc">合并数字得到2048</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
+                </div>
+                <div class="game-card" onclick="startTetrisGame()">
+                    <div class="game-card-icon">🧱</div>
+                    <div class="game-card-name">俄罗斯方块</div>
+                    <div class="game-card-desc">消除行得分通关</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
+                </div>
+                <div class="game-card" onclick="startGomokuGame()">
+                    <div class="game-card-icon">⭕</div>
+                    <div class="game-card-name">五子棋</div>
+                    <div class="game-card-desc">连成五子获胜</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
+                </div>
             </div>
         </div>
 
@@ -5068,6 +5309,99 @@
                 </div>
                 <div class="maze-instruction" id="mazeInstruction">从左上角走到右下角，避开墙壁！</div>
                 <button class="maze-regen-btn" id="mazeRegenBtn">重新生成</button>
+            </div>
+        </div>
+
+        <!-- V22: 2048 Game Overlay -->
+        <div class="game-overlay" id="game2048Overlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="game2048BackBtn">← 退出</button>
+                <div class="game-title">🔢 2048</div>
+                <div></div>
+            </div>
+            <div class="game-content" style="display:flex;flex-direction:column;align-items:center;padding:20px;">
+                <div class="game-2048-score-panel">
+                    <div>分数: <span id="game2048Score">0</span></div>
+                    <div>最高: <span id="game2048Best">0</span></div>
+                </div>
+                <div class="game-2048-grid" id="game2048Grid"></div>
+                <div class="game-2048-controls">
+                    <button onclick="restart2048Game()">重新开始</button>
+                </div>
+                <div class="game-2048-hint">方向键或滑动合并数字</div>
+            </div>
+        </div>
+
+        <!-- V22: Tetris Game Overlay -->
+        <div class="game-overlay" id="tetrisOverlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="tetrisBackBtn">← 退出</button>
+                <div class="game-title">🧱 俄罗斯方块</div>
+                <div></div>
+            </div>
+            <div class="game-content" style="display:flex;flex-direction:column;align-items:center;padding:20px;">
+                <div class="game-tetris-area">
+                    <div class="game-tetris-board-wrap">
+                        <canvas id="tetrisBoard" class="game-tetris-board" width="260" height="520"></canvas>
+                    </div>
+                    <div class="game-tetris-sidebar">
+                        <div class="game-tetris-info-box">
+                            <div class="game-tetris-info-label">分数</div>
+                            <div class="game-tetris-info-value" id="tetrisScore">0</div>
+                        </div>
+                        <div class="game-tetris-info-box">
+                            <div class="game-tetris-info-label">等级</div>
+                            <div class="game-tetris-info-value" id="tetrisLevel">1</div>
+                        </div>
+                        <div class="game-tetris-info-box">
+                            <div class="game-tetris-info-label">行数</div>
+                            <div class="game-tetris-info-value" id="tetrisLines">0</div>
+                        </div>
+                        <div class="game-tetris-info-box">
+                            <div class="game-tetris-info-label">下一个</div>
+                        </div>
+                        <canvas id="tetrisNextCanvas" width="100" height="100"></canvas>
+                        <div class="game-tetris-controls">
+                            <button onclick="tetrisMove(-1,0)">←</button>
+                            <button onclick="tetrisRotate()">旋转</button>
+                            <button onclick="tetrisMove(1,0)">→</button>
+                            <button onclick="tetrisMove(0,1)">↓</button>
+                            <button onclick="tetrisDrop()">落</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-tetris-hint">←→移动 ↑旋转 空格下落</div>
+            </div>
+        </div>
+
+        <!-- V22: Gomoku Game Overlay -->
+        <div class="game-overlay" id="gomokuOverlay">
+            <div class="game-header">
+                <button class="game-back-btn" id="gomokuBackBtn">← 退出</button>
+                <div class="game-title">⭕ 五子棋</div>
+                <div></div>
+            </div>
+            <div class="game-content" style="display:flex;flex-direction:column;align-items:center;padding:20px;">
+                <div class="game-gomoku-area">
+                    <div class="game-gomoku-top">
+                        <div class="game-gomoku-status">
+                            <span>当前:</span>
+                            <div class="game-gomoku-stone-indicator" id="gomokuStoneIndicator"></div>
+                            <span id="gomokuPlayerText">黑方</span>
+                        </div>
+                    </div>
+                    <div class="game-gomoku-board-wrap">
+                        <canvas id="gomokuCanvas" width="480" height="480"></canvas>
+                        <div class="game-gomoku-win-msg" id="gomokuWinMsg" style="display:none;">
+                            <h3 id="gomokuWinText">黑方获胜!</h3>
+                            <button onclick="restartGomokuGame()">再来一局</button>
+                        </div>
+                    </div>
+                    <div class="game-gomoku-controls">
+                        <button onclick="undoGomokuMove()">悔棋</button>
+                        <button onclick="restartGomokuGame()">重新开始</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -14991,7 +15325,7 @@
         // ==========================================
 
         // Game States
-        const GAME_STATES = { NONE: 0, JIGSAW: 1, DOT_CONNECT: 2, MAZE: 3 };
+        const GAME_STATES = { NONE: 0, JIGSAW: 1, DOT_CONNECT: 2, MAZE: 3, GAME2048: 4, TETRIS: 5, GOMOKU: 6 };
         let currentGame = GAME_STATES.NONE;
 
         // ---- GAME SELECTION PANEL ----
@@ -15803,6 +16137,18 @@
             exitGame();
         });
 
+        document.getElementById('game2048BackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
+        document.getElementById('tetrisBackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
+        document.getElementById('gomokuBackBtn').addEventListener('click', () => {
+            exitGame();
+        });
+
         document.querySelectorAll('.maze-diff-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.maze-diff-btn').forEach(b => b.classList.remove('selected'));
@@ -16104,6 +16450,663 @@
             showCelebration('🎉 迷宫完成！', '你找到了出口！');
         }
 
+        // ==========================================
+        // V22: 2048 GAME
+        // ==========================================
+        let game2048 = {
+            grid: [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+            score: 0,
+            bestScore: parseInt(localStorage.getItem('2048_best') || '0'),
+            won: false,
+            over: false
+        };
+
+        const COLORS_2048 = {
+            0: '#cdc1b4', 2: '#eee4da', 4: '#ede0c8', 8: '#f2b179',
+            16: '#f59563', 32: '#f67c5f', 64: '#f65e3b', 128: '#edcf72',
+            256: '#edcc61', 512: '#edc850', 1024: '#edc53f', 2048: '#edc22e'
+        };
+        const TEXT_COLORS_2048 = {
+            0: '#776e65', 2: '#776e65', 4: '#776e65', 8: '#f9f6f2',
+            16: '#f9f6f2', 32: '#f9f6f2', 64: '#f9f6f2', 128: '#f9f6f2',
+            256: '#f9f6f2', 512: '#f9f6f2', 1024: '#f9f6f2', 2048: '#f9f6f2'
+        };
+
+        function start2048Game() {
+            if (checkTimeLimitBlock()) return;
+            currentGame = GAME_STATES.GAME2048;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('game2048Overlay').classList.add('active');
+            initAudio();
+            init2048();
+            setup2048Keyboard();
+        }
+
+        function init2048() {
+            game2048.grid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+            game2048.score = 0;
+            game2048.won = false;
+            game2048.over = false;
+            game2048.bestScore = parseInt(localStorage.getItem('2048_best') || '0');
+            addRandom2048();
+            addRandom2048();
+            render2048();
+        }
+
+        function restart2048Game() {
+            init2048();
+        }
+
+        function addRandom2048() {
+            let empty = [];
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (game2048.grid[r][c] === 0) empty.push({r, c});
+                }
+            }
+            if (empty.length === 0) return;
+            let cell = empty[Math.floor(Math.random() * empty.length)];
+            game2048.grid[cell.r][cell.c] = Math.random() < 0.9 ? 2 : 4;
+        }
+
+        function render2048() {
+            const grid = document.getElementById('game2048Grid');
+            grid.innerHTML = '';
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const val = game2048.grid[r][c];
+                    const cell = document.createElement('div');
+                    cell.className = 'game-2048-cell';
+                    cell.style.backgroundColor = COLORS_2048[val] || '#3c3a32';
+                    cell.style.color = TEXT_COLORS_2048[val] || '#f9f6f2';
+                    cell.textContent = val || '';
+                    grid.appendChild(cell);
+                }
+            }
+            document.getElementById('game2048Score').textContent = game2048.score;
+            document.getElementById('game2048Best').textContent = game2048.bestScore;
+        }
+
+        function move2048Left() {
+            for (let r = 0; r < 4; r++) {
+                let row = game2048.grid[r].filter(v => v !== 0);
+                for (let i = 0; i < row.length - 1; i++) {
+                    if (row[i] === row[i+1]) {
+                        row[i] *= 2;
+                        game2048.score += row[i];
+                        row.splice(i+1, 1);
+                    }
+                }
+                while (row.length < 4) row.push(0);
+                game2048.grid[r] = row;
+            }
+        }
+
+        function move2048Right() {
+            for (let r = 0; r < 4; r++) {
+                let row = game2048.grid[r].filter(v => v !== 0);
+                for (let i = row.length - 1; i > 0; i--) {
+                    if (row[i] === row[i-1]) {
+                        row[i] *= 2;
+                        game2048.score += row[i];
+                        row.splice(i-1, 1);
+                    }
+                }
+                while (row.length < 4) row.unshift(0);
+                game2048.grid[r] = row;
+            }
+        }
+
+        function move2048Up() {
+            for (let c = 0; c < 4; c++) {
+                let col = [];
+                for (let r = 0; r < 4; r++) {
+                    if (game2048.grid[r][c] !== 0) col.push(game2048.grid[r][c]);
+                }
+                for (let i = 0; i < col.length - 1; i++) {
+                    if (col[i] === col[i+1]) {
+                        col[i] *= 2;
+                        game2048.score += col[i];
+                        col.splice(i+1, 1);
+                    }
+                }
+                while (col.length < 4) col.push(0);
+                for (let r = 0; r < 4; r++) {
+                    game2048.grid[r][c] = col[r];
+                }
+            }
+        }
+
+        function move2048Down() {
+            for (let c = 0; c < 4; c++) {
+                let col = [];
+                for (let r = 0; r < 4; r++) {
+                    if (game2048.grid[r][c] !== 0) col.push(game2048.grid[r][c]);
+                }
+                for (let i = col.length - 1; i > 0; i--) {
+                    if (col[i] === col[i-1]) {
+                        col[i] *= 2;
+                        game2048.score += col[i];
+                        col.splice(i-1, 1);
+                    }
+                }
+                while (col.length < 4) col.unshift(0);
+                for (let r = 0; r < 4; r++) {
+                    game2048.grid[r][c] = col[r];
+                }
+            }
+        }
+
+        function move2048(dir) {
+            if (game2048.over) return;
+            let prev = JSON.stringify(game2048.grid);
+            if (dir === 'left') move2048Left();
+            else if (dir === 'right') move2048Right();
+            else if (dir === 'up') move2048Up();
+            else if (dir === 'down') move2048Down();
+            if (JSON.stringify(game2048.grid) !== prev) {
+                addRandom2048();
+                if (game2048.score > game2048.bestScore) {
+                    game2048.bestScore = game2048.score;
+                    localStorage.setItem('2048_best', game2048.bestScore);
+                }
+                render2048();
+                check2048GameOver();
+            }
+        }
+
+        function check2048GameOver() {
+            // Check for 2048 win
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (game2048.grid[r][c] === 2048 && !game2048.won) {
+                        game2048.won = true;
+                        showCelebration('🎉 2048 完成！', '你合成了2048！');
+                        return;
+                    }
+                }
+            }
+            // Check for game over
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    if (game2048.grid[r][c] === 0) return;
+                }
+            }
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 3; c++) {
+                    if (game2048.grid[r][c] === game2048.grid[r][c+1]) return;
+                }
+            }
+            for (let c = 0; c < 4; c++) {
+                for (let r = 0; r < 3; r++) {
+                    if (game2048.grid[r][c] === game2048.grid[r+1][c]) return;
+                }
+            }
+            game2048.over = true;
+            showCelebration('💪 游戏结束', '分数: ' + game2048.score);
+        }
+
+        function setup2048Keyboard() {
+            document.onkeydown = function(e) {
+                if (currentGame !== GAME_STATES.GAME2048) return;
+                if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].indexOf(e.key) >= 0) {
+                    e.preventDefault();
+                    if (e.key === 'ArrowLeft') move2048('left');
+                    else if (e.key === 'ArrowRight') move2048('right');
+                    else if (e.key === 'ArrowUp') move2048('up');
+                    else if (e.key === 'ArrowDown') move2048('down');
+                }
+            };
+        }
+
+        // ==========================================
+        // V22: TETRIS GAME
+        // ==========================================
+        const TETROMINOES = {
+            I: { shape: [[1,1,1,1]], color: '#00f0f0' },
+            O: { shape: [[1,1],[1,1]], color: '#f0f000' },
+            T: { shape: [[0,1,0],[1,1,1]], color: '#a000f0' },
+            S: { shape: [[0,1,1],[1,1,0]], color: '#00f000' },
+            Z: { shape: [[1,1,0],[0,1,1]], color: '#f00000' },
+            J: { shape: [[1,0,0],[1,1,1]], color: '#0000f0' },
+            L: { shape: [[0,0,1],[1,1,1]], color: '#f0a000' }
+        };
+        const TETRIS_KEYS = Object.keys(TETROMINOES);
+
+        let tetris = {
+            board: [],
+            current: null, next: null,
+            x: 0, y: 0,
+            score: 0, level: 1, lines: 0,
+            gameOver: false,
+            dropInterval: 1000,
+            lastDrop: 0
+        };
+        let tetrisAnimationFrame = null;
+        let tetrisBoardCanvas, tetrisCtx, tetrisNextCanvas, tetrisNextCtx;
+
+        function startTetrisGame() {
+            if (checkTimeLimitBlock()) return;
+            currentGame = GAME_STATES.TETRIS;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('tetrisOverlay').classList.add('active');
+            initAudio();
+            initTetris();
+        }
+
+        function initTetris() {
+            tetris.board = Array(20).fill().map(() => Array(10).fill(0));
+            tetris.score = 0;
+            tetris.level = 1;
+            tetris.lines = 0;
+            tetris.gameOver = false;
+            tetris.dropInterval = 1000;
+            tetris.lastDrop = 0;
+            tetrisBoardCanvas = document.getElementById('tetrisBoard');
+            tetrisCtx = tetrisBoardCanvas.getContext('2d');
+            tetrisNextCanvas = document.getElementById('tetrisNextCanvas');
+            tetrisNextCtx = tetrisNextCanvas.getContext('2d');
+            tetris.current = null;
+            tetris.next = null;
+            spawnTetrisPiece();
+            if (tetrisAnimationFrame) cancelAnimationFrame(tetrisAnimationFrame);
+            tetrisLoop();
+        }
+
+        function restartTetrisGame() {
+            initTetris();
+        }
+
+        function spawnTetrisPiece() {
+            if (tetris.next) {
+                tetris.current = tetris.next;
+            } else {
+                const type = TETRIS_KEYS[Math.floor(Math.random() * TETRIS_KEYS.length)];
+                tetris.current = { type, shape: TETROMINOES[type].shape.map(row => [...row]), color: TETROMINOES[type].color };
+            }
+            const type = TETRIS_KEYS[Math.floor(Math.random() * TETRIS_KEYS.length)];
+            tetris.next = { type, shape: TETROMINOES[type].shape.map(row => [...row]), color: TETROMINOES[type].color };
+            tetris.x = Math.floor((10 - tetris.current.shape[0].length) / 2);
+            tetris.y = 0;
+            if (checkTetrisCollision(tetris.x, tetris.y, tetris.current.shape)) {
+                tetris.gameOver = true;
+                showCelebration('💪 游戏结束', '分数: ' + tetris.score);
+                if (tetrisAnimationFrame) {
+                    cancelAnimationFrame(tetrisAnimationFrame);
+                    tetrisAnimationFrame = null;
+                }
+            }
+            drawTetrisNext();
+        }
+
+        function checkTetrisCollision(px, py, shape) {
+            for (let r = 0; r < shape.length; r++) {
+                for (let c = 0; c < shape[r].length; c++) {
+                    if (shape[r][c]) {
+                        const nx = px + c;
+                        const ny = py + r;
+                        if (nx < 0 || nx >= 10 || ny >= 20) return true;
+                        if (ny >= 0 && tetris.board[ny][nx]) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function rotateTetrisPiece() {
+            const shape = tetris.current.shape;
+            const rows = shape.length;
+            const cols = shape[0].length;
+            const rotated = [];
+            for (let c = 0; c < cols; c++) {
+                const newRow = [];
+                for (let r = rows - 1; r >= 0; r--) {
+                    newRow.push(shape[r][c]);
+                }
+                rotated.push(newRow);
+            }
+            if (!checkTetrisCollision(tetris.x, tetris.y, rotated)) {
+                tetris.current.shape = rotated;
+            }
+        }
+
+        function moveTetrisPiece(dx, dy) {
+            if (!checkTetrisCollision(tetris.x + dx, tetris.y + dy, tetris.current.shape)) {
+                tetris.x += dx;
+                tetris.y += dy;
+                return true;
+            }
+            return false;
+        }
+
+        function lockTetrisPiece() {
+            const shape = tetris.current.shape;
+            for (let r = 0; r < shape.length; r++) {
+                for (let c = 0; c < shape[r].length; c++) {
+                    if (shape[r][c]) {
+                        const ny = tetris.y + r;
+                        const nx = tetris.x + c;
+                        if (ny >= 0 && ny < 20 && nx >= 0 && nx < 10) {
+                            tetris.board[ny][nx] = tetris.current.color;
+                        }
+                    }
+                }
+            }
+            clearTetrisLines();
+            spawnTetrisPiece();
+        }
+
+        function clearTetrisLines() {
+            let linesCleared = 0;
+            for (let r = 19; r >= 0; r--) {
+                if (tetris.board[r].every(cell => cell !== 0)) {
+                    tetris.board.splice(r, 1);
+                    tetris.board.unshift(Array(10).fill(0));
+                    linesCleared++;
+                    r++;
+                }
+            }
+            if (linesCleared > 0) {
+                tetris.lines += linesCleared;
+                const points = [0, 100, 300, 500, 800];
+                tetris.score += points[linesCleared] || 800;
+                tetris.level = Math.floor(tetris.lines / 10) + 1;
+                tetris.dropInterval = Math.max(100, 1000 - (tetris.level - 1) * 100);
+                document.getElementById('tetrisScore').textContent = tetris.score;
+                document.getElementById('tetrisLevel').textContent = tetris.level;
+                document.getElementById('tetrisLines').textContent = tetris.lines;
+            }
+        }
+
+        function tetrisMove(dx, dy) {
+            if (tetris.gameOver) return;
+            if (!moveTetrisPiece(dx, dy) && dy > 0) {
+                lockTetrisPiece();
+            }
+            drawTetrisBoard();
+        }
+
+        function tetrisRotate() {
+            if (tetris.gameOver) return;
+            rotateTetrisPiece();
+            drawTetrisBoard();
+        }
+
+        function tetrisDrop() {
+            if (tetris.gameOver) return;
+            while (moveTetrisPiece(0, 1)) {}
+            lockTetrisPiece();
+            drawTetrisBoard();
+        }
+
+        function drawTetrisBoard() {
+            tetrisCtx.fillStyle = '#fff';
+            tetrisCtx.fillRect(0, 0, 260, 520);
+            // Draw board
+            for (let r = 0; r < 20; r++) {
+                for (let c = 0; c < 10; c++) {
+                    if (tetris.board[r][c]) {
+                        drawTetrisCell(tetrisCtx, c * 26, r * 26, 26, tetris.board[r][c]);
+                    }
+                }
+            }
+            // Draw current piece
+            if (tetris.current && !tetris.gameOver) {
+                const shape = tetris.current.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const px = (tetris.x + c) * 26;
+                            const py = (tetris.y + r) * 26;
+                            if (tetris.y + r >= 0) {
+                                drawTetrisCell(tetrisCtx, px, py, 26, tetris.current.color);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawTetrisCell(ctx, x, y, size, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fillRect(x + 1, y + 1, size - 2, 4);
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillRect(x + 1, y + size - 5, size - 2, 4);
+        }
+
+        function drawTetrisNext() {
+            tetrisNextCtx.fillStyle = '#fff';
+            tetrisNextCtx.fillRect(0, 0, 100, 100);
+            if (!tetris.next) return;
+            const shape = tetris.next.shape;
+            const cellSize = 22;
+            const offsetX = (100 - shape[0].length * cellSize) / 2;
+            const offsetY = (100 - shape.length * cellSize) / 2;
+            for (let r = 0; r < shape.length; r++) {
+                for (let c = 0; c < shape[r].length; c++) {
+                    if (shape[r][c]) {
+                        const x = offsetX + c * cellSize;
+                        const y = offsetY + r * cellSize;
+                        drawTetrisCell(tetrisNextCtx, x, y, cellSize, tetris.next.color);
+                    }
+                }
+            }
+        }
+
+        function tetrisLoop(timestamp) {
+            if (tetris.gameOver) return;
+            if (!tetris.lastDrop) tetris.lastDrop = timestamp;
+            if (timestamp - tetris.lastDrop > tetris.dropInterval) {
+                if (!moveTetrisPiece(0, 1)) {
+                    lockTetrisPiece();
+                }
+                tetris.lastDrop = timestamp;
+                drawTetrisBoard();
+            }
+            tetrisAnimationFrame = requestAnimationFrame(tetrisLoop);
+        }
+
+        // Tetris keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (currentGame !== GAME_STATES.TETRIS || tetris.gameOver) return;
+            if (e.key === 'ArrowLeft') { e.preventDefault(); tetrisMove(-1, 0); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); tetrisMove(1, 0); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); tetrisMove(0, 1); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); tetrisRotate(); }
+            else if (e.key === ' ') { e.preventDefault(); tetrisDrop(); }
+        });
+
+        // ==========================================
+        // V22: GOMOKU GAME
+        // ==========================================
+        let gomoku = {
+            board: [],
+            currentPlayer: 1,
+            gameOver: false,
+            winner: null,
+            history: []
+        };
+        let gomokuCanvas, gomokuCtx;
+        const GOMOKU_SIZE = 15;
+        const GOMOKU_CELL = 32;
+        const GOMOKU_PADDING = 16;
+
+        function startGomokuGame() {
+            if (checkTimeLimitBlock()) return;
+            currentGame = GAME_STATES.GOMOKU;
+            document.getElementById('gameSelectionPanel').classList.remove('active');
+            document.getElementById('gomokuOverlay').classList.add('active');
+            initAudio();
+            initGomoku();
+        }
+
+        function initGomoku() {
+            gomoku.board = Array(GOMOKU_SIZE).fill().map(() => Array(GOMOKU_SIZE).fill(0));
+            gomoku.currentPlayer = 1;
+            gomoku.gameOver = false;
+            gomoku.winner = null;
+            gomoku.history = [];
+            gomokuCanvas = document.getElementById('gomokuCanvas');
+            gomokuCtx = gomokuCanvas.getContext('2d');
+            document.getElementById('gomokuWinMsg').style.display = 'none';
+            drawGomokuBoard();
+            updateGomokuStatus();
+            gomokuCanvas.onclick = handleGomokuClick;
+        }
+
+        function restartGomokuGame() {
+            initGomoku();
+        }
+
+        function drawGomokuBoard() {
+            gomokuCtx.fillStyle = '#DEB887';
+            gomokuCtx.fillRect(0, 0, 480, 480);
+            gomokuCtx.strokeStyle = '#495057';
+            gomokuCtx.lineWidth = 1;
+            // Draw grid lines
+            for (let i = 0; i < GOMOKU_SIZE; i++) {
+                const pos = GOMOKU_PADDING + i * GOMOKU_CELL;
+                gomokuCtx.beginPath();
+                gomokuCtx.moveTo(GOMOKU_PADDING, pos);
+                gomokuCtx.lineTo(480 - GOMOKU_PADDING, pos);
+                gomokuCtx.stroke();
+                gomokuCtx.beginPath();
+                gomokuCtx.moveTo(pos, GOMOKU_PADDING);
+                gomokuCtx.lineTo(pos, 480 - GOMOKU_PADDING);
+                gomokuCtx.stroke();
+            }
+            // Draw star points
+            const starPoints = [[3,3],[3,11],[7,7],[11,3],[11,11]];
+            gomokuCtx.fillStyle = '#495057';
+            for (const [r, c] of starPoints) {
+                const x = GOMOKU_PADDING + c * GOMOKU_CELL;
+                const y = GOMOKU_PADDING + r * GOMOKU_CELL;
+                gomokuCtx.beginPath();
+                gomokuCtx.arc(x, y, 4, 0, Math.PI * 2);
+                gomokuCtx.fill();
+            }
+            // Draw stones
+            for (let r = 0; r < GOMOKU_SIZE; r++) {
+                for (let c = 0; c < GOMOKU_SIZE; c++) {
+                    if (gomoku.board[r][c] !== 0) {
+                        const x = GOMOKU_PADDING + c * GOMOKU_CELL;
+                        const y = GOMOKU_PADDING + r * GOMOKU_CELL;
+                        drawGomokuStone(x, y, gomoku.board[r][c]);
+                    }
+                }
+            }
+        }
+
+        function drawGomokuStone(x, y, player) {
+            const radius = GOMOKU_CELL / 2 - 2;
+            // Shadow
+            gomokuCtx.beginPath();
+            gomokuCtx.arc(x + 1, y + 1, radius, 0, Math.PI * 2);
+            gomokuCtx.fillStyle = 'rgba(0,0,0,0.3)';
+            gomokuCtx.fill();
+            // Stone
+            gomokuCtx.beginPath();
+            gomokuCtx.arc(x, y, radius, 0, Math.PI * 2);
+            if (player === 1) {
+                gomokuCtx.fillStyle = '#000';
+            } else {
+                gomokuCtx.fillStyle = '#fff';
+            }
+            gomokuCtx.fill();
+            gomokuCtx.strokeStyle = player === 1 ? '#333' : '#ccc';
+            gomokuCtx.lineWidth = 1;
+            gomokuCtx.stroke();
+            // Highlight
+            if (player === 2) {
+                gomokuCtx.beginPath();
+                gomokuCtx.arc(x - radius/3, y - radius/3, radius/3, 0, Math.PI * 2);
+                gomokuCtx.fillStyle = 'rgba(255,255,255,0.4)';
+                gomokuCtx.fill();
+            }
+        }
+
+        function handleGomokuClick(e) {
+            if (gomoku.gameOver) return;
+            const rect = gomokuCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const c = Math.round((mx - GOMOKU_PADDING) / GOMOKU_CELL);
+            const r = Math.round((my - GOMOKU_PADDING) / GOMOKU_CELL);
+            if (r >= 0 && r < GOMOKU_SIZE && c >= 0 && c < GOMOKU_SIZE) {
+                placeGomokuStone(r, c);
+            }
+        }
+
+        function placeGomokuStone(r, c) {
+            if (gomoku.board[r][c] !== 0 || gomoku.gameOver) return;
+            gomoku.board[r][c] = gomoku.currentPlayer;
+            gomoku.history.push({ r, c, player: gomoku.currentPlayer });
+            drawGomokuBoard();
+            if (checkGomokuWin(r, c)) {
+                gomoku.gameOver = true;
+                gomoku.winner = gomoku.currentPlayer;
+                showGomokuWin();
+            } else {
+                gomoku.currentPlayer = gomoku.currentPlayer === 1 ? 2 : 1;
+                updateGomokuStatus();
+            }
+        }
+
+        function checkGomokuWin(r, c) {
+            const player = gomoku.board[r][c];
+            const directions = [[0,1],[1,0],[1,1],[1,-1]];
+            for (const [dr, dc] of directions) {
+                let count = 1;
+                // Forward
+                for (let i = 1; i < 5; i++) {
+                    const nr = r + dr * i;
+                    const nc = c + dc * i;
+                    if (nr >= 0 && nr < GOMOKU_SIZE && nc >= 0 && nc < GOMOKU_SIZE && gomoku.board[nr][nc] === player) {
+                        count++;
+                    } else break;
+                }
+                // Backward
+                for (let i = 1; i < 5; i++) {
+                    const nr = r - dr * i;
+                    const nc = c - dc * i;
+                    if (nr >= 0 && nr < GOMOKU_SIZE && nc >= 0 && nc < GOMOKU_SIZE && gomoku.board[nr][nc] === player) {
+                        count++;
+                    } else break;
+                }
+                if (count >= 5) return true;
+            }
+            return false;
+        }
+
+        function showGomokuWin() {
+            const winnerName = gomoku.winner === 1 ? '黑方' : '白方';
+            document.getElementById('gomokuWinText').textContent = winnerName + '获胜!';
+            document.getElementById('gomokuWinMsg').style.display = 'block';
+        }
+
+        function updateGomokuStatus() {
+            const indicator = document.getElementById('gomokuStoneIndicator');
+            const text = document.getElementById('gomokuPlayerText');
+            if (gomoku.currentPlayer === 1) {
+                indicator.style.backgroundColor = '#000';
+                text.textContent = '黑方';
+            } else {
+                indicator.style.backgroundColor = '#fff';
+                text.textContent = '白方';
+            }
+        }
+
+        function undoGomokuMove() {
+            if (gomoku.history.length === 0 || gomoku.gameOver) return;
+            const last = gomoku.history.pop();
+            gomoku.board[last.r][last.c] = 0;
+            gomoku.currentPlayer = last.player;
+            drawGomokuBoard();
+            updateGomokuStatus();
+        }
+
         // ---- CELEBRATION ----
         function showCelebration(text, sub) {
             const celeb = document.getElementById('gameCelebration');
@@ -16121,6 +17124,12 @@
                 initDotConnect();
             } else if (currentGame === GAME_STATES.MAZE) {
                 initMaze();
+            } else if (currentGame === GAME_STATES.GAME2048) {
+                restart2048Game();
+            } else if (currentGame === GAME_STATES.TETRIS) {
+                restartTetrisGame();
+            } else if (currentGame === GAME_STATES.GOMOKU) {
+                restartGomokuGame();
             }
         }
 
@@ -16134,11 +17143,18 @@
                 clearInterval(jigsawTimerInterval);
                 jigsawTimerInterval = null;
             }
+            if (tetrisAnimationFrame) {
+                cancelAnimationFrame(tetrisAnimationFrame);
+                tetrisAnimationFrame = null;
+            }
             
             currentGame = GAME_STATES.NONE;
             document.getElementById('jigsawOverlay').classList.remove('active');
             document.getElementById('dotConnectOverlay').classList.remove('active');
             document.getElementById('mazeOverlay').classList.remove('active');
+            document.getElementById('game2048Overlay').classList.remove('active');
+            document.getElementById('tetrisOverlay').classList.remove('active');
+            document.getElementById('gomokuOverlay').classList.remove('active');
             document.getElementById('gameSelectionPanel').classList.remove('active');
         }
 
