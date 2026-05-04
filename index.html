@@ -3852,13 +3852,14 @@
             <button class="share-btn" id="shareBtn" title="Share">🔗</button>
             <button class="game-btn" id="gameBtn" title="Games">🧩</button>
             <button class="parent-ctrl-btn" id="parentCtrlBtn" title="家长控制">👨‍👩‍👧</button>
+            <button class="tool-btn" id="langBtn" title="Language">🌐</button>
         </div>
     </header>
 
     <!-- V14: Math Verification Modal -->
     <div id="mathVerifyModal">
         <div class="math-modal-box">
-            <div class="math-modal-title">👨‍👩‍👧 家长控制</div>
+            <div class="math-modal-title" data-i18n="parentControls">👨‍👩‍👧 家长控制</div>
             <div class="math-modal-question" id="mathQuestion">3 + 4 = ?</div>
             <input type="number" class="math-modal-input" id="mathAnswer" placeholder="?">
             <div class="math-modal-error" id="mathError">再试一次</div>
@@ -3870,52 +3871,52 @@
     <div id="parentControlOverlay">
         <div id="parentControlPanel">
             <div class="pc-header">
-                <div class="pc-header-title">👨‍👩‍👧 家长控制</div>
+                <div class="pc-header-title" data-i18n="parentControls">👨‍👩‍👧 家长控制</div>
                 <button class="pc-close" id="pcCloseBtn">×</button>
             </div>
             <div class="pc-body">
                 <!-- Section A: Time Limit -->
                 <div class="pc-section">
-                    <div class="pc-section-title">⏰ 使用时长限制</div>
+                    <div class="pc-section-title" data-i18n="timeLimitOptions">⏰ 使用时长限制</div>
                     <div class="pc-time-options" id="pcTimeOptions">
-                        <button class="pc-time-btn" data-minutes="0">关闭</button>
-                        <button class="pc-time-btn" data-minutes="15">15分钟</button>
-                        <button class="pc-time-btn" data-minutes="30">30分钟</button>
-                        <button class="pc-time-btn" data-minutes="45">45分钟</button>
-                        <button class="pc-time-btn" data-minutes="60">60分钟</button>
-                        <button class="pc-time-btn" data-minutes="90">90分钟</button>
-                        <button class="pc-time-btn" data-minutes="120">120分钟</button>
+                        <button class="pc-time-btn" data-minutes="0" data-i18n="timeOff">关闭</button>
+                        <button class="pc-time-btn" data-minutes="15" data-i18n="time15">15分钟</button>
+                        <button class="pc-time-btn" data-minutes="30" data-i18n="time30">30分钟</button>
+                        <button class="pc-time-btn" data-minutes="45" data-i18n="time45">45分钟</button>
+                        <button class="pc-time-btn" data-minutes="60" data-i18n="time60">60分钟</button>
+                        <button class="pc-time-btn" data-minutes="90" data-i18n="time90">90分钟</button>
+                        <button class="pc-time-btn" data-minutes="120" data-i18n="time120">120分钟</button>
                     </div>
                 </div>
                 <!-- Section B: Weekly Progress -->
                 <div class="pc-section">
-                    <div class="pc-section-title">📊 本周进度报告</div>
+                    <div class="pc-section-title" data-i18n="weeklyProgress">📊 本周进度报告</div>
                     <div class="pc-stats-grid" id="pcStatsGrid">
-                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcDrawing">0</div><div class="pc-stat-label">绘画次数</div></div>
-                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcColoring">0</div><div class="pc-stat-label">涂色次数</div></div>
-                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcTracing">0</div><div class="pc-stat-label">描红次数</div></div>
-                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcGames">0</div><div class="pc-stat-label">游戏次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcDrawing">0</div><div class="pc-stat-label" data-i18n="drawingTimes">绘画次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcColoring">0</div><div class="pc-stat-label" data-i18n="coloringTimes">涂色次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcTracing">0</div><div class="pc-stat-label" data-i18n="tracingTimes">描红次数</div></div>
+                        <div class="pc-stat-item"><div class="pc-stat-num" id="pcGames">0</div><div class="pc-stat-label" data-i18n="gameTimes">游戏次数</div></div>
                     </div>
                     <div style="margin-bottom:6px;font-size:0.9rem;color:#868E96;">本周活动柱状图</div>
                     <div class="pc-bar-chart" id="pcBarChart"></div>
                 </div>
                 <!-- Section C: Data Export -->
                 <div class="pc-section">
-                    <div class="pc-section-title">📤 数据导出</div>
+                    <div class="pc-section-title" data-i18n="dataExport">📤 数据导出</div>
                     <div class="pc-export-btns">
-                        <button class="pc-export-btn" id="pcExportCSV">📥 导出CSV</button>
-                        <button class="pc-export-btn" id="pcExportJSON">📥 导出JSON</button>
+                        <button class="pc-export-btn" id="pcExportCSV" data-i18n="exportCSV">📥 导出CSV</button>
+                        <button class="pc-export-btn" id="pcExportJSON" data-i18n="exportJSON">📥 导出JSON</button>
                     </div>
                 </div>
                 <!-- Section D: Content Unlock -->
                 <div class="pc-section">
-                    <div class="pc-section-title">🔓 内容解锁管理</div>
+                    <div class="pc-section-title" data-i18n="contentUnlock">🔓 内容解锁管理</div>
                     <div class="pc-unlock-list" id="pcUnlockList"></div>
                 </div>
                 <!-- Section E: Weekly Summary -->
                 <div class="pc-section">
-                    <div class="pc-section-title">🌟 本周总结报告</div>
-                    <button class="pc-weekly-btn" id="pcWeeklyBtn">📋 查看</button>
+                    <div class="pc-section-title" data-i18n="weeklySummary">🌟 本周总结报告</div>
+                    <button class="pc-weekly-btn" id="pcWeeklyBtn" data-i18n="viewReport">📋 查看</button>
                 </div>
             </div>
         </div>
@@ -3924,18 +3925,18 @@
     <!-- V14: Weekly Summary Overlay -->
     <div id="weeklySummaryOverlay">
         <div class="ws-modal">
-            <div class="ws-title">🌟 本周绘画报告 🌟</div>
+            <div class="ws-title" data-i18n="weekly_summary">🌟 本周绘画报告 🌟</div>
             <div class="ws-content" id="wsContent"></div>
-            <div class="ws-footer">💪 下周继续加油！</div>
-            <button class="guided-continue-btn" id="wsCloseBtn" style="margin-top:16px;width:100%;">关闭</button>
+            <div class="ws-footer" data-i18n="keepGoing">💪 下周继续加油！</div>
+            <button class="guided-continue-btn" id="wsCloseBtn" style="margin-top:16px;width:100%;" data-i18n="close">关闭</button>
         </div>
     </div>
 
     <!-- V14: Time Limit Overlay -->
     <div id="timeLimitOverlay">
         <div class="tl-moon">🌙</div>
-        <div class="tl-message">今天的绘画时间结束啦<br>明天再来吧！🌙</div>
-        <button class="tl-gallery-btn" id="tlGalleryBtn">🖼️ 查看画廊</button>
+        <div class="tl-message" data-i18n="timeUp">今天的绘画时间结束啦<br>明天再来吧！🌙</div>
+        <button class="tl-gallery-btn" id="tlGalleryBtn" data-i18n="viewGallery">🖼️ 查看画廊</button>
     </div>
 
     <div class="canvas-container" id="canvasContainer">
@@ -3963,25 +3964,25 @@
 
         <!-- V10: Game Selection Panel -->
         <div class="game-selection-panel" id="gameSelectionPanel">
-            <div class="game-panel-title">🎮 选择游戏</div>
+            <div class="game-panel-title" data-i18n="game_select">🎮 选择游戏</div>
             <div class="game-cards">
                 <div class="game-card" onclick="startJigsawGame()">
                     <div class="game-card-icon">🧩</div>
-                    <div class="game-card-name">拼图</div>
-                    <div class="game-card-desc">将碎片拼成完整图片</div>
-                    <button class="game-card-btn">开始</button>
+                    <div class="game-card-name" data-i18n="jigsaw">拼图</div>
+                    <div class="game-card-desc" data-i18n="jigsaw_desc">将碎片拼成完整图片</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
                 </div>
                 <div class="game-card" onclick="startDotConnectGame()">
                     <div class="game-card-icon">🔗</div>
-                    <div class="game-card-name">连线游戏</div>
-                    <div class="game-card-desc">按顺序连接所有点</div>
-                    <button class="game-card-btn">开始</button>
+                    <div class="game-card-name" data-i18n="dotConnect">连线游戏</div>
+                    <div class="game-card-desc" data-i18n="dotconnect_desc">按顺序连接所有点</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
                 </div>
-                <div class="game-card" onclick="startMazeGame()">
+<div class="game-card" onclick="startMazeGame()">
                     <div class="game-card-icon">🧭</div>
-                    <div class="game-card-name">迷宫</div>
-                    <div class="game-card-desc">从起点走到终点</div>
-                    <button class="game-card-btn">开始</button>
+                    <div class="game-card-name" data-i18n="maze">迷宫</div>
+                    <div class="game-card-desc" data-i18n="maze_desc">找到正确路径走出迷宫</div>
+                    <button class="game-card-btn" data-i18n="start">开始</button>
                 </div>
             </div>
         </div>
@@ -3990,7 +3991,7 @@
         <div class="game-overlay" id="jigsawOverlay">
             <div class="game-header">
                 <button class="game-back-btn" id="jigsawBackBtn">← 退出</button>
-                <div class="game-title">🧩 拼图游戏</div>
+                <div class="game-title" data-i18n="jigsawTitle">🧩 拼图游戏</div>
                 <div></div>
             </div>
             <div class="game-content">
@@ -4185,65 +4186,65 @@
     <div class="tools">
         <button class="tool-btn brush-btn selected" id="brushBtn">
             <span class="tool-icon">✏️</span>
-            <span>Brush</span>
+            <span data-i18n="brush">Brush</span>
         </button>
         <button class="tool-btn highlighter-btn" id="highlighterBtn">
             <span class="tool-icon">🖍️</span>
-            <span>Highlighter</span>
+            <span data-i18n="highlighter">Highlighter</span>
         </button>
         <button class="tool-btn stamp-btn" id="stampBtn">
             <span class="tool-icon">🎨</span>
-            <span>Sticker</span>
+            <span data-i18n="stamps">Stickers</span>
         </button>
         <button class="tool-btn" id="customStickerBtn" title="Custom Sticker">
             <span class="tool-icon">📐</span>
-            <span>My Sticker</span>
+            <span data-i18n="customSticker">My Sticker</span>
         </button>
         <button class="tool-btn fill-btn" id="fillBtn">
             <span class="tool-icon">🪣</span>
-            <span>Fill</span>
+            <span data-i18n="fill">Fill</span>
         </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
-            <span>Tracing</span>
+            <span data-i18n="tracing">Tracing</span>
         </button>
         <button class="tool-btn bg-btn" id="bgBtn">
             <span class="tool-icon">🖼️</span>
-            <span>BG</span>
+            <span data-i18n="background">BG</span>
         </button>
         <button class="tool-btn theme-btn" id="themeBtn">
             <span class="tool-icon">🎨</span>
-            <span>Theme</span>
+            <span data-i18n="theme">Theme</span>
         </button>
         <button class="tool-btn eraser-btn" id="eraserBtn">
             <span class="tool-icon">🧹</span>
-            <span>Eraser</span>
+            <span data-i18n="eraser">Eraser</span>
         </button>
         <!-- V16: Shape selector -->
         <div class="tool-dropdown" id="shapeDropdown">
             <button class="tool-btn" id="shapeBtn">
                 <span class="tool-icon">📐</span>
-                <span>Shape</span>
+                <span data-i18n="shape">Shape</span>
             </button>
             <div class="tool-dropdown-content" id="shapeOptions">
-                <button class="dropdown-item selected" data-shape="free">自由绘制</button>
-                <button class="dropdown-item" data-shape="line">直线</button>
-                <button class="dropdown-item" data-shape="circle">圆形</button>
-                <button class="dropdown-item" data-shape="rect">矩形</button>
-                <button class="dropdown-item" data-shape="triangle">三角形</button>
+                <button class="dropdown-item selected" data-shape="free" data-i18n="shape_free">自由绘制</button>
+                <button class="dropdown-item" data-shape="line" data-i18n="shape_line">直线</button>
+                <button class="dropdown-item" data-shape="circle" data-i18n="shape_circle">圆形</button>
+                <button class="dropdown-item" data-shape="rect" data-i18n="shape_rect">矩形</button>
+                <button class="dropdown-item" data-shape="triangle" data-i18n="shape_triangle">三角形</button>
             </div>
         </div>
         <!-- V16: Symmetry selector -->
         <div class="tool-dropdown" id="symmetryDropdown">
             <button class="tool-btn" id="symmetryBtn">
                 <span class="tool-icon">⚡</span>
-                <span>Sym</span>
+                <span data-i18n="symmetry">Sym</span>
             </button>
             <div class="tool-dropdown-content" id="symmetryOptions">
-                <button class="dropdown-item selected" data-symmetry="none">关闭</button>
-                <button class="dropdown-item" data-symmetry="vertical">左右对称</button>
-                <button class="dropdown-item" data-symmetry="horizontal">上下对称</button>
-                <button class="dropdown-item" data-symmetry="quad">四角对称</button>
+                <button class="dropdown-item selected" data-symmetry="none" data-i18n="sym_none">关闭</button>
+                <button class="dropdown-item" data-symmetry="vertical" data-i18n="sym_vertical">左右对称</button>
+                <button class="dropdown-item" data-symmetry="horizontal" data-i18n="sym_horizontal">上下对称</button>
+                <button class="dropdown-item" data-symmetry="quad" data-i18n="sym_quad">四角对称</button>
             </div>
         </div>
         <!-- V16: Zoom controls -->
@@ -4255,7 +4256,7 @@
         <div class="spacer"></div>
         <button class="tool-btn" id="undoBtn" title="Undo">↩️</button>
         <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
-        <button class="tool-btn clear-btn" id="clearBtn">Clear</button>
+        <button class="tool-btn clear-btn" id="clearBtn" data-i18n="clear">Clear</button>
         <button class="tool-btn" id="saveBtn" title="Save">💾</button>
         <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
     </div>
@@ -4263,26 +4264,26 @@
     <!-- Coloring Game Overlay -->
     <div id="coloringOverlay">
         <div class="coloring-header">
-            <div class="coloring-title" id="coloringTitle">Coloring Page</div>
-            <button class="coloring-btn back-btn" onclick="exitColoringGame()">← Back</button>
+            <div class="coloring-title" id="coloringTitle" data-i18n="coloring">Coloring Page</div>
+            <button class="coloring-btn back-btn" onclick="exitColoringGame()" data-i18n="back">← Back</button>
         </div>
         <!-- V12: Category and Age Filter Tabs -->
         <div class="coloring-filter-bar">
             <div class="coloring-category-tabs" id="coloringCategoryTabs">
-                <button class="coloring-category-tab selected" data-category="all">全部</button>
-                <button class="coloring-category-tab" data-category="animal">动物</button>
-                <button class="coloring-category-tab" data-category="food">食物</button>
-                <button class="coloring-category-tab" data-category="character">人物</button>
-                <button class="coloring-category-tab" data-category="scenery">风景</button>
-                <button class="coloring-category-tab" data-category="vehicle">交通工具</button>
+                <button class="coloring-category-tab selected" data-category="all" data-i18n="cat_coloring_all2">全部</button>
+                <button class="coloring-category-tab" data-category="animal" data-i18n="cat_coloring_animal2">动物</button>
+                <button class="coloring-category-tab" data-category="food" data-i18n="cat_coloring_food2">食物</button>
+                <button class="coloring-category-tab" data-category="character" data-i18n="cat_coloring_character2">人物</button>
+                <button class="coloring-category-tab" data-category="scenery" data-i18n="cat_coloring_scenery">风景</button>
+                <button class="coloring-category-tab" data-category="vehicle" data-i18n="cat_coloring_vehicle2">交通工具</button>
             </div>
         </div>
         <div class="coloring-age-bar">
             <div class="coloring-age-tabs" id="coloringAgeTabs">
-                <button class="coloring-age-tab selected" data-age="all">全部</button>
-                <button class="coloring-age-tab" data-age="3-4">3-4岁 🐣</button>
-                <button class="coloring-age-tab" data-age="4-5">4-5岁 🐥</button>
-                <button class="coloring-age-tab" data-age="5+">5岁以上 🔥</button>
+                <button class="coloring-age-tab selected" data-age="all" data-i18n="ageAll">全部</button>
+                <button class="coloring-age-tab" data-age="3-4" data-i18n="age3_4">3-4岁 🐣</button>
+                <button class="coloring-age-tab" data-age="4-5" data-i18n="age4_5">4-5岁 🐥</button>
+                <button class="coloring-age-tab" data-age="5+" data-i18n="age5plus">5岁以上 🔥</button>
             </div>
         </div>
         <div class="coloring-template-bar" id="coloringTemplateBar"></div>
@@ -4290,14 +4291,14 @@
             <canvas id="coloringCanvas"></canvas>
         </div>
         <div class="coloring-tools">
-            <button class="coloring-btn done-btn" onclick="completeColoring()">✨ Done!</button>
-            <button class="coloring-btn reset-btn" onclick="resetColoring()">🔄 Reset</button>
+            <button class="coloring-btn done-btn" onclick="completeColoring()" data-i18n="done">✨ Done!</button>
+            <button class="coloring-btn reset-btn" onclick="resetColoring()" data-i18n="reset">🔄 Reset</button>
         </div>
     </div>
 
     <!-- Gallery Overlay -->
     <div id="galleryOverlay">
-        <div class="gallery-header">🖼️ 我的画廊</div>
+        <div class="gallery-header" data-i18n="myGallery">🖼️ 我的画廊</div>
         <div class="gallery-batch-bar" id="galleryBatchBar">
             <button class="gallery-select-all-btn" id="selectAllBtn" onclick="toggleSelectAll()">全选</button>
             <div class="gallery-batch-actions">
@@ -4367,7 +4368,7 @@
     <div id="challengeOverlay">
         <div class="challenge-container">
             <div class="challenge-header">
-                <div class="challenge-title">🎯 每日挑战</div>
+                <div class="challenge-title" data-i18n="dailyChallenge">🎯 每日挑战</div>
                 <button class="challenge-close" id="challengeCloseBtn">×</button>
             </div>
             <div class="challenge-body" id="challengeBody">
@@ -4445,6 +4446,248 @@
     </div>
 
     <script>
+        // ===== V17: Internationalization System =====
+        const i18n = {
+            zh: {
+                // Tools
+                brush: '画笔', crayon: '蜡笔', highlighter: '荧光笔', eraser: '橡皮擦',
+                undo: '撤销', redo: '重做', save: '保存', print: '打印', clear: '清除',
+                // Shapes
+                shape_free: '自由绘制', shape_line: '直线', shape_circle: '圆形',
+                shape_rect: '矩形', shape_triangle: '三角形',
+                // Symmetry
+                sym_none: '关闭', sym_vertical: '左右对称', sym_horizontal: '上下对称', sym_quad: '四角对称',
+                // Panels
+                tracing: '描红', coloring: '涂色', stamps: '贴纸', bubbles: '气泡',
+                games: '游戏', gallery: '画廊', achievements: '成就', challenge: '每日挑战',
+                // Games
+                jigsaw: '拼图', dotConnect: '连线', maze: '迷宫',
+                // Messages
+                saved: '已保存！', loading: '加载中...', unlocked: '解锁了！',
+                timeUp: '今天的绘画时间结束啦，明天再来吧！🌙',
+                // Settings
+                settings: '设置', language: '语言', sound: '音效', music: '音乐',
+                // Parent controls
+                parentControls: '家长控制', timeLimit: '时长限制', weeklyReport: '本周报告',
+                exportCSV: '导出CSV', exportJSON: '导出JSON', contentUnlocks: '内容解锁',
+                // Tracing categories
+                cat_all: '全部', cat_number: '数字', cat_letter: '字母',
+                cat_chinese: '汉字', cat_object: '物品', cat_vehicle: '交通',
+                // Dot connect categories
+                cat_basic: '基础', cat_fruit: '水果', cat_animal: '动物', cat_nature: '自然',
+                // Coloring categories
+                cat_coloring_all: '全部', cat_coloring_animal: '动物', cat_coloring_food: '食物',
+                cat_coloring_character: '人物', cat_coloring_landscape: '风景', cat_coloring_vehicle: '交通',
+                // Achievements (key ones)
+                first_draw: '初次绘画', drawing_master: '绘画大师', coloring_master: '涂色大师',
+                tracing_master: '描红大师', streak_7: '连续7天',
+                // Sticker categories
+                stamp_animal: '动物', stamp_nature: '自然', stamp_food: '食物',
+                stamp_vehicle: '交通工具', stamp_holiday: '节日',
+                // Misc
+                week: '本周', mastery: '掌握', progress: '进度',
+                age_3_4: '3-4岁', age_4_5: '4-5岁', age_5_6: '5-6岁',
+                easy: '简单', medium: '中等', hard: '困难',
+                // Common
+                ok: '确定', cancel: '取消', close: '关闭', start: '开始', done: '完成',
+                // Shapes in dropdown
+                shape: '形状', symmetry: '对称',
+                // Stats
+                stats_drawing: '绘画', stats_tracing: '描红', stats_coloring: '涂色',
+                stats_games: '游戏', stats_stickers: '贴纸', stats_achievements: '成就',
+                // Weekly summary
+                weekly_summary: '本周总结', drawings_this_week: '本周绘画次数',
+                coloring_this_week: '本周涂色次数', tracing_this_week: '本周描红次数',
+                games_this_week: '本周游戏次数', achievements_this_week: '本周获得成就',
+                keep_going: '继续加油！',
+                // Unlock conditions
+                unlock_3_tracing: '完成3张描红后解锁', unlock_5_coloring: '完成5张涂色后解锁',
+                unlock_3_challenges: '完成3个每日挑战后解锁', unlock_10_drawings: '累计绘画10次后解锁',
+                unlock_10_games: '累计游戏10次后解锁',
+                // Difficulty
+                diff_easy: '简单', diff_medium: '中等', diff_hard: '困难',
+                diff_easy_emoji: '🐣', diff_medium_emoji: '🐥', diff_hard_emoji: '🔥',
+                // Game card labels
+                game_select: '选择游戏', jigsaw_desc: '将碎片拼成完整图片',
+                dotconnect_desc: '按顺序连接所有点', maze_desc: '找到正确路径走出迷宫',
+                // Parent control labels
+                timeLimitOptions: '使用时长限制', weeklyProgress: '本周进度报告',
+                dataExport: '数据导出', contentUnlock: '内容解锁管理',
+                weeklySummary: '本周总结报告', viewReport: '查看',
+                // Specific stats labels
+                drawingTimes: '绘画次数', coloringTimes: '涂色次数',
+                tracingTimes: '描红次数', gameTimes: '游戏次数',
+                // Misc UI
+                back: '返回', continue: '继续', myGallery: '我的画廊',
+                deleteFromGallery: '从画廊删除', tracingProgress: '描红进度',
+                customSticker: '自制贴纸', saveSticker: '保存贴纸',
+                maxStickersReached: '已达到最大数量(20个)，请删除旧贴纸',
+                // Guided celebration
+                awesome: '太棒了！', keepGoing: '下周继续加油！',
+                // Bubble game
+                score: '得分', best: '最佳', gameOver: '游戏结束！',
+                newRecord: '新纪录！', bubbleScore: 'Score', bubbleBest: 'Best',
+                // Dot connect
+                dotConnectTitle: '连线游戏', connectDots: '按顺序连接所有点',
+                // Maze
+                mazeTitle: '迷宫游戏', findPath: '找到正确路径走出迷宫',
+                // Daily challenge
+                dailyChallenge: '每日挑战', viewGallery: '查看画廊',
+                // Stats panel
+                achievementUnlock: '成就解锁！', stickerUsage: '贴纸使用',
+                // Unlock names
+                vehicleStickers: '交通工具贴纸', foodStickers: '食物贴纸',
+                holidayTheme: '节日主题', advancedStickers: '进阶贴纸包',
+                gamesMode: '游戏模式',
+                // Header buttons
+                bubbles: '气泡', coloring: '涂色',
+                // Age group labels
+                ageAll: '全部', age3_4: '3-4岁', age4_5: '4-5岁', age5plus: '5岁以上',
+                // Coloring category tabs
+                cat_coloring_all2: '全部', cat_coloring_animal2: '动物',
+                cat_coloring_food2: '食物', cat_coloring_character2: '人物',
+                cat_coloring_scenery: '风景', cat_coloring_vehicle2: '交通工具',
+                // Time options
+                timeOff: '关闭', time15: '15分钟', time30: '30分钟',
+                time45: '45分钟', time60: '60分钟', time90: '90分钟', time120: '120分钟',
+                // Jigsaw
+                jigsawTitle: '拼图游戏', jigsawEasy: '简单', jigsawMedium: '中等', jigsawHard: '困难',
+                // Shape dropdown (when showing "Shape" label)
+                shapeLabel: '形状',
+                // Highlighter
+                highlighter: '荧光笔', crayon: '蜡笔',
+            },
+            en: {
+                // Tools
+                brush: 'Brush', crayon: 'Crayon', highlighter: 'Highlighter', eraser: 'Eraser',
+                undo: 'Undo', redo: 'Redo', save: 'Save', print: 'Print', clear: 'Clear',
+                // Shapes
+                shape_free: 'Free Draw', shape_line: 'Line', shape_circle: 'Circle',
+                shape_rect: 'Rectangle', shape_triangle: 'Triangle',
+                // Symmetry
+                sym_none: 'Off', sym_vertical: 'Vertical', sym_horizontal: 'Horizontal', sym_quad: 'Quad',
+                // Panels
+                tracing: 'Tracing', coloring: 'Coloring', stamps: 'Stickers', bubbles: 'Bubbles',
+                games: 'Games', gallery: 'Gallery', achievements: 'Achievements', challenge: 'Daily Challenge',
+                // Games
+                jigsaw: 'Jigsaw', dotConnect: 'Dot Connect', maze: 'Maze',
+                // Messages
+                saved: 'Saved!', loading: 'Loading...', unlocked: 'Unlocked!',
+                timeUp: 'Drawing time is up for today! Come back tomorrow! 🌙',
+                // Settings
+                settings: 'Settings', language: 'Language', sound: 'Sound', music: 'Music',
+                // Parent controls
+                parentControls: 'Parent Controls', timeLimit: 'Time Limit', weeklyReport: 'Weekly Report',
+                exportCSV: 'Export CSV', exportJSON: 'Export JSON', contentUnlocks: 'Content Unlocks',
+                // Tracing categories
+                cat_all: 'All', cat_number: 'Numbers', cat_letter: 'Letters',
+                cat_chinese: 'Chinese', cat_object: 'Objects', cat_vehicle: 'Vehicles',
+                // Dot connect categories
+                cat_basic: 'Basic', cat_fruit: 'Fruit', cat_animal: 'Animals', cat_nature: 'Nature',
+                // Coloring categories
+                cat_coloring_all: 'All', cat_coloring_animal: 'Animals', cat_coloring_food: 'Food',
+                cat_coloring_character: 'Characters', cat_coloring_landscape: 'Landscapes', cat_coloring_vehicle: 'Vehicles',
+                // Achievements
+                first_draw: 'First Drawing', drawing_master: 'Drawing Master', coloring_master: 'Coloring Master',
+                tracing_master: 'Tracing Master', streak_7: '7 Day Streak',
+                // Sticker categories
+                stamp_animal: 'Animals', stamp_nature: 'Nature', stamp_food: 'Food',
+                stamp_vehicle: 'Vehicles', stamp_holiday: 'Holiday',
+                // Misc
+                week: 'This Week', mastery: 'Mastery', progress: 'Progress',
+                age_3_4: '3-4y', age_4_5: '4-5y', age_5_6: '5-6y',
+                easy: 'Easy', medium: 'Medium', hard: 'Hard',
+                // Common
+                ok: 'OK', cancel: 'Cancel', close: 'Close', start: 'Start', done: 'Done',
+                // Shapes in dropdown
+                shape: 'Shape', symmetry: 'Symmetry',
+                // Stats
+                stats_drawing: 'Drawing', stats_tracing: 'Tracing', stats_coloring: 'Coloring',
+                stats_games: 'Games', stats_stickers: 'Stickers', stats_achievements: 'Achievements',
+                // Weekly summary
+                weekly_summary: 'Weekly Summary', drawings_this_week: 'Drawings This Week',
+                coloring_this_week: 'Coloring This Week', tracing_this_week: 'Tracing This Week',
+                games_this_week: 'Games This Week', achievements_this_week: 'Achievements This Week',
+                keep_going: 'Keep it up!',
+                // Unlock conditions
+                unlock_3_tracing: 'Complete 3 tracings to unlock', unlock_5_coloring: 'Complete 5 colorings to unlock',
+                unlock_3_challenges: 'Complete 3 daily challenges to unlock', unlock_10_drawings: 'Draw 10 times to unlock',
+                unlock_10_games: 'Play 10 games to unlock',
+                // Difficulty
+                diff_easy: 'Easy', diff_medium: 'Medium', diff_hard: 'Hard',
+                diff_easy_emoji: '🐣', diff_medium_emoji: '🐥', diff_hard_emoji: '🔥',
+                // Game card labels
+                game_select: 'Select Game', jigsaw_desc: 'Assemble pieces into a complete image',
+                dotconnect_desc: 'Connect all dots in order', maze_desc: 'Find the correct path to exit',
+                // Parent control labels
+                timeLimitOptions: 'Usage Time Limit', weeklyProgress: 'Weekly Progress Report',
+                dataExport: 'Data Export', contentUnlock: 'Content Unlock Management',
+                weeklySummary: 'Weekly Summary Report', viewReport: 'View',
+                // Specific stats labels
+                drawingTimes: 'Drawings', coloringTimes: 'Colorings',
+                tracingTimes: 'Tracings', gameTimes: 'Games',
+                // Misc UI
+                back: 'Back', continue: 'Continue', myGallery: 'My Gallery',
+                deleteFromGallery: 'Delete from Gallery', tracingProgress: 'Tracing Progress',
+                customSticker: 'Custom Sticker', saveSticker: 'Save Sticker',
+                maxStickersReached: 'Maximum limit (20) reached. Please delete old stickers.',
+                // Guided celebration
+                awesome: 'Awesome!', keepGoing: 'Keep it up next week!',
+                // Bubble game
+                score: 'Score', best: 'Best', gameOver: 'Game Over!',
+                newRecord: 'NEW RECORD!', bubbleScore: 'Score', bubbleBest: 'Best',
+                // Dot connect
+                dotConnectTitle: 'Dot Connect', connectDots: 'Connect all dots in order',
+                // Maze
+                mazeTitle: 'Maze Game', findPath: 'Find the correct path to exit',
+                // Daily challenge
+                dailyChallenge: 'Daily Challenge', viewGallery: 'View Gallery',
+                // Stats panel
+                achievementUnlock: 'Achievement Unlocked!', stickerUsage: 'Sticker Usage',
+                // Unlock names
+                vehicleStickers: 'Vehicle Stickers', foodStickers: 'Food Stickers',
+                holidayTheme: 'Holiday Theme', advancedStickers: 'Advanced Stickers',
+                gamesMode: 'Games Mode',
+                // Header buttons
+                bubbles: 'Bubbles', coloring: 'Coloring',
+                // Age group labels
+                ageAll: 'All', age3_4: '3-4y', age4_5: '4-5y', age5plus: '5+y',
+                // Coloring category tabs
+                cat_coloring_all2: 'All', cat_coloring_animal2: 'Animals',
+                cat_coloring_food2: 'Food', cat_coloring_character2: 'Characters',
+                cat_coloring_scenery: 'Scenery', cat_coloring_vehicle2: 'Vehicles',
+                // Time options
+                timeOff: 'Off', time15: '15 min', time30: '30 min',
+                time45: '45 min', time60: '60 min', time90: '90 min', time120: '120 min',
+                // Jigsaw
+                jigsawTitle: 'Jigsaw Game', jigsawEasy: 'Easy', jigsawMedium: 'Medium', jigsawHard: 'Hard',
+                // Shape dropdown
+                shapeLabel: 'Shape',
+                // Highlighter
+                highlighter: 'Highlighter', crayon: 'Crayon',
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'zh';
+
+        function t(key) {
+            return i18n[currentLang][key] || i18n['zh'][key] || key;
+        }
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                el.placeholder = t(key);
+            });
+            window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
+        }
+
         // ===== V2: M1 Stamps + M2 Tracing + M3 Fill + M4 Backgrounds + M5 ColoringGame =====
         
         // Stamp SVG definitions (20+ stamps)
@@ -9824,6 +10067,7 @@
             initExportButton(); // V11
             initShareButton(); // V11
             initParentControls(); // V14
+            initLangButton(); // V17
 
             const ctx = drawingCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
@@ -9865,6 +10109,27 @@
         // Init gallery button
         function initGalleryButton() {
             document.getElementById('galleryBtn').addEventListener('click', openGallery);
+        }
+
+        // V17: Init language button
+        function initLangButton() {
+            const langBtn = document.getElementById('langBtn');
+            if (langBtn) {
+                langBtn.addEventListener('click', () => {
+                    const newLang = currentLang === 'zh' ? 'en' : 'zh';
+                    switchLanguage(newLang);
+                    initAudio && playSound && playSound(playBtnClick);
+                });
+            }
+            // Apply saved language on load
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                el.placeholder = t(key);
+            });
         }
 
         // ===== V14: Parent Controls =====
