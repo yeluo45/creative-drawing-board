@@ -1708,6 +1708,50 @@
             justify-content: center;
         }
 
+        /* V29: 3D Panel */
+        #threeDPanel {
+            width: 280px;
+        }
+
+        .three-d-shapes {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .shape-btn {
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .shape-btn:hover {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .three-d-controls {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .three-d-controls button {
+            padding: 8px 16px;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
         /* V7: Custom Sticker Drawing Panel */
         #customStickerPanel {
             width: 260px;
@@ -6130,7 +6174,23 @@
                 <button class="panel-nav-btn" onclick="nextTracing()">Next ▶</button>
             </div>
         </div>
-        
+
+        <!-- V29: 3D Panel -->
+        <div class="panel" id="threeDPanel" style="display:none;">
+            <div class="panel-header">🧊 3D 绘画 <button class="panel-close" onclick="closeThreeDPanel()">×</button></div>
+
+            <div class="three-d-shapes">
+                <button class="shape-btn" onclick="set3DShape('cube')">📦 立方体</button>
+                <button class="shape-btn" onclick="set3DShape('sphere')">🔮 球体</button>
+                <button class="shape-btn" onclick="set3DShape('cylinder')">🛢️ 圆柱</button>
+            </div>
+
+            <div class="three-d-controls">
+                <button onclick="toggle2D3D()">🖼️ 切换模式</button>
+                <button onclick="reset3DView()">🔄 重置</button>
+            </div>
+        </div>
+
         <!-- Fill Panel -->
         <div class="panel" id="fillPanel">
             <button class="panel-close" onclick="closeAllPanels()">×</button>
@@ -6442,6 +6502,10 @@
         <!-- V25: Music Button -->
         <button class="tool-btn music-btn" id="musicBtn" title="音乐中心">
             <span class="tool-icon">🎵</span>
+        </button>
+        <!-- V29: 3D Button -->
+        <button class="tool-btn three-d-btn" id="threeDBtn" title="3D绘画">
+            <span class="tool-icon">🧊</span>
         </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
@@ -8568,6 +8632,22 @@
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
+
+        // V29: 3D State
+        let isIn3DMode = false;
+        let current3DShape = 'cube';
+        let canvas3D = {
+            rotationX: 0.3,
+            rotationY: 0.5,
+            scale: 1,
+            offsetX: 0,
+            offsetY: 0
+        };
+        let shape3DObjects = [];
+        let savedCanvasData = null;
+        let is3DRotating = false;
+        let lastMousePos = { x: 0, y: 0 };
+
         let bubbleMode = false;
         let bubbles = [];
         let particles = [];
@@ -8600,6 +8680,266 @@
         let audioDuration = 0;
         let audioTimerInterval = null;
         const AUDIO_RECORDINGS_KEY = 'drawing_audio_recordings';
+
+        // V29: 3D Drawing Functions
+
+        // Draw a cube with 6 colored faces using painter's algorithm
+        function drawCube3D(ctx, x, y, size, rotationX, rotationY) {
+            const s = size / 2;
+
+            // 8 vertices
+            const vertices = [
+                [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],
+                [-s, -s, s],  [s, -s, s],  [s, s, s],  [-s, s, s]
+            ];
+
+            function rotateX(v, a) {
+                return [v[0], v[1] * Math.cos(a) - v[2] * Math.sin(a), v[1] * Math.sin(a) + v[2] * Math.cos(a)];
+            }
+            function rotateY(v, a) {
+                return [v[0] * Math.cos(a) + v[2] * Math.sin(a), v[1], -v[0] * Math.sin(a) + v[2] * Math.cos(a)];
+            }
+
+            // 6 faces with colors
+            const faces = [
+                { verts: [4, 5, 6, 7], color: '#ff6b6b' }, // front - red
+                { verts: [0, 3, 7, 4], color: '#4ecdc4' }, // left - teal
+                { verts: [1, 5, 6, 2], color: '#45b7d1' }, // right - blue
+                { verts: [0, 1, 2, 3], color: '#96ceb4' }, // top - green
+                { verts: [4, 5, 1, 0], color: '#ffeaa7' }, // bottom - yellow
+                { verts: [3, 2, 6, 7], color: '#dfe6e9' }  // back - gray
+            ];
+
+            // Calculate depth for each face
+            faces.forEach(face => {
+                let sumZ = 0;
+                face.verts.forEach(vi => {
+                    const v = rotateY(rotateX(vertices[vi], rotationX), rotationY);
+                    sumZ += v[2];
+                });
+                face.depth = sumZ / 4;
+            });
+
+            // Sort by depth (back to front)
+            faces.sort((a, b) => a.depth - b.depth);
+
+            // Draw faces
+            faces.forEach(face => {
+                ctx.beginPath();
+                let first = true;
+                face.verts.forEach(vi => {
+                    const v = rotateY(rotateX(vertices[vi], rotationX), rotationY);
+                    const px = x + v[0];
+                    const py = y + v[1];
+                    if (first) { ctx.moveTo(px, py); first = false; }
+                    else ctx.lineTo(px, py);
+                });
+                ctx.closePath();
+                ctx.fillStyle = face.color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+        }
+
+        // Draw sphere using ellipses
+        function drawSphere3D(ctx, x, y, radius, rotationY) {
+            const radiusX = radius;
+            const radiusY = radius * Math.abs(Math.cos(rotationY));
+
+            // Main ellipse
+            ctx.beginPath();
+            ctx.ellipse(x, y, radiusX, radiusY, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#74b9ff';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.stroke();
+
+            // Latitude lines
+            for (let i = -2; i <= 2; i++) {
+                if (i === 0) continue;
+                const offsetY = (i / 3) * radiusY;
+                const offsetX = Math.sqrt(1 - Math.pow(i / 3, 2)) * radiusX;
+                ctx.beginPath();
+                ctx.ellipse(x, y + offsetY, offsetX, 2, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                ctx.stroke();
+            }
+
+            // Longitude lines
+            for (let i = -2; i <= 2; i++) {
+                const angle = (i / 3) * Math.PI / 2 + rotationY;
+                ctx.beginPath();
+                ctx.ellipse(x, y, radiusX * Math.abs(Math.cos(angle)), radiusY, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctx.stroke();
+            }
+        }
+
+        // Draw cylinder
+        function drawCylinder3D(ctx, x, y, radius, height, rotationY) {
+            const topY = y - height / 2;
+            const bottomY = y + height / 2;
+            const radiusX = radius * Math.abs(Math.cos(rotationY));
+
+            // Body
+            ctx.beginPath();
+            ctx.moveTo(x - radiusX, topY);
+            ctx.lineTo(x - radiusX, bottomY);
+            ctx.quadraticCurveTo(x, bottomY + 15, x + radiusX, bottomY);
+            ctx.lineTo(x + radiusX, topY);
+            ctx.quadraticCurveTo(x, topY - 15, x - radiusX, topY);
+            ctx.closePath();
+            ctx.fillStyle = '#a29bfe';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.stroke();
+
+            // Top ellipse
+            ctx.beginPath();
+            ctx.ellipse(x, topY, radiusX, radiusX * 0.3, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#dfe6e9';
+            ctx.fill();
+            ctx.stroke();
+
+            // Bottom ellipse
+            ctx.beginPath();
+            ctx.ellipse(x, bottomY, radiusX, radiusX * 0.15, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#b2bec3';
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // V29: 3D Scene Functions
+
+        function render3DScene() {
+            // Clear canvas
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            ctx.save();
+            ctx.translate(cx + canvas3D.offsetX, cy + canvas3D.offsetY);
+            ctx.scale(canvas3D.scale, canvas3D.scale);
+
+            // Draw shapes
+            shape3DObjects.forEach(obj => {
+                ctx.save();
+                ctx.translate(obj.x - cx, obj.y - cy);
+
+                switch (obj.type) {
+                    case 'cube':
+                        drawCube3D(ctx, 0, 0, obj.size, canvas3D.rotationX, canvas3D.rotationY);
+                        break;
+                    case 'sphere':
+                        drawSphere3D(ctx, 0, 0, obj.size / 2, canvas3D.rotationY);
+                        break;
+                    case 'cylinder':
+                        drawCylinder3D(ctx, 0, 0, obj.size / 2, obj.size, canvas3D.rotationY);
+                        break;
+                }
+
+                ctx.restore();
+            });
+
+            ctx.restore();
+
+            // Draw hint text
+            ctx.fillStyle = '#888';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('拖拽旋转 | 滚轮缩放', canvas.width / 2, canvas.height - 20);
+        }
+
+        function add3DShapeToScene(type) {
+            const size = 120;
+            shape3DObjects = [{
+                type: type,
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                size: size
+            }];
+            canvas3D.rotationX = 0.3;
+            canvas3D.rotationY = 0.5;
+            canvas3D.scale = 1;
+            render3DScene();
+        }
+
+        function reset3DView() {
+            canvas3D.rotationX = 0.3;
+            canvas3D.rotationY = 0.5;
+            canvas3D.scale = 1;
+            canvas3D.offsetX = 0;
+            canvas3D.offsetY = 0;
+            render3DScene();
+        }
+
+        function closeThreeDPanel() {
+            document.getElementById('threeDPanel').style.display = 'none';
+        }
+
+        function set3DShape(type) {
+            current3DShape = type;
+            add3DShapeToScene(type);
+        }
+
+        function toggle2D3D() {
+            if (isIn3DMode) {
+                // Switch to 2D
+                savedCanvasData = canvas.toDataURL();
+                isIn3DMode = false;
+                canvas.style.cursor = 'crosshair';
+                if (savedCanvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = savedCanvasData;
+                }
+                showToast('已切换到 2D 模式');
+            } else {
+                // Switch to 3D
+                savedCanvasData = canvas.toDataURL();
+                isIn3DMode = true;
+                canvas.style.cursor = 'grab';
+                add3DShapeToScene('cube');
+                showToast('已切换到 3D 模式');
+            }
+        }
+
+        // V29: 3D mouse interaction
+        let lastMousePos3D = { x: 0, y: 0 };
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (!isIn3DMode) return;
+            is3DRotating = true;
+            lastMousePos3D = { x: e.clientX, y: e.clientY };
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!is3DRotating || !isIn3DMode) return;
+            const dx = e.clientX - lastMousePos3D.x;
+            const dy = e.clientY - lastMousePos3D.y;
+            canvas3D.rotationY += dx * 0.01;
+            canvas3D.rotationX += dy * 0.01;
+            lastMousePos3D = { x: e.clientX, y: e.clientY };
+            render3DScene();
+        });
+
+        canvas.addEventListener('mouseup', () => { is3DRotating = false; });
+        canvas.addEventListener('mouseleave', () => { is3DRotating = false; });
+
+        canvas.addEventListener('wheel', (e) => {
+            if (!isIn3DMode) return;
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            canvas3D.scale = Math.max(0.5, Math.min(3, canvas3D.scale + delta));
+            render3DScene();
+        }, { passive: false });
 
         const ACTION_TYPES = {
             STROKE_START: 'stroke_start',
@@ -9712,6 +10052,7 @@
 
         function startDrawing(e) {
             if (bubbleMode) return;
+            if (isIn3DMode) return;
             if (checkTimeLimitBlock()) return;
             if (currentTool === 'stamp' && selectedStamp) return;
 
@@ -12259,6 +12600,12 @@
                 closeAllPanels();
                 showAudioRecordingsList();
                 document.getElementById('audioRecordingsPanel').style.display = 'block';
+            });
+
+            // V29: 3D Button Event
+            document.getElementById('threeDBtn').addEventListener('click', () => {
+                closeAllPanels();
+                document.getElementById('threeDPanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
