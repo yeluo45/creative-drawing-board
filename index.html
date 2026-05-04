@@ -1517,6 +1517,118 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
+        /* V25: Music Center Styles */
+        .music-options {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .music-option {
+            width: 90px;
+            height: 90px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #ddd;
+        }
+        .music-option:hover { background: #e8f5e9; transform: scale(1.05); }
+        .music-icon { font-size: 32px; }
+        .music-label { font-size: 12px; margin-top: 5px; }
+
+        .piano-keyboard {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            margin: 10px 0;
+        }
+        .white-keys {
+            display: flex;
+            height: 100%;
+        }
+        .piano-key.white {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #333;
+            border-radius: 0 0 5px 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            font-size: 10px;
+            user-select: none;
+        }
+        .piano-key.white:hover, .piano-key.white.active { background: #e8f5e9; }
+        .piano-key.black {
+            position: absolute;
+            width: 30px;
+            height: 80px;
+            background: #333;
+            border-radius: 0 0 4px 4px;
+            cursor: pointer;
+            z-index: 2;
+            color: #fff;
+            font-size: 9px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            user-select: none;
+        }
+        .piano-key.black:hover, .piano-key.black.active { background: #555; }
+
+        .drum-controls {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+        .drum-controls button { background: #4CAF50; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .drum-grid { padding: 5px 10px; }
+        .drum-row {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-bottom: 2px;
+        }
+        .drum-label {
+            width: 50px;
+            font-size: 11px;
+            color: #666;
+        }
+        .drum-cell {
+            width: 28px;
+            height: 28px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .drum-cell.active { background: #4CAF50; }
+        .drum-step-numbers {
+            display: flex;
+            padding: 5px 10px 5px 52px;
+            gap: 2px;
+        }
+        .drum-step-numbers span { width: 28px; text-align: center; font-size: 10px; color: #999; }
+        .drum-cell.current { border: 2px solid #2196F3; }
+
+        .synth-controls { padding: 10px; }
+        .synth-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .synth-row label { width: 60px; font-size: 12px; }
+        .synth-row input[type=range] { flex: 1; }
+        .synth-presets { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .synth-presets button { background: #9C27B0; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .synth-keyboard { margin-top: 10px; }
+
         .panel-grid {
             display: grid;
             grid-template-columns: repeat(5, 60px);
@@ -5917,6 +6029,146 @@
             <div class="shape-grid" id="shapeGrid"></div>
         </div>
 
+        <!-- V25: Music Center Panel -->
+        <div class="panel" id="musicPanel">
+            <div class="panel-header">🎵 音乐中心 <button class="panel-close" onclick="closeMusicPanel()">×</button></div>
+            <div class="music-options">
+                <div class="music-option" onclick="openPianoGame()">
+                    <div class="music-icon">🎹</div>
+                    <div class="music-label">钢琴键盘</div>
+                </div>
+                <div class="music-option" onclick="openRhythmEditor()">
+                    <div class="music-icon">🥁</div>
+                    <div class="music-label">节奏编辑器</div>
+                </div>
+                <div class="music-option" onclick="openSynthesizer()">
+                    <div class="music-icon">🔊</div>
+                    <div class="music-label">音效合成器</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V25: Piano Keyboard Panel -->
+        <div class="panel" id="pianoPanel">
+            <div class="panel-header">🎹 钢琴键盘 <button class="panel-close" onclick="closePianoPanel()">×</button></div>
+            <div class="piano-keyboard" id="pianoKeyboard">
+                <div class="white-keys">
+                    <div class="piano-key white" data-note="C3">C3</div>
+                    <div class="piano-key white" data-note="D3">D3</div>
+                    <div class="piano-key white" data-note="E3">E3</div>
+                    <div class="piano-key white" data-note="F3">F3</div>
+                    <div class="piano-key white" data-note="G3">G3</div>
+                    <div class="piano-key white" data-note="A3">A3</div>
+                    <div class="piano-key white" data-note="B3">B3</div>
+                    <div class="piano-key white" data-note="C4">C4</div>
+                    <div class="piano-key white" data-note="D4">D4</div>
+                    <div class="piano-key white" data-note="E4">E4</div>
+                    <div class="piano-key white" data-note="F4">F4</div>
+                    <div class="piano-key white" data-note="G4">G4</div>
+                    <div class="piano-key white" data-note="A4">A4</div>
+                    <div class="piano-key white" data-note="B4">B4</div>
+                    <div class="piano-key white" data-note="C5">C5</div>
+                </div>
+                <div class="black-keys">
+                    <div class="piano-key black" data-note="C#3" style="left:50px;"></div>
+                    <div class="piano-key black" data-note="D#3" style="left:90px;"></div>
+                    <div class="piano-key black" data-note="F#3" style="left:170px;"></div>
+                    <div class="piano-key black" data-note="G#3" style="left:210px;"></div>
+                    <div class="piano-key black" data-note="A#3" style="left:250px;"></div>
+                    <div class="piano-key black" data-note="C#4" style="left:370px;"></div>
+                    <div class="piano-key black" data-note="D#4" style="left:410px;"></div>
+                    <div class="piano-key black" data-note="F#4" style="left:490px;"></div>
+                    <div class="piano-key black" data-note="G#4" style="left:530px;"></div>
+                    <div class="piano-key black" data-note="A#4" style="left:570px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V25: Rhythm Editor Panel -->
+        <div class="panel" id="rhythmPanel">
+            <div class="panel-header">🥁 节奏编辑器 <button class="panel-close" onclick="closeRhythmPanel()">×</button></div>
+            <div class="drum-controls">
+                <button onclick="playDrumSequence()">▶ 播放</button>
+                <button onclick="stopDrumSequence()">⏹ 停止</button>
+                <select id="bpmSelect" onchange="setDrumBpm(this.value)">
+                    <option value="80">80 BPM</option>
+                    <option value="100" selected>100 BPM</option>
+                    <option value="120">120 BPM</option>
+                    <option value="140">140 BPM</option>
+                </select>
+            </div>
+            <div class="drum-grid" id="drumGrid"></div>
+            <div class="drum-step-numbers">
+                <span></span>
+                <span>1</span><span>2</span><span>3</span><span>4</span>
+                <span>5</span><span>6</span><span>7</span><span>8</span>
+                <span>9</span><span>10</span><span>11</span><span>12</span>
+                <span>13</span><span>14</span><span>15</span><span>16</span>
+            </div>
+        </div>
+
+        <!-- V25: Synthesizer Panel -->
+        <div class="panel" id="synthPanel">
+            <div class="panel-header">🔊 音效合成器 <button class="panel-close" onclick="closeSynthPanel()">×</button></div>
+            <div class="synth-controls">
+                <div class="synth-row">
+                    <label>振荡器:</label>
+                    <select id="synthType" onchange="updateSynthParams()">
+                        <option value="sine">正弦波</option>
+                        <option value="square">方波</option>
+                        <option value="sawtooth">锯齿波</option>
+                        <option value="triangle" selected>三角波</option>
+                    </select>
+                </div>
+                <div class="synth-row">
+                    <label>频率:</label>
+                    <input type="range" id="synthFreq" min="100" max="1000" value="440" onchange="updateSynthParams()">
+                    <span id="freqDisplay">440 Hz</span>
+                </div>
+                <div class="synth-row">
+                    <label>音量:</label>
+                    <input type="range" id="synthGain" min="0" max="100" value="70" onchange="updateSynthParams()">
+                </div>
+                <div class="synth-presets">
+                    <button onclick="applySynthPreset('piano')">钢琴</button>
+                    <button onclick="applySynthPreset('guitar')">吉他</button>
+                    <button onclick="applySynthPreset('alien')">外星人</button>
+                    <button onclick="applySynthPreset('space')">太空</button>
+                </div>
+            </div>
+            <div class="synth-keyboard" id="synthKeyboard">
+                <div class="white-keys">
+                    <div class="piano-key white" data-note="C3">C3</div>
+                    <div class="piano-key white" data-note="D3">D3</div>
+                    <div class="piano-key white" data-note="E3">E3</div>
+                    <div class="piano-key white" data-note="F3">F3</div>
+                    <div class="piano-key white" data-note="G3">G3</div>
+                    <div class="piano-key white" data-note="A3">A3</div>
+                    <div class="piano-key white" data-note="B3">B3</div>
+                    <div class="piano-key white" data-note="C4">C4</div>
+                    <div class="piano-key white" data-note="D4">D4</div>
+                    <div class="piano-key white" data-note="E4">E4</div>
+                    <div class="piano-key white" data-note="F4">F4</div>
+                    <div class="piano-key white" data-note="G4">G4</div>
+                    <div class="piano-key white" data-note="A4">A4</div>
+                    <div class="piano-key white" data-note="B4">B4</div>
+                    <div class="piano-key white" data-note="C5">C5</div>
+                </div>
+                <div class="black-keys">
+                    <div class="piano-key black" data-note="C#3" style="left:50px;"></div>
+                    <div class="piano-key black" data-note="D#3" style="left:90px;"></div>
+                    <div class="piano-key black" data-note="F#3" style="left:170px;"></div>
+                    <div class="piano-key black" data-note="G#3" style="left:210px;"></div>
+                    <div class="piano-key black" data-note="A#3" style="left:250px;"></div>
+                    <div class="piano-key black" data-note="C#4" style="left:370px;"></div>
+                    <div class="piano-key black" data-note="D#4" style="left:410px;"></div>
+                    <div class="piano-key black" data-note="F#4" style="left:490px;"></div>
+                    <div class="piano-key black" data-note="G#4" style="left:530px;"></div>
+                    <div class="piano-key black" data-note="A#4" style="left:570px;"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- V23: Layer System Panel -->
         <div class="panel" id="layerPanel">
             <div class="panel-header">📑 图层 <button class="panel-close" onclick="closeLayerPanel()">×</button></div>
@@ -5981,6 +6233,10 @@
         <!-- V24: Animation Button -->
         <button class="tool-btn animation-btn" id="animationBtn" title="动画制作">
             <span class="tool-icon">🎬</span>
+        </button>
+        <!-- V25: Music Button -->
+        <button class="tool-btn music-btn" id="musicBtn" title="音乐中心">
+            <span class="tool-icon">🎵</span>
         </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
@@ -18595,6 +18851,12 @@
                 animationBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); openAnimationEditor(); loadAnimation(); });
             }
             
+            // V25: Music button
+            const musicBtn = document.getElementById('musicBtn');
+            if (musicBtn) {
+                musicBtn.addEventListener('click', () => { closeAllPanels(); togglePanel('music'); });
+            }
+            
             // Text alignment buttons
             document.querySelectorAll('.align-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -18938,6 +19200,319 @@
                 renderCurrentFrame();
                 updateFrameCounter();
             }
+        }
+
+        // ===== V25: Music/Sound System =====
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        const NOTE_FREQUENCIES = {
+            'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+            'E3': 164.81, 'F3': 174.61, 'F#3': 185.00, 'G3': 196.00,
+            'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
+            'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+            'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+            'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+            'C5': 523.25
+        };
+
+        function playNote(note, duration = 0.5) {
+            if (!audioCtx) initAudio();
+            const freq = NOTE_FREQUENCIES[note];
+            if (!freq) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        // Piano key handlers
+        function initPianoKeyboard() {
+            document.querySelectorAll('#pianoKeyboard .piano-key').forEach(key => {
+                key.addEventListener('mousedown', () => {
+                    playNote(key.dataset.note);
+                    key.classList.add('active');
+                });
+                key.addEventListener('mouseup', () => key.classList.remove('active'));
+                key.addEventListener('mouseleave', () => key.classList.remove('active'));
+                key.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    playNote(key.dataset.note);
+                    key.classList.add('active');
+                });
+                key.addEventListener('touchend', () => key.classList.remove('active'));
+            });
+        }
+
+        // ===== V25: Drum Machine =====
+        const drumTracks = {
+            kick:  [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+            snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+            hihat: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+            clap:  [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0]
+        };
+
+        let drumInterval = null;
+        let currentDrumStep = 0;
+        let drumBpm = 100;
+
+        function initDrumGrid() {
+            const grid = document.getElementById('drumGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const tracks = ['kick', 'snare', 'hihat', 'clap'];
+            const labels = { kick: 'Kick', snare: 'Snare', hihat: 'HiHat', clap: 'Clap' };
+            
+            tracks.forEach(track => {
+                const row = document.createElement('div');
+                row.className = 'drum-row';
+                
+                const label = document.createElement('span');
+                label.className = 'drum-label';
+                label.textContent = labels[track];
+                row.appendChild(label);
+                
+                for (let i = 0; i < 16; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'drum-cell' + (drumTracks[track][i] ? ' active' : '');
+                    cell.dataset.track = track;
+                    cell.dataset.step = i;
+                    cell.onclick = () => toggleDrumCell(track, i);
+                    row.appendChild(cell);
+                }
+                
+                grid.appendChild(row);
+            });
+        }
+
+        function toggleDrumCell(track, step) {
+            drumTracks[track][step] = drumTracks[track][step] ? 0 : 1;
+            initDrumGrid();
+        }
+
+        function playKick() {
+            if (!audioCtx) initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            gain.gain.setValueAtTime(1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function playSnare() {
+            if (!audioCtx) initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.1;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 1000;
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            noise.connect(filter).connect(gain).connect(audioCtx.destination);
+            noise.start();
+        }
+
+        function playHiHat() {
+            if (!audioCtx) initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.03;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 8000;
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+            noise.connect(filter).connect(gain).connect(audioCtx.destination);
+            noise.start();
+        }
+
+        function playClap() {
+            if (!audioCtx) initAudio();
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const bufferSize = audioCtx.sampleRate * 0.015;
+                    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let j = 0; j < bufferSize; j++) data[j] = Math.random() * 2 - 1;
+                    const noise = audioCtx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 2500;
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
+                    noise.connect(filter).connect(gain).connect(audioCtx.destination);
+                    noise.start();
+                }, i * 8);
+            }
+        }
+
+        function playDrumSequence() {
+            if (drumInterval) return;
+            const stepTime = (60 / drumBpm) * 1000 / 4;
+            drumInterval = setInterval(() => {
+                if (drumTracks.kick[currentDrumStep]) playKick();
+                if (drumTracks.snare[currentDrumStep]) playSnare();
+                if (drumTracks.hihat[currentDrumStep]) playHiHat();
+                if (drumTracks.clap[currentDrumStep]) playClap();
+                currentDrumStep = (currentDrumStep + 1) % 16;
+            }, stepTime);
+        }
+
+        function stopDrumSequence() {
+            if (drumInterval) {
+                clearInterval(drumInterval);
+                drumInterval = null;
+            }
+            currentDrumStep = 0;
+        }
+
+        function setDrumBpm(bpm) {
+            drumBpm = parseInt(bpm);
+            if (drumInterval) {
+                stopDrumSequence();
+                playDrumSequence();
+            }
+        }
+
+        // ===== V25: Synthesizer =====
+        const synthParams = {
+            type: 'triangle',
+            freq: 440,
+            gain: 0.7
+        };
+
+        const SYNTH_PRESETS = {
+            piano: { type: 'triangle', freq: 440, gain: 0.6 },
+            guitar: { type: 'sawtooth', freq: 440, gain: 0.5 },
+            alien: { type: 'sine', freq: 440, gain: 0.6 },
+            space: { type: 'sine', freq: 440, gain: 0.5 }
+        };
+
+        function synthPlayNote(note) {
+            if (!audioCtx) initAudio();
+            const freq = NOTE_FREQUENCIES[note];
+            if (!freq) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = synthParams.type;
+            osc.frequency.value = freq;
+
+            const now = audioCtx.currentTime;
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(synthParams.gain, now + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.8);
+        }
+
+        function applySynthPreset(preset) {
+            const p = SYNTH_PRESETS[preset];
+            if (p) {
+                synthParams.type = p.type;
+                synthParams.freq = p.freq;
+                synthParams.gain = p.gain;
+                document.getElementById('synthType').value = p.type;
+                document.getElementById('synthFreq').value = p.freq;
+                document.getElementById('synthGain').value = p.gain * 100;
+                document.getElementById('freqDisplay').textContent = p.freq + ' Hz';
+            }
+        }
+
+        function updateSynthParams() {
+            synthParams.type = document.getElementById('synthType').value;
+            synthParams.freq = parseInt(document.getElementById('synthFreq').value);
+            synthParams.gain = parseInt(document.getElementById('synthGain').value) / 100;
+            document.getElementById('freqDisplay').textContent = synthParams.freq + ' Hz';
+        }
+
+        function initSynthKeyboard() {
+            document.querySelectorAll('#synthKeyboard .piano-key').forEach(key => {
+                key.addEventListener('mousedown', () => {
+                    synthPlayNote(key.dataset.note);
+                    key.classList.add('active');
+                });
+                key.addEventListener('mouseup', () => key.classList.remove('active'));
+                key.addEventListener('mouseleave', () => key.classList.remove('active'));
+                key.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    synthPlayNote(key.dataset.note);
+                    key.classList.add('active');
+                });
+                key.addEventListener('touchend', () => key.classList.remove('active'));
+            });
+        }
+
+        // ===== V25: Panel open/close functions =====
+        function closeMusicPanel() { 
+            const panel = document.getElementById('musicPanel');
+            if (panel) panel.classList.remove('active');
+        }
+        function closePianoPanel() { 
+            const panel = document.getElementById('pianoPanel');
+            if (panel) panel.classList.remove('active');
+        }
+        function closeRhythmPanel() { 
+            const panel = document.getElementById('rhythmPanel');
+            if (panel) panel.classList.remove('active');
+            stopDrumSequence();
+        }
+        function closeSynthPanel() { 
+            const panel = document.getElementById('synthPanel');
+            if (panel) panel.classList.remove('active');
+        }
+
+        function openPianoGame() {
+            closeMusicPanel();
+            const panel = document.getElementById('pianoPanel');
+            if (panel) { panel.classList.add('active'); initPianoKeyboard(); }
+        }
+        function openRhythmEditor() {
+            closeMusicPanel();
+            initDrumGrid();
+            const panel = document.getElementById('rhythmPanel');
+            if (panel) panel.classList.add('active');
+        }
+        function openSynthesizer() {
+            closeMusicPanel();
+            const panel = document.getElementById('synthPanel');
+            if (panel) { panel.classList.add('active'); initSynthKeyboard(); }
         }
 
         // Override draw function to handle shape library and text placement
