@@ -6972,6 +6972,72 @@
         .shop-item.owned .shop-item-price { color: #4CAF50; }
         .shop-item-owned-badge { font-size: 10px; color: #4CAF50; margin-top: 2px; }
 
+        /* V50: Canvas Size Panel */
+        .canvas-size-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 12px;
+        }
+        .size-preset-item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .size-preset-item:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        .size-preset-item.selected {
+            background: #d3f9d8;
+            border-color: #40c057;
+        }
+        .size-icon { font-size: 1.5rem; }
+        .size-label { font-weight: bold; font-size: 0.85rem; }
+        .size-dims { font-size: 0.75rem; color: #868e96; }
+        .canvas-size-custom {
+            padding: 12px;
+            border-top: 2px dashed #dee2e6;
+        }
+        .custom-size-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .custom-size-row label { font-weight: bold; width: 40px; }
+        .custom-size-row input {
+            flex: 1;
+            padding: 6px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .apply-custom-size-btn {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(180deg, #69db7c 0%, #40c057 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .canvas-size-divider {
+            padding: 10px;
+            text-align: center;
+            color: #868e96;
+            cursor: pointer;
+            border-top: 1px solid #dee2e6;
+        }
+        .canvas-size-divider:hover { background: #f8f9fa; }
+
     </style>
 </head>
 <body>
@@ -7793,6 +7859,8 @@
         <button class="tool-btn" id="suggestionBtn" title="智能建议">💡</button>
         <!-- V34: Gesture Button -->
         <button class="tool-btn" id="gestureBtn" title="手势控制">🤚</button>
+        <!-- V50: Canvas Size Button -->
+        <button class="tool-btn canvas-size-btn" id="canvasSizeBtn" title="画布尺寸">📐</button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -8270,6 +8338,48 @@
             <div class="challenge-body" id="challengeBody">
                 <!-- Challenge content injected by JS -->
             </div>
+        </div>
+    </div>
+
+    <!-- V50: Canvas Size Panel -->
+    <div class="panel" id="canvasSizePanel" style="display:none;">
+        <div class="panel-header">📐 画布尺寸 <button class="close-btn" onclick="closeCanvasSizePanel()">×</button></div>
+        <div class="canvas-size-presets" id="canvasSizePresets">
+            <div class="size-preset-item" data-size="auto" onclick="selectCanvasSizePreset('auto')">
+                <span class="size-icon">🔄</span>
+                <span class="size-label">自适应</span>
+            </div>
+            <div class="size-preset-item" data-size="landscape" onclick="selectCanvasSizePreset('landscape')">
+                <span class="size-icon">📐</span>
+                <span class="size-label">横版 4:3</span>
+                <span class="size-dims">800×600</span>
+            </div>
+            <div class="size-preset-item" data-size="portrait" onclick="selectCanvasSizePreset('portrait')">
+                <span class="size-icon">📱</span>
+                <span class="size-label">竖版 3:4</span>
+                <span class="size-dims">600×800</span>
+            </div>
+            <div class="size-preset-item" data-size="square" onclick="selectCanvasSizePreset('square')">
+                <span class="size-icon">⬜</span>
+                <span class="size-label">方形 1:1</span>
+                <span class="size-dims">700×700</span>
+            </div>
+        </div>
+        <div class="canvas-size-custom" id="canvasSizeCustom" style="display:none;">
+            <div class="custom-size-row">
+                <label>宽度</label>
+                <input type="number" id="customCanvasWidth" value="800" min="320" max="3840" step="10">
+                <span>px</span>
+            </div>
+            <div class="custom-size-row">
+                <label>高度</label>
+                <input type="number" id="customCanvasHeight" value="600" min="240" max="2160" step="10">
+                <span>px</span>
+            </div>
+            <button class="apply-custom-size-btn" onclick="applyCustomCanvasSize()">应用</button>
+        </div>
+        <div class="canvas-size-divider" onclick="toggleCanvasSizeCustom()">
+            <span>+ 自定义尺寸</span>
         </div>
     </div>
 
@@ -12152,14 +12262,16 @@
 
         // Canvas setup
         function resizeCanvas() {
-            const rect = canvasContainer.getBoundingClientRect();
+            const dims = getCanvasDimensions();
             const dpr = window.devicePixelRatio || 1;
-            
+            const width = dims.width;
+            const height = dims.height;
+
             [bgCanvas, tracingCanvas, drawingCanvas, fillCanvas, stampCanvas, bubbleCanvas].forEach(canvas => {
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.height * dpr;
-                canvas.style.width = rect.width + 'px';
-                canvas.style.height = rect.height + 'px';
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
             });
 
             const ctx = drawingCanvas.getContext('2d');
@@ -12184,11 +12296,22 @@
 
             // V23: Resize layer canvases
             Object.keys(layerCanvases).forEach(layerId => {
-                layerCanvases[layerId].width = rect.width * dpr;
-                layerCanvases[layerId].height = rect.height * dpr;
+                layerCanvases[layerId].width = width * dpr;
+                layerCanvases[layerId].height = height * dpr;
                 layerContexts[layerId].scale(dpr, dpr);
             });
             compositeLayers();
+
+            // Center in container if not auto
+            if (canvasSizePreset !== 'auto') {
+                canvasContainer.style.display = 'flex';
+                canvasContainer.style.justifyContent = 'center';
+                canvasContainer.style.alignItems = 'center';
+            } else {
+                canvasContainer.style.display = '';
+                canvasContainer.style.justifyContent = '';
+                canvasContainer.style.alignItems = '';
+            }
 
             // Redraw background
             drawBackground();
@@ -13204,6 +13327,127 @@
         // ===== Panels =====
         function closeAllPanels() {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        }
+
+        // V50: Canvas Size Functions
+        let canvasSizePreset = localStorage.getItem('canvasSizePreset') || 'auto';
+        let canvasWidth = 800;
+        let canvasHeight = 600;
+
+        function initCanvasSizeButton() {
+            const btn = document.getElementById('canvasSizeBtn');
+            if (btn) {
+                btn.addEventListener('click', openCanvasSizePanel);
+            }
+            updateCanvasSizeUI();
+        }
+
+        function openCanvasSizePanel() {
+            closeAllPanels();
+            document.getElementById('canvasSizePanel').style.display = 'block';
+            updateCanvasSizePresetUI();
+        }
+
+        function closeCanvasSizePanel() {
+            document.getElementById('canvasSizePanel').style.display = 'none';
+        }
+
+        function updateCanvasSizeUI() {
+            const labels = { auto: '自适应', landscape: '横版', portrait: '竖版', square: '方形', custom: '自定义' };
+            const icons = { auto: '🔄', landscape: '📐', portrait: '📱', square: '⬜', custom: '📏' };
+            const preset = canvasSizePreset;
+            const icon = icons[preset] || '📐';
+            const btn = document.getElementById('canvasSizeBtn');
+            if (btn) btn.innerHTML = icon;
+        }
+
+        function updateCanvasSizePresetUI() {
+            document.querySelectorAll('.size-preset-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.size === canvasSizePreset);
+            });
+        }
+
+        function selectCanvasSizePreset(preset) {
+            canvasSizePreset = preset;
+            localStorage.setItem('canvasSizePreset', preset);
+            applyCanvasSize();
+            updateCanvasSizeUI();
+            updateCanvasSizePresetUI();
+            closeCanvasSizePanel();
+            showToast('画布已切换');
+        }
+
+        function toggleCanvasSizeCustom() {
+            const custom = document.getElementById('canvasSizeCustom');
+            custom.style.display = custom.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function applyCustomCanvasSize() {
+            const w = parseInt(document.getElementById('customCanvasWidth').value) || 800;
+            const h = parseInt(document.getElementById('customCanvasHeight').value) || 600;
+            canvasWidth = Math.max(320, Math.min(3840, w));
+            canvasHeight = Math.max(240, Math.min(2160, h));
+            canvasSizePreset = 'custom';
+            localStorage.setItem('canvasSizePreset', 'custom');
+            localStorage.setItem('canvasCustomSize', JSON.stringify({ width: canvasWidth, height: canvasHeight }));
+            applyCanvasSize();
+            updateCanvasSizeUI();
+            closeCanvasSizePanel();
+            showToast('画布尺寸: ' + canvasWidth + '×' + canvasHeight);
+        }
+
+        function getCanvasDimensions() {
+            if (canvasSizePreset === 'landscape') return { width: 800, height: 600 };
+            if (canvasSizePreset === 'portrait') return { width: 600, height: 800 };
+            if (canvasSizePreset === 'square') return { width: 700, height: 700 };
+            if (canvasSizePreset === 'custom') {
+                const saved = localStorage.getItem('canvasCustomSize');
+                if (saved) {
+                    try {
+                        const { width, height } = JSON.parse(saved);
+                        return { width, height };
+                    } catch(e) {}
+                }
+                return { width: canvasWidth, height: canvasHeight };
+            }
+            // auto - use container size
+            const rect = canvasContainer.getBoundingClientRect();
+            return { width: rect.width, height: rect.height };
+        }
+
+        function applyCanvasSize() {
+            const dpr = window.devicePixelRatio || 1;
+            const dims = getCanvasDimensions();
+            const width = dims.width;
+            const height = dims.height;
+
+            [bgCanvas, tracingCanvas, drawingCanvas, fillCanvas, stampCanvas, bubbleCanvas].forEach(canvas => {
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+            });
+
+            // Re-init context settings
+            const ctx = drawingCanvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentBrushSize;
+
+            // Center in container if not auto
+            if (canvasSizePreset !== 'auto') {
+                canvasContainer.style.display = 'flex';
+                canvasContainer.style.justifyContent = 'center';
+                canvasContainer.style.alignItems = 'center';
+            } else {
+                canvasContainer.style.display = '';
+                canvasContainer.style.justifyContent = '';
+                canvasContainer.style.alignItems = '';
+            }
+
+            drawBackground();
         }
 
         // ===== V33: Smart Suggestion Functions =====
@@ -17197,6 +17441,7 @@
             initHolidaySystem(); // V19: Initialize holiday system
             initLayers(); // V23: Initialize layer system
             initShapeLibrary(); // V23: Initialize shape library
+            initCanvasSizeButton(); // V50: Initialize canvas size
             resizeCanvas();
             initEventListeners();
             initColoringGame();
