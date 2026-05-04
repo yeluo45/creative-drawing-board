@@ -123,6 +123,45 @@
             display: flex;
         }
 
+        /* V51: Music Style Selector */
+        .music-style-section {
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 4px;
+        }
+        .music-style-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .music-style-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+        .music-style-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 2px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .music-style-item:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        .music-style-item.selected {
+            background: #d3f9d8;
+            border-color: #40c057;
+        }
+        .music-icon { font-size: 1.1rem; }
+        .music-name { font-size: 0.6rem; margin-top: 2px; color: #495057; }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -7047,8 +7086,34 @@
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
             <button class="bgm-btn" id="bgmBtn" title="Music On">🎵</button>
             <div class="bgm-volume-panel" id="bgmVolumePanel">
+                <!-- V51: Music Style Selector -->
+                <div class="music-style-section">
+                    <div class="music-style-label">🎵 音乐风格</div>
+                    <div class="music-style-grid">
+                        <div class="music-style-item" data-style="happy" onclick="selectMusicStyle('happy')">
+                            <span class="music-icon">😊</span>
+                            <span class="music-name">欢快</span>
+                        </div>
+                        <div class="music-style-item" data-style="peaceful" onclick="selectMusicStyle('peaceful')">
+                            <span class="music-icon">🌿</span>
+                            <span class="music-name">平静</span>
+                        </div>
+                        <div class="music-style-item" data-style="playful" onclick="selectMusicStyle('playful')">
+                            <span class="music-icon">🎈</span>
+                            <span class="music-name">活泼</span>
+                        </div>
+                        <div class="music-style-item" data-style="dreamy" onclick="selectMusicStyle('dreamy')">
+                            <span class="music-icon">🌙</span>
+                            <span class="music-name">梦幻</span>
+                        </div>
+                        <div class="music-style-item" data-style="festive" onclick="selectMusicStyle('festive')">
+                            <span class="music-icon">🎉</span>
+                            <span class="music-name">节日</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="volume-row">
-                    <span>🎵 背景音乐</span>
+                    <span>🔊 背景音乐</span>
                     <input type="range" id="bgmVolumeSlider" min="0" max="100" value="50">
                 </div>
                 <div class="volume-row">
@@ -12194,6 +12259,26 @@
             }
         }
 
+        // V51: Music Style Selection
+        let currentMusicStyle = localStorage.getItem('musicStyle') || 'happy';
+
+        function selectMusicStyle(style) {
+            currentMusicStyle = style;
+            localStorage.setItem('musicStyle', style);
+            updateMusicStyleUI();
+            switchBGM(style);
+        }
+
+        function updateMusicStyleUI() {
+            document.querySelectorAll('.music-style-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.style === currentMusicStyle);
+            });
+        }
+
+        function initMusicStyleSelector() {
+            updateMusicStyleUI();
+        }
+
         // Load BGM preferences from localStorage
         function loadBGMPreference() {
             const enabled = localStorage.getItem('bgmEnabled');
@@ -12202,6 +12287,8 @@
             if (vol !== null) bgmVolume = parseInt(vol, 10);
             const sfx = localStorage.getItem('sfxVolume');
             if (sfx !== null) sfxVolume = parseInt(sfx, 10);
+            const style = localStorage.getItem('musicStyle');
+            if (style !== null) currentMusicStyle = style;
         }
 
         // Save BGM preferences
@@ -17442,6 +17529,7 @@
             initLayers(); // V23: Initialize layer system
             initShapeLibrary(); // V23: Initialize shape library
             initCanvasSizeButton(); // V50: Initialize canvas size
+            initMusicStyleSelector(); // V51: Initialize music style selector
             resizeCanvas();
             initEventListeners();
             initColoringGame();
