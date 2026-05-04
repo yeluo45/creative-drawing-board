@@ -3362,6 +3362,88 @@
             background: #FFA94D;
         }
 
+        .tool-btn.particle-btn {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        }
+
+        .tool-btn.particle-btn:hover {
+            background: linear-gradient(135deg, #fff9c4, #fff176);
+        }
+
+        .tool-btn.particle-btn.selected {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #333;
+        }
+
+        .particle-types {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .particle-btn {
+            padding: 8px 14px;
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .particle-btn:hover, .particle-btn.active {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .particle-colors {
+            display: flex;
+            gap: 8px;
+            padding: 8px 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .color-dot:hover, .color-dot.active {
+            border-color: #333;
+        }
+
+        .particle-controls {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .particle-controls button {
+            padding: 8px 16px;
+            background: #9b59b6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .particle-controls button:hover {
+            background: #8e44ad;
+        }
+
+        .particle-icon {
+            font-size: 1.2rem;
+        }
+
         .tool-icon {
             font-size: 1.2rem;
         }
@@ -6507,6 +6589,10 @@
         <button class="tool-btn three-d-btn" id="threeDBtn" title="3D绘画">
             <span class="tool-icon">🧊</span>
         </button>
+        <!-- V30: Particle Button -->
+        <button class="tool-btn particle-btn" id="particleBtn" title="粒子特效">
+            <span class="tool-icon">✨</span>
+        </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -6569,6 +6655,35 @@
         <button class="tool-btn" id="recordingsBtn" title="我的录像">📹</button>
         <button class="tool-btn" id="audioRecBtn" title="录音">🎙️</button>
         <button class="tool-btn" id="audioListBtn" title="我的录音">🎤</button>
+    </div>
+
+    <!-- V30: Particle Panel -->
+    <div class="panel" id="particlePanel" style="display:none;">
+        <div class="panel-header">✨ 粒子特效 <button class="close-btn" onclick="closeParticlePanel()">×</button></div>
+
+        <div class="particle-types">
+            <button class="particle-btn" onclick="setParticleEffect('firework')">🎆 烟花</button>
+            <button class="particle-btn" onclick="setParticleEffect('snow')">❄️ 雪花</button>
+            <button class="particle-btn" onclick="setParticleEffect('star')">⭐ 星光</button>
+        </div>
+
+        <div class="particle-colors">
+            <div class="color-dot" style="background:#ff6b6b" onclick="setParticleColor('#ff6b6b')"></div>
+            <div class="color-dot" style="background:#ffd93d" onclick="setParticleColor('#ffd93d')"></div>
+            <div class="color-dot" style="background:#6bcb77" onclick="setParticleColor('#6bcb77')"></div>
+            <div class="color-dot" style="background:#4d96ff" onclick="setParticleColor('#4d96ff')"></div>
+            <div class="color-dot" style="background:#c9b1ff" onclick="setParticleColor('#c9b1ff')"></div>
+            <div class="color-dot" style="background:#ffffff" onclick="setParticleColor('#ffffff')"></div>
+        </div>
+
+        <div class="particle-controls" id="fireworkControls" style="display:none;">
+            <button onclick="manualFirework()">▶ 发射烟花</button>
+        </div>
+
+        <div class="particle-controls">
+            <button onclick="toggleParticleAnimation()">▶ 开始</button>
+            <button onclick="clearParticles()">✖ 清除</button>
+        </div>
     </div>
 
     <!-- AR Panel (V26) -->
@@ -7060,6 +7175,270 @@
                 loaded: 'Loaded to canvas!', exported: 'Exported', imported: 'Import successful!', import_error: 'Import failed: Invalid file format',
             }
         };
+
+        // ===== V30: Particle System =====
+        class Particle {
+            constructor(x, y, config) {
+                this.x = x;
+                this.y = y;
+                this.vx = config.vx || (Math.random() - 0.5) * 4;
+                this.vy = config.vy || (Math.random() - 0.5) * 4;
+                this.gravity = config.gravity || 0;
+                this.friction = config.friction || 0.98;
+                this.size = config.size || 3;
+                this.color = config.color || '#ff6b6b';
+                this.alpha = 1;
+                this.decay = config.decay || 0.02;
+                this.life = 1;
+            }
+
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.alpha = Math.max(0, this.life);
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(0.1, this.size * this.life), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        class SnowParticle extends Particle {
+            constructor(canvasWidth, canvasHeight) {
+                super(Math.random() * canvasWidth, -10, {
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: 0.5 + Math.random() * 1.5,
+                    gravity: 0.01,
+                    friction: 0.99,
+                    size: 2 + Math.random() * 4,
+                    color: '#ffffff',
+                    decay: 0
+                });
+                this.canvasWidth = canvasWidth;
+                this.canvasHeight = canvasHeight;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = 0.02 + Math.random() * 0.02;
+                this.baseAlpha = 0.6 + Math.random() * 0.4;
+            }
+
+            update() {
+                this.wobble += this.wobbleSpeed;
+                this.vx += Math.sin(this.wobble) * 0.02;
+                this.vx *= 0.99;
+                this.vy *= 0.99;
+                this.vy += 0.01;
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.y > this.canvasHeight + 10) {
+                    this.y = -10;
+                    this.x = Math.random() * this.canvasWidth;
+                    this.life = 1;
+                    this.alpha = this.baseAlpha;
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#ffffff';
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class StarParticle extends Particle {
+            constructor(canvasWidth, canvasHeight) {
+                super(
+                    Math.random() * canvasWidth,
+                    Math.random() * canvasHeight,
+                    {
+                        vx: 0, vy: 0, gravity: 0, friction: 1,
+                        size: 1 + Math.random() * 3,
+                        color: '#ffd700', decay: 0
+                    }
+                );
+                this.canvasWidth = canvasWidth;
+                this.canvasHeight = canvasHeight;
+                this.twinklePhase = Math.random() * Math.PI * 2;
+                this.twinkleSpeed = 0.05 + Math.random() * 0.05;
+                this.baseAlpha = 0.3 + Math.random() * 0.7;
+            }
+
+            update() {
+                this.twinklePhase += this.twinkleSpeed;
+                this.alpha = this.baseAlpha * (0.5 + 0.5 * Math.sin(this.twinklePhase));
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Particle state variables
+        let fireworkParticles = [];
+        let snowParticles = [];
+        let starParticles = [];
+        let isFireworkMode = false;
+        let isSnowMode = false;
+        let isStarMode = false;
+        let particleEffectType = 'none';
+        let particleColor = '#ff6b6b';
+        let isParticlePaused = false;
+
+        // Particle functions
+        function launchFirework(x, y) {
+            fireworkParticles.push(new Particle(x, y, {
+                vx: (Math.random() - 0.5) * 2,
+                vy: -8 - Math.random() * 4,
+                gravity: 0.1,
+                size: 3,
+                color: '#ffffff',
+                decay: 0.01
+            }));
+
+            const apexY = y - 50 - Math.random() * 100;
+            setTimeout(() => {
+                explodeFirework(x, Math.max(50, apexY));
+            }, 600 + Math.random() * 400);
+        }
+
+        function explodeFirework(x, y) {
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c9b1ff'];
+            const count = 40 + Math.floor(Math.random() * 30);
+
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 / count) * i;
+                const speed = 2 + Math.random() * 4;
+                fireworkParticles.push(new Particle(x, y, {
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    gravity: 0.05,
+                    friction: 0.97,
+                    size: 2 + Math.random() * 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    decay: 0.012
+                }));
+            }
+        }
+
+        function updateFireworks() {
+            for (let i = fireworkParticles.length - 1; i >= 0; i--) {
+                fireworkParticles[i].update();
+                fireworkParticles[i].draw(ctx);
+                if (fireworkParticles[i].isDead()) {
+                    fireworkParticles.splice(i, 1);
+                }
+            }
+        }
+
+        function startSnowEffect() {
+            snowParticles = [];
+            for (let i = 0; i < 100; i++) {
+                const snow = new SnowParticle(canvas.width, canvas.height);
+                snow.y = Math.random() * canvas.height;
+                snowParticles.push(snow);
+            }
+        }
+
+        function updateSnow() {
+            snowParticles.forEach(snow => {
+                snow.update();
+                snow.draw(ctx);
+            });
+        }
+
+        function startStarEffect() {
+            starParticles = [];
+            for (let i = 0; i < 80; i++) {
+                starParticles.push(new StarParticle(canvas.width, canvas.height));
+            }
+        }
+
+        function updateStars() {
+            starParticles.forEach(star => {
+                star.update();
+                star.draw(ctx);
+            });
+        }
+
+        function setParticleEffect(type) {
+            particleEffectType = type;
+            isParticlePaused = false;
+            fireworkParticles = [];
+            snowParticles = [];
+            starParticles = [];
+
+            isFireworkMode = type === 'firework';
+            isSnowMode = type === 'snow';
+            isStarMode = type === 'star';
+
+            if (type === 'snow') startSnowEffect();
+            if (type === 'star') startStarEffect();
+
+            document.getElementById('fireworkControls').style.display = type === 'firework' ? 'flex' : 'none';
+        }
+
+        function manualFirework() {
+            const x = 100 + Math.random() * (canvas.width - 200);
+            launchFirework(x, canvas.height - 10);
+        }
+
+        function toggleParticleAnimation() {
+            if (particleEffectType === 'none') {
+                setParticleEffect('star');
+                showToast('已启动星光效果');
+                return;
+            }
+            isParticlePaused = !isParticlePaused;
+            showToast(isParticlePaused ? '粒子已暂停' : '粒子继续');
+        }
+
+        function clearParticles() {
+            fireworkParticles = [];
+            snowParticles = [];
+            starParticles = [];
+            isFireworkMode = false;
+            isSnowMode = false;
+            isStarMode = false;
+            particleEffectType = 'none';
+            isParticlePaused = false;
+            document.getElementById('fireworkControls').style.display = 'none';
+            showToast('粒子已清除');
+        }
+
+        function setParticleColor(color) {
+            particleColor = color;
+        }
+
+        function closeParticlePanel() {
+            document.getElementById('particlePanel').style.display = 'none';
+        }
 
         let currentLang = localStorage.getItem('language') || 'zh';
 
@@ -12238,6 +12617,13 @@
                 }
             }
 
+            // V30: Update particle effects
+            if (!isParticlePaused) {
+                if (isFireworkMode) updateFireworks();
+                if (isSnowMode) updateSnow();
+                if (isStarMode) updateStars();
+            }
+
             requestAnimationFrame(animateBubbles);
         }
 
@@ -12520,6 +12906,10 @@
                 } else if (currentTool !== 'stamp') {
                     deselectAllStamps();
                 }
+                // V30: Firework mode click to launch
+                if (isFireworkMode) {
+                    launchFirework(x, y);
+                }
             });
 
             // Also handle clicks on other canvases to deselect
@@ -12606,6 +12996,12 @@
             document.getElementById('threeDBtn').addEventListener('click', () => {
                 closeAllPanels();
                 document.getElementById('threeDPanel').style.display = 'block';
+            });
+
+            // V30: Particle Button Event
+            document.getElementById('particleBtn').addEventListener('click', () => {
+                closeAllPanels();
+                document.getElementById('particlePanel').style.display = 'block';
             });
 
             // V16: Shape dropdown
