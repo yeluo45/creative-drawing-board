@@ -5233,6 +5233,116 @@
             top: 0;
             left: 0;
         }
+
+        /* ===== V24: Animation Editor Styles ===== */
+        .animation-editor {
+            position: fixed;
+            inset: 0;
+            background: #1a1a2e;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            color: #fff;
+            font-family: 'PingFang SC', sans-serif;
+        }
+        .animation-editor.open { display: flex; }
+        .animation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #16213e;
+            border-bottom: 1px solid #333;
+        }
+        .animation-header span { font-size: 18px; }
+        .header-actions button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .animation-canvas-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #0f0f1a;
+        }
+        #animationCanvas {
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .animation-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #16213e;
+            justify-content: center;
+        }
+        .animation-controls button {
+            background: #333;
+            color: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .animation-controls button:hover { background: #555; }
+        .animation-controls select {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .animation-timeline {
+            padding: 12px 20px;
+            background: #0f3460;
+            border-top: 1px solid #333;
+        }
+        .frame-list {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        .frame-thumb {
+            flex-shrink: 0;
+            width: 80px;
+            height: 90px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+        }
+        .frame-thumb.active { border-color: #4CAF50; background: #1a3a1a; }
+        .frame-thumb canvas { width: 64px; height: 64px; }
+        .frame-label { font-size: 10px; margin-top: 2px; }
+        .frame-add-btn {
+            flex-shrink: 0;
+            width: 80px;
+            height: 90px;
+            border: 2px dashed #444;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #666;
+        }
+        .frame-add-btn:hover { border-color: #4CAF50; color: #4CAF50; }
     </style>
 </head>
 <body>
@@ -5868,6 +5978,10 @@
         <button class="tool-btn layer-btn" id="layerBtn" title="图层">
             <span class="tool-icon">📑</span>
         </button>
+        <!-- V24: Animation Button -->
+        <button class="tool-btn animation-btn" id="animationBtn" title="动画制作">
+            <span class="tool-icon">🎬</span>
+        </button>
         <button class="tool-btn tracing-btn" id="tracingBtn">
             <span class="tool-icon">📝</span>
             <span data-i18n="tracing">Tracing</span>
@@ -6109,6 +6223,52 @@
         <div class="guided-celebration-stars">🎉🌟🎉🌟🎉</div>
         <div class="guided-celebration-text">太棒了！</div>
         <button class="guided-continue-btn" id="guidedContinueBtn">Continue</button>
+    </div>
+
+    <!-- ===== V24: Animation Editor Overlay ===== -->
+    <div class="animation-editor" id="animationEditor" style="display:none;">
+        <div class="animation-header">
+            <span>🎬 动画制作</span>
+            <div class="header-actions">
+                <button onclick="saveAnimation()">保存</button>
+                <button onclick="exportAnimationGif()">导出GIF</button>
+                <button onclick="closeAnimationEditor()">×</button>
+            </div>
+        </div>
+        <div class="animation-canvas-wrapper">
+            <canvas id="animationCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="animation-controls">
+            <button onclick="prevFrame()">◀</button>
+            <button onclick="togglePlay()" id="playBtn">▶</button>
+            <button onclick="pauseAnimation()">⏸</button>
+            <button onclick="stopAnimation()">⏹</button>
+            <button onclick="nextFrame()">▶▶</button>
+            <select id="fpsSelect" onchange="setFps(this.value)">
+                <option value="2">2 FPS</option>
+                <option value="4">4 FPS</option>
+                <option value="6">6 FPS</option>
+                <option value="8" selected>8 FPS</option>
+                <option value="12">12 FPS</option>
+                <option value="15">15 FPS</option>
+                <option value="24">24 FPS</option>
+            </select>
+            <select id="onionSkinSelect" onchange="setOnionSkin(this.value)">
+                <option value="off">洋葱皮: 关闭</option>
+                <option value="before">洋葱皮: 前帧</option>
+                <option value="after">洋葱皮: 后帧</option>
+                <option value="both">洋葱皮: 前后</option>
+            </select>
+        </div>
+        <div class="animation-timeline">
+            <div style="margin-bottom:8px;">
+                帧: <span id="frameCounter">1/1</span>
+                <button onclick="addNewFrame()">+ 新建帧</button>
+                <button onclick="duplicateCurrentFrame()">复制帧</button>
+                <button onclick="deleteCurrentFrame()">删除帧</button>
+            </div>
+            <div class="frame-list" id="frameList"></div>
+        </div>
     </div>
 
     <script>
@@ -18429,6 +18589,12 @@
                 layerBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); selectTool('layer'); });
             }
             
+            // Animation button
+            const animationBtn = document.getElementById('animationBtn');
+            if (animationBtn) {
+                animationBtn.addEventListener('click', () => { initAudio(); playSound(playBtnClick); openAnimationEditor(); loadAnimation(); });
+            }
+            
             // Text alignment buttons
             document.querySelectorAll('.align-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -18440,6 +18606,339 @@
             // Initial gradient preview update
             setTimeout(updateGradientPreview, 100);
         });
+
+        // ===== V24: Animation System =====
+        let animationProject = {
+            name: '我的动画',
+            fps: 8,
+            frames: [
+                { id: 'frame_1', canvasData: null }
+            ],
+            currentFrameIndex: 0,
+            isPlaying: false,
+            onionSkin: 'off',
+            onionSkinOpacity: 0.3
+        };
+
+        let animationInterval = null;
+        let animationCtx = null;
+
+        function openAnimationEditor() {
+            document.getElementById('animationEditor').style.display = 'flex';
+            animationCtx = document.getElementById('animationCanvas').getContext('2d');
+            
+            // Initialize with current canvas content if empty
+            if (animationProject.frames.length === 1 && !animationProject.frames[0].canvasData) {
+                const mainCanvas = document.getElementById('drawingCanvas');
+                if (mainCanvas) {
+                    animationProject.frames[0].canvasData = mainCanvas.toDataURL();
+                }
+            }
+            
+            renderFrameList();
+            selectFrame(0);
+        }
+
+        function closeAnimationEditor() {
+            pauseAnimation();
+            saveCurrentFrameToProject();
+            document.getElementById('animationEditor').style.display = 'none';
+        }
+
+        function addNewFrame() {
+            saveCurrentFrameToProject();
+            const newFrame = { id: 'frame_' + Date.now(), canvasData: null };
+            animationProject.frames.splice(animationProject.currentFrameIndex + 1, 0, newFrame);
+            selectFrame(animationProject.currentFrameIndex + 1);
+            renderFrameList();
+        }
+
+        function duplicateCurrentFrame() {
+            saveCurrentFrameToProject();
+            const current = animationProject.frames[animationProject.currentFrameIndex];
+            const newFrame = { id: 'frame_' + Date.now(), canvasData: current.canvasData };
+            animationProject.frames.splice(animationProject.currentFrameIndex + 1, 0, newFrame);
+            selectFrame(animationProject.currentFrameIndex + 1);
+            renderFrameList();
+        }
+
+        function deleteCurrentFrame() {
+            if (animationProject.frames.length <= 1) return;
+            animationProject.frames.splice(animationProject.currentFrameIndex, 1);
+            if (animationProject.currentFrameIndex >= animationProject.frames.length) {
+                animationProject.currentFrameIndex = animationProject.frames.length - 1;
+            }
+            renderFrameList();
+            renderCurrentFrame();
+        }
+
+        function selectFrame(index) {
+            saveCurrentFrameToProject();
+            animationProject.currentFrameIndex = index;
+            renderCurrentFrame();
+            renderFrameList();
+            updateFrameCounter();
+        }
+
+        function saveCurrentFrameToProject() {
+            const mainCanvas = document.getElementById('drawingCanvas');
+            if (mainCanvas) {
+                animationProject.frames[animationProject.currentFrameIndex].canvasData = mainCanvas.toDataURL();
+            }
+        }
+
+        function renderCurrentFrame() {
+            if (!animationCtx) return;
+            const frame = animationProject.frames[animationProject.currentFrameIndex];
+            animationCtx.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
+            
+            // Draw onion skin first (behind current frame)
+            if (animationProject.onionSkin !== 'off') {
+                renderOnionSkin();
+            }
+            
+            // Draw current frame
+            if (frame.canvasData) {
+                const img = new Image();
+                img.onload = () => {
+                    animationCtx.drawImage(img, 0, 0, animationCanvas.width, animationCanvas.height);
+                };
+                img.src = frame.canvasData;
+            }
+        }
+
+        function renderOnionSkin() {
+            const idx = animationProject.currentFrameIndex;
+            
+            if (animationProject.onionSkin === 'before' || animationProject.onionSkin === 'both') {
+                if (idx > 0) {
+                    const prevFrame = animationProject.frames[idx - 1];
+                    if (prevFrame.canvasData) {
+                        const img = new Image();
+                        img.onload = () => {
+                            animationCtx.save();
+                            animationCtx.globalAlpha = animationProject.onionSkinOpacity;
+                            animationCtx.fillStyle = 'rgba(255, 100, 100, 0.2)';
+                            animationCtx.drawImage(img, 0, 0, animationCanvas.width, animationCanvas.height);
+                            animationCtx.restore();
+                        };
+                        img.src = prevFrame.canvasData;
+                    }
+                }
+            }
+            
+            if (animationProject.onionSkin === 'after' || animationProject.onionSkin === 'both') {
+                if (idx < animationProject.frames.length - 1) {
+                    const nextFrame = animationProject.frames[idx + 1];
+                    if (nextFrame.canvasData) {
+                        const img = new Image();
+                        img.onload = () => {
+                            animationCtx.save();
+                            animationCtx.globalAlpha = animationProject.onionSkinOpacity;
+                            animationCtx.fillStyle = 'rgba(100, 100, 255, 0.2)';
+                            animationCtx.drawImage(img, 0, 0, animationCanvas.width, animationCanvas.height);
+                            animationCtx.restore();
+                        };
+                        img.src = nextFrame.canvasData;
+                    }
+                }
+            }
+        }
+
+        function togglePlay() {
+            if (animationProject.isPlaying) {
+                pauseAnimation();
+            } else {
+                playAnimation();
+            }
+        }
+
+        function playAnimation() {
+            if (animationProject.frames.length < 2) return;
+            animationProject.isPlaying = true;
+            document.getElementById('playBtn').textContent = '⏸';
+            
+            const interval = 1000 / animationProject.fps;
+            animationInterval = setInterval(() => {
+                animationProject.currentFrameIndex++;
+                if (animationProject.currentFrameIndex >= animationProject.frames.length) {
+                    animationProject.currentFrameIndex = 0;
+                }
+                renderCurrentFrame();
+                renderFrameList();
+                updateFrameCounter();
+            }, interval);
+        }
+
+        function pauseAnimation() {
+            animationProject.isPlaying = false;
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+            document.getElementById('playBtn').textContent = '▶';
+        }
+
+        function stopAnimation() {
+            pauseAnimation();
+            animationProject.currentFrameIndex = 0;
+            renderCurrentFrame();
+            renderFrameList();
+            updateFrameCounter();
+        }
+
+        function prevFrame() {
+            pauseAnimation();
+            if (animationProject.currentFrameIndex > 0) {
+                selectFrame(animationProject.currentFrameIndex - 1);
+            }
+        }
+
+        function nextFrame() {
+            pauseAnimation();
+            if (animationProject.currentFrameIndex < animationProject.frames.length - 1) {
+                selectFrame(animationProject.currentFrameIndex + 1);
+            }
+        }
+
+        function setFps(fps) {
+            animationProject.fps = parseInt(fps);
+            if (animationProject.isPlaying) {
+                pauseAnimation();
+                playAnimation();
+            }
+        }
+
+        function setOnionSkin(mode) {
+            animationProject.onionSkin = mode;
+            renderCurrentFrame();
+        }
+
+        function renderFrameList() {
+            const list = document.getElementById('frameList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            animationProject.frames.forEach((frame, idx) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'frame-thumb' + (idx === animationProject.currentFrameIndex ? ' active' : '');
+                thumb.onclick = () => selectFrame(idx);
+                
+                const cvs = document.createElement('canvas');
+                cvs.width = 64;
+                cvs.height = 64;
+                const ctx = cvs.getContext('2d');
+                
+                if (frame.canvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0, 64, 64);
+                    };
+                    img.src = frame.canvasData;
+                }
+                
+                const label = document.createElement('div');
+                label.className = 'frame-label';
+                label.textContent = idx + 1;
+                
+                thumb.appendChild(cvs);
+                thumb.appendChild(label);
+                list.appendChild(thumb);
+            });
+            
+            // Add button
+            const addBtn = document.createElement('div');
+            addBtn.className = 'frame-add-btn';
+            addBtn.innerHTML = '+';
+            addBtn.onclick = addNewFrame;
+            list.appendChild(addBtn);
+        }
+
+        function updateFrameCounter() {
+            const counter = document.getElementById('frameCounter');
+            if (counter) {
+                counter.textContent = (animationProject.currentFrameIndex + 1) + '/' + animationProject.frames.length;
+            }
+        }
+
+        function exportAnimationGif() {
+            saveCurrentFrameToProject();
+            
+            showToast('正在生成 GIF...');
+            
+            // Load gif.js dynamically
+            if (!window.GIF) {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js';
+                document.head.appendChild(script);
+                script.onload = () => doGifExport();
+            } else {
+                doGifExport();
+            }
+        }
+
+        function doGifExport() {
+            const gif = new GIF({
+                workers: 2,
+                quality: 10,
+                width: animationCanvas.width,
+                height: animationCanvas.height,
+                workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
+            });
+            
+            let loaded = 0;
+            const total = animationProject.frames.length;
+            
+            animationProject.frames.forEach((frame, idx) => {
+                if (frame.canvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        const tmpCanvas = document.createElement('canvas');
+                        tmpCanvas.width = animationCanvas.width;
+                        tmpCanvas.height = animationCanvas.height;
+                        const tmpCtx = tmpCanvas.getContext('2d');
+                        tmpCtx.drawImage(img, 0, 0);
+                        gif.addFrame(tmpCtx, { delay: 1000 / animationProject.fps, copy: true });
+                        loaded++;
+                        if (loaded === total) {
+                            gif.render();
+                        }
+                    };
+                    img.src = frame.canvasData;
+                } else {
+                    loaded++;
+                }
+            });
+            
+            gif.on('finished', blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `animation_${Date.now()}.gif`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('GIF 导出成功！');
+            });
+        }
+
+        function saveAnimation() {
+            saveCurrentFrameToProject();
+            localStorage.setItem('animation_project', JSON.stringify(animationProject));
+            showToast('动画已保存');
+        }
+
+        function loadAnimation() {
+            const data = localStorage.getItem('animation_project');
+            if (data) {
+                const loaded = JSON.parse(data);
+                animationProject = loaded;
+                animationProject.currentFrameIndex = 0;
+                animationProject.isPlaying = false;
+                renderFrameList();
+                renderCurrentFrame();
+                updateFrameCounter();
+            }
+        }
 
         // Override draw function to handle shape library and text placement
         const originalDraw = window.draw;
