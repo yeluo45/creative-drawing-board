@@ -4219,6 +4219,39 @@
             <span class="tool-icon">🧹</span>
             <span>Eraser</span>
         </button>
+        <!-- V16: Shape selector -->
+        <div class="tool-dropdown" id="shapeDropdown">
+            <button class="tool-btn" id="shapeBtn">
+                <span class="tool-icon">📐</span>
+                <span>Shape</span>
+            </button>
+            <div class="tool-dropdown-content" id="shapeOptions">
+                <button class="dropdown-item selected" data-shape="free">自由绘制</button>
+                <button class="dropdown-item" data-shape="line">直线</button>
+                <button class="dropdown-item" data-shape="circle">圆形</button>
+                <button class="dropdown-item" data-shape="rect">矩形</button>
+                <button class="dropdown-item" data-shape="triangle">三角形</button>
+            </div>
+        </div>
+        <!-- V16: Symmetry selector -->
+        <div class="tool-dropdown" id="symmetryDropdown">
+            <button class="tool-btn" id="symmetryBtn">
+                <span class="tool-icon">⚡</span>
+                <span>Sym</span>
+            </button>
+            <div class="tool-dropdown-content" id="symmetryOptions">
+                <button class="dropdown-item selected" data-symmetry="none">关闭</button>
+                <button class="dropdown-item" data-symmetry="vertical">左右对称</button>
+                <button class="dropdown-item" data-symmetry="horizontal">上下对称</button>
+                <button class="dropdown-item" data-symmetry="quad">四角对称</button>
+            </div>
+        </div>
+        <!-- V16: Zoom controls -->
+        <div class="zoom-controls" id="zoomControls">
+            <button class="tool-btn zoom-btn" id="zoomOutBtn">🔍-</button>
+            <span class="zoom-display" id="zoomDisplay">100%</span>
+            <button class="tool-btn zoom-btn" id="zoomInBtn">🔍+</button>
+        </div>
         <div class="spacer"></div>
         <button class="tool-btn" id="undoBtn" title="Undo">↩️</button>
         <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
@@ -5474,7 +5507,28 @@
         let fillMode = false;
         let undoStack = [];
         let redoStack = [];
+        const MAX_HISTORY = 20;
         let isDraggingStamp = false;
+
+        // V16: Symmetry Drawing
+        let symmetryMode = 'none'; // 'none' | 'vertical' | 'horizontal' | 'quad'
+
+        // V16: Smart Shapes
+        let shapeType = 'free'; // 'free' | 'line' | 'circle' | 'rect' | 'triangle'
+        let isDrawingShape = false;
+        let shapeStartX = 0;
+        let shapeStartY = 0;
+        let shapePreviewCanvas = null;
+        let shapePreviewCtx = null;
+
+        // V16: Canvas Zoom
+        let currentZoom = 1;
+        let lastPinchDistance = 0;
+
+        // V16: Eraser Enhancement
+        let eraserSize = 20;
+        let eraserOnlyOwn = false;
+        let currentSessionPaths = [];
         let dragStamp = null;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
@@ -6163,6 +6217,21 @@
             renderStamps();
         }
 
+        // V16: Canvas zoom transform
+        function updateCanvasTransform() {
+            const rect = canvasContainer.getBoundingClientRect();
+            const transform = `scale(${currentZoom})`;
+            drawingCanvas.style.transform = transform;
+            if (shapePreviewCanvas) {
+                shapePreviewCanvas.style.transform = transform;
+            }
+            // Update zoom display
+            const zoomDisplay = document.getElementById('zoomDisplay');
+            if (zoomDisplay) {
+                zoomDisplay.textContent = Math.round(currentZoom * 100) + '%';
+            }
+        }
+
         function drawBackground() {
             const ctx = bgCanvas.getContext('2d');
             const rect = canvasContainer.getBoundingClientRect();
@@ -6224,12 +6293,215 @@
             };
         }
 
-        function saveUndoState() {
+        function saveState() {
             const ctx = drawingCanvas.getContext('2d');
             const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
             undoStack.push(imageData);
+            if (undoStack.length > MAX_HISTORY) undoStack.shift();
             redoStack = [];
-            if (undoStack.length > 50) undoStack.shift();
+        }
+
+        function saveUndoState() {
+            saveState();
+        }
+
+        // V16: Symmetry Drawing - get mirrored points
+        function getSymmetryPoints(x, y) {
+            const cx = drawingCanvas.width / 2;
+            const cy = drawingCanvas.height / 2;
+            const points = [{x, y}];
+            
+            if (symmetryMode === 'vertical') {
+                points.push({x: 2 * cx - x, y: y});
+            } else if (symmetryMode === 'horizontal') {
+                points.push({x: x, y: 2 * cy - y});
+            } else if (symmetryMode === 'quad') {
+                points.push({x: 2 * cx - x, y: y});
+                points.push({x: x, y: 2 * cy - y});
+                points.push({x: 2 * cx - x, y: 2 * cy - y});
+            }
+            
+            return points;
+        }
+
+        // V16: Draw dot with symmetry support
+        function drawDot(x, y, color, size) {
+            const ctx = drawingCanvas.getContext('2d');
+            const points = getSymmetryPoints(x, y);
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                ctx.arc(p.x, p.y, size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // V16: Draw line with symmetry support
+        function drawLine(x1, y1, x2, y2, color, size) {
+            const ctx = drawingCanvas.getContext('2d');
+            const startPoints = getSymmetryPoints(x1, y1);
+            const endPoints = getSymmetryPoints(x2, y2);
+            
+            startPoints.forEach((sp, i) => {
+                const ep = endPoints[i];
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = size;
+                ctx.moveTo(sp.x, sp.y);
+                ctx.lineTo(ep.x, ep.y);
+                ctx.stroke();
+            });
+        }
+
+        // V16: Draw center guide lines when symmetry is active
+        function drawSymmetryGuides() {
+            if (symmetryMode === 'none') return;
+            const ctx = drawingCanvas.getContext('2d');
+            const cx = drawingCanvas.width / 2;
+            const cy = drawingCanvas.height / 2;
+            
+            ctx.save();
+            ctx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            
+            if (symmetryMode === 'vertical' || symmetryMode === 'quad') {
+                ctx.beginPath();
+                ctx.moveTo(cx, 0);
+                ctx.lineTo(cx, drawingCanvas.height);
+                ctx.stroke();
+            }
+            if (symmetryMode === 'horizontal' || symmetryMode === 'quad') {
+                ctx.beginPath();
+                ctx.moveTo(0, cy);
+                ctx.lineTo(drawingCanvas.width, cy);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        // V16: Shape preview functions
+        function initShapePreview() {
+            if (!shapePreviewCanvas) {
+                shapePreviewCanvas = document.createElement('canvas');
+                shapePreviewCanvas.width = drawingCanvas.width;
+                shapePreviewCanvas.height = drawingCanvas.height;
+                shapePreviewCanvas.style.position = 'absolute';
+                shapePreviewCanvas.style.pointerEvents = 'none';
+                shapePreviewCanvas.style.zIndex = '5';
+                canvasContainer.appendChild(shapePreviewCanvas);
+                shapePreviewCtx = shapePreviewCanvas.getContext('2d');
+            }
+        }
+
+        function clearShapePreview() {
+            if (shapePreviewCtx) {
+                shapePreviewCtx.clearRect(0, 0, shapePreviewCanvas.width, shapePreviewCanvas.height);
+            }
+        }
+
+        function drawShapePreview(startX, startY, endX, endY) {
+            if (!shapePreviewCtx) return;
+            clearShapePreview();
+            
+            const ctx = shapePreviewCtx;
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            const dx = endX - startX;
+            const dy = endY - startY;
+            
+            if (shapeType === 'line') {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+            } else if (shapeType === 'circle') {
+                const r = Math.sqrt(dx * dx + dy * dy);
+                ctx.beginPath();
+                ctx.arc(startX, startY, r, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (shapeType === 'rect') {
+                ctx.strokeRect(startX, startY, dx, dy);
+            } else if (shapeType === 'triangle') {
+                const midX = startX + dx / 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY + dy);
+                ctx.lineTo(midX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        function finalizeShape(endX, endY) {
+            const ctx = drawingCanvas.getContext('2d');
+            const startX = shapeStartX;
+            const startY = shapeStartY;
+            const dx = endX - startX;
+            const dy = endY - startY;
+            
+            ctx.save();
+            ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            if (shapeType === 'line') {
+                drawLine(startX, startY, endX, endY, ctx.strokeStyle, currentSize);
+            } else if (shapeType === 'circle') {
+                const r = Math.sqrt(dx * dx + dy * dy);
+                const points = getSymmetryPoints(startX, startY);
+                points.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+            } else if (shapeType === 'rect') {
+                const points = getSymmetryPoints(startX, startY);
+                const endPoints = getSymmetryPoints(endX, endY);
+                points.forEach((p, i) => {
+                    const ep = endPoints[i];
+                    ctx.strokeRect(p.x, p.y, ep.x - p.x, ep.y - p.y);
+                });
+            } else if (shapeType === 'triangle') {
+                const midX = startX + dx / 2;
+                const midY = startY + dy / 2;
+                const topY = Math.min(startY, endY);
+                const bottomY = Math.max(startY, endY);
+                
+                const leftX = startX;
+                const rightX = endX;
+                const apexX = midX;
+                const apexY = topY;
+                const baseLeftX = Math.min(startX, endX);
+                const baseRightX = Math.max(startX, endX);
+                
+                // Draw triangle with symmetry
+                const points = getSymmetryPoints(startX, startY);
+                const midPoints = getSymmetryPoints(midX, midY);
+                const apexPoints = getSymmetryPoints(apexX, apexY);
+                const endPoints = getSymmetryPoints(endX, endY);
+                
+                for (let i = 0; i < points.length; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(points[i].x, points[i].y);
+                    ctx.lineTo(midPoints[i].x, midPoints[i].y);
+                    ctx.lineTo(endPoints[i].x, endPoints[i].y);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+            
+            ctx.restore();
+            clearShapePreview();
         }
 
         function startDrawing(e) {
@@ -6248,9 +6520,25 @@
                 return;
             }
 
+            // V16: Smart Shapes - start shape drawing
+            if (shapeType !== 'free' && (currentTool === 'brush' || currentTool === 'eraser' || currentTool === 'highlighter')) {
+                saveUndoState();
+                isDrawingShape = true;
+                shapeStartX = lastX;
+                shapeStartY = lastY;
+                initShapePreview();
+                return;
+            }
+
             if (currentTool === 'brush' || currentTool === 'eraser' || currentTool === 'highlighter') {
                 saveUndoState();
                 trackDrawing();
+                // V16: Track path points for session eraser
+                if (eraserOnlyOwn) {
+                    currentSessionPaths.push({x: lastX, y: lastY});
+                } else {
+                    currentSessionPaths = [];
+                }
             }
 
             if (currentTool === 'tracing' && currentTracing >= 0) {
@@ -6264,6 +6552,12 @@
 
             const pos = getPos(e);
             const ctx = drawingCanvas.getContext('2d');
+
+            // V16: Smart Shapes - show preview
+            if (isDrawingShape && shapeType !== 'free') {
+                drawShapePreview(shapeStartX, shapeStartY, pos.x, pos.y);
+                return;
+            }
 
             ctx.beginPath();
 
@@ -6282,9 +6576,27 @@
                 ctx.lineWidth = currentSize;
             }
 
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
+            // V16: Track path for eraser
+            if (eraserOnlyOwn && currentTool !== 'eraser') {
+                currentSessionPaths.push({x: pos.x, y: pos.y});
+            }
+
+            // V16: Apply symmetry
+            if (symmetryMode !== 'none') {
+                const points = getSymmetryPoints(lastX, lastY);
+                const endPoints = getSymmetryPoints(pos.x, pos.y);
+                points.forEach((sp, i) => {
+                    const ep = endPoints[i];
+                    ctx.beginPath();
+                    ctx.moveTo(sp.x, sp.y);
+                    ctx.lineTo(ep.x, ep.y);
+                    ctx.stroke();
+                });
+            } else {
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
             ctx.globalAlpha = 1.0;
 
             lastX = pos.x;
@@ -6292,6 +6604,13 @@
         }
 
         function stopDrawing() {
+            // V16: Smart Shapes - finalize shape
+            if (isDrawingShape && shapeType !== 'free') {
+                // Get final position from lastX, lastY
+                finalizeShape(lastX, lastY);
+                isDrawingShape = false;
+                saveState(); // Save after shape finalization
+            }
             isDrawing = false;
         }
 
@@ -7636,6 +7955,7 @@
             redoStack.push(currentState);
             ctx.putImageData(state, 0, 0);
             playSound(playUndo);
+            updateUndoRedoButtons();
         }
 
         function redo() {
@@ -7646,6 +7966,14 @@
             undoStack.push(currentState);
             ctx.putImageData(state, 0, 0);
             playSound(playRedo);
+            updateUndoRedoButtons();
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+            if (redoBtn) redoBtn.disabled = redoStack.length === 0;
         }
 
         // Save
@@ -7756,6 +8084,73 @@
             clearBtn.addEventListener('click', clearCanvas);
             undoBtn.addEventListener('click', undo);
             redoBtn.addEventListener('click', redo);
+
+            // V16: Shape dropdown
+            const shapeBtn = document.getElementById('shapeBtn');
+            const shapeOptions = document.getElementById('shapeOptions');
+            if (shapeBtn && shapeOptions) {
+                shapeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    shapeOptions.classList.toggle('active');
+                    document.getElementById('symmetryOptions').classList.remove('active');
+                });
+                shapeOptions.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const shape = item.dataset.shape;
+                        shapeType = shape;
+                        shapeOptions.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        shapeOptions.classList.remove('active');
+                        initAudio && playSound && playSound(playBtnClick);
+                    });
+                });
+            }
+
+            // V16: Symmetry dropdown
+            const symmetryBtn = document.getElementById('symmetryBtn');
+            const symmetryOptions = document.getElementById('symmetryOptions');
+            if (symmetryBtn && symmetryOptions) {
+                symmetryBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    symmetryOptions.classList.toggle('active');
+                    document.getElementById('shapeOptions').classList.remove('active');
+                });
+                symmetryOptions.querySelectorAll('.dropdown-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        symmetryMode = item.dataset.symmetry;
+                        symmetryOptions.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        symmetryOptions.classList.remove('active');
+                        initAudio && playSound && playSound(playBtnClick);
+                    });
+                });
+            }
+
+            // V16: Zoom controls
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const zoomDisplay = document.getElementById('zoomDisplay');
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                    currentZoom = Math.min(3, currentZoom + 0.25);
+                    updateCanvasTransform();
+                    if (zoomDisplay) zoomDisplay.textContent = Math.round(currentZoom * 100) + '%';
+                });
+            }
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                    currentZoom = Math.max(0.5, currentZoom - 0.25);
+                    updateCanvasTransform();
+                    if (zoomDisplay) zoomDisplay.textContent = Math.round(currentZoom * 100) + '%';
+                });
+            }
+
+            document.addEventListener('click', (e) => {
+                const shapeOpts = document.getElementById('shapeOptions');
+                const symOpts = document.getElementById('symmetryOptions');
+                if (shapeOpts && !e.target.closest('#shapeDropdown')) shapeOpts.classList.remove('active');
+                if (symOpts && !e.target.closest('#symmetryDropdown')) symOpts.classList.remove('active');
+            });
             saveBtn.addEventListener('click', saveDrawing);
             soundBtn.addEventListener('click', toggleSound);
 
@@ -7797,7 +8192,38 @@
             });
             // Resize
             window.addEventListener('resize', resizeCanvas);
-            
+
+            // V16: Keyboard shortcuts for undo/redo
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    e.preventDefault();
+                    undo();
+                }
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
+                    e.preventDefault();
+                    redo();
+                }
+            });
+
+            // V16: Pinch-to-zoom for mobile
+            drawingCanvas.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (lastPinchDistance > 0) {
+                        const scale = dist / lastPinchDistance;
+                        currentZoom = Math.max(0.5, Math.min(3, currentZoom * scale));
+                        updateCanvasTransform();
+                    }
+                    lastPinchDistance = dist;
+                }
+            }, { passive: false });
+            drawingCanvas.addEventListener('touchend', () => {
+                lastPinchDistance = 0;
+            });
+
             // Initialize canvas with white background
             const ctx = drawingCanvas.getContext('2d');
             ctx.fillStyle = '#FFFFFF';
