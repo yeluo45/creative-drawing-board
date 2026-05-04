@@ -5455,6 +5455,17 @@
             color: #666;
         }
         .frame-add-btn:hover { border-color: #4CAF50; color: #4CAF50; }
+
+        /* AR Panel (V26) */
+        .ar-tabs { display: flex; padding: 8px; gap: 5px; border-bottom: 1px solid #eee; }
+        .ar-tab { flex: 1; padding: 8px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .ar-tab.active { background: #4CAF50; color: #fff; }
+        .ar-preview { position: relative; width: 100%; background: #000; }
+        #arCanvas { width: 100%; display: block; }
+        .ar-object-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        .ar-object-item { width: 60px; height: 60px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; }
+        .ar-object-item:hover { background: #e8f5e9; }
+        .btn-danger { width: 100%; padding: 10px; background: #f44336; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -6295,6 +6306,38 @@
         <button class="tool-btn" id="saveBtn" title="Save">💾</button>
         <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
         <button class="tool-btn" id="galleryBtn" title="Gallery">🖼️</button>
+        <button class="tool-btn" id="arBtn" title="AR绘画">📷</button>
+    </div>
+
+    <!-- AR Panel (V26) -->
+    <div class="panel" id="arPanel" style="display:none;">
+        <div class="panel-header">📷 AR 绘画 <button class="close-btn" onclick="closeARPanel()">×</button></div>
+
+        <div class="ar-tabs">
+            <button class="ar-tab active" onclick="switchARTab('camera')">📷 摄像头</button>
+            <button class="ar-tab" onclick="switchARTab('objects')">🏠 AR物体</button>
+            <button class="ar-tab" onclick="takeARPhoto()">📸 拍照</button>
+        </div>
+
+        <div class="ar-preview" id="arPreview">
+            <canvas id="arCanvas"></canvas>
+            <p id="arHint" style="text-align:center;color:#888;font-size:12px;">点击下方按钮开启摄像头</p>
+        </div>
+
+        <div id="arObjectsTab" style="display:none;padding:10px;">
+            <p style="font-size:12px;color:#666;text-align:center;margin-bottom:10px;">选择物体后点击画面放置</p>
+            <div class="ar-object-grid">
+                <div class="ar-object-item" onclick="selectARObject('house')">🏠</div>
+                <div class="ar-object-item" onclick="selectARObject('tree')">🌳</div>
+                <div class="ar-object-item" onclick="selectARObject('star')">⭐</div>
+                <div class="ar-object-item" onclick="selectARObject('cat')">🐱</div>
+                <div class="ar-object-item" onclick="selectARObject('car')">🚗</div>
+                <div class="ar-object-item" onclick="selectARObject('balloon')">🎈</div>
+                <div class="ar-object-item" onclick="selectARObject('rainbow')">🌈</div>
+                <div class="ar-object-item" onclick="selectARObject('cloud')">☁️</div>
+            </div>
+            <button class="btn-danger" onclick="clearARObjects()">🗑️ 清除所有</button>
+        </div>
     </div>
 
     <!-- Coloring Game Overlay -->
@@ -8417,6 +8460,29 @@
         let dragOffsetX = 0;
         let dragOffsetY = 0;
 
+        // V26: AR Drawing State
+        let cameraStream = null;
+        let isCameraActive = false;
+        let arObjects = [];
+        let selectedARObjectType = null;
+        let draggedARObject = null;
+        let arAnimFrame = null;
+        let arAnimTime = 0;
+        let arVideo = null;
+        let arCanvasEl = null;
+        let arCtx = null;
+
+        const AR_OBJECTS = {
+            house: { emoji: '🏠', scale: 1.0, animation: 'float' },
+            tree: { emoji: '🌳', scale: 0.8, animation: 'sway' },
+            star: { emoji: '⭐', scale: 0.6, animation: 'rotate' },
+            cat: { emoji: '🐱', scale: 0.7, animation: 'bounce' },
+            car: { emoji: '🚗', scale: 0.9, animation: 'drive' },
+            balloon: { emoji: '🎈', scale: 0.5, animation: 'float' },
+            rainbow: { emoji: '🌈', scale: 1.2, animation: 'shine' },
+            cloud: { emoji: '☁️', scale: 0.8, animation: 'float' }
+        };
+
         // Coloring game state
         let coloringPage = 0;
         let coloringRegions = [];
@@ -10105,6 +10171,231 @@
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         }
 
+        // ===== V26: AR Drawing =====
+        async function startCamera() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                const video = document.getElementById('arVideo');
+                if (!video) {
+                    const v = document.createElement('video');
+                    v.id = 'arVideo';
+                    v.autoplay = true;
+                    v.playsinline = true;
+                    v.style.display = 'none';
+                    document.body.appendChild(v);
+                }
+                document.getElementById('arVideo').srcObject = cameraStream;
+                isCameraActive = true;
+                document.getElementById('arHint').textContent = '摄像头已开启，点击物体放置';
+                requestAnimationFrame(updateARFrame);
+                startARAnimation();
+            } catch (err) {
+                showToast('无法访问摄像头，请检查权限');
+            }
+        }
+
+        function updateARFrame() {
+            if (!isCameraActive) return;
+            const video = document.getElementById('arVideo');
+            arCanvasEl = document.getElementById('arCanvas');
+            if (!arCtx) arCtx = arCanvasEl.getContext('2d');
+
+            if (video.readyState >= 2) {
+                arCanvasEl.width = video.videoWidth || 640;
+                arCanvasEl.height = video.videoHeight || 480;
+                arCtx.drawImage(video, 0, 0);
+            }
+
+            requestAnimationFrame(updateARFrame);
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream = null;
+            }
+            isCameraActive = false;
+            stopARAnimation();
+        }
+
+        function switchARTab(tab) {
+            if (tab === 'camera') {
+                document.getElementById('arObjectsTab').style.display = 'none';
+                startCamera();
+            } else if (tab === 'objects') {
+                document.getElementById('arObjectsTab').style.display = 'block';
+            }
+        }
+
+        function selectARObject(type) {
+            selectedARObjectType = type;
+            showToast('点击画面放置 ' + AR_OBJECTS[type].emoji);
+        }
+
+        function placeARObject(type, x, y) {
+            arObjects.push({
+                id: 'ar_' + Date.now(),
+                type: type,
+                x: x,
+                y: y,
+                rotation: 0
+            });
+            renderARObjects();
+        }
+
+        function renderARObjects() {
+            if (!arCtx) return;
+            const video = document.getElementById('arVideo');
+            if (video && video.readyState >= 2) {
+                arCtx.drawImage(video, 0, 0, arCanvasEl.width, arCanvasEl.height);
+            }
+
+            arObjects.forEach(obj => {
+                const config = AR_OBJECTS[obj.type];
+                const size = 50 * config.scale;
+                arCtx.font = `${size}px serif`;
+                arCtx.textAlign = 'center';
+                arCtx.textBaseline = 'middle';
+                arCtx.fillText(config.emoji, obj.x, obj.y);
+            });
+        }
+
+        function startARAnimation() {
+            function animate() {
+                if (!isCameraActive) return;
+                arAnimTime += 0.016;
+                let needsRender = false;
+
+                arObjects.forEach(obj => {
+                    const config = AR_OBJECTS[obj.type];
+                    switch (config.animation) {
+                        case 'float':
+                            obj.y += Math.sin(arAnimTime * 2) * 0.2;
+                            needsRender = true;
+                            break;
+                        case 'rotate':
+                            obj.rotation = (obj.rotation || 0) + 1;
+                            needsRender = true;
+                            break;
+                        case 'sway':
+                            obj.x += Math.sin(arAnimTime * 1.5) * 0.15;
+                            needsRender = true;
+                            break;
+                        case 'bounce':
+                            obj.y += Math.sin(arAnimTime * 4) * 0.4;
+                            needsRender = true;
+                            break;
+                        case 'drive':
+                            obj.x += 0.5;
+                            if (obj.x > (arCanvasEl ? arCanvasEl.width : 640) + 30) obj.x = -30;
+                            needsRender = true;
+                            break;
+                    }
+                });
+
+                if (needsRender) renderARObjects();
+                arAnimFrame = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function stopARAnimation() {
+            if (arAnimFrame) {
+                cancelAnimationFrame(arAnimFrame);
+                arAnimFrame = null;
+            }
+        }
+
+        function clearARObjects() {
+            arObjects = [];
+            renderARObjects();
+        }
+
+        function initARCanvas() {
+            const canvas = document.getElementById('arCanvas');
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (selectedARObjectType) {
+                    placeARObject(selectedARObjectType, x, y);
+                    selectedARObjectType = null;
+                }
+            });
+
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                arObjects.forEach(obj => {
+                    const dist = Math.sqrt((x - obj.x) ** 2 + (y - obj.y) ** 2);
+                    if (dist < 30) draggedARObject = obj;
+                });
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!draggedARObject) return;
+                const rect = canvas.getBoundingClientRect();
+                draggedARObject.x = e.clientX - rect.left;
+                draggedARObject.y = e.clientY - rect.top;
+                renderARObjects();
+            });
+
+            canvas.addEventListener('mouseup', () => { draggedARObject = null; });
+
+            canvas.addEventListener('dblclick', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                for (let i = arObjects.length - 1; i >= 0; i--) {
+                    const dist = Math.sqrt((x - arObjects[i].x) ** 2 + (y - arObjects[i].y) ** 2);
+                    if (dist < 30) {
+                        arObjects.splice(i, 1);
+                        renderARObjects();
+                        showToast('已删除');
+                        break;
+                    }
+                }
+            });
+        }
+
+        function takeARPhoto() {
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = canvas.width;
+            finalCanvas.height = canvas.height;
+            const finalCtx = finalCanvas.getContext('2d');
+
+            finalCtx.fillStyle = '#fff';
+            finalCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (isCameraActive && arCanvasEl) {
+                finalCtx.drawImage(arCanvasEl, 0, 0, canvas.width, canvas.height);
+            }
+
+            arObjects.forEach(obj => {
+                const config = AR_OBJECTS[obj.type];
+                const size = 50 * config.scale;
+                finalCtx.font = `${size}px serif`;
+                finalCtx.textAlign = 'center';
+                finalCtx.textBaseline = 'middle';
+                finalCtx.fillText(config.emoji, obj.x, obj.y);
+            });
+
+            finalCtx.drawImage(canvas, 0, 0);
+
+            const dataUrl = finalCanvas.toDataURL('image/png');
+            addToGallery('AR Photo ' + new Date().toLocaleString('zh-CN'));
+            showToast('照片已保存到画廊！');
+        }
+
+        function closeARPanel() {
+            stopCamera();
+            document.getElementById('arPanel').style.display = 'none';
+        }
+
         function togglePanel(id) {
             const panel = document.getElementById(id + 'Panel');
             if (panel.classList.contains('active')) {
@@ -11753,6 +12044,11 @@
             });
             saveBtn.addEventListener('click', saveDrawing);
             document.getElementById('galleryBtn').addEventListener('click', openV21GalleryPanel);
+            document.getElementById('arBtn').addEventListener('click', () => {
+                closeAllPanels();
+                document.getElementById('arPanel').style.display = 'block';
+                initARCanvas();
+            });
             soundBtn.addEventListener('click', toggleSound);
 
             // V13: BGM button and volume controls
