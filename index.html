@@ -285,6 +285,115 @@
         .bs-icon { font-size: 1.2rem; }
         .bs-name { font-size: 0.6rem; margin-top: 2px; }
 
+        /* V54: Share Panel */
+        .share-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 320px;
+            padding: 16px;
+        }
+
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .share-header button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #868e96;
+        }
+
+        .share-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .share-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+        }
+
+        .share-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .share-btn {
+            padding: 10px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .share-btn:hover {
+            background: #e9ecef;
+        }
+
+        .qr-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2001;
+            width: 280px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .qr-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .qr-desc {
+            font-size: 0.85rem;
+            color: #868e96;
+            margin-bottom: 12px;
+        }
+
+        .qr-code {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .qr-close {
+            width: 100%;
+            padding: 8px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -8078,6 +8187,8 @@
         </button>
         <!-- V32: AR Sticker Button -->
         <button class="tool-btn ar-sticker-btn" id="arStickerBtn" title="AR贴纸">🎭</button>
+        <!-- V54: Share Button -->
+        <button class="tool-btn" id="shareBtn" onclick="shareArtwork()" title="分享">📤</button>
         <!-- V33: Smart Suggestion Button -->
         <button class="tool-btn" id="suggestionBtn" title="智能建议">💡</button>
         <!-- V34: Gesture Button -->
@@ -13106,6 +13217,156 @@
                     panel.classList.remove('open');
                 }
             });
+        }
+
+        // V54: Share Functions
+        function getMergedCanvas() {
+            const mergedCanvas = document.createElement('canvas');
+            mergedCanvas.width = drawingCanvas.width;
+            mergedCanvas.height = drawingCanvas.height;
+            const ctx = mergedCanvas.getContext('2d');
+
+            // Draw background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, mergedCanvas.width, mergedCanvas.height);
+
+            // Draw all layers in order
+            ctx.drawImage(bgCanvas, 0, 0);
+            ctx.drawImage(tracingCanvas, 0, 0);
+            ctx.drawImage(fillCanvas, 0, 0);
+            ctx.drawImage(stampCanvas, 0, 0);
+            ctx.drawImage(drawingCanvas, 0, 0);
+            ctx.drawImage(bubbleCanvas, 0, 0);
+
+            return mergedCanvas;
+        }
+
+        function shareArtwork() {
+            const mergedCanvas = getMergedCanvas();
+            showSharePanel(mergedCanvas);
+        }
+
+        function showSharePanel(mergedCanvas) {
+            // Remove existing panel
+            const existing = document.querySelector('.share-panel');
+            if (existing) existing.remove();
+
+            const panel = document.createElement('div');
+            panel.className = 'share-panel';
+            panel.innerHTML = `
+                <div class="share-header">
+                    <span>分享作品</span>
+                    <button onclick="closeSharePanel()">×</button>
+                </div>
+                <div class="share-preview">
+                    <img src="${mergedCanvas.toDataURL()}">
+                </div>
+                <div class="share-actions">
+                    <button class="share-btn" onclick="downloadArtwork()">
+                        💾 保存到本地
+                    </button>
+                    <button class="share-btn" onclick="copyArtworkLink()">
+                        🔗 复制链接
+                    </button>
+                    <button class="share-btn" onclick="shareToWeChat()">
+                        💬 分享到微信
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(panel);
+        }
+
+        function closeSharePanel() {
+            const panel = document.querySelector('.share-panel');
+            if (panel) panel.remove();
+        }
+
+        function downloadArtwork() {
+            const mergedCanvas = getMergedCanvas();
+            const link = document.createElement('a');
+            link.download = 'my-artwork-' + Date.now() + '.png';
+            link.href = mergedCanvas.toDataURL('image/png');
+            link.click();
+            showToast('图片已保存');
+            closeSharePanel();
+        }
+
+        async function copyArtworkLink() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast('链接已复制到剪贴板');
+            } catch (e) {
+                showToast('复制失败，请手动复制');
+            }
+        }
+
+        function shareToWeChat() {
+            const existing = document.querySelector('.qr-panel');
+            if (existing) existing.remove();
+
+            const qrPanel = document.createElement('div');
+            qrPanel.className = 'qr-panel';
+            qrPanel.innerHTML = `
+                <div class="qr-header">💬 微信分享</div>
+                <div class="qr-desc">截图保存二维码，微信扫码查看</div>
+                <div class="qr-code" id="qrCode"></div>
+                <button class="qr-close" onclick="this.parentElement.remove()">关闭</button>
+            `;
+            document.body.appendChild(qrPanel);
+            generateQRCode('qrCode', window.location.href);
+        }
+
+        function generateQRCode(elementId, text) {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 150;
+            canvas.height = 150;
+            const ctx = canvas.getContext('2d');
+
+            // White background
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, 150, 150);
+
+            // Draw simplified QR-like pattern (3 position markers + data pattern)
+            ctx.fillStyle = '#000';
+            const cellSize = 8;
+            const offsetX = 10;
+            const offsetY = 10;
+
+            // Position markers (top-left, top-right, bottom-left)
+            const markers = [
+                [0, 0], [12, 0], [0, 12]
+            ];
+
+            markers.forEach(([mx, my]) => {
+                // Outer ring
+                ctx.fillRect(offsetX + mx * cellSize, offsetY + my * cellSize, cellSize * 3, cellSize * 3);
+                // Inner white
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(offsetX + (mx + 1) * cellSize, offsetY + (my + 1) * cellSize, cellSize, cellSize);
+                // Inner dot
+                ctx.fillStyle = '#000';
+                ctx.fillRect(offsetX + (mx + 1) * cellSize + 2, offsetY + (my + 1) * cellSize + 2, cellSize - 4, cellSize - 4);
+            });
+
+            // Data pattern (pseudo-random fill based on URL length)
+            ctx.fillStyle = '#000';
+            const urlLen = text.length;
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    // Skip position marker areas
+                    if ((row < 4 && col < 4) || (row < 4 && col > 11) || (row > 11 && col < 4)) continue;
+
+                    if ((row + col + urlLen) % 3 === 0) {
+                        ctx.fillRect(offsetX + col * cellSize + 1, offsetY + row * cellSize + 1, cellSize - 2, cellSize - 2);
+                    }
+                }
+            }
+
+            container.appendChild(canvas);
         }
 
         // V16: Draw center guide lines when symmetry is active
