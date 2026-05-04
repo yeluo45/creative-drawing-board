@@ -1323,6 +1323,22 @@
             height: 40px;
         }
 
+        .stamp-subcategory-header {
+            grid-column: 1 / -1;
+            background: linear-gradient(to right, #FF6B6B, #FFD700);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .stamp-subcategory-header:first-child {
+            margin-top: 0;
+        }
+
         .panel-nav {
             display: flex;
             justify-content: center;
@@ -1585,6 +1601,204 @@
         .theme-option.cny-opt { border-color: #FF6B6B; background: linear-gradient(135deg, #FF6B6B 0%, #FFA94D 100%); color: white; }
         .theme-option.easter-opt { border-color: #B197FC; background: linear-gradient(135deg, #B197FC 0%, #E5997F 100%); color: white; }
         .theme-option.default-opt { border-color: #868e96; }
+
+        /* V19: Holiday Panel */
+        .holiday-panel-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .holiday-card {
+            width: 140px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .holiday-card:hover {
+            transform: scale(1.03);
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .holiday-card.active {
+            border-color: #FF6B6B;
+            background: #FFF5F5;
+        }
+
+        .holiday-card-name {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .holiday-card-name.zh { color: #FF6B6B; }
+        .holiday-card-name.en { color: #495057; font-size: 0.8rem; }
+
+        .holiday-card-stats {
+            font-size: 0.75rem;
+            color: #868E96;
+            margin-bottom: 8px;
+        }
+
+        .holiday-card-btns {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .holiday-card-btn {
+            padding: 4px 10px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s;
+        }
+
+        .holiday-card-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .holiday-card-btn.preview {
+            background: #74C0FC;
+            color: white;
+        }
+
+        .holiday-card-btn.activate {
+            background: #69DB7C;
+            color: white;
+        }
+
+        .holiday-card-btn.deactivate {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        /* V19: Festival Effects */
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0.7; }
+        }
+
+        .confetti-particle {
+            position: fixed;
+            top: -20px;
+            animation: confettiFall linear infinite;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes lanternGlow {
+            0%, 100% { opacity: 0.6; filter: blur(2px); }
+            50% { opacity: 1; filter: blur(0px); }
+        }
+
+        .lantern-glow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 200, 100, 0.15) 0%, transparent 60%);
+            animation: lanternGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes moonGlow {
+            0%, 100% { opacity: 0.08; }
+            50% { opacity: 0.15; }
+        }
+
+        .moonlight-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(ellipse at 70% 20%, rgba(255, 255, 200, 0.3) 0%, transparent 50%);
+            animation: moonGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes waterRipple {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.02); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        .ripple-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: linear-gradient(180deg, rgba(100, 180, 255, 0.1) 0%, rgba(50, 150, 100, 0.15) 100%);
+            animation: waterRipple 3s ease-in-out infinite;
+        }
+
+        @keyframes leafFloat {
+            0% { transform: translateY(-10px) translateX(0) rotate(0deg); opacity: 0.8; }
+            25% { transform: translateY(25vh) translateX(30px) rotate(15deg); opacity: 0.7; }
+            50% { transform: translateY(50vh) translateX(-20px) rotate(-10deg); opacity: 0.8; }
+            75% { transform: translateY(75vh) translateX(40px) rotate(20deg); opacity: 0.6; }
+            100% { transform: translateY(100vh) translateX(0) rotate(360deg); opacity: 0; }
+        }
+
+        .leaf-particle {
+            position: fixed;
+            top: -30px;
+            animation: leafFloat linear infinite;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* V19: Festival Banner */
+        .festival-banner {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFA94D 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            animation: bannerPop 0.5s ease-out;
+        }
+
+        @keyframes bannerPop {
+            0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
+            70% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        .festival-banner-close {
+            margin-left: 12px;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
         /* V8: Theme Backgrounds with animations */
         .theme-bg-overlay {
@@ -4429,6 +4643,13 @@
             <div class="theme-header" id="themeHeader">当前: 自动检测</div>
             <div class="theme-options" id="themeOptions"></div>
         </div>
+
+        <!-- Holiday Panel (V19) -->
+        <div class="panel" id="holidayPanel">
+            <button class="panel-close" onclick="closeAllPanels()">×</button>
+            <div class="theme-header" id="holidayHeader">节日主题</div>
+            <div class="holiday-panel-grid" id="holidayGrid"></div>
+        </div>
     </div>
 
     <div class="color-palette" id="colorPalette">
@@ -4477,6 +4698,7 @@
             <span class="tool-icon">🎨</span>
             <span data-i18n="theme">Theme</span>
         </button>
+        <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
         <button class="tool-btn eraser-btn" id="eraserBtn">
             <span class="tool-icon">🧹</span>
             <span data-i18n="eraser">Eraser</span>
@@ -5055,6 +5277,63 @@
             ]
         };
 
+        // V19: Holiday Stickers (Chinese Festival Theme Packs)
+        const HOLIDAY_STICKERS = {
+            // Dragon Boat Festival - 8 stickers
+            dragon_boat: [
+                { id: 'dragon_boat', name: { zh: '龙舟', en: 'Dragon Boat' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><path d="M10 60 Q30 45 50 50 Q70 55 90 50 L85 65 Q65 70 50 68 Q35 70 15 65 Z" fill="#8B4513"/><polygon points="50,35 45,50 55,50" fill="#228B22"/><polygon points="50,20 50,35 60,30" fill="#228B22"/><ellipse cx="50" cy="55" rx="30" ry="8" fill="#D2691E"/><path d="M20 55 Q30 50 40 55" stroke="#FF0000" stroke-width="2" fill="none"/><path d="M60 55 Q70 50 80 55" stroke="#FFD700" stroke-width="2" fill="none"/><circle cx="25" cy="58" r="3" fill="#FF0000"/><circle cx="75" cy="58" r="3" fill="#FFD700"/><path d="M15 60 Q5 55 10 50" stroke="#8B4513" stroke-width="3" fill="none"/><path d="M10 55 L10 65" stroke="#FF0000" stroke-width="2"/></svg>' },
+                { id: 'zongzi', name: { zh: '粽子', en: 'Zongzi' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><polygon points="50,15 25,70 50,85 75,70" fill="#8B4513"/><polygon points="50,20 30,65 50,78 70,65" fill="#D2691E"/><path d="M30 50 L70 50" stroke="#228B22" stroke-width="2"/><path d="M35 35 L65 65" stroke="#228B22" stroke-width="2"/><path d="M65 35 L35 65" stroke="#228B22" stroke-width="2"/><ellipse cx="50" cy="55" rx="12" ry="8" fill="#FFE066" opacity="0.5"/><path d="M50 85 L50 95" stroke="#8B4513" stroke-width="3"/><path d="M45 95 Q50 90 55 95" stroke="#8B4513" stroke-width="2" fill="none"/></svg>' },
+                { id: 'calamus', name: { zh: '艾草', en: 'Mugwort' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><path d="M50 90 L50 30" stroke="#228B22" stroke-width="3"/><ellipse cx="50" cy="25" rx="8" ry="15" fill="#228B22"/><ellipse cx="38" cy="35" rx="6" ry="12" fill="#2E7D32" transform="rotate(-20 38 35)"/><ellipse cx="62" cy="35" rx="6" ry="12" fill="#2E7D32" transform="rotate(20 62 35)"/><ellipse cx="35" cy="50" rx="5" ry="10" fill="#228B22" transform="rotate(-15 35 50)"/><ellipse cx="65" cy="50" rx="5" ry="10" fill="#228B22" transform="rotate(15 65 50)"/><ellipse cx="40" cy="65" rx="4" ry="8" fill="#2E7D32" transform="rotate(-10 40 65)"/><ellipse cx="60" cy="65" rx="4" ry="8" fill="#2E7D32" transform="rotate(10 60 65)"/><path d="M50 25 Q55 15 60 20" stroke="#8B4513" stroke-width="2" fill="none"/></svg>' },
+                { id: 'realgar_wine', name: { zh: '雄黄酒', en: 'Realgar Wine' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><path d="M35 35 L40 80 Q50 85 60 80 L65 35 Q50 30 35 35" fill="#87CEEB" opacity="0.5"/><ellipse cx="50" cy="35" rx="15" ry="5" fill="#87CEEB" opacity="0.7"/><ellipse cx="50" cy="80" rx="10" ry="3" fill="#8B4513"/><path d="M50 30 L50 20 Q55 15 50 10 Q45 15 50 20" fill="#8B4513"/><circle cx="45" cy="55" r="2" fill="#FFD700"/><circle cx="55" cy="60" r="2" fill="#FFD700"/><circle cx="48" cy="68" r="1.5" fill="#FFD700"/></svg>' },
+                { id: 'sachet', name: { zh: '香囊', en: 'Sachet' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="25" ry="30" fill="#FF6B6B"/><ellipse cx="50" cy="55" rx="20" ry="25" fill="#FF8C8C"/><path d="M35 30 Q50 25 65 30" stroke="#FFD700" stroke-width="3" fill="none"/><circle cx="50" cy="30" r="5" fill="#FFD700"/><path d="M50 30 L50 15" stroke="#FF0000" stroke-width="2"/><path d="M45 15 Q50 10 55 15" stroke="#FF0000" stroke-width="2" fill="none"/><ellipse cx="50" cy="60" rx="8" ry="10" fill="#FFE066" opacity="0.5"/><path d="M30 50 Q25 60 30 70" stroke="#FF6B6B" stroke-width="3" fill="none"/><path d="M70 50 Q75 60 70 70" stroke="#FF6B6B" stroke-width="3" fill="none"/></svg>' },
+                { id: 'drum', name: { zh: '端午鼓', en: 'Festival Drum' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="65" rx="35" ry="15" fill="#D2691E"/><path d="M15 65 Q15 40 50 35 Q85 40 85 65" fill="#8B4513"/><ellipse cx="50" cy="35" rx="35" ry="12" fill="#D2691E"/><path d="M50 35 L50 20" stroke="#8B4513" stroke-width="3"/><polygon points="45,20 50,10 55,20" fill="#FF0000"/><path d="M15 55 Q5 50 10 60" stroke="#FF0000" stroke-width="2" fill="none"/><path d="M85 55 Q95 50 90 60" stroke="#FF0000" stroke-width="2" fill="none"/><line x1="20" y1="40" x2="80" y2="40" stroke="#FFE066" stroke-width="2"/><line x1="18" y1="50" x2="82" y2="50" stroke="#FFE066" stroke-width="2"/></svg>' },
+                { id: 'rice_dumpling', name: { zh: '糯米粽', en: 'Rice Dumpling' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><polygon points="50,10 20,75 50,90 80,75" fill="#228B22"/><polygon points="50,15 25,70 50,83 75,70" fill="#2E7D32"/><path d="M25 55 L75 55" stroke="#FFE066" stroke-width="3"/><path d="M30 40 L70 65" stroke="#FFE066" stroke-width="2"/><path d="M70 40 L30 65" stroke="#FFE066" stroke-width="2"/><ellipse cx="50" cy="50" rx="10" ry="15" fill="#F5DEB3" opacity="0.6"/><circle cx="42" cy="45" r="3" fill="#8B4513"/><circle cx="55" cy="55" r="2" fill="#8B4513"/></svg>' },
+                { id: 'five_color', name: { zh: '五彩绳', en: 'Five Color Bracelet' }, festival: '端午节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#FF0000" stroke-width="6"/><ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#FFE066" stroke-width="6" stroke-dasharray="22,100" stroke-dashoffset="-11"/><ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#228B22" stroke-width="6" stroke-dasharray="22,100" stroke-dashoffset="-33"/><ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#FF6B6B" stroke-width="6" stroke-dasharray="22,100" stroke-dashoffset="-55"/><ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#74C0FC" stroke-width="6" stroke-dasharray="22,100" stroke-dashoffset="-77"/><circle cx="15" cy="50" r="6" fill="#FFE066"/><circle cx="85" cy="50" r="6" fill="#FFE066"/></svg>' }
+            ],
+            // Mid-Autumn Festival - 8 stickers
+            mid_autumn: [
+                { id: 'moon_cake', name: { zh: '月饼', en: 'Moon Cake' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#D2691E"/><circle cx="50" cy="50" r="35" fill="#F5DEB3"/><circle cx="50" cy="50" r="30" fill="#FFE4B5"/><path d="M50 25 L53 35 L63 35 L55 42 L58 52 L50 46 L42 52 L45 42 L37 35 L47 35 Z" fill="#8B4513"/><circle cx="35" cy="38" r="3" fill="#8B4513"/><circle cx="65" cy="38" r="3" fill="#8B4513"/><circle cx="38" cy="60" r="2" fill="#8B4513"/><circle cx="60" cy="62" r="2.5" fill="#8B4513"/></svg>' },
+                { id: 'full_moon', name: { zh: '满月', en: 'Full Moon' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="50" cy="50" r="36" fill="#FFFACD"/><circle cx="35" cy="40" r="8" fill="#FFE066" opacity="0.5"/><circle cx="60" cy="55" r="6" fill="#FFE066" opacity="0.4"/><circle cx="45" cy="65" r="5" fill="#FFE066" opacity="0.3"/><circle cx="55" cy="35" r="4" fill="#FFE066" opacity="0.4"/><ellipse cx="30" cy="60" rx="5" ry="3" fill="#FFE066" opacity="0.3"/></svg>' },
+                { id: 'rabbit', name: { zh: '玉兔', en: 'Rabbit' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="65" rx="25" ry="22" fill="#F8F0F0"/><ellipse cx="38" cy="30" rx="8" ry="22" fill="#F8F0F0"/><ellipse cx="62" cy="30" rx="8" ry="22" fill="#F8F0F0"/><ellipse cx="38" cy="30" rx="4" ry="15" fill="#FFB6C1"/><ellipse cx="62" cy="30" rx="4" ry="15" fill="#FFB6C1"/><circle cx="42" cy="60" r="4" fill="#333"/><circle cx="58" cy="60" r="4" fill="#333"/><ellipse cx="50" cy="70" rx="4" ry="3" fill="#FFB6C1"/><circle cx="35" cy="68" r="6" fill="#FFB6C1" opacity="0.5"/><circle cx="65" cy="68" r="6" fill="#FFB6C1" opacity="0.5"/><ellipse cx="50" cy="80" rx="8" ry="5" fill="#FFE066"/></svg>' },
+                { id: 'lantern_round', name: { zh: '兔儿灯', en: 'Rabbit Lantern' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="25" ry="30" fill="#FF6B6B"/><rect x="40" y="20" width="20" height="10" fill="#8B4513"/><rect x="43" y="15" width="14" height="8" fill="#FFD700"/><ellipse cx="50" cy="55" rx="18" ry="22" fill="#FFE066" opacity="0.4"/><ellipse cx="42" cy="50" rx="3" ry="4" fill="#333"/><ellipse cx="58" cy="50" rx="3" ry="4" fill="#333"/><path d="M45 60 Q50 65 55 60" stroke="#333" stroke-width="1.5" fill="none"/><path d="M35 70 L30 80 M65 70 L70 80" stroke="#FF6B6B" stroke-width="2"/><circle cx="50" cy="85" r="4" fill="#FFD700"/></svg>' },
+                { id: 'osmanthus', name: { zh: '桂花', en: 'Osmanthus' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="8" ry="6" fill="#FFD700"/><circle cx="30" cy="40" r="6" fill="#FFA500"/><circle cx="40" cy="35" r="5" fill="#FFA500"/><circle cx="50" cy="30" r="6" fill="#FFA500"/><circle cx="60" cy="35" r="5" fill="#FFA500"/><circle cx="70" cy="40" r="6" fill="#FFA500"/><circle cx="35" cy="55" r="5" fill="#FFA500"/><circle cx="55" cy="50" r="5" fill="#FFA500"/><circle cx="65" cy="55" r="5" fill="#FFA500"/><circle cx="40" cy="70" r="4" fill="#FFA500"/><circle cx="50" cy="75" r="5" fill="#FFA500"/><circle cx="60" cy="70" r="4" fill="#FFA500"/><path d="M50 55 Q50 85 45 95" stroke="#228B22" stroke-width="3" fill="none"/><ellipse cx="42" cy="90" rx="8" ry="5" fill="#228B22" transform="rotate(-20 42 90)"/><ellipse cx="58" cy="88" rx="7" ry="4" fill="#2E7D32" transform="rotate(20 58 88)"/></svg>' },
+                { id: 'clouds_auspicious', name: { zh: '祥云', en: 'Auspicious Clouds' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="30" ry="18" fill="#87CEEB" opacity="0.7"/><circle cx="28" cy="50" r="15" fill="#87CEEB" opacity="0.7"/><circle cx="72" cy="50" r="12" fill="#87CEEB" opacity="0.7"/><circle cx="50" cy="42" r="18" fill="#87CEEB" opacity="0.7"/><ellipse cx="50" cy="58" rx="25" ry="10" fill="white" opacity="0.5"/><path d="M25 65 Q30 60 35 65 Q40 60 45 65" stroke="#FFD700" stroke-width="2" fill="none"/><path d="M55 65 Q60 60 65 65 Q70 60 75 65" stroke="#FFD700" stroke-width="2" fill="none"/></svg>' },
+                { id: 'rabbit_lantern', name: { zh: '兔子灯', en: 'Rabbit Lantern' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="22" ry="28" fill="#FF6B6B"/><ellipse cx="38" cy="30" rx="6" ry="18" fill="#FF6B6B"/><ellipse cx="62" cy="30" rx="6" ry="18" fill="#FF6B6B"/><ellipse cx="38" cy="30" rx="3" ry="12" fill="#FFB6C1"/><ellipse cx="62" cy="30" rx="3" ry="12" fill="#FFB6C1"/><rect x="42" y="18" width="16" height="8" fill="#8B4513"/><ellipse cx="50" cy="50" rx="15" ry="20" fill="#FFE066" opacity="0.5"/><circle cx="43" cy="48" r="3" fill="#333"/><circle cx="57" cy="48" r="3" fill="#333"/><ellipse cx="50" cy="58" rx="4" ry="3" fill="#FFB6C1"/><path d="M35 70 L30 82 M65 70 L70 82" stroke="#FF6B6B" stroke-width="2"/></svg>' },
+                { id: 'tangerine', name: { zh: '柚子', en: 'Pomelo' }, festival: '中秋节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="35" fill="#90EE90"/><circle cx="50" cy="55" r="30" fill="#98FB98"/><path d="M50 20 Q55 15 52 25" stroke="#228B22" stroke-width="3" fill="none"/><ellipse cx="55" cy="22" rx="8" ry="5" fill="#228B22" transform="rotate(30 55 22)"/><path d="M30 40 Q50 35 70 40" stroke="#228B22" stroke-width="1" fill="none" opacity="0.5"/><path d="M25 55 Q50 50 75 55" stroke="#228B22" stroke-width="1" fill="none" opacity="0.5"/><path d="M30 70 Q50 65 70 70" stroke="#228B22" stroke-width="1" fill="none" opacity="0.5"/><path d="M50 25 L50 85" stroke="#228B22" stroke-width="1" fill="none" opacity="0.3"/></svg>' }
+            ],
+            // Double Ninth Festival - 6 stickers
+            double_ninth: [
+                { id: 'chrysanthemum', name: { zh: '菊花', en: 'Chrysanthemum' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="12" fill="#FFE066"/><ellipse cx="50" cy="25" rx="8" ry="15" fill="#FF6B6B"/><ellipse cx="50" cy="75" rx="8" ry="15" fill="#FF6B6B"/><ellipse cx="25" cy="50" rx="15" ry="8" fill="#FF6B6B"/><ellipse cx="75" cy="50" rx="15" ry="8" fill="#FF6B6B"/><ellipse cx="30" cy="30" rx="8" ry="14" fill="#FF8C8C" transform="rotate(-45 30 30)"/><ellipse cx="70" cy="30" rx="8" ry="14" fill="#FF8C8C" transform="rotate(45 70 30)"/><ellipse cx="30" cy="70" rx="8" ry="14" fill="#FF8C8C" transform="rotate(45 30 70)"/><ellipse cx="70" cy="70" rx="8" ry="14" fill="#FF8C8C" transform="rotate(-45 70 70)"/><ellipse cx="50" cy="50" rx="6" ry="10" fill="#FFE066"/></svg>' },
+                { id: 'mountain', name: { zh: '高山', en: 'Mountain' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><polygon points="50,15 10,85 90,85" fill="#228B22"/><polygon points="50,15 30,55 70,55" fill="#2E7D32"/><polygon points="25,45 5,85 45,85" fill="#228B22" opacity="0.7"/><polygon points="75,50 55,85 95,85" fill="#228B22" opacity="0.8"/><path d="M40 30 L50 15 L60 30" fill="white" opacity="0.8"/><ellipse cx="50" cy="20" rx="8" ry="5" fill="white" opacity="0.6"/><circle cx="75" cy="30" r="8" fill="#FFE066" opacity="0.8"/><path d="M10 85 Q30 80 50 85 Q70 90 90 85" stroke="#74C0FC" stroke-width="2" fill="none"/></svg>' },
+                { id: 'tea_cup', name: { zh: '菊花茶', en: 'Chrysanthemum Tea' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><path d="M25 40 L30 75 Q50 80 70 75 L75 40 Q50 35 25 40" fill="#F5DEB3"/><ellipse cx="50" cy="40" rx="25" ry="8" fill="#FFE4B5"/><ellipse cx="50" cy="40" rx="20" ry="5" fill="#FFE066" opacity="0.6"/><circle cx="40" cy="45" r="3" fill="#FF6B6B"/><circle cx="50" cy="48" r="2.5" fill="#FF6B6B"/><circle cx="58" cy="44" r="2" fill="#FF6B6B"/><path d="M75 45 Q85 45 85 55 Q85 65 75 65" stroke="#D2691E" stroke-width="4" fill="none"/><path d="M40 35 Q38 25 45 30" stroke="#8B4513" stroke-width="2" fill="none"/><ellipse cx="42" cy="28" rx="6" ry="4" fill="#228B22"/></svg>' },
+                { id: 'cable_car', name: { zh: '缆车', en: 'Cable Car' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><line x1="10" y1="20" x2="90" y2="20" stroke="#495057" stroke-width="2"/><rect x="35" y="35" width="30" height="25" rx="3" fill="#74C0FC"/><rect x="38" y="38" width="10" height="10" fill="#E3F2FD"/><rect x="52" y="38" width="10" height="10" fill="#E3F2FD"/><path d="M40 60 L40 75 M60 60 L60 75" stroke="#495057" stroke-width="2"/><ellipse cx="40" cy="78" rx="5" ry="3" fill="#495057"/><ellipse cx="60" cy="78" rx="5" ry="3" fill="#495057"/><polygon points="50,35 45,25 55,25" fill="#FF6B6B"/><circle cx="15" cy="20" r="3" fill="#495057"/><circle cx="85" cy="20" r="3" fill="#495057"/></svg>' },
+                { id: 'pine', name: { zh: '松柏', en: 'Pine' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><rect x="45" y="70" width="10" height="20" fill="#8B4513"/><polygon points="50,10 25,45 75,45" fill="#228B22"/><polygon points="50,25 30,55 70,55" fill="#2E7D32"/><polygon points="50,40 28,70 72,70" fill="#228B22"/><polygon points="50,55 25,85 75,85" fill="#2E7D32"/><circle cx="35" cy="50" r="3" fill="#8B4513"/><circle cx="55" cy="40" r="2" fill="#8B4513"/><circle cx="65" cy="60" r="2.5" fill="#8B4513"/></svg>' },
+                { id: 'health', name: { zh: '山茱萸', en: 'Cornus Fruit' }, festival: '重阳节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="35" cy="40" rx="10" ry="12" fill="#FF0000"/><ellipse cx="55" cy="35" rx="8" ry="10" fill="#FF0000"/><ellipse cx="70" cy="45" rx="9" ry="11" fill="#FF0000"/><ellipse cx="45" cy="55" rx="8" ry="10" fill="#FF0000"/><ellipse cx="60" cy="60" rx="7" ry="9" fill="#FF0000"/><ellipse cx="50" cy="75" rx="6" ry="8" fill="#FF0000"/><path d="M50 85 Q48 95 45 98" stroke="#228B22" stroke-width="2" fill="none"/><ellipse cx="42" cy="92" rx="6" ry="4" fill="#228B22" transform="rotate(-30 42 92)"/><ellipse cx="55" cy="90" rx="5" ry="3" fill="#2E7D32" transform="rotate(20 55 90)"/></svg>' }
+            ],
+            // Lantern Festival - 6 stickers
+            lantern: [
+                { id: 'tangyuan', name: { zh: '汤圆', en: 'Tangyuan' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><circle cx="35" cy="55" r="18" fill="#F8F0F0"/><circle cx="35" cy="55" r="14" fill="#FFFAFA"/><circle cx="60" cy="50" r="15" fill="#F8F0F0"/><circle cx="60" cy="50" r="11" fill="#FFFAFA"/><circle cx="50" cy="70" r="12" fill="#F8F0F0"/><circle cx="50" cy="70" r="8" fill="#FFFAFA"/><circle cx="32" cy="52" r="3" fill="#8B4513"/><circle cx="58" cy="47" r="2.5" fill="#8B4513"/><circle cx="48" cy="68" r="2" fill="#8B4513"/><ellipse cx="30" cy="58" rx="4" ry="2" fill="white" opacity="0.6"/><ellipse cx="55" cy="53" rx="3" ry="2" fill="white" opacity="0.6"/></svg>' },
+                { id: 'lantern_red', name: { zh: '红灯笼', en: 'Red Lantern' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="28" ry="35" fill="#FF0000"/><rect x="38" y="15" width="24" height="10" fill="#8B4513"/><rect x="42" y="10" width="16" height="8" rx="2" fill="#FFD700"/><ellipse cx="50" cy="55" rx="20" ry="28" fill="#FF3333" opacity="0.5"/><rect x="45" y="85" width="10" height="8" fill="#FFD700"/><path d="M42 90 Q50 95 58 90" stroke="#FF0000" stroke-width="2" fill="none"/><path d="M25 50 Q20 55 25 60" stroke="#FFD700" stroke-width="2" fill="none"/><path d="M75 50 Q80 55 75 60" stroke="#FFD700" stroke-width="2" fill="none"/></svg>' },
+                { id: 'lion_dance', name: { zh: '舞狮', en: 'Lion Dance' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="60" rx="35" ry="30" fill="#FF8C00"/><circle cx="30" cy="45" r="18" fill="#FF8C00"/><circle cx="70" cy="45" r="18" fill="#FF8C00"/><circle cx="30" cy="45" r="12" fill="#FFE066"/><circle cx="70" cy="45" r="12" fill="#FFE066"/><circle cx="30" cy="45" r="6" fill="#333"/><circle cx="70" cy="45" r="6" fill="#333"/><ellipse cx="50" cy="65" rx="15" ry="10" fill="#FFE066"/><path d="M40 60 Q50 70 60 60" stroke="#FF0000" stroke-width="3" fill="none"/><path d="M35 30 Q30 20 40 25" stroke="#FF8C00" stroke-width="3" fill="none"/><path d="M65 30 Q70 20 60 25" stroke="#FF8C00" stroke-width="3" fill="none"/><circle cx="40" cy="25" r="5" fill="#FF0000"/><circle cx="60" cy="25" r="5" fill="#FF0000"/></svg>' },
+                { id: 'dragon_long', name: { zh: '舞龙', en: 'Dragon' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><path d="M10 60 Q25 45 40 55 Q55 65 70 50 Q85 35 95 45" stroke="#228B22" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="20" cy="55" r="8" fill="#228B22"/><circle cx="17" cy="52" r="2" fill="#FFD700"/><path d="M12 50 L8 42 L18 48" fill="#228B22"/><path d="M25 48 L28 40 L32 50" fill="#228B22"/><circle cx="50" cy="55" r="6" fill="#2E7D32"/><circle cx="75" cy="42" r="7" fill="#228B22"/><circle cx="92" cy="45" r="5" fill="#FF0000"/><path d="M88 40 Q95 35 92 48" stroke="#FF0000" stroke-width="2" fill="none"/></svg>' },
+                { id: 'riddle', name: { zh: '灯谜', en: 'Riddle Lantern' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="25" ry="30" fill="#FFE066"/><rect x="40" y="15" width="20" height="8" fill="#8B4513"/><rect x="44" y="10" width="12" height="8" fill="#FF0000"/><ellipse cx="50" cy="50" rx="18" ry="22" fill="#FFFACD" opacity="0.7"/><text x="50" y="48" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">?</text><text x="50" y="62" text-anchor="middle" fill="#333" font-size="8">谜</text><text x="50" y="72" text-anchor="middle" fill="#FF6B6B" font-size="7">打一字</text><path d="M30 45 Q25 50 30 55" stroke="#FF0000" stroke-width="2" fill="none"/><path d="M70 45 Q75 50 70 55" stroke="#FF0000" stroke-width="2" fill="none"/></svg>' },
+                { id: 'firecrackers', name: { zh: '鞭炮', en: 'Firecrackers' }, festival: '元宵节', svg: '<svg viewBox="0 0 100 100"><rect x="20" y="30" width="15" height="45" fill="#FF0000" rx="2"/><rect x="38" y="35" width="12" height="40" fill="#FFD700" rx="2"/><rect x="53" y="30" width="15" height="45" fill="#FF0000" rx="2"/><rect x="70" y="38" width="10" height="35" fill="#FFD700" rx="2"/><path d="M27 30 Q27 20 32 15" stroke="#FF6600" stroke-width="3" fill="none"/><path d="M40 35 Q40 25 45 18" stroke="#FF6600" stroke-width="3" fill="none"/><path d="M60 30 Q60 22 65 15" stroke="#FF6600" stroke-width="3" fill="none"/><path d="M75 38 Q75 28 78 22" stroke="#FF6600" stroke-width="3" fill="none"/><circle cx="32" cy="12" r="4" fill="#FF6600"/><circle cx="45" cy="15" r="3" fill="#FF6600"/><circle cx="65" cy="12" r="4" fill="#FF6600"/><circle cx="78" cy="20" r="3" fill="#FF6600"/><rect x="18" y="75" width="64" height="8" fill="#8B4513" rx="2"/></svg>' }
+            ],
+            // Chinese New Year - 10 stickers
+            spring: [
+                { id: 'spring_scroll', name: { zh: '春联', en: 'Spring Scrolls' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><rect x="10" y="20" width="25" height="65" fill="#FFE066" rx="2"/><rect x="12" y="22" width="21" height="61" fill="#FF0000" rx="1"/><text x="22" y="45" text-anchor="middle" fill="#FFD700" font-size="14" font-weight="bold">春</text><text x="22" y="65" text-anchor="middle" fill="#FFD700" font-size="14" font-weight="bold">福</text><rect x="65" y="20" width="25" height="65" fill="#FFE066" rx="2"/><rect x="67" y="22" width="21" height="61" fill="#FF0000" rx="1"/><text x="77" y="45" text-anchor="middle" fill="#FFD700" font-size="14" font-weight="bold">春</text><text x="77" y="65" text-anchor="middle" fill="#FFD700" font-size="14" font-weight="bold">福</text><rect x="38" y="15" width="24" height="75" fill="#FFE066" rx="2"/><rect x="40" y="17" width="20" height="71" fill="#FF0000" rx="1"/><text x="50" y="42" text-anchor="middle" fill="#FFD700" font-size="12" font-weight="bold">迎</text><text x="50" y="58" text-anchor="middle" fill="#FFD700" font-size="12" font-weight="bold">春</text><text x="50" y="74" text-anchor="middle" fill="#FFD700" font-size="12" font-weight="bold">接</text><text x="50" y="85" text-anchor="middle" fill="#FFD700" font-size="10" font-weight="bold">福</text></svg>' },
+                { id: 'fu_character', name: { zh: '福字', en: 'Fu Character' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" fill="#FF0000" rx="5"/><rect x="20" y="20" width="60" height="60" fill="#CC0000" rx="3"/><text x="50" y="70" text-anchor="middle" fill="#FFD700" font-size="40" font-weight="bold">福</text><path d="M20 20 L80 80 M80 20 L20 80" stroke="#FFD700" stroke-width="2" opacity="0.2"/><circle cx="25" cy="25" r="4" fill="#FFD700" opacity="0.5"/><circle cx="75" cy="25" r="4" fill="#FFD700" opacity="0.5"/><circle cx="25" cy="75" r="4" fill="#FFD700" opacity="0.5"/><circle cx="75" cy="75" r="4" fill="#FFD700" opacity="0.5"/></svg>' },
+                { id: 'firework', name: { zh: '烟花', en: 'Fireworks' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#FFE066"/><line x1="50" y1="20" x2="50" y2="38" stroke="#FF6B6B" stroke-width="3"/><line x1="50" y1="62" x2="50" y2="80" stroke="#FF6B6B" stroke-width="3"/><line x1="20" y1="50" x2="38" y2="50" stroke="#FF6B6B" stroke-width="3"/><line x1="62" y1="50" x2="80" y2="50" stroke="#FF6B6B" stroke-width="3"/><line x1="28" y1="28" x2="40" y2="40" stroke="#74C0FC" stroke-width="3"/><line x1="60" y1="60" x2="72" y2="72" stroke="#74C0FC" stroke-width="3"/><line x1="72" y1="28" x2="60" y2="40" stroke="#74C0FC" stroke-width="3"/><line x1="40" y1="60" x2="28" y2="72" stroke="#74C0FC" stroke-width="3"/><circle cx="50" cy="50" r="5" fill="#FF6B6B"/><circle cx="30" cy="30" r="3" fill="#FFE066"/><circle cx="70" cy="30" r="3" fill="#FFE066"/><circle cx="30" cy="70" r="3" fill="#FFE066"/><circle cx="70" cy="70" r="3" fill="#FFE066"/></svg>' },
+                { id: 'red_envelope', name: { zh: '红包', en: 'Red Envelope' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="50" fill="#FF0000" rx="3"/><rect x="15" y="30" width="70" height="15" fill="#CC0000" rx="3"/><path d="M15 45 L50 62 L85 45" fill="#FFD700"/><rect x="40" y="52" width="20" height="18" fill="#FFD700" rx="2"/><text x="50" y="40" text-anchor="middle" fill="#FFD700" font-size="11" font-weight="bold">福</text><circle cx="50" cy="10" r="8" fill="#FF0000"/><text x="50" y="14" text-anchor="middle" fill="#FFD700" font-size="10" font-weight="bold">喜</text></svg>' },
+                { id: 'dumpling', name: { zh: '饺子', en: 'Dumpling' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><path d="M20 55 Q20 40 50 35 Q80 40 80 55 L80 70 Q80 85 50 80 Q20 85 20 70 Z" fill="#F5DEB3"/><path d="M20 55 Q35 50 50 55 Q65 50 80 55" stroke="#FFE4B5" stroke-width="2" fill="none"/><path d="M25 60 Q35 55 45 62 Q55 55 65 62 Q75 55 80 58" stroke="#FFE4B5" stroke-width="2" fill="none"/><path d="M30 68 Q40 63 50 68 Q60 63 70 68" stroke="#FFE4B5" stroke-width="2" fill="none"/><ellipse cx="50" cy="50" rx="15" ry="8" fill="#FFFAFA" opacity="0.5"/></svg>' },
+                { id: 'fish', name: { zh: '年年有余', en: 'Fish' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="38" ry="25" fill="#FF6B6B"/><ellipse cx="50" cy="50" rx="32" ry="20" fill="#FF8C8C"/><polygon points="88,50 100,35 100,65" fill="#FF6B6B"/><circle cx="25" cy="47" r="5" fill="#333"/><circle cx="25" cy="47" r="2" fill="white"/><path d="M35 55 Q45 58 55 55 Q65 52 75 55" stroke="#333" stroke-width="2" fill="none"/><path d="M40 42 Q50 38 60 42" stroke="#FF6B6B" stroke-width="2" fill="none"/><ellipse cx="50" cy="55" rx="8" ry="5" fill="#FFE066" opacity="0.5"/><path d="M15 35 Q10 30 15 40" stroke="#FF6B6B" stroke-width="2" fill="none"/><path d="M15 60 Q10 65 15 70" stroke="#FF6B6B" stroke-width="2" fill="none"/></svg>' },
+                { id: 'lantern_spring', name: { zh: '灯笼', en: 'Spring Lantern' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="30" ry="38" fill="#FF0000"/><rect x="36" y="12" width="28" height="12" fill="#8B4513" rx="2"/><rect x="40" y="6" width="20" height="10" fill="#FFD700" rx="2"/><ellipse cx="50" cy="55" rx="22" ry="30" fill="#FF3333" opacity="0.5"/><text x="50" y="62" text-anchor="middle" fill="#FFD700" font-size="22" font-weight="bold">福</text><rect x="43" y="90" width="14" height="8" fill="#FFD700" rx="2"/><path d="M38 92 Q50 98 62 92" stroke="#FF0000" stroke-width="2" fill="none"/><path d="M25 48 Q18 55 25 62" stroke="#FFD700" stroke-width="3" fill="none"/><path d="M75 48 Q82 55 75 62" stroke="#FFD700" stroke-width="3" fill="none"/></svg>' },
+                { id: 'zodiac', name: { zh: '生肖', en: 'Zodiac' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#FFE066"/><circle cx="50" cy="50" r="35" fill="#FFFACD"/><circle cx="50" cy="50" r="30" fill="#FFE066"/><text x="50" y="60" text-anchor="middle" fill="#8B4513" font-size="35" font-weight="bold">龙</text><circle cx="25" cy="25" r="5" fill="#FFD700"/><circle cx="75" cy="25" r="5" fill="#FFD700"/><circle cx="25" cy="75" r="5" fill="#FFD700"/><circle cx="75" cy="75" r="5" fill="#FFD700"/></svg>' },
+                { id: 'couplet', name: { zh: '对联', en: 'Couplet' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><rect x="15" y="20" width="22" height="65" fill="#FFE066" rx="2"/><rect x="17" y="22" width="18" height="61" fill="#FF0000" rx="1"/><text x="26" y="50" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">招</text><text x="26" y="72" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">财</text><rect x="63" y="20" width="22" height="65" fill="#FFE066" rx="2"/><rect x="65" y="22" width="18" height="61" fill="#FF0000" rx="1"/><text x="74" y="50" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">进</text><text x="74" y="72" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">宝</text><rect x="40" y="10" width="20" height="12" fill="#8B4513" rx="2"/><polygon points="50,10 45,5 55,5" fill="#FFD700"/></svg>' },
+                { id: 'plum', name: { zh: '梅花', en: 'Plum Blossom' }, festival: '春节', svg: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="10" ry="8" fill="#FFD700"/><ellipse cx="50" cy="30" rx="12" ry="16" fill="#FFB6C1"/><ellipse cx="30" cy="48" rx="12" ry="16" fill="#FFB6C1" transform="rotate(-60 30 48)"/><ellipse cx="70" cy="48" rx="12" ry="16" fill="#FFB6C1" transform="rotate(60 70 48)"/><ellipse cx="35" cy="72" rx="12" ry="16" fill="#FFB6C1" transform="rotate(-120 35 72)"/><ellipse cx="65" cy="72" rx="12" ry="16" fill="#FFB6C1" transform="rotate(120 65 72)"/><circle cx="50" cy="30" r="4" fill="#FFE066"/><circle cx="22" cy="52" r="4" fill="#FFE066"/><circle cx="78" cy="52" r="4" fill="#FFE066"/><circle cx="30" cy="80" r="4" fill="#FFE066"/><circle cx="70" cy="80" r="4" fill="#FFE066"/><path d="M50 63 Q48 80 45 95" stroke="#8B4513" stroke-width="3" fill="none"/><path d="M50 63 Q52 78 55 90" stroke="#8B4513" stroke-width="2" fill="none"/></svg>' }
+            ]
+        };
+
         // Theme backgrounds (animated)
         const THEME_BACKGROUNDS = {
             halloween_night: {
@@ -5096,6 +5375,99 @@
                 name: 'Easter Sky',
                 css: 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #E0FFFF 100%)',
                 animations: []
+            }
+        };
+
+        // V19: Holiday Backgrounds (Chinese Festival Backgrounds)
+        const HOLIDAY_BACKGROUNDS = {
+            // Dragon Boat Festival - 3 backgrounds
+            dragon_boat_race: {
+                id: 'dragon_boat_race',
+                name: { zh: '端午赛龙舟', en: 'Dragon Boat Race' },
+                css: 'linear-gradient(to bottom, #87CEEB 0%, #98D8AA 40%, #2E7D32 100%)',
+                effect: 'ripple'
+            },
+            zongzi_making: {
+                id: 'zongzi_making',
+                name: { zh: '包粽子', en: 'Zongzi Making' },
+                css: 'linear-gradient(to bottom, #8B4513 0%, #D2691E 30%, #228B22 100%)',
+                effect: 'none'
+            },
+            festival_decoration: {
+                id: 'festival_decoration',
+                name: { zh: '端午装饰', en: 'Festival Decoration' },
+                css: 'linear-gradient(to bottom, #FF6B6B 0%, #FFD700 50%, #228B22 100%)',
+                effect: 'none'
+            },
+            // Mid-Autumn Festival - 3 backgrounds
+            full_moon_night: {
+                id: 'full_moon_night',
+                name: { zh: '满月夜空', en: 'Full Moon Night' },
+                css: 'linear-gradient(to bottom, #1a1a3e 0%, #2d2d5e 40%, #4a4a8e 100%)',
+                effect: 'moonlight'
+            },
+            moon_viewing: {
+                id: 'moon_viewing',
+                name: { zh: '赏月', en: 'Moon Viewing' },
+                css: 'linear-gradient(to bottom, #2d2d5e 0%, #4a3a2e 50%, #8B4513 100%)',
+                effect: 'moonlight'
+            },
+            moon_palace: {
+                id: 'moon_palace',
+                name: { zh: '广寒宫', en: 'Moon Palace' },
+                css: 'linear-gradient(to bottom, #4a4a8e 0%, #6a5acd 40%, #9370DB 100%)',
+                effect: 'moonlight'
+            },
+            // Double Ninth Festival - 2 backgrounds
+            mountain_climbing: {
+                id: 'mountain_climbing',
+                name: { zh: '登高', en: 'Mountain Climbing' },
+                css: 'linear-gradient(to bottom, #87CEEB 0%, #98D8AA 30%, #228B22 60%, #8B4513 100%)',
+                effect: 'leaves'
+            },
+            chrysanthemum_exhibition: {
+                id: 'chrysanthemum_exhibition',
+                name: { zh: '菊花展', en: 'Chrysanthemum Exhibition' },
+                css: 'linear-gradient(to bottom, #FFE066 0%, #FFA500 40%, #FF6B6B 100%)',
+                effect: 'none'
+            },
+            // Lantern Festival - 2 backgrounds
+            lantern_festival: {
+                id: 'lantern_festival',
+                name: { zh: '元宵灯会', en: 'Lantern Festival' },
+                css: 'linear-gradient(to bottom, #1a1a2e 0%, #4a2c6a 40%, #FF6B6B 100%)',
+                effect: 'lantern'
+            },
+            dragon_lion_dance: {
+                id: 'dragon_lion_dance',
+                name: { zh: '舞龙舞狮', en: 'Dragon & Lion Dance' },
+                css: 'linear-gradient(to bottom, #FF6B6B 0%, #FFD700 40%, #FF8C00 100%)',
+                effect: 'confetti'
+            },
+            // Chinese New Year - 4 backgrounds
+            reunion_dinner: {
+                id: 'reunion_dinner',
+                name: { zh: '年夜饭', en: 'Reunion Dinner' },
+                css: 'linear-gradient(to bottom, #8B0000 0%, #DC143C 30%, #FFD700 100%)',
+                effect: 'confetti'
+            },
+            fireworks_night: {
+                id: 'fireworks_night',
+                name: { zh: '烟花夜空', en: 'Fireworks Night' },
+                css: 'linear-gradient(to bottom, #0a0a2e 0%, #1a1a4e 40%, #FF6B6B 100%)',
+                effect: 'confetti'
+            },
+            spring_decorations: {
+                id: 'spring_decorations',
+                name: { zh: '春节装饰', en: 'Spring Decorations' },
+                css: 'linear-gradient(to bottom, #FF0000 0%, #DC143C 40%, #FFD700 100%)',
+                effect: 'confetti'
+            },
+            new_year_greeting: {
+                id: 'new_year_greeting',
+                name: { zh: '拜年', en: 'New Year Greeting' },
+                css: 'linear-gradient(to bottom, #FF6B6B 0%, #FFA94D 40%, #FFE066 100%)',
+                effect: 'confetti'
             }
         };
 
@@ -5328,7 +5700,382 @@
             }
         }
 
-        // Update STAMP_CATEGORIES to include theme tab
+        // V19: Holiday System Functions
+        let currentHoliday = null;
+        let holidayEffectInterval = null;
+
+        // Get active festival based on current date
+        function getActiveFestival() {
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+
+            // Simplified solar calendar approximation:
+            // Dragon Boat: June (month 6), days 3-7
+            // Mid-Autumn: September (month 9), days 13-17
+            // Double Ninth: October (month 10), days 7-11
+            // Lantern: February (month 2), days 11-19
+            // Spring (Chinese New Year): January/February, days 21-7
+
+            if (month === 6 && day >= 3 && day <= 7) return 'dragon_boat';
+            if (month === 9 && day >= 13 && day <= 17) return 'mid_autumn';
+            if (month === 10 && day >= 7 && day <= 11) return 'double_ninth';
+            if (month === 2 && day >= 11 && day <= 19) return 'lantern';
+            if ((month === 1 && day >= 21) || (month === 2 && day <= 7)) return 'spring';
+
+            return null;
+        }
+
+        // Get festival display name
+        function getFestivalDisplayName(festivalId) {
+            const names = {
+                dragon_boat: { zh: '端午节', en: 'Dragon Boat Festival' },
+                mid_autumn: { zh: '中秋节', en: 'Mid-Autumn Festival' },
+                double_ninth: { zh: '重阳节', en: 'Double Ninth Festival' },
+                lantern: { zh: '元宵节', en: 'Lantern Festival' },
+                spring: { zh: '春节', en: 'Chinese New Year' }
+            };
+            return names[festivalId] || { zh: festivalId, en: festivalId };
+        }
+
+        // Get festival emoji
+        function getFestivalEmoji(festivalId) {
+            const emojis = {
+                dragon_boat: '🐉',
+                mid_autumn: '🌕',
+                double_ninth: '🌸',
+                lantern: '🏮',
+                spring: '🧧'
+            };
+            return emojis[festivalId] || '🎊';
+        }
+
+        // Get sticker count for festival
+        function getFestivalStickerCount(festivalId) {
+            return HOLIDAY_STICKERS[festivalId] ? HOLIDAY_STICKERS[festivalId].length : 0;
+        }
+
+        // Get background count for festival
+        function getFestivalBgCount(festivalId) {
+            const festivalBgs = Object.values(HOLIDAY_BACKGROUNDS).filter(bg => {
+                if (festivalId === 'dragon_boat') return bg.id.startsWith('dragon_boat') || bg.id === 'zongzi_making' || bg.id === 'festival_decoration';
+                if (festivalId === 'mid_autumn') return bg.id.startsWith('full_moon') || bg.id.startsWith('moon_');
+                if (festivalId === 'double_ninth') return bg.id.startsWith('mountain_') || bg.id.startsWith('chrysanthemum');
+                if (festivalId === 'lantern') return bg.id.startsWith('lantern_') || bg.id.startsWith('dragon_');
+                if (festivalId === 'spring') return bg.id.startsWith('reunion_') || bg.id.startsWith('fireworks_') || bg.id.startsWith('spring_') || bg.id.startsWith('new_year');
+                return false;
+            });
+            return festivalBgs.length;
+        }
+
+        // Initialize holiday system
+        function initHolidaySystem() {
+            // Setup holiday button
+            document.getElementById('holidayBtn').addEventListener('click', openHolidayPanel);
+
+            // Render holiday options
+            renderHolidayOptions();
+
+            // Check for auto-detected festival
+            const detected = getActiveFestival();
+            if (detected && !currentHoliday) {
+                currentHoliday = detected;
+            }
+
+            // Load saved holiday preference
+            const saved = localStorage.getItem('activeHolidayTheme');
+            if (saved) {
+                currentHoliday = saved;
+            }
+
+            // Apply holiday if active
+            if (currentHoliday) {
+                applyHolidayEffect(currentHoliday);
+            }
+        }
+
+        // Open holiday panel
+        function openHolidayPanel() {
+            closeAllPanels();
+            document.getElementById('holidayPanel').classList.add('active');
+            renderHolidayOptions();
+            playSound(playBtnClick);
+        }
+
+        // Render holiday options
+        function renderHolidayOptions() {
+            const container = document.getElementById('holidayGrid');
+            container.innerHTML = '';
+
+            const festivals = ['dragon_boat', 'mid_autumn', 'double_ninth', 'lantern', 'spring'];
+
+            festivals.forEach(festivalId => {
+                const info = getFestivalDisplayName(festivalId);
+                const emoji = getFestivalEmoji(festivalId);
+                const stickerCount = getFestivalStickerCount(festivalId);
+                const bgCount = getFestivalBgCount(festivalId);
+                const isActive = currentHoliday === festivalId;
+
+                const card = document.createElement('div');
+                card.className = 'holiday-card';
+                card.innerHTML = `
+                    <div class="holiday-card-header">
+                        <span class="holiday-emoji">${emoji}</span>
+                        <span class="holiday-name">${currentLang === 'zh' ? info.zh : info.en}</span>
+                    </div>
+                    <div class="holiday-card-stats">
+                        <span>🎨 ${stickerCount} stickers</span>
+                        <span>🖼 ${bgCount} backgrounds</span>
+                    </div>
+                    <div class="holiday-card-actions">
+                        <button class="holiday-card-btn preview-btn" data-festival="${festivalId}">${currentLang === 'zh' ? '预览' : 'Preview'}</button>
+                        ${isActive ?
+                            `<button class="holiday-card-btn deactivate-btn" data-festival="${festivalId}">${currentLang === 'zh' ? '关闭' : 'Deactivate'}</button>` :
+                            `<button class="holiday-card-btn activate-btn" data-festival="${festivalId}">${currentLang === 'zh' ? '激活' : 'Activate'}</button>`
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Add event listeners
+            container.querySelectorAll('.preview-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const festival = e.target.dataset.festival;
+                    previewHoliday(festival);
+                });
+            });
+
+            container.querySelectorAll('.activate-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const festival = e.target.dataset.festival;
+                    activateHoliday(festival);
+                });
+            });
+
+            container.querySelectorAll('.deactivate-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    deactivateHoliday();
+                });
+            });
+        }
+
+        // Preview holiday (apply background only)
+        function previewHoliday(festivalId) {
+            // Find first background for this festival
+            const bgKeys = Object.keys(HOLIDAY_BACKGROUNDS).filter(k => {
+                const bg = HOLIDAY_BACKGROUNDS[k];
+                if (festivalId === 'dragon_boat') return bg.id === 'dragon_boat_race' || bg.id === 'zongzi_making' || bg.id === 'festival_decoration';
+                if (festivalId === 'mid_autumn') return bg.id === 'full_moon_night' || bg.id === 'moon_viewing' || bg.id === 'moon_palace';
+                if (festivalId === 'double_ninth') return bg.id === 'mountain_climbing' || bg.id === 'chrysanthemum_exhibition';
+                if (festivalId === 'lantern') return bg.id === 'lantern_festival' || bg.id === 'dragon_lion_dance';
+                if (festivalId === 'spring') return bg.id === 'reunion_dinner' || bg.id === 'fireworks_night';
+                return false;
+            });
+
+            if (bgKeys.length > 0) {
+                const bg = HOLIDAY_BACKGROUNDS[bgKeys[0]];
+                const overlay = document.getElementById('themeBgOverlay');
+                overlay.style.background = bg.css;
+                overlay.style.display = 'block';
+                applyHolidayEffectToOverlay(overlay, bg.effect);
+            }
+        }
+
+        // Activate holiday
+        function activateHoliday(festivalId) {
+            currentHoliday = festivalId;
+            localStorage.setItem('activeHolidayTheme', festivalId);
+            renderHolidayOptions();
+
+            // Apply theme background for this holiday
+            applyHolidayEffect(festivalId);
+
+            // Show festival banner
+            showFestivalBanner(festivalId);
+
+            playSound(playBtnClick);
+        }
+
+        // Deactivate holiday
+        function deactivateHoliday() {
+            currentHoliday = null;
+            localStorage.removeItem('activeHolidayTheme');
+            renderHolidayOptions();
+            removeHolidayEffect();
+            hideFestivalBanner();
+            playSound(playBtnClick);
+        }
+
+        // Apply holiday effect
+        function applyHolidayEffect(festivalId) {
+            // Find first background for this festival
+            const bgKeys = Object.keys(HOLIDAY_BACKGROUNDS).filter(k => {
+                const bg = HOLIDAY_BACKGROUNDS[k];
+                if (festivalId === 'dragon_boat') return bg.id === 'dragon_boat_race' || bg.id === 'zongzi_making' || bg.id === 'festival_decoration';
+                if (festivalId === 'mid_autumn') return bg.id === 'full_moon_night' || bg.id === 'moon_viewing' || bg.id === 'moon_palace';
+                if (festivalId === 'double_ninth') return bg.id === 'mountain_climbing' || bg.id === 'chrysanthemum_exhibition';
+                if (festivalId === 'lantern') return bg.id === 'lantern_festival' || bg.id === 'dragon_lion_dance';
+                if (festivalId === 'spring') return bg.id === 'reunion_dinner' || bg.id === 'fireworks_night';
+                return false;
+            });
+
+            if (bgKeys.length > 0) {
+                const bg = HOLIDAY_BACKGROUNDS[bgKeys[0]];
+                const overlay = document.getElementById('themeBgOverlay');
+                overlay.style.background = bg.css;
+                overlay.style.display = 'block';
+                applyHolidayEffectToOverlay(overlay, bg.effect);
+            }
+        }
+
+        // Apply holiday effect to overlay
+        function applyHolidayEffectToOverlay(overlay, effect) {
+            // Clear existing effects
+            overlay.innerHTML = '';
+            if (holidayEffectInterval) {
+                clearInterval(holidayEffectInterval);
+                holidayEffectInterval = null;
+            }
+
+            // Remove existing effect classes
+            overlay.classList.remove('effect-confetti', 'effect-lantern', 'effect-moonlight', 'effect-ripple', 'effect-leaves');
+
+            if (effect === 'none') return;
+
+            // Add effect class
+            overlay.classList.add('effect-' + effect);
+
+            // Create effect particles
+            if (effect === 'confetti') {
+                createConfettiEffect(overlay);
+            } else if (effect === 'lantern') {
+                createLanternGlowEffect(overlay);
+            } else if (effect === 'moonlight') {
+                createMoonlightEffect(overlay);
+            } else if (effect === 'ripple') {
+                createRippleEffect(overlay);
+            } else if (effect === 'leaves') {
+                createLeafEffect(overlay);
+            }
+        }
+
+        // Create confetti effect
+        function createConfettiEffect(container) {
+            const colors = ['#FF0000', '#FFD700', '#FF6B6B', '#FFE066', '#74C0FC', '#FF8C00'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (3 + Math.random() * 4) + 's';
+                confetti.style.animationDelay = (Math.random() * 5) + 's';
+                confetti.style.width = (6 + Math.random() * 8) + 'px';
+                confetti.style.height = (6 + Math.random() * 8) + 'px';
+                container.appendChild(confetti);
+            }
+        }
+
+        // Create lantern glow effect
+        function createLanternGlowEffect(container) {
+            for (let i = 0; i < 5; i++) {
+                const lantern = document.createElement('div');
+                lantern.className = 'lantern-glow';
+                lantern.style.left = (10 + Math.random() * 80) + '%';
+                lantern.style.top = (10 + Math.random() * 60) + '%';
+                lantern.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(lantern);
+            }
+        }
+
+        // Create moonlight effect
+        function createMoonlightEffect(container) {
+            const moon = document.createElement('div');
+            moon.className = 'moonlight-overlay';
+            container.appendChild(moon);
+        }
+
+        // Create ripple effect
+        function createRippleEffect(container) {
+            for (let i = 0; i < 3; i++) {
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple-effect';
+                ripple.style.left = (20 + Math.random() * 60) + '%';
+                ripple.style.top = (40 + Math.random() * 40) + '%';
+                ripple.style.animationDelay = (Math.random() * 4) + 's';
+                container.appendChild(ripple);
+            }
+        }
+
+        // Create leaf effect
+        function createLeafEffect(container) {
+            const leafColors = ['#228B22', '#2E7D32', '#8B4513', '#FF6B6B', '#FFA500'];
+            for (let i = 0; i < 12; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf-fall';
+                leaf.innerHTML = '<svg viewBox="0 0 20 30" width="20" height="30"><path d="M10 0 Q20 15 10 30 Q0 15 10 0" fill="' + leafColors[Math.floor(Math.random() * leafColors.length)] + '"/></svg>';
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.animationDuration = (6 + Math.random() * 6) + 's';
+                leaf.style.animationDelay = (Math.random() * 8) + 's';
+                container.appendChild(leaf);
+            }
+        }
+
+        // Remove holiday effect
+        function removeHolidayEffect() {
+            const overlay = document.getElementById('themeBgOverlay');
+            overlay.innerHTML = '';
+            overlay.style.background = 'transparent';
+            overlay.style.display = 'none';
+            overlay.classList.remove('effect-confetti', 'effect-lantern', 'effect-moonlight', 'effect-ripple', 'effect-leaves');
+            if (holidayEffectInterval) {
+                clearInterval(holidayEffectInterval);
+                holidayEffectInterval = null;
+            }
+        }
+
+        // Show festival banner
+        function showFestivalBanner(festivalId) {
+            const banner = document.getElementById('festivalBanner');
+            if (!banner) return;
+
+            const info = getFestivalDisplayName(festivalId);
+            const emoji = getFestivalEmoji(festivalId);
+            banner.innerHTML = `<span class="festival-banner-content">${emoji} ${currentLang === 'zh' ? info.zh : info.en} ${emoji}</span>`;
+            banner.classList.add('active');
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                banner.classList.remove('active');
+            }, 5000);
+        }
+
+        // Hide festival banner
+        function hideFestivalBanner() {
+            const banner = document.getElementById('festivalBanner');
+            if (banner) {
+                banner.classList.remove('active');
+            }
+        }
+
+        // Get holiday stickers for a specific festival
+        function getHolidayStickers(festivalId) {
+            return HOLIDAY_STICKERS[festivalId] || [];
+        }
+
+        // Get holiday backgrounds for a specific festival
+        function getHolidayBackgrounds(festivalId) {
+            return Object.values(HOLIDAY_BACKGROUNDS).filter(bg => {
+                if (festivalId === 'dragon_boat') return bg.id === 'dragon_boat_race' || bg.id === 'zongzi_making' || bg.id === 'festival_decoration';
+                if (festivalId === 'mid_autumn') return bg.id === 'full_moon_night' || bg.id === 'moon_viewing' || bg.id === 'moon_palace';
+                if (festivalId === 'double_ninth') return bg.id === 'mountain_climbing' || bg.id === 'chrysanthemum_exhibition';
+                if (festivalId === 'lantern') return bg.id === 'lantern_festival' || bg.id === 'dragon_lion_dance';
+                if (festivalId === 'spring') return bg.id === 'reunion_dinner' || bg.id === 'fireworks_night' || bg.id === 'spring_decorations' || bg.id === 'new_year_greeting';
+                return false;
+            });
+        }
+
+        // Update STAMP_CATEGORIES to include holiday tab
         const ORIGINAL_STAMP_CATEGORIES = [
             { id: 'animals', name: '动物' },
             { id: 'nature', name: '自然' },
@@ -11044,6 +11791,7 @@
             initTracingPanel();
             initBackgroundPanel();
             initThemeSystem(); // V8: Initialize theme system
+            initHolidaySystem(); // V19: Initialize holiday system
             resizeCanvas();
             initEventListeners();
             initColoringGame();
@@ -12448,6 +13196,7 @@
             { id: 'weather', name: '天气' },
             { id: 'celebration', name: '节日' },
             { id: 'emotion', name: '情绪' },
+            { id: 'holiday', name: '中国节日' }, // V19: Holiday category
             { id: 'custom', name: '我的贴纸' }
         ];
 
@@ -12798,8 +13547,6 @@
             const grid = document.getElementById('stampGrid');
             grid.innerHTML = '';
 
-            const ids = STAMP_CATEGORY_MAP[category] || [];
-
             if (category === 'custom') {
                 // Show custom stickers
                 customStickers.forEach(sticker => {
@@ -12836,7 +13583,38 @@
                     item.addEventListener('click', () => selectStamp(sticker));
                     grid.appendChild(item);
                 });
+            } else if (category === 'holiday') {
+                // V19: Show holiday stickers based on active holiday
+                const festivals = ['dragon_boat', 'mid_autumn', 'double_ninth', 'lantern', 'spring'];
+                festivals.forEach(festivalId => {
+                    const stickers = HOLIDAY_STICKERS[festivalId] || [];
+                    const info = getFestivalDisplayName(festivalId);
+                    const emoji = getFestivalEmoji(festivalId);
+
+                    // Add festival header
+                    const header = document.createElement('div');
+                    header.className = 'stamp-subcategory-header';
+                    header.innerHTML = `<span>${emoji}</span> ${currentLang === 'zh' ? info.zh : info.en}`;
+                    grid.appendChild(header);
+
+                    stickers.forEach(stamp => {
+                        const item = document.createElement('div');
+                        item.className = 'panel-item';
+                        item.innerHTML = stamp.svg;
+                        item.title = currentLang === 'zh' ? stamp.name.zh : stamp.name.en;
+                        item.addEventListener('click', () => selectStamp({
+                            id: stamp.id,
+                            name: currentLang === 'zh' ? stamp.name.zh : stamp.name.en,
+                            svg: stamp.svg,
+                            category: 'holiday',
+                            subcategory: festivalId,
+                            festival: stamp.festival
+                        }));
+                        grid.appendChild(item);
+                    });
+                });
             } else {
+                const ids = STAMP_CATEGORY_MAP[category] || [];
                 ids.forEach(id => {
                     const stamp = STAMPS.find(s => s.id === id);
                     if (stamp) {
