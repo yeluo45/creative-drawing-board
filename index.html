@@ -4263,6 +4263,256 @@
                 size: A4 landscape;
             }
         }
+
+        /* V20: Print Menu Modal */
+        #printMenuOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        #printMenuOverlay.active {
+            display: flex;
+        }
+        #printMenuPanel {
+            background: #fff;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 6px 6px 0 #495057;
+            width: 90%;
+        }
+        #printMenuPanel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #495057;
+        }
+        .print-menu-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        .print-menu-tab {
+            padding: 8px 14px;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        .print-menu-tab:hover {
+            background: #FFE066;
+        }
+        .print-menu-tab.active {
+            background: #FF9A9E;
+            color: white;
+        }
+        .print-section {
+            display: none;
+        }
+        .print-section.active {
+            display: block;
+        }
+        .print-section h3 {
+            font-size: 1rem;
+            margin: 12px 0 8px;
+            color: #495057;
+        }
+        .size-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .size-btn {
+            padding: 10px 20px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s;
+        }
+        .size-btn:hover {
+            background: #FFE066;
+        }
+        .size-btn.selected {
+            background: #FF9A9E;
+            color: white;
+        }
+        .tile-preview {
+            display: grid;
+            gap: 4px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #ccc;
+        }
+        .tile-preview-cell {
+            aspect-ratio: 210/297;
+            background: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #666;
+        }
+        .print-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .print-action-btn {
+            padding: 10px 20px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s;
+        }
+        .print-action-btn.primary {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+        .print-action-btn.secondary {
+            background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+        }
+        .print-action-btn:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .category-chip {
+            padding: 5px 12px;
+            border: 2px solid #495057;
+            border-radius: 20px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .category-chip:hover, .category-chip.selected {
+            background: #B197FC;
+            color: white;
+        }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        .template-item {
+            padding: 8px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.8rem;
+            transition: transform 0.1s;
+        }
+        .template-item:hover {
+            background: #FFE066;
+            transform: scale(1.02);
+        }
+        .template-item.selected {
+            background: #FF9A9E;
+            color: white;
+            border-color: #e8590c;
+        }
+        .template-item .diff-badge {
+            display: block;
+            font-size: 0.7rem;
+            margin-top: 3px;
+            color: #666;
+        }
+        .template-item.selected .diff-badge {
+            color: #fff;
+        }
+        .guide-options {
+            display: flex;
+            gap: 15px;
+            margin: 12px 0;
+        }
+        .guide-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .guide-option input {
+            width: 18px;
+            height: 18px;
+        }
+        .week-selector, .content-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .week-btn, .content-btn {
+            padding: 8px 14px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .week-btn:hover, .content-btn:hover {
+            background: #FFE066;
+        }
+        .week-btn.selected, .content-btn.selected {
+            background: #9775FA;
+            color: white;
+        }
+        .close-print-menu {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        #printMenuPanel {
+            position: relative;
+        }
+        .panel-close-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -13172,7 +13422,512 @@
         }
 
         // Event listener for print button
-        document.getElementById('printBtn').addEventListener('click', printDrawing);
+        document.getElementById('printBtn').addEventListener('click', openPrintMenu);
+
+        // ===== V20: Enhanced Print Menu =====
+        const A4_WIDTH_MM = 210;
+        const A4_HEIGHT_MM = 297;
+
+        // State
+        let currentPosterSize = 'A3';
+        let selectedColoringIds = [];
+        let selectedTracingIds = [];
+        let selectedWeek = 0;
+        let selectedContentType = 'both';
+
+        function openPrintMenu() {
+            initAudio();
+            playSound(playBtnClick);
+            document.getElementById('printMenuOverlay').classList.add('active');
+            initPrintMenuTabs();
+            initPosterSizeSelector();
+            initColoringPrint();
+            initTracingPrint();
+            initDailyPrint();
+        }
+
+        function closePrintMenu() {
+            document.getElementById('printMenuOverlay').classList.remove('active');
+            playSound(playBtnClick);
+        }
+
+        function initPrintMenuTabs() {
+            document.querySelectorAll('.print-menu-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.print-menu-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const section = tab.dataset.section;
+                    document.querySelectorAll('.print-section').forEach(s => s.classList.remove('active'));
+                    document.getElementById('printSection' + section.charAt(0).toUpperCase() + section.slice(1)).classList.add('active');
+                    playSound(playBtnClick);
+                });
+            });
+        }
+
+        function initPosterSizeSelector() {
+            document.querySelectorAll('#posterSizeSelector .size-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#posterSizeSelector .size-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    currentPosterSize = btn.dataset.size;
+                    updatePosterPreview();
+                    playSound(playBtnClick);
+                });
+            });
+            updatePosterPreview();
+
+            document.getElementById('previewPosterBtn').addEventListener('click', () => {
+                playSound(playBtnClick);
+                alert('分割预览：海报将分为 ' + calculatePosterTiles(currentPosterSize).total + ' 页打印');
+            });
+
+            document.getElementById('printPosterBtn').addEventListener('click', () => {
+                playSound(playBtnClick);
+                printPoster();
+            });
+        }
+
+        function calculatePosterTiles(posterSize) {
+            const sizes = {
+                'A3': { width: 297, height: 420 },
+                'A2': { width: 420, height: 594 },
+                'A1': { width: 594, height: 841 }
+            };
+            const target = sizes[posterSize];
+            const usableWidth = A4_WIDTH_MM - 20;
+            const usableHeight = A4_HEIGHT_MM - 20;
+            const cols = Math.ceil(target.width / usableWidth);
+            const rows = Math.ceil(target.height / usableHeight);
+            return { cols, rows, total: cols * rows };
+        }
+
+        function updatePosterPreview() {
+            const { cols, rows, total } = calculatePosterTiles(currentPosterSize);
+            const preview = document.getElementById('posterTilePreview');
+            preview.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            preview.innerHTML = '';
+            for (let i = 0; i < total; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'tile-preview-cell';
+                cell.textContent = (i + 1);
+                preview.appendChild(cell);
+            }
+        }
+
+        function getCanvasDataUrl() {
+            const rect = canvasContainer.getBoundingClientRect();
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = rect.width;
+            tempCanvas.height = rect.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.fillStyle = '#FFFFFF';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.drawImage(bgCanvas, 0, 0, rect.width, rect.height);
+            tempCtx.drawImage(drawingCanvas, 0, 0, rect.width, rect.height);
+            tempCtx.drawImage(tracingCanvas, 0, 0, rect.width, rect.height);
+            // DOM stamps
+            const stampLayer = document.getElementById('stampLayer');
+            if (stampLayer) {
+                const stamps = stampLayer.querySelectorAll('.stamp-wrapper');
+                stamps.forEach(stamp => {
+                    const svg = stamp.querySelector('svg');
+                    if (svg) {
+                        const rect2 = stamp.getBoundingClientRect();
+                        const x = rect2.left - canvasContainer.getBoundingClientRect().left;
+                        const y = rect2.top - canvasContainer.getBoundingClientRect().top;
+                        const img = new Image();
+                        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.outerHTML)));
+                        tempCtx.drawImage(img, x, y, rect2.width, rect2.height);
+                    }
+                });
+            }
+            return tempCanvas.toDataURL('image/png');
+        }
+
+        function printPosterTile(tileIndex, totalTiles, posterSize, canvasDataUrl) {
+            const { cols, rows } = calculatePosterTiles(posterSize);
+            const row = Math.floor(tileIndex / cols);
+            const col = tileIndex % cols;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html><head><title>海报 ${tileIndex + 1}/${totalTiles}</title>
+                <style>
+                    @page { size: A4 portrait; margin: 10mm; }
+                    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                    .tile { position: relative; width: 190mm; height: 277mm; overflow: hidden; background: white; }
+                    .tile img { position: absolute; }
+                    .crop-mark { position: absolute; width: 100%; height: 100%; border: 1px dashed #ccc; box-sizing: border-box; pointer-events: none; }
+                    .page-num { position: absolute; bottom: 3mm; right: 5mm; font-size: 10pt; }
+                </style></head>
+                <body>
+                    <div class="tile">
+                        <img src="${canvasDataUrl}" style="width: ${cols * 190}mm; height: ${rows * 277}mm; left: -${col * 190}mm; top: -${row * 277}mm;">
+                        <div class="crop-mark"></div>
+                        <div class="page-num">${tileIndex + 1}/${totalTiles}</div>
+                    </div>
+                </body></html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        function printPoster() {
+            const { total } = calculatePosterTiles(currentPosterSize);
+            const canvasDataUrl = getCanvasDataUrl();
+            for (let i = 0; i < total; i++) {
+                setTimeout(() => {
+                    printPosterTile(i, total, currentPosterSize, canvasDataUrl);
+                }, i * 500);
+            }
+        }
+
+        // Coloring Print Functions
+        function initColoringPrint() {
+            const categories = ['all', 'animal', 'food', 'character', 'object', 'vehicle'];
+            const filter = document.getElementById('coloringCategoryFilter');
+            filter.innerHTML = '';
+            categories.forEach(cat => {
+                const chip = document.createElement('button');
+                chip.className = 'category-chip' + (cat === 'all' ? ' selected' : '');
+                chip.dataset.category = cat;
+                chip.textContent = cat === 'all' ? '全部' : cat === 'animal' ? '动物' : cat === 'food' ? '食物' : cat === 'character' ? '人物' : cat === 'object' ? '物品' : '交通';
+                chip.addEventListener('click', () => {
+                    filter.querySelectorAll('.category-chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                    renderColoringTemplates(cat);
+                    playSound(playBtnClick);
+                });
+                filter.appendChild(chip);
+            });
+
+            document.getElementById('printSelectedColoring').addEventListener('click', () => {
+                if (selectedColoringIds.length === 0) {
+                    alert('请先选择模板');
+                    return;
+                }
+                selectedColoringIds.forEach((id, i) => {
+                    setTimeout(() => printColoringCard(id), i * 300);
+                });
+            });
+
+            document.getElementById('printAllColoring').addEventListener('click', () => {
+                const cat = filter.querySelector('.selected')?.dataset.category || 'all';
+                const filtered = getFilteredStamps(cat);
+                filtered.forEach((stamp, i) => {
+                    setTimeout(() => printColoringCard(stamp.id), i * 300);
+                });
+            });
+
+            renderColoringTemplates('all');
+        }
+
+        function getFilteredStamps(category) {
+            if (category === 'all') return STAMPS;
+            const categoryMap = {
+                'animal': ['cat', 'dog', 'fish', 'bird', 'butterfly', 'rabbit', 'bear', 'frog'],
+                'food': ['apple_food', 'banana_food', 'grape', 'strawberry', 'carrot', 'cake'],
+                'character': ['smile', 'heart'],
+                'object': ['flower', 'tree', 'sun', 'moon', 'star', 'rainbow', 'house', 'balloon', 'cloud', 'leaf'],
+                'vehicle': ['car', 'airplane', 'boat']
+            };
+            const ids = categoryMap[category] || [];
+            return STAMPS.filter(s => ids.includes(s.id));
+        }
+
+        function renderColoringTemplates(category) {
+            const grid = document.getElementById('coloringTemplateGrid');
+            grid.innerHTML = '';
+            const stamps = getFilteredStamps(category);
+            stamps.forEach(stamp => {
+                const item = document.createElement('div');
+                item.className = 'template-item' + (selectedColoringIds.includes(stamp.id) ? ' selected' : '');
+                item.dataset.id = stamp.id;
+                const diff = stamp.difficulty || 'easy';
+                const diffText = diff === 'easy' ? '🐣简单' : diff === 'medium' ? '🐥中等' : '🔥困难';
+                item.innerHTML = `<span>${stamp.name}</span><span class="diff-badge">${diffText}</span>`;
+                item.addEventListener('click', () => {
+                    if (selectedColoringIds.includes(stamp.id)) {
+                        selectedColoringIds = selectedColoringIds.filter(id => id !== stamp.id);
+                        item.classList.remove('selected');
+                    } else {
+                        selectedColoringIds.push(stamp.id);
+                        item.classList.add('selected');
+                    }
+                    playSound(playBtnClick);
+                });
+                grid.appendChild(item);
+            });
+        }
+
+        function printColoringCard(stampId) {
+            const stamp = STAMPS.find(s => s.id === stampId);
+            if (!stamp) return;
+            const diff = stamp.difficulty || 'easy';
+            const diffText = diff === 'easy' ? '🐣 简单' : diff === 'medium' ? '🐥 中等' : '🔥 困难';
+            const printWindow = window.open('', '_blank');
+            // Strip fill colors from SVG
+            let svgContent = stamp.svg;
+            if (svgContent.includes('fill=')) {
+                svgContent = svgContent.replace(/fill="[^"]*"/g, 'fill="none"');
+            }
+            if (svgContent.includes('stroke=')) {
+                svgContent = svgContent.replace(/stroke="[^"]*"/g, 'stroke="#000"');
+            }
+            printWindow.document.write(`
+                <html><head><title>${stamp.name} - 涂色卡</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    body { display: flex; flex-direction: column; align-items: center; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+                    .title { font-size: 18pt; margin-bottom: 10mm; font-weight: bold; }
+                    .sticker-area { width: 150mm; height: 150mm; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; }
+                    .sticker-area svg { width: 140mm; height: 140mm; }
+                    .sticker-area svg * { fill: none !important; stroke: #000 !important; stroke-width: 2 !important; }
+                    .footer { margin-top: 10mm; font-size: 10pt; color: #666; }
+                    .difficulty { padding: 2mm 5mm; background: #f0f0f0; border-radius: 3mm; }
+                </style></head>
+                <body>
+                    <div class="title">${stamp.name}</div>
+                    <div class="sticker-area">${svgContent}</div>
+                    <div class="footer">
+                        <span class="difficulty">${diffText}</span>
+                    </div>
+                </body></html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Tracing Print Functions
+        function initTracingPrint() {
+            document.querySelectorAll('#tracingCategoryFilter .category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('#tracingCategoryFilter .category-chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                    renderTracingTemplates(chip.dataset.category);
+                    playSound(playBtnClick);
+                });
+            });
+
+            document.getElementById('printSelectedTracing').addEventListener('click', () => {
+                if (selectedTracingIds.length === 0) {
+                    alert('请先选择模板');
+                    return;
+                }
+                const guideType = document.querySelector('input[name="guideType"]:checked').value;
+                selectedTracingIds.forEach((id, i) => {
+                    setTimeout(() => printTracingCard(id, guideType), i * 300);
+                });
+            });
+
+            document.getElementById('printAllTracing').addEventListener('click', () => {
+                const cat = document.querySelector('#tracingCategoryFilter .selected')?.dataset.category || 'all';
+                const filtered = getFilteredTracing(cat);
+                const guideType = document.querySelector('input[name="guideType"]:checked').value;
+                filtered.forEach((t, i) => {
+                    setTimeout(() => printTracingCard(t.id, guideType), i * 300);
+                });
+            });
+
+            renderTracingTemplates('all');
+        }
+
+        function getFilteredTracing(category) {
+            if (category === 'all') return TRACING_TEMPLATES;
+            return TRACING_TEMPLATES.filter(t => t.category === category);
+        }
+
+        function renderTracingTemplates(category) {
+            const grid = document.getElementById('tracingTemplateGrid');
+            grid.innerHTML = '';
+            const templates = getFilteredTracing(category);
+            templates.forEach(template => {
+                const item = document.createElement('div');
+                item.className = 'template-item' + (selectedTracingIds.includes(template.id) ? ' selected' : '');
+                item.dataset.id = template.id;
+                const diff = template.difficulty || 'easy';
+                const diffText = diff === 'easy' ? '🐣' : diff === 'medium' ? '🐥' : '🔥';
+                item.innerHTML = `<span>${template.name}</span><span class="diff-badge">${diffText} ${template.ageGroup}岁</span>`;
+                item.addEventListener('click', () => {
+                    if (selectedTracingIds.includes(template.id)) {
+                        selectedTracingIds = selectedTracingIds.filter(id => id !== template.id);
+                        item.classList.remove('selected');
+                    } else {
+                        selectedTracingIds.push(template.id);
+                        item.classList.add('selected');
+                    }
+                    playSound(playBtnClick);
+                });
+                grid.appendChild(item);
+            });
+        }
+
+        function tracingPathsToSvgPaths(paths, strokeWidth, strokeDasharray) {
+            return paths.map(p => {
+                let d = '';
+                switch (p.type) {
+                    case 'move': d = `M${p.x},${p.y}`; break;
+                    case 'line': d = `L${p.x},${p.y}`; break;
+                    case 'arc': d = `M${p.x - p.r},${p.y} A${p.r},${p.r} 0 1,0 ${p.x + p.r},${p.y} A${p.r},${p.r} 0 1,0 ${p.x - p.r},${p.y}`; break;
+                    case 'bezier': d = `C${p.x1},${p.y1} ${p.x2},${p.y2} ${p.x},${p.y}`; break;
+                    case 'rect': d = `M${p.x},${p.y} h${p.w} v${p.h} h${-p.w} Z`; break;
+                    case 'ellipse': d = `M${p.cx - p.rx},${p.cy} A${p.rx},${p.ry} 0 1,0 ${p.cx + p.rx},${p.cy} A${p.rx},${p.ry} 0 1,0 ${p.cx - p.rx},${p.cy}`; break;
+                }
+                return `<path d="${d}" stroke="#333" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDasharray}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+            }).join('');
+        }
+
+        function printTracingCard(tracingId, guideType) {
+            const tracing = TRACING_TEMPLATES.find(t => t.id === tracingId);
+            if (!tracing) return;
+            const strokeWidth = guideType === 'dashed' ? '3' : guideType === 'solid' ? '2' : '5';
+            const strokeDasharray = guideType === 'dashed' ? '8,4' : guideType === 'dotted' ? '2,4' : 'none';
+            const hintText = guideType === 'dashed' ? '跟随虚线描写' : guideType === 'solid' ? '直接在字上描' : '连接点点练习';
+            const svgPaths = tracingPathsToSvgPaths(tracing.paths || [], strokeWidth, strokeDasharray);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html><head><title>${tracing.name} - 描红卡</title>
+                <style>
+                    @page { size: A4; margin: 10mm; }
+                    body { display: flex; flex-direction: column; align-items: center; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+                    .header { font-size: 24pt; margin-bottom: 10mm; font-weight: bold; }
+                    .tracing-area { width: 180mm; height: 180mm; border: 2px solid #333; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+                    .tracing-area svg { width: 160mm; height: 160mm; }
+                    .guide-hint { margin-top: 5mm; font-size: 12pt; color: #666; }
+                </style></head>
+                <body>
+                    <div class="header">${tracing.name}</div>
+                    <div class="tracing-area">
+                        <svg viewBox="${tracing.viewBox || '0 0 100 100'}">
+                            ${svgPaths}
+                        </svg>
+                    </div>
+                    <div class="guide-hint">${hintText}</div>
+                </body></html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Daily Practice Sheet Functions
+        function initDailyPrint() {
+            document.querySelectorAll('#weekSelector .week-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#weekSelector .week-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedWeek = parseInt(btn.dataset.week);
+                    playSound(playBtnClick);
+                });
+            });
+
+            document.querySelectorAll('#contentOptions .content-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#contentOptions .content-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedContentType = btn.dataset.content;
+                    playSound(playBtnClick);
+                });
+            });
+
+            document.getElementById('generateDailySheet').addEventListener('click', () => {
+                generateDailyPracticeSheet(selectedWeek, { contentType: selectedContentType });
+            });
+        }
+
+        function generateDailyPracticeSheet(dayIndex, options) {
+            const dayNames = ['一', '二', '三', '四', '五', '六', '日'];
+            const dayName = dayNames[dayIndex % 7];
+            const weekNum = Math.floor(dayIndex / 7) + 1;
+
+            // Get a coloring template (animal category)
+            const animalStamps = STAMPS.filter(s => ['cat', 'dog', 'fish', 'bird', 'butterfly', 'rabbit', 'bear', 'frog'].includes(s.id));
+            const coloringTemplate = animalStamps.length > 0 ? animalStamps[dayIndex % animalStamps.length] : STAMPS[0];
+
+            // Get a tracing template (number)
+            const numberTemplates = TRACING_TEMPLATES.filter(t => t.category === 'number');
+            const tracingTemplate = numberTemplates.length > 0 ? numberTemplates[dayIndex % numberTemplates.length] : TRACING_TEMPLATES[0];
+
+            // Strip fill colors for coloring area
+            let coloringSvg = coloringTemplate.svg;
+            if (coloringSvg.includes('fill=')) {
+                coloringSvg = coloringSvg.replace(/fill="[^"]*"/g, 'fill="none"');
+            }
+            if (coloringSvg.includes('stroke=')) {
+                coloringSvg = coloringSvg.replace(/stroke="[^"]*"/g, 'stroke="#000"');
+            }
+
+            // Tracing SVG paths
+            const tracingPathsSvg = tracingPathsToSvgPaths(tracingTemplate.paths || [], '2', 'none');
+
+            const contentHtml = [];
+            if (options.contentType !== 'tracing_only') {
+                contentHtml.push(`<div><div class="section-title">【涂色区】</div><div class="coloring-area">${coloringSvg}</div></div>`);
+            }
+            if (options.contentType !== 'coloring_only') {
+                contentHtml.push(`<div><div class="section-title">【描红区】</div><div class="tracing-area"><svg viewBox="${tracingTemplate.viewBox || '0 0 100 100'}">${tracingPathsSvg}</svg></div></div>`);
+            }
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html><head><title>每日练习纸 - 第${dayName}天</title>
+                <style>
+                    @page { size: A4; margin: 10mm; }
+                    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; padding: 10mm; }
+                    .header { text-align: center; font-size: 18pt; margin-bottom: 10mm; font-weight: bold; }
+                    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; margin-bottom: 10mm; }
+                    .section-title { font-size: 12pt; margin-bottom: 3mm; color: #333; }
+                    .coloring-area, .tracing-area { border: 1px solid #ccc; height: 80mm; display: flex; align-items: center; justify-content: center; }
+                    .coloring-area svg, .tracing-area svg { width: 70mm; height: 70mm; }
+                    .coloring-area svg * { fill: none !important; stroke: #000 !important; stroke-width: 2 !important; }
+                    .drawing-area { grid-column: 1 / -1; border: 1px solid #ccc; height: 80mm; }
+                    .footer { margin-top: 10mm; font-size: 11pt; display: flex; justify-content: space-between; }
+                    .footer span { border-bottom: 1px solid #333; padding: 0 10mm; }
+                </style></head>
+                <body>
+                    <div class="header">📅 每日练习纸 - 第${dayName}天</div>
+                    <div class="grid">
+                        ${contentHtml.join('')}
+                        <div class="drawing-area"><div class="section-title">【自由绘画区】</div></div>
+                    </div>
+                    <div class="footer"><span>姓名: ________</span><span>日期: ________</span></div>
+                </body></html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        // Current Drawing Print (calls original printDrawing)
+        document.getElementById('printCurrentDrawing').addEventListener('click', () => {
+            closePrintMenu();
+            setTimeout(() => {
+                initAudio();
+                playSound(playBtnClick);
+                printDrawing();
+            }, 100);
+        });
+
+        // Close menu when clicking overlay background
+        document.getElementById('printMenuOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'printMenuOverlay') {
+                closePrintMenu();
+            }
+        });
 
         // ===== V7: Custom Sticker Creation =====
 
@@ -15123,6 +15878,103 @@
     <!-- Print Area (hidden, used for printing) -->
     <div id="printArea" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white;">
         <canvas id="printCanvas" style="width:100%; height:100%;"></canvas>
+    </div>
+
+    <!-- V20: Print Menu Overlay -->
+    <div id="printMenuOverlay">
+        <div id="printMenuPanel">
+            <div class="panel-close-row">
+                <button class="close-print-menu" onclick="closePrintMenu()">×</button>
+            </div>
+            <h2>🖨️ 打印功能</h2>
+            <div class="print-menu-tabs">
+                <button class="print-menu-tab active" data-section="poster">海报打印</button>
+                <button class="print-menu-tab" data-section="coloring">涂色卡打印</button>
+                <button class="print-menu-tab" data-section="tracing">描红卡打印</button>
+                <button class="print-menu-tab" data-section="daily">每日练习纸</button>
+                <button class="print-menu-tab" data-section="current">当前画作</button>
+            </div>
+
+            <!-- Poster Print Section -->
+            <div class="print-section active" id="printSectionPoster">
+                <h3>选择海报尺寸</h3>
+                <div class="size-selector" id="posterSizeSelector">
+                    <button class="size-btn selected" data-size="A3">A3 (297×420mm)</button>
+                    <button class="size-btn" data-size="A2">A2 (420×594mm)</button>
+                    <button class="size-btn" data-size="A1">A1 (594×841mm)</button>
+                </div>
+                <div id="posterTilePreview" class="tile-preview"></div>
+                <div class="print-actions">
+                    <button class="print-action-btn secondary" id="previewPosterBtn">预览分割</button>
+                    <button class="print-action-btn primary" id="printPosterBtn">开始打印</button>
+                </div>
+            </div>
+
+            <!-- Coloring Card Print Section -->
+            <div class="print-section" id="printSectionColoring">
+                <h3>选择分类</h3>
+                <div class="category-filter" id="coloringCategoryFilter"></div>
+                <div class="template-grid" id="coloringTemplateGrid"></div>
+                <div class="print-actions">
+                    <button class="print-action-btn primary" id="printSelectedColoring">打印选中</button>
+                    <button class="print-action-btn secondary" id="printAllColoring">打印全部</button>
+                </div>
+            </div>
+
+            <!-- Tracing Card Print Section -->
+            <div class="print-section" id="printSectionTracing">
+                <h3>选择分类</h3>
+                <div class="category-filter" id="tracingCategoryFilter">
+                    <button class="category-chip selected" data-category="all">全部</button>
+                    <button class="category-chip" data-category="number">数字</button>
+                    <button class="category-chip" data-category="letter">字母</button>
+                    <button class="category-chip" data-category="chinese">汉字</button>
+                    <button class="category-chip" data-category="object">物品</button>
+                    <button class="category-chip" data-category="vehicle">交通工具</button>
+                </div>
+                <div class="template-grid" id="tracingTemplateGrid"></div>
+                <h3>引导线类型</h3>
+                <div class="guide-options">
+                    <label class="guide-option"><input type="radio" name="guideType" value="dashed" checked> 虚线(初学)</label>
+                    <label class="guide-option"><input type="radio" name="guideType" value="solid"> 实线(进阶)</label>
+                    <label class="guide-option"><input type="radio" name="guideType" value="dotted"> 点线(练习)</label>
+                </div>
+                <div class="print-actions">
+                    <button class="print-action-btn primary" id="printSelectedTracing">打印选中</button>
+                    <button class="print-action-btn secondary" id="printAllTracing">打印全部</button>
+                </div>
+            </div>
+
+            <!-- Daily Practice Sheet Section -->
+            <div class="print-section" id="printSectionDaily">
+                <h3>选择周数</h3>
+                <div class="week-selector" id="weekSelector">
+                    <button class="week-btn" data-week="0">第1周</button>
+                    <button class="week-btn" data-week="1">第2周</button>
+                    <button class="week-btn" data-week="2">第3周</button>
+                    <button class="week-btn" data-week="3">第4周</button>
+                </div>
+                <h3>内容类型</h3>
+                <div class="content-options" id="contentOptions">
+                    <button class="content-btn selected" data-content="both">涂色+描红</button>
+                    <button class="content-btn" data-content="coloring_only">仅涂色</button>
+                    <button class="content-btn" data-content="tracing_only">仅描红</button>
+                    <button class="content-btn" data-content="all">全部</button>
+                </div>
+                <div class="print-actions">
+                    <button class="print-action-btn primary" id="generateDailySheet">生成本周练习纸</button>
+                </div>
+            </div>
+
+            <!-- Current Drawing Section -->
+            <div class="print-section" id="printSectionCurrent">
+                <h3>当前画作打印</h3>
+                <p style="margin: 10px 0; color: #666;">打印当前画布上的内容（包含所有图层）</p>
+                <div class="print-actions">
+                    <button class="print-action-btn primary" id="printCurrentDrawing">打印当前画作</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- PWA Service Worker Registration -->
