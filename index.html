@@ -3100,6 +3100,59 @@
             box-shadow: 4px 4px 0 #495057;
         }
 
+        /* V41: Animation Book Preset Templates */
+        .animabook-template-panel {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(180deg, #FFF8E7 0%, #FFE4EC 100%);
+            border-bottom: 3px solid #495057;
+            justify-content: center;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .animabook-template-panel.active {
+            display: flex;
+        }
+
+        .animabook-template-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            min-width: 80px;
+            transition: all 0.2s;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .animabook-template-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #495057;
+            background: #FFF8E7;
+        }
+
+        .animabook-template-btn .tpl-icon {
+            font-size: 1.5rem;
+        }
+
+        .animabook-template-btn .tpl-name {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #495057;
+            margin-top: 2px;
+        }
+
+        .animabook-template-btn .tpl-pages {
+            font-size: 0.65rem;
+            color: #888;
+        }
+
         /* V11: Export and Share Buttons */
         .export-btn, .share-btn {
             background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
@@ -7724,9 +7777,11 @@
                 <button onclick="animabookAddPage()">+ 添加页面</button>
                 <button onclick="animabookSave()">💾 保存</button>
                 <button onclick="animabookExport()">📤 导出</button>
+                <button onclick="toggleAnimabookTemplates()" id="animabookTplToggle">📋 模板</button>
                 <button onclick="closeAnimabook()">×</button>
             </div>
         </div>
+        <div class="animabook-template-panel" id="animabookTemplatePanel"></div>
         <div class="animabook-container">
             <div class="animabook-book" id="animabookBook">
                 <div class="animabook-page" id="animabookPage0">
@@ -23171,6 +23226,158 @@
         let animabookRecordingPage = -1;
         let animabookAudioElements = [];
         const ANIMABOOK_STORAGE_KEY = 'animation_book_data';
+
+        // V41: Preset Animation Book Templates
+        const ANIMABOOK_PRESET_TEMPLATES = [
+            {
+                id: 'story_4page',
+                name: '四格故事',
+                icon: '📖',
+                pages: [
+                    { hint: '第1页：开头', desc: '从前有只小兔子...' },
+                    { hint: '第2页：经过', desc: '小兔子遇见了一只会说话的猫...' },
+                    { hint: '第3页：高潮', desc: '他们一起踏上了冒险之旅...' },
+                    { hint: '第4页：结局', desc: '他们成为了最好的朋友！' }
+                ]
+            },
+            {
+                id: 'life_4page',
+                name: '成长日记',
+                icon: '🌱',
+                pages: [
+                    { hint: '第1页：种子', desc: '我种下了一颗小种子' },
+                    { hint: '第2页：发芽', desc: '种子慢慢发芽了' },
+                    { hint: '第3页：生长', desc: '小苗长出了叶子' },
+                    { hint: '第4页：开花', desc: '开出了漂亮的花朵！' }
+                ]
+            },
+            {
+                id: 'trip_4page',
+                name: '旅行日记',
+                icon: '✈️',
+                pages: [
+                    { hint: '第1页：出发', desc: '我们出发去旅行啦' },
+                    { hint: '第2页：途中', desc: '一路上看到了美丽的风景' },
+                    { hint: '第3页：到达', desc: '终于到达目的地' },
+                    { hint: '第4页：回家', desc: '带着满满的回忆回家' }
+                ]
+            },
+            {
+                id: 'friendship_4page',
+                name: '友谊故事',
+                icon: '❤️',
+                pages: [
+                    { hint: '第1页：相遇', desc: '两个小朋友在公园相遇' },
+                    { hint: '第2页：游戏', desc: '他们一起玩得很开心' },
+                    { hint: '第3页：分享', desc: '分享美味的小点心' },
+                    { hint: '第4页：友谊', desc: '成为了永远的好朋友' }
+                ]
+            },
+            {
+                id: 'rainbow_6page',
+                name: '彩虹梦',
+                icon: '🌈',
+                pages: [
+                    { hint: '第1页', desc: '天空下起了小雨' },
+                    { hint: '第2页', desc: '雨停了，太阳出来了' },
+                    { hint: '第3页', desc: '天边出现了彩虹' },
+                    { hint: '第4页', desc: '彩虹有七种颜色' },
+                    { hint: '第5页', desc: '小鸟飞过彩虹桥' },
+                    { hint: '第6页', desc: '美梦开始了...' }
+                ]
+            },
+            {
+                id: 'seasons_4page',
+                name: '四季变化',
+                icon: '🍃',
+                pages: [
+                    { hint: '第1页：春天', desc: '春天来了，花儿开了' },
+                    { hint: '第2页：夏天', desc: '夏天阳光明媚' },
+                    { hint: '第3页：秋天', desc: '秋天树叶变黄了' },
+                    { hint: '第4页：冬天', desc: '冬天下雪啦' }
+                ]
+            },
+            {
+                id: 'caterpillar_6page',
+                name: '毛毛虫历险记',
+                icon: '🐛',
+                pages: [
+                    { hint: '第1页', desc: '一颗小小的蛋' },
+                    { hint: '第2页', desc: '毛毛虫孵化出来了' },
+                    { hint: '第3页', desc: '它吃了好多好多食物' },
+                    { hint: '第4页', desc: '变得越来越大' },
+                    { hint: '第5页', desc: '织了一个茧' },
+                    { hint: '第6页', desc: '变成了美丽的蝴蝶！' }
+                ]
+            },
+            {
+                id: 'ocean_4page',
+                name: '海底世界',
+                icon: '🐠',
+                pages: [
+                    { hint: '第1页', desc: '蔚蓝的大海' },
+                    { hint: '第2页', desc: '小鱼在水中游泳' },
+                    { hint: '第3页', desc: '遇见了大鲸鱼' },
+                    { hint: '第4页', desc: '海底真美丽！' }
+                ]
+            }
+        ];
+
+        function toggleAnimabookTemplates() {
+            const panel = document.getElementById('animabookTemplatePanel');
+            const btn = document.getElementById('animabookTplToggle');
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+                btn.style.background = '';
+            } else {
+                panel.classList.add('active');
+                btn.style.background = '#FF922B';
+                renderAnimabookTemplates();
+            }
+        }
+
+        function renderAnimabookTemplates() {
+            const panel = document.getElementById('animabookTemplatePanel');
+            panel.innerHTML = '';
+            ANIMABOOK_PRESET_TEMPLATES.forEach(tpl => {
+                const btn = document.createElement('button');
+                btn.className = 'animabook-template-btn';
+                btn.innerHTML = '<span class="tpl-icon">' + tpl.icon + '</span><span class="tpl-name">' + tpl.name + '</span><span class="tpl-pages">' + tpl.pages.length + '页</span>';
+                btn.onclick = () => applyAnimabookTemplate(tpl);
+                panel.appendChild(btn);
+            });
+        }
+
+        function applyAnimabookTemplate(template) {
+            if (!confirm('应用模板将清空当前动画书，确定要继续吗？')) return;
+            
+            animabookData.pages = template.pages.map(p => ({
+                canvasData: null,
+                voiceData: null,
+                hint: p.hint,
+                desc: p.desc
+            }));
+            animabookData.currentPage = 0;
+            
+            renderAnimabookPages();
+            updateAnimabookNav();
+            renderAnimabookTimeline();
+            
+            // Show hints on each page
+            animabookData.pages.forEach((page, idx) => {
+                const pageEl = document.getElementById('animabookPage' + idx);
+                if (pageEl && page.hint) {
+                    const hintEl = document.createElement('div');
+                    hintEl.className = 'animabook-page-hint';
+                    hintEl.textContent = page.hint;
+                    hintEl.style.cssText = 'position:absolute;bottom:20%;left:50%;transform:translateX(-50%);background:rgba(255,146,43,0.9);color:white;padding:4px 8px;border-radius:8px;font-size:0.75rem;text-align:center;max-width:80%;pointer-events:none;';
+                    pageEl.appendChild(hintEl);
+                }
+            });
+            
+            toggleAnimabookTemplates();
+            showToast('已应用模板：' + template.name);
+        }
 
         function openAnimabook() {
             document.getElementById('animabookOverlay').classList.add('active');
