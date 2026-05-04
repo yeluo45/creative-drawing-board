@@ -2945,6 +2945,40 @@
             animation: pulse 1s infinite;
         }
 
+        /* V43: Voice Effects Styles */
+        .voice-effect-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .voice-effect-selector select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #495057;
+            background: #fff;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .voice-effect-selector select:hover {
+            border-color: #007bff;
+        }
+        .voice-effect-preview {
+            font-size: 0.7rem;
+            color: #666;
+            white-space: nowrap;
+        }
+        .voice-effect-select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #495057;
+            background: #fff;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .voice-effect-select:hover {
+            border-color: #007bff;
+        }
+
         .animabook-page-num {
             position: absolute;
             bottom: 4px;
@@ -7788,7 +7822,17 @@
                     <canvas id="animabookCanvas0"></canvas>
                     <div class="animabook-page-voice">
                         <button class="animabook-voice-btn" id="voiceBtn0" onclick="animabookRecordVoice(0)">🎙️ 录音</button>
-                        <audio id="voiceAudio0" controls style="display:none;"></audio>
+                        <select class="voice-effect-select" id="voiceEffect0" onchange="previewVoiceEffect(0, this.value)">
+                            <option value="none">🎤 原声</option>
+                            <option value="robot">🤖 机器人</option>
+                            <option value="deep">🎸 低沉</option>
+                            <option value="high">🎺 尖锐</option>
+                            <option value="echo">🏔️ 回声</option>
+                            <option value="alien">👽 外星人</option>
+                            <option value="chipmunk">🐿️ 花栗鼠</option>
+                            <option value="whisper">🤫 耳语</option>
+                        </select>
+                        <audio id="voiceAudio0" controls style="display:none;" onended="onVoiceEnded(0)"></audio>
                     </div>
                     <div class="animabook-page-num">1</div>
                 </div>
@@ -23373,6 +23417,162 @@
         let animabookAudioElements = [];
         const ANIMABOOK_STORAGE_KEY = 'animation_book_data';
 
+        // V43: Voice Effect Types
+        const VOICE_EFFECTS = {
+            'none': { name: '原声', icon: '🎤', description: '保持原始声音' },
+            'robot': { name: '机器人', icon: '🤖', description: '机器人声音' },
+            'deep': { name: '低沉', icon: '🎸', description: '低沉浑厚' },
+            'high': { name: '尖锐', icon: '🎺', description: '尖锐刺耳' },
+            'echo': { name: '回声', icon: '🏔️', description: '山洞回声' },
+            'alien': { name: '外星人', icon: '👽', description: '外星生物' },
+            'chipmunk': { name: '花栗鼠', icon: '🐿️', description: '快速高亢' },
+            'whisper': { name: '耳语', icon: '🤫', description: '轻柔耳语' }
+        };
+
+        // Create audio processing chain for voice effects
+        function createVoiceEffectChain(source, effectName, audioCtx, destination) {
+            switch(effectName) {
+                case 'robot': {
+                    // Robot: use oscillator to create metallic effect
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1000;
+                    filter.Q.value = 1;
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.value = 50;
+                    gainNode.gain.value = 0;
+                    oscillator.connect(gainNode);
+                    gainNode.connect(destination);
+                    oscillator.start();
+                    // Modulate the original audio
+                    source.connect(filter);
+                    filter.connect(destination);
+                    return { cleanup: () => { oscillator.stop(); source.disconnect(); } };
+                }
+                case 'deep': {
+                    // Deep: lower pitch using playback rate simulation via delay
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'lowshelf';
+                    filter.frequency.value = 200;
+                    filter.gain.value = 15;
+                    source.connect(filter);
+                    filter.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+                }
+                case 'high': {
+                    // High: raise pitch using highshelf
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'highshelf';
+                    filter.frequency.value = 2000;
+                    filter.gain.value = 15;
+                    source.connect(filter);
+                    filter.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+                }
+                case 'echo': {
+                    // Echo: multiple delays for reverb effect
+                    const delay1 = audioCtx.createDelay();
+                    const delay2 = audioCtx.createDelay();
+                    const gain1 = audioCtx.createGain();
+                    const gain2 = audioCtx.createGain();
+                    delay1.delayTime.value = 0.3;
+                    delay2.delayTime.value = 0.6;
+                    gain1.gain.value = 0.4;
+                    gain2.gain.value = 0.2;
+                    source.connect(destination);
+                    source.connect(delay1);
+                    delay1.connect(gain1);
+                    gain1.connect(destination);
+                    delay1.connect(delay2);
+                    delay2.connect(gain2);
+                    gain2.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+                }
+                case 'alien': {
+                    // Alien: chorus-like effect with detuned oscillators
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    const filter = audioCtx.createBiquadFilter();
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 30;
+                    gainNode.gain.value = 0;
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 800;
+                    filter.Q.value = 5;
+                    oscillator.connect(gainNode);
+                    gainNode.connect(filter.frequency);
+                    source.connect(filter);
+                    filter.connect(destination);
+                    oscillator.start();
+                    return { 
+                        cleanup: () => { 
+                            oscillator.stop(); 
+                            source.disconnect(); 
+                        } 
+                    };
+                }
+                case 'chipmunk': {
+                    // Chipmunk: high speed, high pitch
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'highpass';
+                    filter.frequency.value = 1500;
+                    source.connect(filter);
+                    filter.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+                }
+                case 'whisper': {
+                    // Whisper: reduce volume and add slight distortion
+                    const filter = audioCtx.createBiquadFilter();
+                    const gainNode = audioCtx.createGain();
+                    filter.type = 'highpass';
+                    filter.frequency.value = 300;
+                    gainNode.gain.value = 0.5;
+                    source.connect(filter);
+                    filter.connect(gainNode);
+                    gainNode.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+                }
+                default:
+                    source.connect(destination);
+                    return { cleanup: () => { source.disconnect(); } };
+            }
+        }
+
+        // Play voice with effect
+        function playVoiceWithEffect(pageIdx, effectName) {
+            const audio = document.getElementById('voiceAudio' + pageIdx);
+            if (!audio) return;
+            
+            initAudio();
+            
+            // Stop any currently playing audio
+            if (audio.paused === false) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            
+            if (effectName === 'none') {
+                audio.play();
+                return;
+            }
+            
+            // Create audio context for processing
+            const voiceAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = voiceAudioCtx.createMediaElementSource(audio);
+            const destination = voiceAudioCtx.destination;
+            
+            const chain = createVoiceEffectChain(source, effectName, voiceAudioCtx, destination);
+            
+            audio.play();
+            
+            audio.onended = () => {
+                chain.cleanup();
+                voiceAudioCtx.close();
+            };
+        }
+
         // V41: Preset Animation Book Templates
         const ANIMABOOK_PRESET_TEMPLATES = [
             {
@@ -23673,12 +23873,30 @@
                 voiceBtn.onclick = () => animabookRecordVoice(idx);
                 voiceDiv.appendChild(voiceBtn);
 
+                // V43: Add voice effect selector
+                const effectSelect = document.createElement('select');
+                effectSelect.className = 'voice-effect-select';
+                effectSelect.id = 'voiceEffect' + idx;
+                effectSelect.innerHTML = `
+                    <option value="none">🎤 原声</option>
+                    <option value="robot">🤖 机器人</option>
+                    <option value="deep">🎸 低沉</option>
+                    <option value="high">🎺 尖锐</option>
+                    <option value="echo">🏔️ 回声</option>
+                    <option value="alien">👽 外星人</option>
+                    <option value="chipmunk">🐿️ 花栗鼠</option>
+                    <option value="whisper">🤫 耳语</option>
+                `;
+                effectSelect.onchange = () => previewVoiceEffect(idx, effectSelect.value);
+                voiceDiv.appendChild(effectSelect);
+
                 if (page.voiceData) {
                     const audio = document.createElement('audio');
                     audio.id = 'voiceAudio' + idx;
                     audio.src = page.voiceData;
                     audio.controls = true;
                     audio.style.display = 'none';
+                    audio.onended = () => onVoiceEnded(idx);
                     voiceDiv.appendChild(audio);
                     animabookAudioElements.push(audio);
                 } else {
@@ -23877,21 +24095,26 @@
             closeAnimabook();
         }
 
+        // V43: Voice Effect Functions
+        function previewVoiceEffect(pageIdx, effectName) {
+            const page = animabookData.pages[pageIdx];
+            if (page.voiceData) {
+                playVoiceWithEffect(pageIdx, effectName);
+            }
+        }
+
+        function onVoiceEnded(pageIdx) {
+            // Reset effect when voice ends
+        }
+
         function animabookRecordVoice(pageIdx) {
             const page = animabookData.pages[pageIdx];
 
-            // If already has voice, play it
+            // If already has voice, play it with selected effect
             if (page.voiceData) {
-                const audio = document.getElementById('voiceAudio' + pageIdx);
-                if (audio) {
-                    if (audio.paused) {
-                        audio.play();
-                        showToast('正在播放录音');
-                    } else {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    }
-                }
+                const effectSelect = document.getElementById('voiceEffect' + pageIdx);
+                const effectName = effectSelect ? effectSelect.value : 'none';
+                playVoiceWithEffect(pageIdx, effectName);
                 return;
             }
 

@@ -102,6 +102,19 @@ creative-drawing-board/
 - Synthesized sounds using OscillatorNode (no external audio files)
 - Short attack-decay envelopes for pleasant tones
 
+### V43: Voice Effects (配音变声特效)
+- 8 voice effect options for recorded audio playback:
+  - **原声 (none)**: Original voice without effect
+  - **机器人 (robot)**: Metallic robot voice using bandpass filter
+  - **低沉 (deep)**: Deep voice using lowshelf boost at 200Hz
+  - **尖锐 (high)**: High-pitched voice using highshelf boost at 2000Hz
+  - **回声 (echo)**: Cave echo effect using multiple delay nodes
+  - **外星人 (alien)**: Alien voice using LFO-modulated bandpass filter
+  - **花栗鼠 (chipmunk)**: High-speed chipmunk voice using highpass filter
+  - **耳语 (whisper)**: Whispered voice with reduced volume and highpass filter
+- Effect selector dropdown appears next to each voice recording button
+- Real-time preview when changing effects
+
 ### Responsive Design
 - Canvas resizes on window resize
 - UI scales appropriately for different screen sizes
