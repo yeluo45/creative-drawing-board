@@ -2975,6 +2975,100 @@
             cursor: not-allowed;
         }
 
+        .animabook-timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #2d2d44;
+            border-top: 2px solid #495057;
+            overflow-x: auto;
+            min-height: 90px;
+        }
+
+        .animabook-timeline::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .animabook-timeline::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        .animabook-timeline::-webkit-scrollbar-thumb {
+            background: #666;
+            border-radius: 3px;
+        }
+
+        .timeline-thumb {
+            flex-shrink: 0;
+            width: 70px;
+            height: 80px;
+            border: 2px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .timeline-thumb:hover {
+            border-color: #888;
+            transform: translateY(-2px);
+        }
+
+        .timeline-thumb.active {
+            border-color: #FF922B;
+            background: #3d2d1a;
+            box-shadow: 0 0 8px rgba(255, 146, 43, 0.5);
+        }
+
+        .timeline-thumb canvas {
+            width: 60px;
+            height: 58px;
+            border-radius: 4px;
+        }
+
+        .timeline-thumb-num {
+            font-size: 9px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        .timeline-thumb.active .timeline-thumb-num {
+            color: #FF922B;
+            font-weight: bold;
+        }
+
+        .timeline-add-btn {
+            flex-shrink: 0;
+            width: 70px;
+            height: 80px;
+            border: 2px dashed #555;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #666;
+            background: transparent;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .timeline-add-btn:hover {
+            border-color: #FF922B;
+            color: #FF922B;
+        }
+
+        .timeline-add-btn span {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
         .animabook-tools {
             display: flex;
             gap: 12px;
@@ -7649,6 +7743,7 @@
                 <span id="animabookPageInfo">1 / 1</span>
                 <button onclick="animabookNextPage()" id="animabookNextBtn">▶</button>
             </div>
+            <div class="animabook-timeline" id="animabookTimeline"></div>
         </div>
         <div class="animabook-tools">
             <button onclick="animabookDrawCurrentPage()">✏️ 编辑当前页</button>
@@ -23082,6 +23177,7 @@
             loadAnimabook();
             renderAnimabookPages();
             updateAnimabookNav();
+            renderAnimabookTimeline();
         }
 
         function closeAnimabook() {
@@ -23200,12 +23296,79 @@
             if (pageInfo) pageInfo.textContent = (animabookData.currentPage + 1) + ' / ' + animabookData.pages.length;
         }
 
+        function renderAnimabookTimeline() {
+            const timeline = document.getElementById('animabookTimeline');
+            if (!timeline) return;
+            timeline.innerHTML = '';
+
+            animabookData.pages.forEach((page, idx) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'timeline-thumb' + (idx === animabookData.currentPage ? ' active' : '');
+                thumb.onclick = () => goToAnimabookPage(idx);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 60;
+                canvas.height = 58;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (page.canvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    };
+                    img.src = page.canvasData;
+                }
+
+                const numLabel = document.createElement('div');
+                numLabel.className = 'timeline-thumb-num';
+                numLabel.textContent = (idx + 1);
+
+                thumb.appendChild(canvas);
+                thumb.appendChild(numLabel);
+                timeline.appendChild(thumb);
+            });
+
+            // Add new page button
+            const addBtn = document.createElement('button');
+            addBtn.className = 'timeline-add-btn';
+            addBtn.innerHTML = '+<span>新建</span>';
+            addBtn.onclick = () => {
+                animabookSaveCurrentPage();
+                animabookData.pages.push({ canvasData: null, voiceData: null });
+                animabookData.currentPage = animabookData.pages.length - 1;
+                renderAnimabookPages();
+                updateAnimabookNav();
+                renderAnimabookTimeline();
+                showToast('已添加新页面');
+            };
+            timeline.appendChild(addBtn);
+
+            // Scroll active thumb into view
+            setTimeout(() => {
+                const activeThumb = timeline.querySelector('.timeline-thumb.active');
+                if (activeThumb) {
+                    activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 50);
+        }
+
+        function goToAnimabookPage(idx) {
+            animabookSaveCurrentPage();
+            animabookData.currentPage = idx;
+            updateAnimabookFlip();
+            updateAnimabookNav();
+            renderAnimabookTimeline();
+        }
+
         function animabookPrevPage() {
             if (animabookData.currentPage > 0) {
                 animabookSaveCurrentPage();
                 animabookData.currentPage--;
                 updateAnimabookFlip();
                 updateAnimabookNav();
+                renderAnimabookTimeline();
             }
         }
 
@@ -23215,6 +23378,7 @@
                 animabookData.currentPage++;
                 updateAnimabookFlip();
                 updateAnimabookNav();
+                renderAnimabookTimeline();
             }
         }
 
@@ -23224,6 +23388,7 @@
             animabookData.currentPage = animabookData.pages.length - 1;
             renderAnimabookPages();
             updateAnimabookNav();
+            renderAnimabookTimeline();
             showToast('已添加新页面');
         }
 
@@ -23239,6 +23404,7 @@
                 }
                 renderAnimabookPages();
                 updateAnimabookNav();
+                renderAnimabookTimeline();
                 showToast('已删除页面');
             }
         }
