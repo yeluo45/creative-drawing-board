@@ -692,6 +692,73 @@
             cursor: pointer;
         }
 
+        /* V58: Eraser Panel */
+        .eraser-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 280px;
+            padding: 0;
+        }
+
+        .eraser-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+        }
+
+        .eraser-size-row,
+        .eraser-opacity-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .eraser-size-slider,
+        .eraser-opacity-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #dee2e6;
+            border-radius: 3px;
+        }
+
+        .eraser-presets {
+            display: flex;
+            gap: 6px;
+            padding: 0 16px 12px;
+        }
+
+        .eraser-preset {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .eraser-preset:hover {
+            background: #e9ecef;
+        }
+
+        .eraser-preset.active {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -8511,7 +8578,7 @@
         <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
         <button class="tool-btn" id="bgSelectBtn" onclick="showBackgroundSelector()" title="背景选择">🎨</button>
         <button class="tool-btn" id="tagBtn" onclick="showTagSelector()" title="作品标签">🏷️</button>
-        <button class="tool-btn eraser-btn" id="eraserBtn">
+        <button class="tool-btn eraser-btn" id="eraserBtn" onclick="showEraserPanel()">
             <span class="tool-icon">🧹</span>
             <span data-i18n="eraser">Eraser</span>
         </button>
@@ -14004,6 +14071,83 @@
             renderBgGrid(category);
         }
 
+        // V58: Enhanced Eraser
+        let eraserSize = 20;
+        let eraserOpacity = 1.0;
+
+        function showEraserPanel() {
+            const existing = document.querySelector('.eraser-panel');
+            if (existing) existing.remove();
+
+            const panel = document.createElement('div');
+            panel.className = 'eraser-panel';
+            panel.innerHTML = `
+                <div class="eraser-panel-header">
+                    <span>🧹 橡皮擦设置</span>
+                    <button class="panel-close" onclick="this.closest('.eraser-panel').remove()">×</button>
+                </div>
+                <div class="eraser-size-row">
+                    <span>大小</span>
+                    <input type="range" class="eraser-size-slider" id="eraserSizeSlider"
+                        min="5" max="100" value="${eraserSize}"
+                        onchange="setEraserSize(this.value)">
+                    <span id="eraserSizeValue">${eraserSize}px</span>
+                </div>
+                <div class="eraser-presets">
+                    <button class="eraser-preset" onclick="setEraserSize(10)">小</button>
+                    <button class="eraser-preset" onclick="setEraserSize(30)">中</button>
+                    <button class="eraser-preset" onclick="setEraserSize(60)">大</button>
+                    <button class="eraser-preset" onclick="setEraserSize(100)">特大</button>
+                </div>
+                <div class="eraser-opacity-row">
+                    <span>透明度</span>
+                    <input type="range" class="eraser-opacity-slider" id="eraserOpacitySlider"
+                        min="0" max="100" value="100"
+                        onchange="setEraserOpacity(this.value)">
+                    <span id="eraserOpacityValue">100%</span>
+                </div>
+            `;
+            document.body.appendChild(panel);
+            updateEraserCursor();
+        }
+
+        function setEraserSize(size) {
+            eraserSize = parseInt(size, 10);
+            const slider = document.getElementById('eraserSizeSlider');
+            if (slider) slider.value = eraserSize;
+            const valueEl = document.getElementById('eraserSizeValue');
+            if (valueEl) valueEl.textContent = eraserSize + 'px';
+            updateEraserCursor();
+        }
+
+        function setEraserOpacity(opacity) {
+            eraserOpacity = parseInt(opacity, 10) / 100;
+            const valueEl = document.getElementById('eraserOpacityValue');
+            if (valueEl) valueEl.textContent = Math.round(eraserOpacity * 100) + '%';
+        }
+
+        function updateEraserCursor() {
+            if (currentTool !== 'eraser') return;
+            const cursorSize = Math.max(eraserSize, 20);
+            drawingCanvas.style.cursor = `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="${cursorSize}" height="${cursorSize}"><circle cx="${cursorSize/2}" cy="${cursorSize/2}" r="${eraserSize/2}" fill="rgba(255,107,107,0.3)" stroke="%23ff6b6b" stroke-width="2"/></svg>') ${cursorSize/2} ${cursorSize/2}, crosshair`;
+        }
+
+        function eraseAtPoint(x, y) {
+            const ctx = getActiveContext();
+            if (!ctx) return;
+
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.globalAlpha = eraserOpacity;
+            ctx.beginPath();
+            ctx.arc(x, y, eraserSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            compositeLayers();
+            saveDrawingState();
+        }
+
         // V57: Artwork Tag System
         const ARTWORK_TAGS = [
             { id: 'cartoon', name: '卡通', icon: '🎨', color: '#ff6b9d' },
@@ -14342,8 +14486,15 @@
                 ctx.lineWidth = currentSize * 3; // Wider for highlighter
             } else {
                 ctx.globalAlpha = 1.0;
-                ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
-                ctx.lineWidth = currentSize;
+                if (currentTool === 'eraser') {
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = eraserSize;
+                    ctx.globalCompositeOperation = 'destination-out';
+                } else {
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentSize;
+                    ctx.globalCompositeOperation = 'source-over';
+                }
             }
 
             // V16: Track path for eraser
@@ -16867,7 +17018,14 @@
             } else if (tool === 'layer') {
                 togglePanel('layer');
             }
-            
+
+            // V58: Update eraser cursor when selecting eraser
+            if (tool === 'eraser') {
+                updateEraserCursor();
+            } else {
+                drawingCanvas.style.cursor = 'crosshair';
+            }
+
             if (tool !== 'stamp') {
                 selectedStamp = null;
             }
