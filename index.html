@@ -585,6 +585,113 @@
             text-align: center;
         }
 
+        /* V57: Tag Selector Panel */
+        .tag-selector-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 360px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tag-selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            max-height: 40vh;
+            overflow-y: auto;
+        }
+
+        .tag-item {
+            padding: 6px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .tag-item:hover {
+            border-color: #adb5bd;
+        }
+
+        .tag-item.selected {
+            border-color: #40c057;
+            background: #d3f9d8;
+        }
+
+        .tag-selected-list {
+            padding: 8px 12px;
+            border-top: 1px solid #dee2e6;
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-hint {
+            font-size: 0.8rem;
+            color: #868e96;
+            text-align: center;
+            width: 100%;
+        }
+
+        .tag-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .tag-clear-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .tag-save-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: #40c057;
+            color: white;
+            cursor: pointer;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -8403,6 +8510,7 @@
         </button>
         <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
         <button class="tool-btn" id="bgSelectBtn" onclick="showBackgroundSelector()" title="背景选择">🎨</button>
+        <button class="tool-btn" id="tagBtn" onclick="showTagSelector()" title="作品标签">🏷️</button>
         <button class="tool-btn eraser-btn" id="eraserBtn">
             <span class="tool-icon">🧹</span>
             <span data-i18n="eraser">Eraser</span>
@@ -13894,6 +14002,121 @@
                 tab.classList.toggle('active', tab.textContent.includes(cats[category]));
             });
             renderBgGrid(category);
+        }
+
+        // V57: Artwork Tag System
+        const ARTWORK_TAGS = [
+            { id: 'cartoon', name: '卡通', icon: '🎨', color: '#ff6b9d' },
+            { id: 'nature', name: '自然', icon: '🌿', color: '#40c057' },
+            { id: 'animal', name: '动物', icon: '🐱', color: '#ff922b' },
+            { id: 'person', name: '人物', icon: '👤', color: '#339af0' },
+            { id: 'building', name: '建筑', icon: '🏠', color: '#868e96' },
+            { id: 'food', name: '美食', icon: '🍕', color: '#fcc419' },
+            { id: 'vehicle', name: '交通', icon: '🚗', color: '#f06595' },
+            { id: 'flower', name: '花卉', icon: '🌸', color: '#e64980' },
+            { id: 'landscape', name: '风景', icon: '🏔️', color: '#20c997' },
+            { id: 'abstract', name: '抽象', icon: '✨', color: '#be4bdb' },
+            { id: 'holiday', name: '节日', icon: '🎄', color: '#ff6b6b' },
+            { id: 'anime', name: '动漫', icon: '💫', color: '#748ffc' },
+        ];
+
+        let currentArtworkTags = JSON.parse(localStorage.getItem('artworkTags') || '[]');
+
+        function showTagSelector() {
+            const existing = document.querySelector('.tag-selector-panel');
+            if (existing) existing.remove();
+
+            const panel = document.createElement('div');
+            panel.className = 'tag-selector-panel';
+            panel.innerHTML = `
+                <div class="tag-selector-header">
+                    <span>🏷️ 作品标签</span>
+                    <button class="panel-close" onclick="this.closest('.tag-selector-panel').remove()">×</button>
+                </div>
+                <div class="tag-list" id="tagList"></div>
+                <div class="tag-selected-list" id="tagSelectedList"></div>
+                <div class="tag-actions">
+                    <button class="tag-clear-btn" onclick="clearArtworkTags()">清除全部</button>
+                    <button class="tag-save-btn" onclick="saveArtworkTags()">保存</button>
+                </div>
+            `;
+            document.body.appendChild(panel);
+            renderTagList();
+            renderSelectedTags();
+        }
+
+        function renderTagList() {
+            const list = document.getElementById('tagList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            ARTWORK_TAGS.forEach(tag => {
+                const item = document.createElement('div');
+                item.className = 'tag-item' + (currentArtworkTags.includes(tag.id) ? ' selected' : '');
+                item.onclick = () => toggleTag(tag.id);
+                item.innerHTML = `<span>${tag.icon}</span> ${tag.name}`;
+                list.appendChild(item);
+            });
+        }
+
+        function renderSelectedTags() {
+            const list = document.getElementById('tagSelectedList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            if (currentArtworkTags.length === 0) {
+                list.innerHTML = '<div class="tag-hint">点击上方标签进行选择</div>';
+                return;
+            }
+
+            const selectedTags = ARTWORK_TAGS.filter(t => currentArtworkTags.includes(t.id));
+            selectedTags.forEach(tag => {
+                const item = document.createElement('div');
+                item.className = 'tag-badge';
+                item.style.backgroundColor = tag.color + '33';
+                item.style.borderColor = tag.color;
+                item.innerHTML = `<span>${tag.icon}</span> ${tag.name}`;
+                list.appendChild(item);
+            });
+        }
+
+        function toggleTag(tagId) {
+            const idx = currentArtworkTags.indexOf(tagId);
+            if (idx === -1) {
+                currentArtworkTags.push(tagId);
+            } else {
+                currentArtworkTags.splice(idx, 1);
+            }
+            renderTagList();
+            renderSelectedTags();
+        }
+
+        function clearArtworkTags() {
+            currentArtworkTags = [];
+            renderTagList();
+            renderSelectedTags();
+        }
+
+        function saveArtworkTags() {
+            localStorage.setItem('artworkTags', JSON.stringify(currentArtworkTags));
+            showToast('标签已保存');
+            const panel = document.querySelector('.tag-selector-panel');
+            if (panel) panel.remove();
+        }
+
+        function filterGalleryByTag(tagId) {
+            document.querySelectorAll('.filter-tag').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tagId === tagId);
+            });
+            const galleryItems = document.querySelectorAll('.gallery-item[data-tags]');
+            galleryItems.forEach(item => {
+                const tags = JSON.parse(item.dataset.tags || '[]');
+                if (tagId === 'all' || tags.includes(tagId)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
 
         // V16: Draw center guide lines when symmetry is active
