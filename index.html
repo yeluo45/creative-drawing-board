@@ -4100,6 +4100,12 @@
             margin-top: 12px;
         }
 
+        .export-divider {
+            height: 1px;
+            background: #dee2e6;
+            margin: 12px 0;
+        }
+
         .export-action-btn {
             flex: 1;
             padding: 10px;
@@ -8994,6 +9000,15 @@
         <div class="export-actions">
             <button class="export-action-btn export-save-btn" onclick="doExportSave()">💾 保存到设备</button>
             <button class="export-action-btn export-copy-btn" onclick="doExportCopy()">📋 复制到剪贴板</button>
+        </div>
+        <div class="export-divider"></div>
+        <div class="export-panel-title" style="font-size:0.9rem">📄 更多格式</div>
+        <div class="export-actions">
+            <button class="export-action-btn" onclick="exportAsPDF()">📄 PDF 文档</button>
+            <button class="export-action-btn" onclick="exportAsPDFWithBG()">📑 PDF（带背景）</button>
+        </div>
+        <div class="export-actions">
+            <button class="export-action-btn" onclick="exportAsSVG()">📐 SVG 矢量图</button>
         </div>
     </div>
 
@@ -19026,6 +19041,136 @@
             });
 
             return mergedCanvas.toDataURL('image/png');
+        }
+
+        // V59: PDF Export
+        function exportAsPDF() {
+            loadJsPDF().then(() => {
+                const { jsPDF } = window.jspdf;
+                const w = drawingCanvas.width;
+                const h = drawingCanvas.height;
+
+                // Composite all visible layers first
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = w;
+                tempCanvas.height = h;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(bgCanvas, 0, 0);
+                layerSystem.layers.forEach(layer => {
+                    if (layer.visible && layerCanvases[layer.id]) {
+                        tempCtx.globalAlpha = (layer.opacity || 100) / 100;
+                        tempCtx.drawImage(layerCanvases[layer.id], 0, 0);
+                    }
+                });
+
+                const imgData = tempCanvas.toDataURL('image/png');
+                const pdfW = 210;
+                const pdfH = 297;
+
+                const pdf = new jsPDF({
+                    orientation: w > h ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: [pdfW, pdfH]
+                });
+
+                const scale = Math.min(pdfW / w * 10, pdfH / h * 10);
+                const drawW = w * scale / 10;
+                const drawH = h * scale / 10;
+                const x = (pdfW - drawW) / 2;
+                const y = (pdfH - drawH) / 2;
+
+                pdf.addImage(imgData, 'PNG', x, y, drawW, drawH);
+                pdf.save('artwork_' + Date.now() + '.pdf');
+                showToast('PDF 导出成功');
+            });
+        }
+
+        function exportAsPDFWithBG() {
+            loadJsPDF().then(() => {
+                const { jsPDF } = window.jspdf;
+                const w = drawingCanvas.width;
+                const h = drawingCanvas.height;
+
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = w;
+                tempCanvas.height = h;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(bgCanvas, 0, 0);
+                layerSystem.layers.forEach(layer => {
+                    if (layer.visible && layerCanvases[layer.id]) {
+                        tempCtx.globalAlpha = (layer.opacity || 100) / 100;
+                        tempCtx.drawImage(layerCanvases[layer.id], 0, 0);
+                    }
+                });
+
+                const imgData = tempCanvas.toDataURL('image/png');
+                const pdfW = 210;
+                const pdfH = 297;
+
+                const pdf = new jsPDF({
+                    orientation: w > h ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: [pdfW, pdfH]
+                });
+
+                const scale = Math.min(pdfW / w * 10, pdfH / h * 10);
+                const drawW = w * scale / 10;
+                const drawH = h * scale / 10;
+                const x = (pdfW - drawW) / 2;
+                const y = (pdfH - drawH) / 2;
+
+                pdf.addImage(imgData, 'PNG', x, y, drawW, drawH);
+                pdf.save('artwork_' + Date.now() + '.pdf');
+                showToast('PDF 导出成功（带背景）');
+            });
+        }
+
+        function loadJsPDF() {
+            return new Promise((resolve) => {
+                if (window.jspdf) {
+                    resolve();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script.onload = resolve;
+                document.head.appendChild(script);
+            });
+        }
+
+        // V59: SVG Export
+        function exportAsSVG() {
+            const w = drawingCanvas.width;
+            const h = drawingCanvas.height;
+
+            // Composite all layers
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(bgCanvas, 0, 0);
+            layerSystem.layers.forEach(layer => {
+                if (layer.visible && layerCanvases[layer.id]) {
+                    tempCtx.globalAlpha = (layer.opacity || 100) / 100;
+                    tempCtx.drawImage(layerCanvases[layer.id], 0, 0);
+                }
+            });
+
+            const imgData = tempCanvas.toDataURL('image/png');
+
+            let svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<image href="${imgData}" width="${w}" height="${h}"/>
+</svg>`;
+
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'artwork_' + Date.now() + '.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('SVG 导出成功');
         }
 
         // Do export save to device
