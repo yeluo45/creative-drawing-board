@@ -866,6 +866,138 @@
             font-weight: bold;
         }
 
+        /* V61: Template Search Panel */
+        .template-search-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 400px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .template-search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: bold;
+        }
+
+        .template-search-input-row {
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .template-search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .template-search-input:focus {
+            outline: none;
+            border-color: #4DABF7;
+        }
+
+        .template-sort-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-bottom: 1px solid #dee2e6;
+            background: #f8f9fa;
+        }
+
+        .sort-label {
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .template-sort-select {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .template-search-results {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            align-content: start;
+        }
+
+        .template-search-item {
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-search-item:hover {
+            border-color: #4DABF7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .template-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .template-page-thumb {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            overflow: hidden;
+            background: white;
+        }
+
+        .template-page-thumb canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .template-item-info {
+            text-align: center;
+        }
+
+        .template-item-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .template-item-category {
+            font-size: 0.7rem;
+            color: #868e96;
+        }
+
+        .template-no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 32px;
+            color: #868e96;
+        }
+
         .volume-row {
             display: flex;
             align-items: center;
@@ -4024,6 +4156,20 @@
         }
 
         .tpl-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .tpl-search-btn {
+            margin-left: auto;
+            padding: 6px 12px;
+            border: 2px solid #adb5bd;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .tpl-search-btn:hover {
             background: #e9ecef;
         }
 
@@ -26840,6 +26986,7 @@
                 const active = cat === currentAnimabookCategory ? 'active' : '';
                 tabsHtml += '<button class="tpl-tab ' + active + '" onclick="switchAnimabookCategory(\'' + cat + '\')">' + categoryNames[cat] + '(' + count + ')</button>';
             });
+            tabsHtml += '<button class="tpl-search-btn" onclick="showTemplateSearch()">🔍</button>';
             tabsHtml += '</div>';
             panel.innerHTML = tabsHtml;
             // Add templates container
@@ -26871,6 +27018,140 @@
 
         function getAnimabookTemplateById(id) {
             return ANIMABOOK_PRESET_TEMPLATES.find(t => t.id === id);
+        }
+
+        // V61: Template Search
+        function showTemplateSearch() {
+            const existing = document.querySelector('.template-search-panel');
+            if (existing) existing.remove();
+
+            const panel = document.createElement('div');
+            panel.className = 'template-search-panel';
+            panel.innerHTML = `
+                <div class="template-search-header">
+                    <span>🔍 搜索模板</span>
+                    <button class="panel-close" onclick="this.closest('.template-search-panel').remove()">×</button>
+                </div>
+                <div class="template-search-input-row">
+                    <input type="text" class="template-search-input" id="templateSearchInput"
+                        placeholder="输入模板名称搜索..."
+                        oninput="filterTemplates()">
+                </div>
+                <div class="template-sort-row">
+                    <span class="sort-label">排序：</span>
+                    <select class="template-sort-select" id="templateSortSelect" onchange="sortTemplates()">
+                        <option value="default">默认顺序</option>
+                        <option value="name-asc">名称 A-Z</option>
+                        <option value="name-desc">名称 Z-A</option>
+                        <option value="newest">最新添加</option>
+                    </select>
+                </div>
+                <div class="template-search-results" id="templateSearchResults"></div>
+            `;
+            document.body.appendChild(panel);
+            filterTemplates();
+        }
+
+        function filterTemplates() {
+            const searchTerm = (document.getElementById('templateSearchInput') || {value: ''}).value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('templateSearchResults');
+            if (!resultsContainer) return;
+
+            let filtered = [...ANIMABOOK_PRESET_TEMPLATES];
+
+            if (searchTerm) {
+                filtered = filtered.filter(t =>
+                    t.name.toLowerCase().includes(searchTerm) ||
+                    (t.category && t.category.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            const sortValue = (document.getElementById('templateSortSelect') || {value: 'default'}).value;
+            filtered = applyTemplateSort(filtered, sortValue);
+
+            renderSearchResults(filtered);
+        }
+
+        function sortTemplates() {
+            filterTemplates();
+        }
+
+        function applyTemplateSort(templates, sortValue) {
+            const sorted = [...templates];
+            switch (sortValue) {
+                case 'name-asc':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+                    break;
+                case 'name-desc':
+                    sorted.sort((a, b) => b.name.localeCompare(a.name, 'zh-CN'));
+                    break;
+                case 'newest':
+                    sorted.reverse();
+                    break;
+            }
+            return sorted;
+        }
+
+        function renderSearchResults(templates) {
+            const container = document.getElementById('templateSearchResults');
+            if (!container) return;
+
+            if (templates.length === 0) {
+                container.innerHTML = '<div class="template-no-results">没有找到匹配的模板</div>';
+                return;
+            }
+
+            container.innerHTML = templates.map(t => `
+                <div class="template-search-item" onclick="applyAnimabookTemplate('${t.id}')">
+                    <div class="template-preview-grid">
+                        ${t.pages.slice(0, 4).map((p, i) => `
+                            <div class="template-page-thumb" style="background:${p.bg || '#fff'}">
+                                ${p.shapes && p.shapes.length > 0 ?
+                                    '<canvas width="40" height="40" data-template="' + t.id + '" data-page="' + i + '"></canvas>'
+                                    : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="template-item-info">
+                        <div class="template-item-name">${t.name}</div>
+                        <div class="template-item-category">${t.category || '默认'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            setTimeout(() => {
+                templates.forEach(t => {
+                    t.pages.slice(0, 4).forEach((p, i) => {
+                        const canvas = container.querySelector(`canvas[data-template="${t.id}"][data-page="${i}"]`);
+                        if (canvas && p.shapes) {
+                            const ctx = canvas.getContext('2d');
+                            drawTemplateThumbnail(ctx, p, 40, 40);
+                        }
+                    });
+                });
+            }, 0);
+        }
+
+        function drawTemplateThumbnail(ctx, page, w, h) {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = page.bg || '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+            if (page.shapes) {
+                page.shapes.forEach(s => {
+                    ctx.fillStyle = s.fill || '#000000';
+                    ctx.strokeStyle = s.stroke || 'transparent';
+                    ctx.lineWidth = 1;
+                    if (s.type === 'rect') {
+                        ctx.fillRect(s.x * w / 400, s.y * h / 400, s.w * w / 400, s.h * h / 400);
+                        if (s.stroke && s.stroke !== 'transparent') ctx.strokeRect(s.x * w / 400, s.y * h / 400, s.w * w / 400, s.h * h / 400);
+                    } else if (s.type === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(s.x * w / 400 + (s.r || 10) * w / 400 / 2, s.y * h / 400 + (s.r || 10) * h / 400 / 2, (s.r || 10) * w / 400 / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        if (s.stroke && s.stroke !== 'transparent') ctx.stroke();
+                    }
+                });
+            }
         }
 
         let templatePreviewOverlay = null;
