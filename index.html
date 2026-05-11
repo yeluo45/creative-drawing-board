@@ -7933,6 +7933,213 @@
         }
         .canvas-size-divider:hover { background: #f8f9fa; }
 
+        /* V62: Learning Panel Styles */
+        .learning-btn {
+            background: linear-gradient(180deg, #748FFC 0%, #5C7CFA 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 80px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+        .learning-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .learning-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: linear-gradient(180deg, #FFF9DB 0%, #FFF0F0 100%);
+            border-left: 4px solid #495057;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .learning-panel.open { right: 0; }
+        .learning-panel-header {
+            background: linear-gradient(180deg, #748FFC 0%, #5C7CFA 100%);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #495057;
+        }
+        .learning-panel-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 1.3rem;
+            text-shadow: 1px 1px 0 #495057;
+        }
+        .learning-panel-close {
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .learning-panel-close:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .learning-tabs {
+            display: flex;
+            background: #FFE066;
+            border-bottom: 3px solid #495057;
+        }
+        .learning-tab {
+            flex: 1;
+            padding: 12px 8px;
+            background: #FFE066;
+            border: none;
+            border-right: 2px solid #495057;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #495057;
+            transition: background 0.2s;
+        }
+        .learning-tab:last-child { border-right: none; }
+        .learning-tab.active {
+            background: #FFF9DB;
+            color: #5C7CFA;
+        }
+        .learning-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .learning-tab-content { display: none; }
+        .learning-tab-content.active { display: block; }
+        .learning-stat-card {
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 3px 3px 0 #495057;
+        }
+        .learning-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .learning-stat-row:last-child { margin-bottom: 0; }
+        .learning-stat-label { font-weight: bold; color: #495057; }
+        .learning-stat-value { font-size: 1.2rem; font-weight: bold; color: #5C7CFA; }
+        .skill-progress-bar {
+            background: #E9ECEF;
+            border: 2px solid #495057;
+            border-radius: 10px;
+            height: 20px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        .skill-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #69DB7C, #40C057);
+            transition: width 0.5s ease;
+            border-radius: 8px;
+        }
+        .skill-level {
+            display: inline-block;
+            background: #5C7CFA;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .color-bar-container {
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0 #495057;
+        }
+        .color-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .color-bar-swatch {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #495057;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .color-bar-track {
+            background: #E9ECEF;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            height: 16px;
+            overflow: hidden;
+        }
+        .color-bar-fill {
+            height: 100%;
+            transition: width 0.4s ease;
+        }
+        .achievement-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            margin: 6px;
+            background: white;
+            border: 3px solid #E9ECEF;
+            border-radius: 12px;
+            width: 90px;
+            box-shadow: 2px 2px 0 #E9ECEF;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .achievement-badge.unlocked {
+            border-color: #FFD43B;
+            box-shadow: 2px 2px 0 #FFD43B;
+        }
+        .achievement-badge.locked { opacity: 0.6; }
+        .achievement-badge .ach-icon { font-size: 2rem; }
+        .achievement-badge .ach-name { font-size: 0.75rem; font-weight: bold; margin-top: 4px; text-align: center; }
+        .achievement-grid { display: flex; flex-wrap: wrap; justify-content: center; }
+        .recommendation-item {
+            background: linear-gradient(135deg, #E7F5FF 0%, #D0EBFF 100%);
+            border: 2px solid #495057;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .recommendation-item::before { content: "💡 "; }
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #868e96;
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -7989,6 +8196,7 @@
             <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="challenge-btn" id="challengeBtn" title="Daily Challenge">🔔<span class="unread-dot" id="unreadDot"></span></button>
+            <button class="learning-btn" id="learningBtn" title="学习轨迹">📊 学习</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
             <button class="gallery-btn" id="galleryBtn" title="Gallery">🖼️</button>
@@ -29495,6 +29703,56 @@
         <div class="achievement-grid" id="achievementGrid"></div>
     </div>
 
+    <!-- V62: Learning Trajectory Panel -->
+    <div class="learning-panel" id="learningPanel">
+        <div class="learning-panel-header">
+            <h2>📊 学习轨迹</h2>
+            <button class="learning-panel-close" id="learningPanelClose">×</button>
+        </div>
+        <div class="learning-tabs">
+            <button class="learning-tab active" data-tab="overview">概览</button>
+            <button class="learning-tab" data-tab="colors">颜色</button>
+            <button class="learning-tab" data-tab="skills">技能</button>
+            <button class="learning-tab" data-tab="achievements">成就</button>
+        </div>
+        <div class="learning-content">
+            <!-- Overview Tab -->
+            <div class="learning-tab-content active" id="tab-overview">
+                <div class="learning-stat-card">
+                    <div class="learning-stat-row">
+                        <span class="learning-stat-label">活跃天数</span>
+                        <span class="learning-stat-value" id="lt-days-active">0</span>
+                    </div>
+                    <div class="learning-stat-row">
+                        <span class="learning-stat-label">总绘画时长</span>
+                        <span class="learning-stat-value" id="lt-total-time">0分钟</span>
+                    </div>
+                    <div class="learning-stat-row">
+                        <span class="learning-stat-label">技能完成度</span>
+                        <span class="learning-stat-value" id="lt-skill-pct">0%</span>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" id="lt-skill-bar" style="width:0%"></div>
+                    </div>
+                </div>
+                <h4 style="margin:16px 0 10px;color:#495057;">💡 推荐练习</h4>
+                <div id="lt-recommendations"></div>
+            </div>
+            <!-- Colors Tab -->
+            <div class="learning-tab-content" id="tab-colors">
+                <div id="lt-color-bars"></div>
+            </div>
+            <!-- Skills Tab -->
+            <div class="learning-tab-content" id="tab-skills">
+                <div id="lt-skill-list"></div>
+            </div>
+            <!-- Achievements Tab -->
+            <div class="learning-tab-content" id="tab-achievements">
+                <div class="achievement-grid" id="lt-achievements"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- PWA Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -29559,7 +29817,430 @@
                     document.body.style.color = theme.colors.text;
                 }
             })();
+// === V62: Learning Trajectory System ===
+(function() {
+    // ===== Constants =====
+    const TRAJ_KEY = 'cdb-trajectory';
+    const PROF_KEY = 'cdb-profile';
+    const SESSION_KEY = 'cdb-session-id';
+
+    // ===== TrajectoryRecord factory =====
+    function createRecord(type, content, metadata) {
+        return {
+            id: 'traj_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            sessionId: getSessionId(),
+            turn: ++LearningTrajectory._turn,
+            type: type,
+            content: content,
+            timestamp: Date.now(),
+            metadata: metadata || {}
+        };
+    }
+
+    function getSessionId() {
+        let sid = sessionStorage.getItem(SESSION_KEY);
+        if (!sid) {
+            sid = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+            sessionStorage.setItem(SESSION_KEY, sid);
+        }
+        return sid;
+    }
+
+    // ===== LearningTrajectory Class =====
+    window.LearningTrajectory = function() {
+        this.records = [];
+        this.profile = this._defaultProfile();
+        this._load();
+    };
+
+    LearningTrajectory._turn = 0;
+
+    LearningTrajectory.prototype._defaultProfile = function() {
+        return {
+            daysActive: 0,
+            totalDrawingTime: 0,
+            colorFrequency: {},
+            toolFrequency: {},
+            skillProgress: {
+                stroke: { level: 0, mastered: false, lastPractice: 0 },
+                shape: { level: 0, mastered: false, lastPractice: 0 },
+                fill: { level: 0, mastered: false, lastPractice: 0 }
+            },
+            achievementsUnlocked: [],
+            lastSession: Date.now(),
+            activeDays: {}
+        };
+    };
+
+    LearningTrajectory.prototype._load = function() {
+        try {
+            var t = localStorage.getItem(TRAJ_KEY);
+            if (t) this.records = JSON.parse(t);
+            var p = localStorage.getItem(PROF_KEY);
+            if (p) this.profile = JSON.parse(p);
+        } catch(e) { console.warn('LT load error:', e); }
+    };
+
+    LearningTrajectory.prototype._save = function() {
+        try {
+            localStorage.setItem(TRAJ_KEY, JSON.stringify(this.records));
+            localStorage.setItem(PROF_KEY, JSON.stringify(this.profile));
+        } catch(e) { console.warn('LT save error:', e); }
+    };
+
+    LearningTrajectory.prototype.record = function(type, content, metadata) {
+        var rec = createRecord(type, content, metadata);
+        this.records.push(rec);
+        // Keep only last 2000
+        if (this.records.length > 2000) this.records = this.records.slice(-2000);
+        console.log('[LT]', type, content, metadata || '');
+        this._save();
+        return rec;
+    };
+
+    LearningTrajectory.prototype.aggregate = function() {
+        var p = this.profile;
+        var now = Date.now();
+        var today = new Date().toDateString();
+
+        // Track active days
+        if (!p.activeDays) p.activeDays = {};
+        p.activeDays[today] = (p.activeDays[today] || 0) + 1;
+        p.daysActive = Object.keys(p.activeDays).length;
+        p.lastSession = now;
+
+        // Parse records into profile
+        for (var i = 0; i < this.records.length; i++) {
+            var r = this.records[i];
+            switch(r.type) {
+                case 'drawing':
+                    if (r.metadata && r.metadata.duration) {
+                        p.totalDrawingTime += r.metadata.duration;
+                    }
+                    break;
+                case 'color':
+                    if (r.metadata && r.metadata.color) {
+                        var c = r.metadata.color;
+                        p.colorFrequency[c] = (p.colorFrequency[c] || 0) + 1;
+                    }
+                    break;
+                case 'tool':
+                    if (r.metadata && r.metadata.tool) {
+                        var t = r.metadata.tool;
+                        p.toolFrequency[t] = (p.toolFrequency[t] || 0) + 1;
+                    }
+                    break;
+                case 'skill':
+                    if (r.metadata && r.metadata.skillId) {
+                        var sid = r.metadata.skillId;
+                        if (!p.skillProgress[sid]) {
+                            p.skillProgress[sid] = { level: 0, mastered: false, lastPractice: 0 };
+                        }
+                        if (r.metadata.level && r.metadata.level > p.skillProgress[sid].level) {
+                            p.skillProgress[sid].level = r.metadata.level;
+                        }
+                        if (r.metadata.mastered) p.skillProgress[sid].mastered = true;
+                        p.skillProgress[sid].lastPractice = now;
+                    }
+                    break;
+                case 'achievement':
+                    if (r.metadata && r.metadata.achievementId) {
+                        var aid = r.metadata.achievementId;
+                        if (p.achievementsUnlocked.indexOf(aid) === -1) {
+                            p.achievementsUnlocked.push(aid);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        this._save();
+        return p;
+    };
+
+    LearningTrajectory.prototype.getRecommendations = function() {
+        var p = this.profile;
+        var recs = [];
+
+        // Color diversification
+        var colors = Object.keys(p.colorFrequency);
+        if (colors.length > 0) {
+            var mostUsed = colors.reduce(function(a, b) {
+                return p.colorFrequency[a] > p.colorFrequency[b] ? a : b;
+            });
+            // Simple palette for color family detection
+            var families = {
+                'red': ['#FF6B6B','#FF0000','#E03131','#C92A2A'],
+                'blue': ['#748FFC','#4DABF7','#1C7ED6','##1864AB'],
+                'green': ['#69DB7C','#40C057','#2F9E44','#2B8A3E'],
+                'yellow': ['#FFE066','#FFD43B','#FAB005','#F08C00']
+            };
+            var usedFamily = null;
+            for (var f in families) {
+                if (families[f].indexOf(mostUsed) !== -1) { usedFamily = f; break; }
+            }
+            if (usedFamily === 'red') recs.push('尝试蓝色系绘画，增加画面层次感');
+            else if (usedFamily === 'blue') recs.push('试试暖色调（橙/黄），让作品更活泼');
+            else recs.push('尝试更多颜色组合，创作更丰富的作品');
+        }
+
+        // Tool diversification
+        var tools = Object.keys(p.toolFrequency);
+        var brushCount = p.toolFrequency['brush'] || 0;
+        var eraserCount = p.toolFrequency['eraser'] || 0;
+        if (eraserCount < brushCount * 0.1) recs.push('多使用橡皮擦，尝试擦除和修改');
+
+        // Skill progression
+        var skills = p.skillProgress;
+        if (skills.stroke && skills.stroke.level < 3) recs.push('完成描边练习 Lv.' + (skills.stroke.level + 1));
+        else if (skills.shape && skills.shape.level < 3) recs.push('挑战更多形状绘制，提升造型能力');
+        else if (skills.fill && skills.fill.level < 2) recs.push('练习填色技巧，学习色彩搭配');
+
+        // Limit to 3
+        return recs.slice(0, 3);
+    };
+
+    // ===== Global instance =====
+    var lt = null;
+    function getLT() {
+        if (!lt) lt = new LearningTrajectory();
+        return lt;
+    }
+
+    // ===== Event Integration =====
+    // Drawing start
+    var _origStartDrawing = null;
+    function ltStartDrawing(e) {
+        var pos = getPos(e);
+        var tool = typeof currentTool !== 'undefined' ? currentTool : 'brush';
+        var color = typeof currentColor !== 'undefined' ? currentColor : '#000';
+        var size = typeof currentSize !== 'undefined' ? currentSize : 4;
+        getLT().record('drawing_start', '开始绘画', { tool: tool, color: color, size: size, x: pos.x, y: pos.y });
+        if (_origStartDrawing) _origStartDrawing.call(window, e);
+    }
+
+    // Drawing end
+    var _origStopDrawing = null;
+    function ltStopDrawing() {
+        getLT().record('drawing_end', '结束绘画', {});
+        if (_origStopDrawing) _origStopDrawing.call(window);
+    }
+
+    // Tool change
+    var _origSelectTool = null;
+    function ltSelectTool(tool) {
+        getLT().record('tool_used', '切换工具: ' + tool, { tool: tool });
+        if (_origSelectTool) _origSelectTool.call(window, tool);
+    }
+
+    // Color change
+    var _origSelectColor = null;
+    function ltSelectColor(color) {
+        getLT().record('color_used', '选择颜色: ' + color, { color: color });
+        if (_origSelectColor) _origSelectColor.call(window, color);
+    }
+
+    // ===== UI Functions =====
+    function openLearningPanel() {
+        var panel = document.getElementById('learningPanel');
+        if (panel) {
+            panel.classList.add('open');
+            refreshLearningPanel();
+        }
+    }
+
+    function closeLearningPanel() {
+        var panel = document.getElementById('learningPanel');
+        if (panel) panel.classList.remove('open');
+    }
+
+    function switchLearningTab(tabName) {
+        document.querySelectorAll('.learning-tab').forEach(function(t) {
+            t.classList.toggle('active', t.dataset.tab === tabName);
         });
+        document.querySelectorAll('.learning-tab-content').forEach(function(c) {
+            c.classList.toggle('active', c.id === 'tab-' + tabName);
+        });
+    }
+
+    function refreshLearningPanel() {
+        var p = getLT().aggregate();
+
+        // Overview
+        var daysEl = document.getElementById('lt-days-active');
+        var timeEl = document.getElementById('lt-total-time');
+        var skillPctEl = document.getElementById('lt-skill-pct');
+        var skillBarEl = document.getElementById('lt-skill-bar');
+
+        if (daysEl) daysEl.textContent = p.daysActive + '天';
+        if (timeEl) {
+            var mins = Math.round(p.totalDrawingTime / 60000);
+            timeEl.textContent = mins < 60 ? mins + '分钟' : (mins / 60).toFixed(1) + '小时';
+        }
+
+        // Skill percentage
+        var skillVals = [p.skillProgress.stroke, p.skillProgress.shape, p.skillProgress.fill];
+        var totalLevel = 0, maxLevel = 9; // max 3 per skill
+        for (var i = 0; i < skillVals.length; i++) {
+            if (skillVals[i]) totalLevel += skillVals[i].level || 0;
+        }
+        var pct = Math.round((totalLevel / maxLevel) * 100);
+        if (skillPctEl) skillPctEl.textContent = pct + '%';
+        if (skillBarEl) skillBarEl.style.width = pct + '%';
+
+        // Recommendations
+        var recs = getLT().getRecommendations();
+        var recsEl = document.getElementById('lt-recommendations');
+        if (recsEl) {
+            if (recs.length === 0) {
+                recsEl.innerHTML = '<div class="empty-state">开始绘画后会获得推荐</div>';
+            } else {
+                recsEl.innerHTML = recs.map(function(r) {
+                    return '<div class="recommendation-item">' + r + '</div>';
+                }).join('');
+            }
+        }
+
+        // Colors
+        renderColorBars(p);
+
+        // Skills
+        renderSkillList(p);
+
+        // Achievements
+        renderAchievements(p);
+    }
+
+    function renderColorBars(p) {
+        var el = document.getElementById('lt-color-bars');
+        if (!el) return;
+        var colors = Object.keys(p.colorFrequency);
+        if (colors.length === 0) {
+            el.innerHTML = '<div class="empty-state">暂无颜色使用记录</div>';
+            return;
+        }
+        // Sort by frequency
+        colors.sort(function(a, b) { return p.colorFrequency[b] - p.colorFrequency[a]; });
+        var total = colors.reduce(function(s, c) { return s + p.colorFrequency[c]; }, 0);
+        var html = '';
+        for (var i = 0; i < Math.min(colors.length, 10); i++) {
+            var c = colors[i];
+            var freq = p.colorFrequency[c];
+            var pct = Math.round((freq / total) * 100);
+            html += '<div class="color-bar-container">' +
+                '<div class="color-bar-label">' +
+                '<span><span class="color-bar-swatch" style="background:' + c + '"></span>' + c + '</span>' +
+                '<span>' + freq + '次 (' + pct + '%)</span>' +
+                '</div>' +
+                '<div class="color-bar-track">' +
+                '<div class="color-bar-fill" style="width:' + pct + '%;background:' + c + '"></div>' +
+                '</div>' +
+                '</div>';
+        }
+        el.innerHTML = html;
+    }
+
+    function renderSkillList(p) {
+        var el = document.getElementById('lt-skill-list');
+        if (!el) return;
+        var skills = [
+            { id: 'stroke', name: '描边', icon: '✏️' },
+            { id: 'shape', name: '形状', icon: '🔷' },
+            { id: 'fill', name: '填色', icon: '🎨' }
+        ];
+        var html = '';
+        for (var i = 0; i < skills.length; i++) {
+            var s = skills[i];
+            var prog = p.skillProgress[s.id] || { level: 0, mastered: false };
+            var pct = Math.round((prog.level / 3) * 100);
+            html += '<div class="learning-stat-card">' +
+                '<div class="learning-stat-row">' +
+                '<span class="learning-stat-label">' + s.icon + ' ' + s.name + '</span>' +
+                '<span class="skill-level">Lv.' + prog.level + (prog.mastered ? ' ★' : '') + '</span>' +
+                '</div>' +
+                '<div class="skill-progress-bar">' +
+                '<div class="skill-progress-fill" style="width:' + pct + '%"></div>' +
+                '</div>' +
+                '</div>';
+        }
+        el.innerHTML = html;
+    }
+
+    function renderAchievements(p) {
+        var el = document.getElementById('lt-achievements');
+        if (!el) return;
+        var achs = [
+            { id: 'first_draw', name: '初次绘画', icon: '🎨' },
+            { id: 'color_explorer', name: '色彩探索', icon: '🌈' },
+            { id: 'shape_master', name: '形状大师', icon: '⭐' },
+            { id: 'week_streak', name: '连续7天', icon: '🔥' },
+            { id: 'tool_collector', name: '工具收集', icon: '🔧' },
+            { id: 'skill_pro', name: '技能专家', icon: '🏆' }
+        ];
+        var unlocked = p.achievementsUnlocked || [];
+        var html = '';
+        for (var i = 0; i < achs.length; i++) {
+            var a = achs[i];
+            var isUnlocked = unlocked.indexOf(a.id) !== -1;
+            html += '<div class="achievement-badge ' + (isUnlocked ? 'unlocked' : 'locked') + '">' +
+                '<span class="ach-icon">' + a.icon + '</span>' +
+                '<span class="ach-name">' + a.name + '</span>' +
+                '</div>';
+        }
+        el.innerHTML = html;
+    }
+
+    // ===== Hook into existing drawing functions =====
+    function initLearningSystem() {
+        // Store originals if available
+        if (typeof startDrawing === 'function') {
+            _origStartDrawing = startDrawing;
+            startDrawing = ltStartDrawing;
+        }
+        if (typeof stopDrawing === 'function') {
+            _origStopDrawing = stopDrawing;
+            stopDrawing = ltStopDrawing;
+        }
+        if (typeof selectTool === 'function') {
+            _origSelectTool = selectTool;
+            selectTool = ltSelectTool;
+        }
+        if (typeof selectColor === 'function') {
+            _origSelectColor = selectColor;
+            selectColor = ltSelectColor;
+        }
+
+        // Session end
+        window.addEventListener('beforeunload', function() {
+            getLT().record('session_end', '会话结束', {});
+        });
+
+        // Panel button
+        var btn = document.getElementById('learningBtn');
+        if (btn) btn.addEventListener('click', openLearningPanel);
+
+        var closeBtn = document.getElementById('learningPanelClose');
+        if (closeBtn) closeBtn.addEventListener('click', closeLearningPanel);
+
+        // Tab switching
+        document.querySelectorAll('.learning-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                switchLearningTab(tab.dataset.tab);
+            });
+        });
+
+        console.log('[V62] Learning Trajectory System initialized');
+    }
+
+    // Expose init on DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLearningSystem);
+    } else {
+        initLearningSystem();
+    }
+})();
+// === V62 END ===
+
     </script>
 </body>
 </html>
