@@ -8864,6 +8864,488 @@
             border-color: #37B835;
         }
 
+        /* V67: Challenge System */
+        .challenge-btn {
+            background: linear-gradient(180deg, #FFB3BA 0%, #FF8A95 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 80px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .challenge-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-btn.active {
+            background: linear-gradient(180deg, #FF8A95 0%, #FF6B7A 100%);
+        }
+
+        /* Challenge Selection Panel */
+        .challenge-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            z-index: 3000;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #495057;
+        }
+
+        .challenge-panel.active {
+            display: flex;
+        }
+
+        .challenge-panel-header {
+            background: linear-gradient(180deg, #FFB3BA 0%, #FF8A95 100%);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #495057;
+        }
+
+        .challenge-panel-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #d6336c;
+        }
+
+        .challenge-panel-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid #495057;
+            background: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .challenge-panel-close:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .challenge-tab {
+            padding: 8px 14px;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .challenge-tab:hover {
+            background: #f1f3f5;
+        }
+
+        .challenge-tab.active {
+            background: #FF8A95;
+            color: white;
+            border-color: #FF8A95;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .challenge-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 3px solid #dee2e6;
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .challenge-card:hover {
+            border-color: #FF8A95;
+            box-shadow: 0 4px 12px rgba(255,138,149,0.3);
+            transform: translateY(-2px);
+        }
+
+        .challenge-card.completed {
+            background: linear-gradient(145deg, #d3f9d8 0%, #b2f2bb 100%);
+            border-color: #40c057;
+        }
+
+        .challenge-card.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: #40c057;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .challenge-card {
+            position: relative;
+        }
+
+        .challenge-difficulty {
+            font-size: 1.2rem;
+            color: #fab005;
+        }
+
+        .challenge-name {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+        }
+
+        .challenge-steps {
+            font-size: 0.75rem;
+            color: #868e96;
+        }
+
+        .challenge-start-btn {
+            margin-top: 4px;
+            padding: 6px 16px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            font-family: inherit;
+        }
+
+        .challenge-start-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Challenge Step Panel */
+        .challenge-step-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            z-index: 3001;
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #495057;
+        }
+
+        .challenge-step-panel.active {
+            display: flex;
+        }
+
+        .challenge-step-header {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #495057;
+        }
+
+        .challenge-step-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #1971c2;
+        }
+
+        .challenge-step-progress {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .challenge-step-body {
+            flex: 1;
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .challenge-ref-panel {
+            flex: 1;
+            background: linear-gradient(145deg, #fff8e7 0%, #ffe4ec 100%);
+            border: 3px solid #dee2e6;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            min-width: 120px;
+        }
+
+        .challenge-ref-label {
+            font-size: 0.8rem;
+            color: #868e96;
+            margin-bottom: 8px;
+        }
+
+        .challenge-ref-emoji {
+            font-size: 3.5rem;
+        }
+
+        .challenge-instruction-panel {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .challenge-step-instruction {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .challenge-step-hint {
+            font-size: 0.9rem;
+            color: #868e96;
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 4px solid #fab005;
+        }
+
+        .challenge-step-hint::before {
+            content: '💡 ';
+        }
+
+        .challenge-step-canvas-preview {
+            flex: 1;
+            min-height: 120px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+
+        .challenge-step-nav {
+            display: flex;
+            gap: 10px;
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border-top: 2px solid #dee2e6;
+            justify-content: center;
+        }
+
+        .challenge-nav-btn {
+            padding: 10px 20px;
+            border: 3px solid #495057;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: all 0.1s;
+            font-family: inherit;
+        }
+
+        .challenge-nav-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .challenge-nav-btn.prev {
+            background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%);
+            color: #495057;
+        }
+
+        .challenge-nav-btn.next {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+
+        .challenge-nav-btn.skip {
+            background: linear-gradient(180deg, #ffe066 0%, #ffd43b 100%);
+            color: #495057;
+        }
+
+        .challenge-nav-btn.complete {
+            background: linear-gradient(180deg, #ff8787 0%, #fa5252 100%);
+            color: white;
+        }
+
+        /* Celebration Animation */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .celebration-overlay.active {
+            display: flex;
+        }
+
+        .celebration-modal {
+            background: white;
+            border-radius: 24px;
+            border: 5px solid #495057;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            padding: 32px 40px;
+            text-align: center;
+            max-width: 360px;
+            animation: celebrationPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .celebration-emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .celebration-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .celebration-desc {
+            font-size: 1rem;
+            color: #868e96;
+            margin-bottom: 20px;
+        }
+
+        .celebration-rewards {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+
+        .celebration-rewards-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .celebration-reward-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: #40c057;
+        }
+
+        .celebration-close-btn {
+            padding: 12px 32px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
+        .celebration-close-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Stars animation */
+        .star-particle {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 4001;
+            animation: starFall 2s ease-out forwards;
+        }
+
+        @keyframes starFall {
+            0% {
+                transform: translateY(-20px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(0);
+                opacity: 0;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -8872,6 +9354,7 @@
         <div class="header-btns">
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
             <button class="bgm-btn" id="bgmBtn" title="Music On">🎵</button>
+            <button class="challenge-btn" id="challengeBtn" title="绘画挑战">🎯 挑战</button>
             <div class="bgm-volume-panel" id="bgmVolumePanel">
                 <!-- V51: Music Style Selector -->
                 <div class="music-style-section">
@@ -33405,10 +33888,488 @@ if (document.readyState === 'loading') {
 
 // === V66 END ===
 
+// === V67: Challenge System ===
+
+// ChallengePackage data structure
+class ChallengePackage {
+    constructor(data) {
+        this.id = data.id;
+        this.name = data.name;
+        this.description = data.description;
+        this.category = data.category;
+        this.difficulty = data.difficulty;
+        this.steps = data.steps;
+        this.reward = data.reward;
+        this.emoji = data.emoji || '📝';
+    }
+}
+
+// 6 preset challenge packages
+const CHALLENGE_PACKAGES = [
+    new ChallengePackage({
+        id: 'draw-cat',
+        name: '画一只猫',
+        description: '学习画可爱的猫咪',
+        category: 'intermediate',
+        difficulty: 2,
+        emoji: '🐱',
+        steps: [
+            { order: 1, instruction: '画一个圆形作为头部', hint: '圆形大小适中，画在画布中央' },
+            { order: 2, instruction: '画两个三角形作为耳朵', hint: '在头部上方，左右对称' },
+            { order: 3, instruction: '画两个圆点作为眼睛', hint: '在头部中线两侧' },
+            { order: 4, instruction: '画一个小三角形作为鼻子', hint: '在眼睛下方中间' },
+            { order: 5, instruction: '画六条线作为胡须', hint: '鼻子两侧各画三条' }
+        ],
+        reward: { achievement: 'cat-master', unlocks: ['cat-sticker'] }
+    }),
+    new ChallengePackage({
+        id: 'draw-house',
+        name: '画一栋房子',
+        description: '学习画简单的房子',
+        category: 'beginner',
+        difficulty: 1,
+        emoji: '🏠',
+        steps: [
+            { order: 1, instruction: '画一个方形作为主体', hint: '房子身体，方方正正' },
+            { order: 2, instruction: '画一个三角形作为屋顶', hint: '在方形上方' },
+            { order: 3, instruction: '画一个长方形作为门', hint: '在房子底部中间' },
+            { order: 4, instruction: '画两个方形作为窗户', hint: '在门的上方两侧' }
+        ],
+        reward: { achievement: 'house-master', unlocks: ['house-sticker'] }
+    }),
+    new ChallengePackage({
+        id: 'draw-tree',
+        name: '画一棵树',
+        description: '学习画绿色的树',
+        category: 'beginner',
+        difficulty: 1,
+        emoji: '🌳',
+        steps: [
+            { order: 1, instruction: '画一个长方形作为树干', hint: '棕色树干，粗细适中' },
+            { order: 2, instruction: '画一个大三角形作为树冠', hint: '在树干上方' },
+            { order: 3, instruction: '画一些小三角形作为树叶', hint: '在树冠上点缀' },
+            { order: 4, instruction: '画几条线作为树干纹理', hint: '在树干上画一些竖线' }
+        ],
+        reward: { achievement: 'tree-master', unlocks: ['tree-sticker'] }
+    }),
+    new ChallengePackage({
+        id: 'draw-flower',
+        name: '画一朵花',
+        description: '学习画美丽的花朵',
+        category: 'intermediate',
+        difficulty: 2,
+        emoji: '🌸',
+        steps: [
+            { order: 1, instruction: '画一个圆作为花心', hint: '黄色花心，在中央' },
+            { order: 2, instruction: '画5个椭圆作为花瓣', hint: '围绕花心均匀分布' },
+            { order: 3, instruction: '画一条竖线作为茎', hint: '从花心向下延伸' },
+            { order: 4, instruction: '画两片叶子', hint: '在茎的两侧' },
+            { order: 5, instruction: '在花瓣上画细节', hint: '可以画些小点或线条' }
+        ],
+        reward: { achievement: 'flower-master', unlocks: ['flower-sticker'] }
+    }),
+    new ChallengePackage({
+        id: 'draw-car',
+        name: '画一辆汽车',
+        description: '学习画一辆小汽车',
+        category: 'advanced',
+        difficulty: 3,
+        emoji: '🚗',
+        steps: [
+            { order: 1, instruction: '画一个长方形作为车身', hint: '车身主体部分' },
+            { order: 2, instruction: '画两个圆形作为车轮', hint: '车身下方左右各一个' },
+            { order: 3, instruction: '画一个扁方形作为车窗', hint: '在车身中上部' },
+            { order: 4, instruction: '画两个小圆作为车灯', hint: '在车头两侧' },
+            { order: 5, instruction: '画一条线作为地面', hint: '在车轮下方' },
+            { order: 6, instruction: '添加一些细节', hint: '可以画后视镜、车门线等' }
+        ],
+        reward: { achievement: 'car-master', unlocks: ['car-sticker'] }
+    }),
+    new ChallengePackage({
+        id: 'draw-sun',
+        name: '画一个太阳',
+        description: '学习画明亮的太阳',
+        category: 'beginner',
+        difficulty: 1,
+        emoji: '☀️',
+        steps: [
+            { order: 1, instruction: '画一个大圆形作为太阳', hint: '圆圆的脸庞' },
+            { order: 2, instruction: '画8条线作为光芒', hint: '从圆心向四周发射' },
+            { order: 3, instruction: '画一个微笑和眼睛', hint: '给太阳加上可爱的表情' }
+        ],
+        reward: { achievement: 'sun-master', unlocks: ['sun-sticker'] }
+    })
+];
+
+// ChallengeManager class
+class ChallengeManager {
+    constructor() {
+        this.packages = CHALLENGE_PACKAGES;
+        this.current = null;
+        this.currentStep = 0;
+        this.completed = this.loadCompleted();
+    }
+
+    // Load completed challenges from localStorage
+    loadCompleted() {
+        try {
+            const saved = localStorage.getItem('cdb-challenges');
+            return saved ? JSON.parse(saved) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // Save completed challenges to localStorage
+    saveCompleted() {
+        localStorage.setItem('cdb-challenges', JSON.stringify(this.completed));
+    }
+
+    // Start a challenge
+    start(challengeId) {
+        const pkg = this.packages.find(p => p.id === challengeId);
+        if (!pkg) return false;
+        this.current = pkg;
+        this.currentStep = 0;
+        return true;
+    }
+
+    // Go to next step
+    nextStep() {
+        if (!this.current) return false;
+        if (this.currentStep < this.current.steps.length - 1) {
+            this.currentStep++;
+            return true;
+        }
+        return false;
+    }
+
+    // Go to previous step
+    prevStep() {
+        if (!this.current) return false;
+        if (this.currentStep > 0) {
+            this.currentStep--;
+            return true;
+        }
+        return false;
+    }
+
+    // Skip current step
+    skip() {
+        if (!this.current) return;
+        if (this.currentStep < this.current.steps.length - 1) {
+            this.currentStep++;
+        }
+    }
+
+    // Complete the challenge
+    complete() {
+        if (!this.current) return;
+        if (!this.completed.includes(this.current.id)) {
+            this.completed.push(this.current.id);
+            this.saveCompleted();
+        }
+        const reward = this.current.reward;
+        this.current = null;
+        this.currentStep = 0;
+        return reward;
+    }
+
+    // Check if challenge is completed
+    isCompleted(id) {
+        return this.completed.includes(id);
+    }
+
+    // Get current progress
+    getProgress() {
+        if (!this.current) return { current: 0, total: 0 };
+        return {
+            current: this.currentStep + 1,
+            total: this.current.steps.length
+        };
+    }
+
+    // Get current step data
+    getCurrentStep() {
+        if (!this.current) return null;
+        return this.current.steps[this.currentStep];
+    }
+
+    // Get packages by category
+    getByCategory(category) {
+        if (category === 'all') return this.packages;
+        return this.packages.filter(p => p.category === category);
+    }
+}
+
+// Global instance
+let challengeManager = null;
+
+// Initialize challenge system
+function initChallengeSystem() {
+    challengeManager = new ChallengeManager();
+
+    // Bind event listeners
+    const challengeBtn = document.getElementById('challengeBtn');
+    const challengePanel = document.getElementById('challengePanel');
+    const challengePanelClose = document.getElementById('challengePanelClose');
+    const challengeGrid = document.getElementById('challengeGrid');
+    const challengeStepPanel = document.getElementById('challengeStepPanel');
+    const challengePrevBtn = document.getElementById('challengePrevBtn');
+    const challengeNextBtn = document.getElementById('challengeNextBtn');
+    const challengeSkipBtn = document.getElementById('challengeSkipBtn');
+    const celebrationOverlay = document.getElementById('celebrationOverlay');
+    const celebrationCloseBtn = document.getElementById('celebrationCloseBtn');
+
+    if (!challengeBtn || !challengePanel) return;
+
+    // Toggle challenge panel
+    challengeBtn.addEventListener('click', () => {
+        const isActive = challengePanel.classList.contains('active');
+        if (isActive) {
+            challengePanel.classList.remove('active');
+            challengeBtn.classList.remove('active');
+        } else {
+            challengePanel.classList.add('active');
+            challengeBtn.classList.add('active');
+            renderChallengeGrid('all');
+        }
+    });
+
+    // Close challenge panel
+    challengePanelClose.addEventListener('click', () => {
+        challengePanel.classList.remove('active');
+        challengeBtn.classList.remove('active');
+    });
+
+    // Challenge tab filtering
+    document.querySelectorAll('.challenge-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.challenge-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderChallengeGrid(tab.dataset.category);
+        });
+    });
+
+    // Render challenge grid
+    window.renderChallengeGrid = function(category) {
+        if (!challengeManager) return;
+        const packages = challengeManager.getByCategory(category);
+        challengeGrid.innerHTML = packages.map(pkg => {
+            const stars = '⭐'.repeat(pkg.difficulty);
+            const completed = challengeManager.isCompleted(pkg.id) ? 'completed' : '';
+            return `
+                <div class="challenge-card ${completed}" data-id="${pkg.id}">
+                    <div class="challenge-difficulty">${stars}</div>
+                    <div class="challenge-name">${pkg.name}</div>
+                    <div class="challenge-steps">${pkg.steps.length}步</div>
+                    <button class="challenge-start-btn" onclick="startChallenge('${pkg.id}')">开始挑战</button>
+                </div>
+            `;
+        }).join('');
+    };
+
+    // Start challenge
+    window.startChallenge = function(challengeId) {
+        if (!challengeManager) return;
+        if (challengeManager.start(challengeId)) {
+            challengePanel.classList.remove('active');
+            challengeBtn.classList.remove('active');
+            challengeStepPanel.classList.add('active');
+            updateChallengeStepUI();
+        }
+    };
+
+    // Update challenge step UI
+    function updateChallengeStepUI() {
+        if (!challengeManager || !challengeManager.current) return;
+
+        const pkg = challengeManager.current;
+        const step = challengeManager.getCurrentStep();
+        const progress = challengeManager.getProgress();
+
+        document.getElementById('challengeStepTitle').textContent = pkg.name;
+        document.getElementById('challengeStepProgress').textContent = `第 ${progress.current}/${progress.total} 步`;
+        document.getElementById('challengeRefEmoji').textContent = pkg.emoji;
+        document.getElementById('challengeStepInstruction').textContent = `步骤${step.order}：${step.instruction}`;
+        document.getElementById('challengeStepHint').textContent = step.hint || '继续画吧！';
+
+        // Update nav buttons
+        challengePrevBtn.style.display = progress.current > 1 ? '' : 'none';
+
+        if (progress.current === progress.total) {
+            challengeNextBtn.textContent = '完成 🎉';
+            challengeNextBtn.className = 'challenge-nav-btn complete';
+        } else {
+            challengeNextBtn.textContent = '下一歩 ▶';
+            challengeNextBtn.className = 'challenge-nav-btn next';
+        }
+    }
+
+    // Navigation buttons
+    challengePrevBtn.addEventListener('click', () => {
+        if (challengeManager.prevStep()) {
+            updateChallengeStepUI();
+        }
+    });
+
+    challengeNextBtn.addEventListener('click', () => {
+        const progress = challengeManager.getProgress();
+        if (progress.current === progress.total) {
+            // Complete challenge
+            const reward = challengeManager.complete();
+            challengeStepPanel.classList.remove('active');
+            showCelebration(reward);
+        } else {
+            if (challengeManager.nextStep()) {
+                updateChallengeStepUI();
+            }
+        }
+    });
+
+    challengeSkipBtn.addEventListener('click', () => {
+        const progress = challengeManager.getProgress();
+        if (progress.current === progress.total) {
+            // Skip on last step = complete
+            const reward = challengeManager.complete();
+            challengeStepPanel.classList.remove('active');
+            showCelebration(reward);
+        } else {
+            challengeManager.skip();
+            updateChallengeStepUI();
+        }
+    });
+
+    // Show celebration
+    function showCelebration(reward) {
+        // Create star particles
+        createStarParticles();
+
+        // Update celebration content
+        const rewardsList = document.getElementById('celebrationRewardsList');
+        const rewardsSection = document.getElementById('celebrationRewards');
+
+        if (reward) {
+            rewardsSection.style.display = 'block';
+            let html = '';
+            if (reward.achievement) {
+                html += `<div class="celebration-reward-item">🏅 成就：${reward.achievement}</div>`;
+            }
+            if (reward.unlocks && reward.unlocks.length > 0) {
+                reward.unlocks.forEach(item => {
+                    html += `<div class="celebration-reward-item">🔓 解锁：${item}</div>`;
+                });
+            }
+            rewardsList.innerHTML = html;
+
+            // Trigger achievement unlock if available
+            if (typeof window.showAchievementUnlocked === 'function' && reward.achievement) {
+                window.showAchievementUnlocked(reward.achievement);
+            }
+        } else {
+            rewardsSection.style.display = 'none';
+        }
+
+        celebrationOverlay.classList.add('active');
+    }
+
+    // Create star particles for celebration
+    function createStarParticles() {
+        const colors = ['#FFD700', '#FF69B4', '#00CED1', '#98FB98', '#DDA0DD', '#FFB6C1'];
+        for (let i = 0; i < 30; i++) {
+            setTimeout(() => {
+                const star = document.createElement('div');
+                star.className = 'star-particle';
+                star.textContent = ['⭐', '✨', '🌟', '💫'][Math.floor(Math.random() * 4)];
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.fontSize = (Math.random() * 1.5 + 0.5) + 'rem';
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 3000);
+            }, i * 100);
+        }
+    }
+
+    // Close celebration
+    celebrationCloseBtn.addEventListener('click', () => {
+        celebrationOverlay.classList.remove('active');
+    });
+
+    celebrationOverlay.addEventListener('click', (e) => {
+        if (e.target === celebrationOverlay) {
+            celebrationOverlay.classList.remove('active');
+        }
+    });
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initChallengeSystem, 300));
+} else {
+    setTimeout(initChallengeSystem, 300);
+}
+
+// === V67 END ===
+
+// === V66 END ===
+
 // === V65 END ===
 
 // === V64 END ===
 
     </script>
+
+    <!-- V67: Challenge Panels -->
+    <div class="challenge-panel" id="challengePanel">
+        <div class="challenge-panel-header">
+            <div class="challenge-panel-title">🎯 绘画挑战</div>
+            <button class="challenge-panel-close" id="challengePanelClose">✕</button>
+        </div>
+        <div class="challenge-tabs">
+            <button class="challenge-tab active" data-category="all">全部</button>
+            <button class="challenge-tab" data-category="beginner">⭐入门</button>
+            <button class="challenge-tab" data-category="intermediate">⭐⭐进阶</button>
+            <button class="challenge-tab" data-category="advanced">⭐⭐⭐专家</button>
+        </div>
+        <div class="challenge-grid" id="challengeGrid"></div>
+    </div>
+
+    <div class="challenge-step-panel" id="challengeStepPanel">
+        <div class="challenge-step-header">
+            <div class="challenge-step-title" id="challengeStepTitle">画一只猫</div>
+            <div class="challenge-step-progress" id="challengeStepProgress">第 1/5 步</div>
+        </div>
+        <div class="challenge-step-body">
+            <div class="challenge-ref-panel">
+                <div class="challenge-ref-label">参考示例</div>
+                <div class="challenge-ref-emoji" id="challengeRefEmoji">🐱</div>
+            </div>
+            <div class="challenge-instruction-panel">
+                <div class="challenge-step-instruction" id="challengeStepInstruction">步骤1：画一个圆形作为头部</div>
+                <div class="challenge-step-hint" id="challengeStepHint">圆形大小适中</div>
+                <div class="challenge-step-canvas-preview" id="challengeCanvasPreview">你的画布</div>
+            </div>
+        </div>
+        <div class="challenge-step-nav">
+            <button class="challenge-nav-btn prev" id="challengePrevBtn">◀ 上一歩</button>
+            <button class="challenge-nav-btn skip" id="challengeSkipBtn">跳过</button>
+            <button class="challenge-nav-btn next" id="challengeNextBtn">下一歩 ▶</button>
+        </div>
+    </div>
+
+    <div class="celebration-overlay" id="celebrationOverlay">
+        <div class="celebration-modal">
+            <div class="celebration-emoji">🎉</div>
+            <div class="celebration-title">挑战完成！</div>
+            <div class="celebration-desc" id="celebrationDesc">太棒了！你完成了绘画挑战</div>
+            <div class="celebration-rewards" id="celebrationRewards">
+                <div class="celebration-rewards-title">🏆 获得奖励</div>
+                <div id="celebrationRewardsList"></div>
+            </div>
+            <button class="celebration-close-btn" id="celebrationCloseBtn">太棒了！</button>
+        </div>
+    </div>
+
 </body>
 </html>
