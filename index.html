@@ -1155,6 +1155,127 @@
             box-shadow: 1px 1px 0 #495057;
         }
 
+        /* V63: AI Menu */
+        .ai-btn {
+            background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 60px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+        .ai-btn:active, .ai-btn.selected {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .ai-btn.selected {
+            background: linear-gradient(180deg, #C084FC 0%, #A855F7 100%);
+        }
+
+        .ai-menu {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            background: rgba(255,255,255,0.98);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1001;
+            box-shadow: 3px 3px 0 #495057;
+            min-width: 220px;
+        }
+        .ai-menu.active {
+            display: flex;
+        }
+        .ai-menu-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .ai-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 4px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .ai-menu-item:hover {
+            background: #f0f0f0;
+        }
+        .ai-menu-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #A855F7;
+        }
+        .ai-menu-item label {
+            font-size: 0.85rem;
+            color: #343a40;
+            cursor: pointer;
+            flex: 1;
+        }
+        .ai-menu-divider {
+            height: 1px;
+            background: #dee2e6;
+            margin: 4px 0;
+        }
+        .ai-symmetry-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .ai-symmetry-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #6c757d;
+        }
+        .ai-symmetry-options {
+            display: flex;
+            gap: 8px;
+            padding-left: 4px;
+        }
+        .ai-symmetry-options label {
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .ai-symmetry-options input[type="radio"] {
+            accent-color: #A855F7;
+        }
+
+        /* V63: Shape Preview for AI Completion */
+        .shape-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        /* V63: Symmetry Guide */
+        .symmetry-guide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 4;
+        }
+
         /* Game Selection Panel */
         .game-selection-panel {
             display: none;
@@ -8209,6 +8330,31 @@
             <button class="tool-btn" id="friendsBtn" title="好友系统">👥</button>
             <button class="tool-btn" id="achievementBtn" title="成就中心">🏆</button>
             <button class="tool-btn" id="shopBtn" title="主题商店">🛒</button>
+            <button class="ai-btn" id="aiBtn" title="AI辅助绘画">🤖 AI</button>
+            <div class="ai-menu" id="aiMenu">
+                <div class="ai-menu-title">🤖 AI 辅助绘画</div>
+                <div class="ai-menu-item">
+                    <input type="checkbox" id="aiStrokeCompletion" checked>
+                    <label for="aiStrokeCompletion">笔画补全</label>
+                </div>
+                <div class="ai-menu-item">
+                    <input type="checkbox" id="aiSymmetry">
+                    <label for="aiSymmetry">对称辅助</label>
+                </div>
+                <div class="ai-menu-item">
+                    <input type="checkbox" id="aiSmartFill" checked>
+                    <label for="aiSmartFill">智能填色</label>
+                </div>
+                <div class="ai-menu-divider"></div>
+                <div class="ai-symmetry-group">
+                    <div class="ai-symmetry-label">对称轴:</div>
+                    <div class="ai-symmetry-options">
+                        <label><input type="radio" name="aiSymmetryAxis" value="vertical" checked>竖直</label>
+                        <label><input type="radio" name="aiSymmetryAxis" value="horizontal">水平</label>
+                        <label><input type="radio" name="aiSymmetryAxis" value="radial">放射</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -30239,6 +30385,836 @@
         initLearningSystem();
     }
 })();
+// === V63: AI辅助绘画 ===
+// CSS: .ai-menu, .ai-menu-item, .symmetry-guide, .shape-preview
+// JS: StrokeCompletion, SymmetryGuide, SmartFill, AIState
+// === V63 START ===
+
+// ===== V63: AI State =====
+const AIState = {
+    strokeCompletion: {
+        enabled: true,
+        detectedShape: null,
+        preview: null,
+        currentPoints: [],
+        startPoint: null
+    },
+    symmetryGuide: {
+        enabled: false,
+        axis: 'vertical',
+        radialCount: 4,
+        preview: true
+    },
+    smartFill: {
+        enabled: true,
+        lastFillColor: '#FF0000',
+        tolerance: 30
+    }
+};
+
+// ===== V63: StrokeCompletion =====
+class StrokeCompletion {
+    constructor() {
+        this.enabled = true;
+        this.currentPoints = [];
+        this.startPoint = null;
+        this.previewCanvas = null;
+        this.previewCtx = null;
+        this.detectedType = null;
+        this.previewPoints = [];
+    }
+
+    init() {
+        if (!this.previewCanvas) {
+            this.previewCanvas = document.createElement('canvas');
+            this.previewCanvas.className = 'shape-preview';
+            this.previewCanvas.width = drawingCanvas.width;
+            this.previewCanvas.height = drawingCanvas.height;
+            this.previewCanvas.style.position = 'absolute';
+            this.previewCanvas.style.pointerEvents = 'none';
+            this.previewCanvas.style.zIndex = '7';
+            this.previewCanvas.style.top = '0';
+            this.previewCanvas.style.left = '0';
+            canvasContainer.appendChild(this.previewCanvas);
+            this.previewCtx = this.previewCanvas.getContext('2d');
+        }
+        this.previewCanvas.width = drawingCanvas.width;
+        this.previewCanvas.height = drawingCanvas.height;
+    }
+
+    startStroke(x, y) {
+        if (!this.enabled) return;
+        this.init();
+        this.startPoint = { x, y };
+        this.currentPoints = [{ x, y }];
+        this.detectedType = null;
+        this.previewPoints = [];
+        this.clearPreview();
+    }
+
+    addPoint(x, y) {
+        if (!this.enabled || !this.startPoint) return;
+        this.currentPoints.push({ x, y });
+        this.detectShape();
+        if (this.detectedType) {
+            this.showPreview();
+        }
+    }
+
+    endStroke() {
+        if (!this.enabled || !this.detectedType) {
+            this.clearPreview();
+            this.reset();
+            return;
+        }
+        // Commit the completion
+        this.commitCompletion();
+        this.clearPreview();
+        this.reset();
+    }
+
+    reset() {
+        this.currentPoints = [];
+        this.startPoint = null;
+        this.detectedType = null;
+        this.previewPoints = [];
+    }
+
+    clearPreview() {
+        if (this.previewCtx) {
+            this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+        }
+    }
+
+    detectShape() {
+        if (this.currentPoints.length < 3) return;
+
+        const start = this.startPoint;
+        const end = this.currentPoints[this.currentPoints.length - 1];
+        const pathLength = this.calculatePathLength();
+        const directDist = this.distance(start, end);
+
+        // Circle detection: direct distance < path length * 0.3
+        if (directDist > 0 && pathLength > 0 && directDist / pathLength < 0.3) {
+            this.detectedType = 'circle';
+            this.previewPoints = this.calculateCircleCompletion(start, end);
+            return;
+        }
+
+        // Line detection: deviation < 15%
+        const lineDeviation = this.calculateLineDeviation(start, end);
+        if (lineDeviation < 0.15) {
+            this.detectedType = 'line';
+            this.previewPoints = this.calculateLineCompletion(start, end);
+            return;
+        }
+
+        // Rect detection: check corners
+        const corners = this.detectCorners();
+        if (corners.length >= 3) {
+            this.detectedType = 'rect';
+            this.previewPoints = this.calculateRectCompletion(corners);
+            return;
+        }
+
+        this.detectedType = null;
+    }
+
+    calculatePathLength() {
+        let length = 0;
+        for (let i = 1; i < this.currentPoints.length; i++) {
+            length += this.distance(this.currentPoints[i - 1], this.currentPoints[i]);
+        }
+        return length;
+    }
+
+    distance(p1, p2) {
+        return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
+    }
+
+    calculateLineDeviation(start, end) {
+        if (this.currentPoints.length < 3) return 1;
+        const lineLen = this.distance(start, end);
+        if (lineLen < 5) return 1;
+
+        let maxDeviation = 0;
+        for (const p of this.currentPoints) {
+            const dev = this.pointToLineDistance(p, start, end);
+            maxDeviation = Math.max(maxDeviation, dev / lineLen);
+        }
+        return maxDeviation;
+    }
+
+    pointToLineDistance(point, lineStart, lineEnd) {
+        const A = point.x - lineStart.x;
+        const B = point.y - lineStart.y;
+        const C = lineEnd.x - lineStart.x;
+        const D = lineEnd.y - lineStart.y;
+        const dot = A * C + B * D;
+        const lenSq = C * C + D * D;
+        let param = -1;
+        if (lenSq !== 0) param = dot / lenSq;
+
+        let xx, yy;
+        if (param < 0) {
+            xx = lineStart.x;
+            yy = lineStart.y;
+        } else if (param > 1) {
+            xx = lineEnd.x;
+            yy = lineEnd.y;
+        } else {
+            xx = lineStart.x + param * C;
+            yy = lineStart.y + param * D;
+        }
+        return this.distance(point, { x: xx, y: yy });
+    }
+
+    detectCorners() {
+        if (this.currentPoints.length < 5) return [];
+        const corners = [this.currentPoints[0]];
+        const angleThreshold = 30 * Math.PI / 180; // ~30 degrees
+
+        for (let i = 2; i < this.currentPoints.length - 2; i++) {
+            const p1 = this.currentPoints[i - 2];
+            const p2 = this.currentPoints[i];
+            const p3 = this.currentPoints[i + 2];
+
+            const angle = this.angleBetween3Points(p1, p2, p3);
+            if (Math.abs(Math.PI - angle) < angleThreshold || angle < angleThreshold) {
+                // Check if this corner is significantly different from last corner
+                if (corners.length === 0 || this.distance(corners[corners.length - 1], p2) > 30) {
+                    corners.push(p2);
+                }
+            }
+        }
+
+        // Always include end point
+        corners.push(this.currentPoints[this.currentPoints.length - 1]);
+        return corners;
+    }
+
+    angleBetween3Points(p1, p2, p3) {
+        const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+        const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+        const dot = v1.x * v2.x + v1.y * v2.y;
+        const mag1 = Math.sqrt(v1.x ** 2 + v1.y ** 2);
+        const mag2 = Math.sqrt(v2.x ** 2 + v2.y ** 2);
+        if (mag1 === 0 || mag2 === 0) return Math.PI;
+        return Math.acos(Math.max(-1, Math.min(1, dot / (mag1 * mag2))));
+    }
+
+    calculateCircleCompletion(start, end) {
+        const cx = (start.x + end.x) / 2;
+        const cy = (start.y + end.y) / 2;
+        const r = this.distance(start, end) / 2;
+        const startAngle = Math.atan2(start.y - cy, start.x - cx);
+        const endAngle = Math.atan2(end.y - cy, end.x - cx);
+        let delta = endAngle - startAngle;
+        if (delta < 0) delta += 2 * Math.PI;
+        const points = [];
+        const steps = Math.max(12, Math.floor(delta / (Math.PI / 6)));
+        for (let i = 1; i <= steps; i++) {
+            const angle = startAngle + (delta * i) / steps;
+            points.push({
+                x: cx + r * Math.cos(angle),
+                y: cy + r * Math.sin(angle)
+            });
+        }
+        return points;
+    }
+
+    calculateLineCompletion(start, end) {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const ux = dx / len;
+        const uy = dy / len;
+        const targetLen = len * 2;
+        return [{
+            x: start.x - ux * (targetLen - len),
+            y: start.y - uy * (targetLen - len)
+        }];
+    }
+
+    calculateRectCompletion(corners) {
+        if (corners.length < 3) return [];
+        const last = corners[corners.length - 1];
+        const prev = corners[corners.length - 2];
+        const first = corners[0];
+
+        // Find the 4th corner
+        const dx1 = last.x - prev.x;
+        const dy1 = last.y - prev.y;
+        const dx2 = first.x - prev.x;
+        const dy2 = first.y - prev.y;
+
+        // Use the perpendicular direction
+        let fourth;
+        const cross = dx1 * dy2 - dy1 * dx2;
+        if (Math.abs(cross) > 0.001) {
+            // Non-axis-aligned rectangle
+            const perpX = -dy1;
+            const perpY = dx1;
+            const perpLen = Math.sqrt(perpX * perpX + perpY * perpY);
+            if (perpLen > 0) {
+                const proj = ((last.x - first.x) * perpX + (last.y - first.y) * perpY) / perpLen;
+                fourth = {
+                    x: first.x + (perpX / perpLen) * proj,
+                    y: first.y + (perpY / perpLen) * proj
+                };
+            } else {
+                fourth = { x: first.x + dx1, y: first.y + dy1 };
+            }
+        } else {
+            // Axis-aligned
+            fourth = { x: first.x + dx1, y: first.y + dy1 };
+        }
+        return [fourth];
+    }
+
+    showPreview() {
+        if (!this.previewCtx || this.previewPoints.length === 0) return;
+        this.clearPreview();
+        const ctx = this.previewCtx;
+        ctx.save();
+        ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+        ctx.lineWidth = currentSize;
+        ctx.globalAlpha = 0.6;
+        ctx.setLineDash([8, 6]);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(this.currentPoints[0].x, this.currentPoints[0].y);
+        for (let i = 1; i < this.currentPoints.length; i++) {
+            ctx.lineTo(this.currentPoints[i].x, this.currentPoints[i].y);
+        }
+        if (this.detectedType === 'circle' && this.previewPoints.length > 0) {
+            // Draw arc continuation
+            const start = this.startPoint;
+            const end = this.currentPoints[this.currentPoints.length - 1];
+            const cx = (start.x + end.x) / 2;
+            const cy = (start.y + end.y) / 2;
+            const r = this.distance(start, end) / 2;
+            const startAngle = Math.atan2(start.y - cy, start.x - cx);
+            const endAngle = Math.atan2(end.y - cy, end.x - cx);
+            let delta = endAngle - startAngle;
+            if (delta < 0) delta += 2 * Math.PI;
+            ctx.moveTo(end.x, end.y);
+            for (const p of this.previewPoints) {
+                ctx.lineTo(p.x, p.y);
+            }
+        } else if (this.detectedType === 'line') {
+            // Draw extended line
+            const start = this.startPoint;
+            const end = this.currentPoints[this.currentPoints.length - 1];
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(end.x, end.y);
+            if (this.previewPoints.length > 0) {
+                const ext = this.previewPoints[0];
+                ctx.moveTo(end.x, end.y);
+                ctx.lineTo(ext.x, ext.y);
+            }
+        } else if (this.detectedType === 'rect' && this.previewPoints.length > 0) {
+            // Draw to 4th corner
+            const last = this.currentPoints[this.currentPoints.length - 1];
+            ctx.lineTo(last.x, last.y);
+            ctx.lineTo(this.previewPoints[0].x, this.previewPoints[0].y);
+            ctx.lineTo(this.currentPoints[0].x, this.currentPoints[0].y);
+        }
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    commitCompletion() {
+        if (this.previewPoints.length === 0) return;
+        const ctx = getActiveContext();
+        ctx.save();
+        ctx.strokeStyle = currentTool === 'eraser' ? '#FFFFFF' : currentColor;
+        ctx.lineWidth = currentTool === 'eraser' ? eraserSize : currentSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.globalAlpha = 1.0;
+
+        if (currentTool === 'eraser') {
+            ctx.globalCompositeOperation = 'destination-out';
+        } else {
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        if (this.detectedType === 'circle') {
+            const start = this.startPoint;
+            const end = this.currentPoints[this.currentPoints.length - 1];
+            const cx = (start.x + end.x) / 2;
+            const cy = (start.y + end.y) / 2;
+            const r = this.distance(start, end) / 2;
+            const startAngle = Math.atan2(start.y - cy, start.x - cx);
+            const endAngle = Math.atan2(end.y - cy, end.x - cx);
+            let delta = endAngle - startAngle;
+            if (delta < 0) delta += 2 * Math.PI;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, startAngle, startAngle + delta);
+            ctx.stroke();
+        } else if (this.detectedType === 'line') {
+            if (this.previewPoints.length > 0) {
+                const start = this.currentPoints[0];
+                const ext = this.previewPoints[0];
+                ctx.beginPath();
+                ctx.moveTo(ext.x, ext.y);
+                ctx.lineTo(start.x, start.y);
+                ctx.stroke();
+            }
+        } else if (this.detectedType === 'rect' && this.previewPoints.length > 0) {
+            const last = this.currentPoints[this.currentPoints.length - 1];
+            const fourth = this.previewPoints[0];
+            ctx.beginPath();
+            ctx.moveTo(last.x, last.y);
+            ctx.lineTo(fourth.x, fourth.y);
+            ctx.lineTo(this.currentPoints[0].x, this.currentPoints[0].y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+}
+
+// ===== V63: SymmetryGuide =====
+class SymmetryGuide {
+    constructor() {
+        this.enabled = false;
+        this.axis = 'vertical';
+        this.radialCount = 4;
+        this.guideCanvas = null;
+        this.guideCtx = null;
+    }
+
+    init() {
+        if (!this.guideCanvas) {
+            this.guideCanvas = document.createElement('canvas');
+            this.guideCanvas.className = 'symmetry-guide';
+            this.guideCanvas.width = drawingCanvas.width;
+            this.guideCanvas.height = drawingCanvas.height;
+            this.guideCanvas.style.position = 'absolute';
+            this.guideCanvas.style.pointerEvents = 'none';
+            this.guideCanvas.style.zIndex = '5';
+            this.guideCanvas.style.top = '0';
+            this.guideCanvas.style.left = '0';
+            canvasContainer.appendChild(this.guideCanvas);
+            this.guideCtx = this.guideCanvas.getContext('2d');
+        }
+        this.guideCanvas.width = drawingCanvas.width;
+        this.guideCanvas.height = drawingCanvas.height;
+        this.drawGuide();
+    }
+
+    setEnabled(enabled) {
+        this.enabled = enabled;
+        if (enabled) {
+            this.init();
+        } else {
+            this.clearGuide();
+        }
+    }
+
+    setAxis(axis) {
+        this.axis = axis;
+        if (this.enabled) {
+            this.drawGuide();
+        }
+    }
+
+    setRadialCount(count) {
+        this.radialCount = count;
+        if (this.enabled && this.axis === 'radial') {
+            this.drawGuide();
+        }
+    }
+
+    clearGuide() {
+        if (this.guideCtx) {
+            this.guideCtx.clearRect(0, 0, this.guideCanvas.width, this.guideCanvas.height);
+        }
+    }
+
+    drawGuide() {
+        if (!this.guideCtx) return;
+        const ctx = this.guideCtx;
+        const w = this.guideCanvas.width;
+        const h = this.guideCanvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 6]);
+
+        if (this.axis === 'vertical') {
+            ctx.beginPath();
+            ctx.moveTo(w / 2, 0);
+            ctx.lineTo(w / 2, h);
+            ctx.stroke();
+        } else if (this.axis === 'horizontal') {
+            ctx.beginPath();
+            ctx.moveTo(0, h / 2);
+            ctx.lineTo(w, h / 2);
+            ctx.stroke();
+        } else if (this.axis === 'radial') {
+            const cx = w / 2;
+            const cy = h / 2;
+            const maxR = Math.sqrt(cx * cx + cy * cy);
+            for (let i = 0; i < this.radialCount; i++) {
+                const angle = (i / this.radialCount) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+                ctx.stroke();
+            }
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+    mirrorStroke(fromX, fromY, toX, toY, color, lineWidth) {
+        if (!this.enabled) return [];
+        const points = [];
+        const cx = this.guideCanvas.width / 2;
+        const cy = this.guideCanvas.height / 2;
+
+        if (this.axis === 'vertical') {
+            points.push({ x: 2 * cx - fromX, y: fromY });
+            points.push({ x: 2 * cx - toX, y: toY });
+        } else if (this.axis === 'horizontal') {
+            points.push({ x: fromX, y: 2 * cy - fromY });
+            points.push({ x: toX, y: 2 * cy - toY });
+        } else if (this.axis === 'radial') {
+            const angles = [];
+            for (let i = 1; i < this.radialCount; i++) {
+                angles.push((i / this.radialCount) * Math.PI * 2);
+            }
+            for (const angle of angles) {
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+                points.push({
+                    x: cx + (fromX - cx) * cos - (fromY - cy) * sin,
+                    y: cy + (fromX - cx) * sin + (fromY - cy) * cos
+                });
+                points.push({
+                    x: cx + (toX - cx) * cos - (toY - cy) * sin,
+                    y: cy + (toX - cx) * sin + (toY - cy) * cos
+                });
+            }
+        }
+
+        return points;
+    }
+
+    drawMirrorStroke(ctx, fromX, fromY, toX, toY, color, lineWidth) {
+        const points = this.mirrorStroke(fromX, fromY, toX, toY, color, lineWidth);
+        if (points.length === 0) return;
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = 0.4;
+
+        if (this.axis === 'radial') {
+            for (let i = 0; i < points.length; i += 2) {
+                ctx.beginPath();
+                ctx.moveTo(points[i].x, points[i].y);
+                ctx.lineTo(points[i + 1].x, points[i + 1].y);
+                ctx.stroke();
+            }
+        } else {
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            ctx.lineTo(points[1].x, points[1].y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+}
+
+// ===== V63: SmartFill =====
+class SmartFill {
+    constructor() {
+        this.enabled = true;
+        this.tolerance = 30;
+    }
+
+    floodFill(targetCtx, startX, startY, fillColor) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvasContainer.getBoundingClientRect();
+
+        // Limit fill area
+        const size = 500;
+        const offsetX = Math.max(0, Math.floor(startX - size / 2));
+        const offsetY = Math.max(0, Math.floor(startY - size / 2));
+        const actualSize = Math.min(size, Math.floor(rect.width - offsetX), Math.floor(rect.height - offsetY));
+        if (actualSize < 1) return;
+
+        saveUndoState();
+
+        const imageData = targetCtx.getImageData(offsetX * dpr, offsetY * dpr, actualSize * dpr, actualSize * dpr);
+        const data = imageData.data;
+        const width = imageData.width;
+        const height = imageData.height;
+
+        const startPixelX = Math.floor(startX - offsetX);
+        const startPixelY = Math.floor(startY - offsetY);
+        const startIdx = (startPixelY * width + startPixelX) * 4;
+
+        const startR = data[startIdx];
+        const startG = data[startIdx + 1];
+        const startB = data[startIdx + 2];
+        const startA = data[startIdx + 3];
+
+        const fillR = parseInt(fillColor.slice(1, 3), 16);
+        const fillG = parseInt(fillColor.slice(3, 5), 16);
+        const fillB = parseInt(fillColor.slice(5, 7), 16);
+
+        // Don't fill if clicking on same color
+        if (Math.abs(startR - fillR) < 10 && Math.abs(startG - fillG) < 10 && Math.abs(startB - fillB) < 10) return;
+
+        const visited = new Uint8Array(width * height);
+        const stack = [[startPixelX, startPixelY]];
+        const tol = this.tolerance;
+
+        function matchesStart(idx) {
+            const a = data[idx + 3];
+            if (a < 128) return false;
+            const dr = Math.abs(data[idx] - startR);
+            const dg = Math.abs(data[idx + 1] - startG);
+            const db = Math.abs(data[idx + 2] - startB);
+            return dr < tol && dg < tol && db < tol;
+        }
+
+        function matchesFill(idx) {
+            return Math.abs(data[idx] - fillR) < 10 && Math.abs(data[idx + 1] - fillG) < 10 && Math.abs(data[idx + 2] - fillB) < 10;
+        }
+
+        while (stack.length > 0) {
+            const [x, y] = stack.pop();
+            if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+            const pixelIdx = y * width + x;
+            if (visited[pixelIdx]) continue;
+
+            const idx = pixelIdx * 4;
+            if (!matchesStart(idx) || matchesFill(idx)) continue;
+
+            visited[pixelIdx] = 1;
+            data[idx] = fillR;
+            data[idx + 1] = fillG;
+            data[idx + 2] = fillB;
+            data[idx + 3] = 255;
+
+            stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+        }
+
+        targetCtx.putImageData(imageData, offsetX * dpr, offsetY * dpr);
+        playSound(playFillComplete);
+        trackBubbleUse();
+    }
+}
+
+// ===== V63: Initialize modules =====
+const strokeCompletion = new StrokeCompletion();
+const symmetryGuide = new SymmetryGuide();
+const smartFill = new SmartFill();
+
+// ===== V63: AI Button and Menu =====
+const aiBtn = document.getElementById('aiBtn');
+const aiMenu = document.getElementById('aiMenu');
+
+if (aiBtn && aiMenu) {
+    aiBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aiMenu.classList.toggle('active');
+        aiBtn.classList.toggle('selected', aiMenu.classList.contains('active'));
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!aiMenu.contains(e.target) && e.target !== aiBtn) {
+            aiMenu.classList.remove('active');
+            aiBtn.classList.remove('selected');
+        }
+    });
+
+    // Stroke completion toggle
+    const aiStrokeCompletion = document.getElementById('aiStrokeCompletion');
+    if (aiStrokeCompletion) {
+        aiStrokeCompletion.addEventListener('change', (e) => {
+            AIState.strokeCompletion.enabled = e.target.checked;
+            strokeCompletion.enabled = e.target.checked;
+        });
+    }
+
+    // Symmetry toggle
+    const aiSymmetry = document.getElementById('aiSymmetry');
+    if (aiSymmetry) {
+        aiSymmetry.addEventListener('change', (e) => {
+            AIState.symmetryGuide.enabled = e.target.checked;
+            symmetryGuide.setEnabled(e.target.checked);
+        });
+    }
+
+    // Symmetry axis
+    document.querySelectorAll('input[name="aiSymmetryAxis"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            AIState.symmetryGuide.axis = e.target.value;
+            symmetryGuide.setAxis(e.target.value);
+        });
+    });
+
+    // Smart fill toggle
+    const aiSmartFill = document.getElementById('aiSmartFill');
+    if (aiSmartFill) {
+        aiSmartFill.addEventListener('change', (e) => {
+            AIState.smartFill.enabled = e.target.checked;
+            smartFill.enabled = e.target.checked;
+        });
+    }
+}
+
+// ===== V63: Integrate with existing drawing functions =====
+
+// Override startDrawing to track AI stroke completion
+const originalStartDrawing = startDrawing;
+startDrawing = function(e) {
+    originalStartDrawing(e);
+    if (AIState.strokeCompletion.enabled && (currentTool === 'brush' || currentTool === 'highlighter')) {
+        const pos = getPos(e);
+        strokeCompletion.startStroke(pos.x, pos.y);
+    }
+};
+
+// Override draw to add symmetry mirror
+const originalDraw = draw;
+draw = function(e) {
+    if (!isDrawing || bubbleMode) return;
+    e.preventDefault();
+
+    const pos = getPos(e);
+    const ctx = getActiveContext();
+
+    // V16: Smart Shapes - show preview
+    if (isDrawingShape && shapeType !== 'free') {
+        drawShapePreview(shapeStartX, shapeStartY, pos.x, pos.y);
+        return;
+    }
+
+    ctx.beginPath();
+
+    // V12: Handle highlighter brush
+    if (currentTool === 'highlighter') {
+        let color = currentHighlighterColor;
+        if (color === 'rainbow') {
+            color = `hsl(${rainbowHue}, 100%, 50%)`;
+        }
+        ctx.globalAlpha = 0.4;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = currentSize * 3;
+    } else {
+        ctx.globalAlpha = 1.0;
+        if (currentTool === 'eraser') {
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = eraserSize;
+            ctx.globalCompositeOperation = 'destination-out';
+        } else {
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.globalCompositeOperation = 'source-over';
+        }
+    }
+
+    // V16: Track path for eraser
+    if (eraserOnlyOwn && currentTool !== 'eraser') {
+        currentSessionPaths.push({ x: pos.x, y: pos.y });
+    }
+
+    // V16: Apply symmetry
+    if (symmetryMode !== 'none') {
+        const points = getSymmetryPoints(lastX, lastY);
+        const endPoints = getSymmetryPoints(pos.x, pos.y);
+        points.forEach((sp, i) => {
+            const ep = endPoints[i];
+            ctx.beginPath();
+            ctx.moveTo(sp.x, sp.y);
+            ctx.lineTo(ep.x, ep.y);
+            ctx.stroke();
+        });
+    } else {
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    }
+
+    // V63: AI Symmetry Guide - mirror stroke in real-time
+    if (AIState.symmetryGuide.enabled) {
+        symmetryGuide.drawMirrorStroke(
+            ctx, lastX, lastY, pos.x, pos.y,
+            currentTool === 'eraser' ? '#FFFFFF' : currentColor,
+            currentTool === 'eraser' ? eraserSize : currentSize
+        );
+    }
+
+    // V63: AI Stroke completion tracking
+    if (AIState.strokeCompletion.enabled && (currentTool === 'brush' || currentTool === 'highlighter')) {
+        strokeCompletion.addPoint(pos.x, pos.y);
+    }
+
+    ctx.globalAlpha = 1.0;
+
+    lastX = pos.x;
+    lastY = pos.y;
+    // V27: Record stroke move
+    recordAction(ACTION_TYPES.STROKE_MOVE, { x: pos.x, y: pos.y });
+};
+
+// Override stopDrawing for stroke completion
+const originalStopDrawing = stopDrawing;
+stopDrawing = function() {
+    // V63: AI Stroke completion
+    if (AIState.strokeCompletion.enabled) {
+        strokeCompletion.endStroke();
+    }
+
+    // V27: Record stroke end
+    recordAction(ACTION_TYPES.STROKE_END, {});
+    // V16: Smart Shapes - finalize shape
+    if (isDrawingShape && shapeType !== 'free') {
+        // Get final position from lastX, lastY
+        finalizeShape(lastX, lastY);
+        isDrawingShape = false;
+        saveState(); // Save after shape finalization
+    }
+    // V23: Composite layers after drawing
+    compositeLayers();
+    // V60: Save to history after drawing
+    if (currentTool !== 'stamp' && currentTool !== 'text' && currentTool !== 'shape') {
+        saveToHistory('绘制');
+    }
+    isDrawing = false;
+};
+
+// ===== V63: Smart Fill Integration =====
+const originalPerformFloodFill = performFloodFill;
+performFloodFill = function(startX, startY) {
+    if (AIState.smartFill.enabled) {
+        const ctx = getActiveContext();
+        smartFill.floodFill(ctx, startX, startY, currentColor);
+        isDrawing = false;
+        return;
+    }
+    originalPerformFloodFill(startX, startY);
+};
+
+// === V63 END ===
+
 // === V62 END ===
 
     </script>
