@@ -1258,6 +1258,424 @@
             accent-color: #A855F7;
         }
 
+        /* V65: AR Panel Styles */
+        .ar-panel {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: rgba(255,255,255,0.98);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 12px 16px;
+            z-index: 1001;
+            box-shadow: 3px 3px 0 #495057;
+            min-width: 320px;
+            max-width: 400px;
+        }
+        .ar-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ar-panel-header {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .ar-panel-header .ar-icon {
+            font-size: 1.3rem;
+        }
+        .camera-view {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .camera-view video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .camera-view canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .camera-overlay.hidden {
+            display: none;
+        }
+        .camera-overlay .detected-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        .camera-overlay .detected-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .camera-overlay .guide-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .camera-error {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #ff6b6b;
+            text-align: center;
+            padding: 20px;
+        }
+        .camera-error.show {
+            display: flex;
+        }
+        .camera-error .error-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .ar-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .ar-ctrl-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 3px solid #495057;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-family: inherit;
+        }
+        .ar-ctrl-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #495057;
+        }
+        .ar-start-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+        .ar-stop-btn {
+            background: linear-gradient(180deg, #FF8787 0%, #FA5252 100%);
+            color: white;
+        }
+        .ar-ctrl-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .object-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        .object-chip {
+            padding: 6px 10px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .object-chip:hover {
+            background: #e9ecef;
+        }
+        .object-chip.selected {
+            background: #4DABF7;
+            border-color: #339AF0;
+            color: white;
+        }
+
+        /* V65: 3D View Panel Styles */
+        .view3d-panel {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            background: rgba(255,255,255,0.98);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 12px 16px;
+            z-index: 1001;
+            box-shadow: 3px 3px 0 #495057;
+            min-width: 360px;
+            max-width: 450px;
+        }
+        .view3d-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .view3d-panel-header {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .view3d-stage {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            perspective: 800px;
+        }
+        .view3d-controls {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .view3d-mode-btn {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            transition: all 0.15s;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: inherit;
+        }
+        .view3d-mode-btn.active {
+            background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+            color: white;
+            box-shadow: 2px 2px 0 #495057;
+        }
+        .view3d-mode-btn:active {
+            transform: translate(1px, 1px);
+        }
+
+        /* Flipbook Mode */
+        .flipbook-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 240px;
+            perspective: 1000px;
+        }
+        .flipbook {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        .flipbook-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 4px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            backface-visibility: hidden;
+            transform-origin: left center;
+            transition: transform 0.6s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .flipbook-page canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .flipbook-page.flipped {
+            transform: rotateY(-180deg);
+        }
+        .flipbook-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .flipbook-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #495057;
+            background: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flipbook-nav-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* Gallery Mode */
+        .gallery-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 260px;
+            height: 200px;
+            perspective: 1000px;
+        }
+        .gallery-carousel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+        .gallery-card {
+            position: absolute;
+            width: 100px;
+            height: 140px;
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 6px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .gallery-card canvas {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .gallery-card:nth-child(1) { left: 80px; top: 30px; transform: rotateY(0deg) translateZ(60px); }
+        .gallery-card:nth-child(2) { left: 80px; top: 30px; transform: rotateY(72deg) translateZ(60px); }
+        .gallery-card:nth-child(3) { left: 80px; top: 30px; transform: rotateY(144deg) translateZ(60px); }
+        .gallery-card:nth-child(4) { left: 80px; top: 30px; transform: rotateY(216deg) translateZ(60px); }
+        .gallery-card:nth-child(5) { left: 80px; top: 30px; transform: rotateY(288deg) translateZ(60px); }
+
+        /* Projection Mode */
+        .projection-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            perspective: 800px;
+        }
+        .projection-cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cubeRotate 8s linear infinite;
+        }
+        @keyframes cubeRotate {
+            from { transform: rotateX(-20deg) rotateY(0deg); }
+            to { transform: rotateX(-20deg) rotateY(360deg); }
+        }
+        .cube-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border: 3px solid #495057;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .cube-face canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .cube-face.front { transform: rotateY(0deg) translateZ(60px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(60px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(60px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(60px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(60px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+        /* AR/3D Button Styles */
+        .ar-btn, .view3d-btn {
+            background: linear-gradient(180deg, #FFD43B 0%, #FAB005 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-height: 44px;
+            font-family: inherit;
+        }
+        .ar-btn:hover, .view3d-btn:hover {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+        }
+        .ar-btn:active, .view3d-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .ar-btn.active {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+        }
+        .view3d-btn.active {
+            background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+            color: white;
+        }
+
         /* V63: Shape Preview for AI Completion */
         .shape-preview {
             position: absolute;
@@ -8331,6 +8749,8 @@
             <button class="tool-btn" id="achievementBtn" title="成就中心">🏆</button>
             <button class="tool-btn" id="shopBtn" title="主题商店">🛒</button>
             <button class="ai-btn" id="aiBtn" title="AI辅助绘画">🤖 AI</button>
+            <button class="ar-btn" id="arBtn" title="AR场景识别">📷 AR</button>
+            <button class="view3d-btn" id="view3dBtn" title="3D作品展示">🖼️ 3D</button>
             <div class="ai-menu" id="aiMenu">
                 <div class="ai-menu-title">🤖 AI 辅助绘画</div>
                 <div class="ai-menu-item">
@@ -8357,6 +8777,77 @@
             </div>
         </div>
     </header>
+
+    <!-- V65: AR Panel -->
+    <div class="ar-panel" id="arPanel">
+        <div class="ar-panel-header">
+            <span class="ar-icon">📷</span>
+            <span>AR 场景识别</span>
+        </div>
+        <div class="camera-view" id="cameraView">
+            <video id="cameraVideo" autoplay playsinline></video>
+            <canvas id="cameraOverlay"></canvas>
+            <div class="camera-overlay" id="cameraOverlay2">
+                <div class="detected-icon" id="detectedIcon">🔍</div>
+                <div class="detected-text" id="detectedText">准备识别</div>
+                <div class="guide-text" id="guideText">请将物品对准摄像头</div>
+            </div>
+            <div class="camera-error" id="cameraError">
+                <div class="error-icon">⚠️</div>
+                <div>摄像头权限被拒绝</div>
+                <div style="font-size:0.8rem;margin-top:8px;">请在浏览器设置中允许摄像头访问</div>
+            </div>
+        </div>
+        <div class="ar-controls">
+            <button class="ar-ctrl-btn ar-start-btn" id="startCameraBtn">开始摄像头</button>
+            <button class="ar-ctrl-btn ar-stop-btn" id="stopCameraBtn" disabled>停止</button>
+        </div>
+        <div class="object-list" id="objectList">
+            <span class="object-chip selected" data-obj="apple">🍎苹果</span>
+            <span class="object-chip" data-obj="book">📖书本</span>
+            <span class="object-chip" data-obj="cup">🥤杯子</span>
+            <span class="object-chip" data-obj="star">⭐星星</span>
+            <span class="object-chip" data-obj="heart">❤️爱心</span>
+        </div>
+    </div>
+
+    <!-- V65: 3D View Panel -->
+    <div class="view3d-panel" id="view3dPanel">
+        <div class="view3d-panel-header">
+            <span>🖼️</span>
+            <span>3D 作品展示</span>
+        </div>
+        <div class="view3d-controls">
+            <button class="view3d-mode-btn active" data-mode="flipbook">翻页书</button>
+            <button class="view3d-mode-btn" data-mode="gallery">画廊</button>
+            <button class="view3d-mode-btn" data-mode="projection">投射</button>
+        </div>
+        <div class="view3d-stage" id="view3dStage">
+            <!-- Flipbook Container -->
+            <div class="flipbook-container" id="flipbookContainer">
+                <div class="flipbook" id="flipbook"></div>
+                <div class="flipbook-nav">
+                    <button class="flipbook-nav-btn" id="flipbookPrev">◀</button>
+                    <button class="flipbook-nav-btn" id="flipbookNext">▶</button>
+                </div>
+            </div>
+            <!-- Gallery Container -->
+            <div class="gallery-container" id="galleryContainer" style="display:none;">
+                <div class="gallery-carousel" id="galleryCarousel"></div>
+            </div>
+            <!-- Projection Container -->
+            <div class="projection-container" id="projectionContainer" style="display:none;">
+                <div class="projection-cube" id="projectionCube">
+                    <div class="cube-face front"><canvas id="cubeFront"></canvas></div>
+                    <div class="cube-face back"><canvas id="cubeBack"></canvas></div>
+                    <div class="cube-face right"><canvas id="cubeRight"></canvas></div>
+                    <div class="cube-face left"><canvas id="cubeLeft"></canvas></div>
+                    <div class="cube-face top"><canvas id="cubeTop"></canvas></div>
+                    <div class="cube-face bottom"><canvas id="cubeBottom"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- V14: Math Verification Modal -->
     <div id="mathVerifyModal">
@@ -31847,6 +32338,424 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(initV64, 100);
 }
+
+// === V65: AR & 3D Exploration ===
+// CSS: .ar-panel, .camera-view, .view3d-*, .flipbook-*
+// JS: ARScene类, View3D类
+
+// Object Templates for AR detection
+const ObjectTemplates = {
+    'apple': {
+        color: '#FF6B6B', shape: 'circle', icon: '🍎', name: '苹果',
+        draw: (ctx, cx, cy, size) => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, size * 0.4, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,107,107,0.7)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // Stem
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - size * 0.35);
+            ctx.lineTo(cx + 5, cy - size * 0.5);
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+    },
+    'book': {
+        color: '#74C0FC', shape: 'rect', icon: '📖', name: '书本',
+        draw: (ctx, cx, cy, size) => {
+            ctx.strokeStyle = 'rgba(116,192,252,0.7)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(cx - size * 0.35, cy - size * 0.25, size * 0.7, size * 0.5);
+            ctx.setLineDash([]);
+            // Spine
+            ctx.beginPath();
+            ctx.moveTo(cx - size * 0.3, cy - size * 0.25);
+            ctx.lineTo(cx - size * 0.3, cy + size * 0.25);
+            ctx.strokeStyle = '#339AF0';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    },
+    'cup': {
+        color: '#FFE066', shape: 'cylinder', icon: '🥤', name: '杯子',
+        draw: (ctx, cx, cy, size) => {
+            ctx.strokeStyle = 'rgba(255,224,102,0.7)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            // Cylinder body
+            ctx.beginPath();
+            ctx.moveTo(cx - size * 0.3, cy - size * 0.3);
+            ctx.lineTo(cx - size * 0.25, cy + size * 0.35);
+            ctx.lineTo(cx + size * 0.25, cy + size * 0.35);
+            ctx.lineTo(cx + size * 0.3, cy - size * 0.3);
+            ctx.stroke();
+            // Ellipse top
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - size * 0.3, size * 0.3, size * 0.1, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    },
+    'star': {
+        color: '#FFD43B', shape: 'star', icon: '⭐', name: '星星',
+        draw: (ctx, cx, cy, size) => {
+            ctx.strokeStyle = 'rgba(255,212,59,0.7)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            const spikes = 5, outerR = size * 0.4, innerR = size * 0.2;
+            ctx.beginPath();
+            for (let i = 0; i < spikes * 2; i++) {
+                const r = i % 2 === 0 ? outerR : innerR;
+                const angle = (i * Math.PI / spikes) - Math.PI / 2;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    },
+    'heart': {
+        color: '#F783AC', shape: 'heart', icon: '❤️', name: '爱心',
+        draw: (ctx, cx, cy, size) => {
+            ctx.strokeStyle = 'rgba(247,131,172,0.7)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            const topY = cy - size * 0.1;
+            ctx.moveTo(cx, cy + size * 0.3);
+            ctx.bezierCurveTo(cx - size * 0.5, cy - size * 0.1, cx - size * 0.3, topY, cx, topY + size * 0.15);
+            ctx.bezierCurveTo(cx + size * 0.3, topY, cx + size * 0.5, cy - size * 0.1, cx, cy + size * 0.3);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+    }
+};
+
+// ARScene Class
+class ARScene {
+    constructor() {
+        this.stream = null;
+        this.detectedObject = null;
+        this.selectedObject = 'apple';
+        this.isRunning = false;
+        this.animationFrame = null;
+        this.detectionInterval = null;
+        this.video = document.getElementById('cameraVideo');
+        this.canvas = document.getElementById('cameraOverlay');
+        this.ctx = this.canvas.getContext('2d');
+        this.overlay2 = document.getElementById('cameraOverlay2');
+        this.errorEl = document.getElementById('cameraError');
+        this.detectedIcon = document.getElementById('detectedIcon');
+        this.detectedText = document.getElementById('detectedText');
+        this.guideText = document.getElementById('guideText');
+        this.startBtn = document.getElementById('startCameraBtn');
+        this.stopBtn = document.getElementById('stopCameraBtn');
+        this.objectChips = document.querySelectorAll('.object-chip');
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        this.startBtn.addEventListener('click', () => this.startCamera());
+        this.stopBtn.addEventListener('click', () => this.stopCamera());
+        this.objectChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                this.objectChips.forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                this.selectedObject = chip.dataset.obj;
+            });
+        });
+    }
+
+    async startCamera() {
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+            });
+            this.video.srcObject = this.stream;
+            this.video.onloadedmetadata = () => {
+                this.canvas.width = this.video.videoWidth;
+                this.canvas.height = this.video.videoHeight;
+                this.isRunning = true;
+                this.startBtn.disabled = true;
+                this.stopBtn.disabled = false;
+                this.errorEl.classList.remove('show');
+                this.overlay2.classList.remove('hidden');
+                this.startDetection();
+            };
+        } catch (err) {
+            console.error('Camera error:', err);
+            this.errorEl.classList.add('show');
+            this.overlay2.classList.add('hidden');
+        }
+    }
+
+    stopCamera() {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
+        this.isRunning = false;
+        this.video.srcObject = null;
+        this.startBtn.disabled = false;
+        this.stopBtn.disabled = true;
+        this.overlay2.classList.add('hidden');
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
+        }
+        if (this.detectionInterval) {
+            clearInterval(this.detectionInterval);
+            this.detectionInterval = null;
+        }
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    startDetection() {
+        // Simplified detection: cycle through objects for demo
+        // Real implementation would analyze video frames for colors/shapes
+        const objects = Object.keys(ObjectTemplates);
+        let idx = 0;
+        this.detectionInterval = setInterval(() => {
+            if (!this.isRunning) return;
+            // Simulate detection based on selected object
+            this.detectedObject = this.selectedObject;
+            this.updateOverlay();
+        }, 2000);
+
+        // Continuous render loop
+        const render = () => {
+            if (!this.isRunning) return;
+            this.drawOverlay();
+            this.animationFrame = requestAnimationFrame(render);
+        };
+        render();
+    }
+
+    updateOverlay() {
+        const tmpl = ObjectTemplates[this.detectedObject];
+        if (tmpl) {
+            this.detectedIcon.textContent = tmpl.icon;
+            this.detectedText.textContent = `识别到${tmpl.name}！`;
+            this.guideText.textContent = '请描摹轮廓';
+        }
+    }
+
+    drawOverlay() {
+        if (!this.isRunning || !this.canvas.width) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const tmpl = ObjectTemplates[this.selectedObject];
+        if (tmpl) {
+            const cx = this.canvas.width / 2;
+            const cy = this.canvas.height / 2;
+            const size = Math.min(this.canvas.width, this.canvas.height) * 0.6;
+            tmpl.draw(this.ctx, cx, cy, size);
+        }
+    }
+}
+
+// View3D Class
+class View3D {
+    constructor() {
+        this.mode = 'flipbook';
+        this.currentPage = 0;
+        this.galleryRotation = 0;
+        this.works = []; // Store drawing works
+        this.flipbook = document.getElementById('flipbook');
+        this.flipbookContainer = document.getElementById('flipbookContainer');
+        this.galleryContainer = document.getElementById('galleryContainer');
+        this.galleryCarousel = document.getElementById('galleryCarousel');
+        this.projectionContainer = document.getElementById('projectionContainer');
+        this.projectionCube = document.getElementById('projectionCube');
+        this.modeBtns = document.querySelectorAll('.view3d-mode-btn');
+        this.prevBtn = document.getElementById('flipbookPrev');
+        this.nextBtn = document.getElementById('flipbookNext');
+        this.bindEvents();
+        this.collectWorks();
+        this.initFlipbook();
+        this.initGallery();
+        this.initProjection();
+    }
+
+    bindEvents() {
+        this.modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.setMode(btn.dataset.mode));
+        });
+        this.prevBtn.addEventListener('click', () => this.prevPage());
+        this.nextBtn.addEventListener('click', () => this.nextPage());
+
+        // Gallery drag
+        let isDragging = false, startX = 0;
+        this.galleryCarousel.addEventListener('mousedown', e => {
+            isDragging = true;
+            startX = e.clientX;
+        });
+        document.addEventListener('mousemove', e => {
+            if (!isDragging || this.mode !== 'gallery') return;
+            const diff = e.clientX - startX;
+            this.galleryRotation += diff * 0.5;
+            this.galleryCarousel.style.transform = `rotateY(${this.galleryRotation}deg)`;
+            startX = e.clientX;
+        });
+        document.addEventListener('mouseup', () => isDragging = false);
+    }
+
+    collectWorks() {
+        // Collect from layer canvases or main canvas
+        if (typeof getComposedCanvas === 'function') {
+            const canvas = getComposedCanvas();
+            if (canvas) this.works.push(canvas);
+        }
+        // Add placeholder if empty
+        if (this.works.length === 0) {
+            // Create a placeholder canvas
+            const placeholder = document.createElement('canvas');
+            placeholder.width = 400;
+            placeholder.height = 300;
+            const ctx = placeholder.getContext('2d');
+            ctx.fillStyle = '#FFF8E7';
+            ctx.fillRect(0, 0, 400, 300);
+            ctx.fillStyle = '#495057';
+            ctx.font = '24px Comic Neue';
+            ctx.textAlign = 'center';
+            ctx.fillText('我的画作', 200, 150);
+            this.works.push(placeholder);
+        }
+    }
+
+    initFlipbook() {
+        this.flipbook.innerHTML = '';
+        // Create pages (max 5)
+        const pageCount = Math.min(this.works.length, 5);
+        for (let i = 0; i < pageCount; i++) {
+            const page = document.createElement('div');
+            page.className = 'flipbook-page';
+            page.style.zIndex = pageCount - i;
+            const canvas = document.createElement('canvas');
+            canvas.width = 160;
+            canvas.height = 220;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(this.works[i % this.works.length], 0, 0, 160, 220);
+            page.appendChild(canvas);
+            this.flipbook.appendChild(page);
+        }
+        this.pages = this.flipbook.querySelectorAll('.flipbook-page');
+    }
+
+    initGallery() {
+        this.galleryCarousel.innerHTML = '';
+        const cardCount = Math.min(this.works.length, 5);
+        for (let i = 0; i < cardCount; i++) {
+            const card = document.createElement('div');
+            card.className = 'gallery-card';
+            const canvas = document.createElement('canvas');
+            canvas.width = 80;
+            canvas.height = 110;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(this.works[i % this.works.length], 0, 0, 80, 110);
+            card.appendChild(canvas);
+            this.galleryCarousel.appendChild(card);
+        }
+        this.galleryCards = this.galleryCarousel.querySelectorAll('.gallery-card');
+    }
+
+    initProjection() {
+        const faces = ['Front', 'Back', 'Right', 'Left', 'Top', 'Bottom'];
+        faces.forEach(face => {
+            const canvas = document.getElementById('cube' + face);
+            if (canvas) {
+                canvas.width = 100;
+                canvas.height = 100;
+                const ctx = canvas.getContext('2d');
+                const workIdx = faces.indexOf(face) % this.works.length;
+                ctx.drawImage(this.works[workIdx], 0, 0, 100, 100);
+            }
+        });
+    }
+
+    setMode(mode) {
+        this.mode = mode;
+        this.modeBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+        this.flipbookContainer.style.display = mode === 'flipbook' ? 'block' : 'none';
+        this.galleryContainer.style.display = mode === 'gallery' ? 'block' : 'none';
+        this.projectionContainer.style.display = mode === 'projection' ? 'block' : 'none';
+    }
+
+    prevPage() {
+        if (this.currentPage > 0) {
+            this.currentPage--;
+            this.pages[this.currentPage + 1].classList.remove('flipped');
+        }
+    }
+
+    nextPage() {
+        if (this.currentPage < this.pages.length - 1) {
+            this.pages[this.currentPage].classList.add('flipped');
+            this.currentPage++;
+        }
+    }
+
+    refreshWorks() {
+        this.collectWorks();
+        this.initFlipbook();
+        this.initGallery();
+        this.initProjection();
+    }
+}
+
+// Global instances
+let arScene = null;
+let view3d = null;
+
+// Initialize V65 when DOM is ready
+function initV65() {
+    arScene = new ARScene();
+    view3d = new View3D();
+
+    // AR button toggle
+    document.getElementById('arBtn').addEventListener('click', () => {
+        const panel = document.getElementById('arPanel');
+        const btn = document.getElementById('arBtn');
+        const view3dPanel = document.getElementById('view3dPanel');
+        view3dPanel.classList.remove('active');
+        document.getElementById('view3dBtn').classList.remove('active');
+        panel.classList.toggle('active');
+        btn.classList.toggle('active');
+    });
+
+    // 3D button toggle
+    document.getElementById('view3dBtn').addEventListener('click', () => {
+        const panel = document.getElementById('view3dPanel');
+        const btn = document.getElementById('view3dBtn');
+        const arPanel = document.getElementById('arPanel');
+        arPanel.classList.remove('active');
+        document.getElementById('arBtn').classList.remove('active');
+        if (arScene && arScene.isRunning) arScene.stopCamera();
+        panel.classList.toggle('active');
+        btn.classList.toggle('active');
+        if (panel.classList.contains('active')) {
+            view3d.refreshWorks();
+        }
+    });
+}
+
+// Run after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initV65, 100));
+} else {
+    setTimeout(initV65, 100);
+}
+
+// === V65 END ===
 
 // === V64 END ===
 
