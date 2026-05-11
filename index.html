@@ -8679,6 +8679,191 @@
             font-style: italic;
         }
 
+        /* V66: Sticker Marketplace Styles */
+        .marketplace-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+        .marketplace-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+        .marketplace-btn.active {
+            background: linear-gradient(180deg, #5CD475 0%, #37B835 100%);
+        }
+
+        .marketplace-panel {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            width: 420px;
+            max-height: calc(100vh - 80px);
+            background: white;
+            border: 3px solid #495057;
+            border-radius: 16px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .marketplace-panel.active {
+            display: flex;
+        }
+
+        .marketplace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border-bottom: 2px solid #495057;
+        }
+        .marketplace-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .marketplace-close {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .marketplace-close:hover {
+            background: #FFE066;
+        }
+
+        .marketplace-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .pkg-category-tab {
+            padding: 4px 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .pkg-category-tab:hover {
+            background: #e9ecef;
+        }
+        .pkg-category-tab.active {
+            background: #40C057;
+            border-color: #37B835;
+            color: white;
+        }
+
+        .marketplace-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .pkg-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .pkg-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 10px;
+            transition: all 0.2s;
+        }
+        .pkg-card:hover {
+            border-color: #40C057;
+            box-shadow: 0 2px 8px rgba(64, 192, 87, 0.2);
+        }
+        .pkg-preview {
+            font-size: 1.8rem;
+            text-align: center;
+            padding: 8px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+        .pkg-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 2px;
+        }
+        .pkg-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .pkg-category-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            background: #e9ecef;
+            border-radius: 4px;
+            color: #868e96;
+        }
+        .pkg-author {
+            font-size: 0.65rem;
+            color: #adb5bd;
+        }
+        .pkg-install-btn {
+            width: 100%;
+            padding: 6px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pkg-install-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .pkg-install-btn.installed {
+            background: linear-gradient(180deg, #adb5bd 0%, #868e96 100%);
+            cursor: default;
+        }
+        .pkg-install-btn.installed:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* V66: Add "更多" tab to stamp category tabs */
+        .stamp-category-tab.more-tab {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            border-color: #37B835;
+        }
+
     </style>
 </head>
 <body>
@@ -8751,6 +8936,7 @@
             <button class="ai-btn" id="aiBtn" title="AI辅助绘画">🤖 AI</button>
             <button class="ar-btn" id="arBtn" title="AR场景识别">📷 AR</button>
             <button class="view3d-btn" id="view3dBtn" title="3D作品展示">🖼️ 3D</button>
+            <button class="marketplace-btn" id="marketplaceBtn" title="贴纸市场">🏪</button>
             <div class="ai-menu" id="aiMenu">
                 <div class="ai-menu-title">🤖 AI 辅助绘画</div>
                 <div class="ai-menu-item">
@@ -8846,6 +9032,26 @@
                     <div class="cube-face bottom"><canvas id="cubeBottom"></canvas></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- V66: Sticker Marketplace Panel -->
+    <div class="marketplace-panel" id="marketplacePanel">
+        <div class="marketplace-header">
+            <span class="marketplace-title">🏪 贴纸市场</span>
+            <button class="marketplace-close" id="marketplaceClose">×</button>
+        </div>
+        <div class="marketplace-tabs" id="marketplaceTabs">
+            <button class="pkg-category-tab active" data-category="all">全部</button>
+            <button class="pkg-category-tab" data-category="animals">动物</button>
+            <button class="pkg-category-tab" data-category="food">食物</button>
+            <button class="pkg-category-tab" data-category="holiday">节日</button>
+            <button class="pkg-category-tab" data-category="nature">自然</button>
+            <button class="pkg-category-tab" data-category="vehicles">交通</button>
+            <button class="pkg-category-tab" data-category="emoji">表情</button>
+        </div>
+        <div class="marketplace-content">
+            <div class="pkg-grid" id="pkgGrid"></div>
         </div>
     </div>
 
@@ -23052,6 +23258,13 @@
                         grid.appendChild(item);
                     });
                 });
+            } else if (category === 'installed') {
+                // V66: Show installed stickers from marketplace
+                if (typeof renderInstalledStickers === 'function') {
+                    renderInstalledStickers();
+                } else {
+                    grid.innerHTML = '<div class="empty-state">暂未安装任何贴纸包<br>点击"更多"前往市场安装</div>';
+                }
             } else {
                 const ids = STAMP_CATEGORY_MAP[category] || [];
                 ids.forEach(id => {
@@ -32754,6 +32967,443 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(initV65, 100);
 }
+
+// === V66: Sticker Marketplace ===
+// StickerPackage interface
+// @typedef {Object} StickerPackage
+// @property {string} id - Package ID like 'animals-v1'
+// @property {string} name - Display name like '动物贴纸包'
+// @property {string} description - Package description
+// @property {string} author - Package author
+// @property {string} version - Package version
+// @property {'animals'|'food'|'holiday'|'nature'|'vehicles'|'emoji'} category - Category
+// @property {string[]} stickers - Array of emoji stickers
+// @property {boolean} installed - Whether installed
+// @property {number} installedAt - Installation timestamp
+
+// StickerMarketplace class
+class StickerMarketplace {
+    constructor() {
+        // Preset 6 sticker packages
+        this.presets = [
+            {
+                id: 'animals-v1',
+                name: '动物贴纸包',
+                description: '可爱的动物贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'animals',
+                stickers: ['🐱', '🐶', '🐰', '🦊', '🐼', '🐨', '🐸', '🐷']
+            },
+            {
+                id: 'food-v1',
+                name: '食物贴纸包',
+                description: '美味的食物贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'food',
+                stickers: ['🍎', '🍕', '🍰', '🍦', '🍔', '🌮', '🍜', '🍗']
+            },
+            {
+                id: 'holiday-v1',
+                name: '节日贴纸包',
+                description: '节日庆祝贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'holiday',
+                stickers: ['🎄', '🎃', '🎉', '❤️', '🌺', '🎁', '🎀', '🏮']
+            },
+            {
+                id: 'nature-v1',
+                name: '自然贴纸包',
+                description: '美丽自然风景贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'nature',
+                stickers: ['🌸', '🌺', '🌻', '🌹', '🍀', '🌴', '🌈', '☀️']
+            },
+            {
+                id: 'vehicles-v1',
+                name: '交通工具贴纸包',
+                description: '各种交通工具贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'vehicles',
+                stickers: ['🚗', '🚲', '✈️', '🚀', '🚢', '🏍️', '🚁', '🚂']
+            },
+            {
+                id: 'emoji-v1',
+                name: '表情贴纸包',
+                description: '丰富表情贴纸',
+                author: '官方',
+                version: '1.0.0',
+                category: 'emoji',
+                stickers: ['😀', '😂', '😍', '🤔', '🤯', '🥳', '😎', '🤩']
+            }
+        ];
+
+        // Installed packages (loaded from localStorage)
+        this.installed = [];
+        this.STORAGE_KEY = 'cdb-sticker-packages';
+
+        // Load installed packages
+        this.load();
+    }
+
+    // Get all preset packages with installed status
+    getPresetPackages() {
+        return this.presets.map(pkg => {
+            const installedPkg = this.installed.find(i => i.id === pkg.id);
+            return {
+                ...pkg,
+                installed: !!installedPkg,
+                installedAt: installedPkg ? installedPkg.installedAt : 0
+            };
+        });
+    }
+
+    // Get packages by category
+    getPackagesByCategory(category) {
+        if (category === 'all') return this.getPresetPackages();
+        return this.getPresetPackages().filter(p => p.category === category);
+    }
+
+    // Install a package
+    install(pkgId) {
+        const pkg = this.presets.find(p => p.id === pkgId);
+        if (!pkg) return;
+
+        // Check if already installed
+        if (this.installed.find(i => i.id === pkgId)) return;
+
+        // Add to installed
+        this.installed.push({
+            ...pkg,
+            installed: true,
+            installedAt: Date.now()
+        });
+
+        this.save();
+
+        // Add stickers to stamp categories
+        this.addStickersToStampCategories(pkg);
+
+        // Update UI
+        this.render();
+
+        // Show installed stamp category
+        if (typeof switchToInstalledStickers === 'function') {
+            switchToInstalledStickers();
+        }
+    }
+
+    // Uninstall a package
+    uninstall(pkgId) {
+        const pkg = this.presets.find(p => p.id === pkgId);
+        if (!pkg) return;
+
+        // Remove from installed
+        this.installed = this.installed.filter(i => i.id !== pkgId);
+
+        this.save();
+
+        // Remove stickers from stamp categories
+        this.removeStickersFromStampCategories(pkg);
+
+        // Update UI
+        this.render();
+    }
+
+    // Get installed packages
+    getInstalled() {
+        return this.installed.map(pkg => ({
+            ...pkg,
+            installed: true
+        }));
+    }
+
+    // Get all stickers from installed packages
+    getInstalledStickers() {
+        const stickers = [];
+        this.installed.forEach(pkg => {
+            pkg.stickers.forEach(sticker => {
+                if (!stickers.includes(sticker)) {
+                    stickers.push(sticker);
+                }
+            });
+        });
+        return stickers;
+    }
+
+    // Add stickers from a package to stamp categories
+    addStickersToStampCategories(pkg) {
+        // Map category to stamp category
+        const categoryMap = {
+            'animals': 'animals',
+            'food': 'food',
+            'holiday': 'celebration',
+            'nature': 'nature',
+            'vehicles': 'transport',
+            'emoji': 'emotion'
+        };
+
+        const stampCategory = categoryMap[pkg.category];
+        if (!stampCategory) return;
+
+        // Check if already exists
+        if (typeof STAMP_CATEGORIES !== 'undefined') {
+            // Add to STAMP_CATEGORIES if needed
+            if (!STAMP_CATEGORIES.find(c => c.id === 'installed')) {
+                STAMP_CATEGORIES.push({ id: 'installed', name: '已安装' });
+            }
+        }
+
+        // Store installed sticker emojis for easy access
+        if (typeof installedStickerEmojis === 'undefined') {
+            window.installedStickerEmojis = [];
+        }
+
+        pkg.stickers.forEach(sticker => {
+            if (!window.installedStickerEmojis.includes(sticker)) {
+                window.installedStickerEmojis.push(sticker);
+            }
+        });
+    }
+
+    // Remove stickers from a package
+    removeStickersFromStampCategories(pkg) {
+        if (typeof installedStickerEmojis !== 'undefined') {
+            pkg.stickers.forEach(sticker => {
+                const idx = installedStickerEmojis.indexOf(sticker);
+                if (idx > -1) {
+                    installedStickerEmojis.splice(idx, 1);
+                }
+            });
+        }
+    }
+
+    // Save to localStorage
+    save() {
+        try {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.installed));
+        } catch (e) {
+            console.warn('Failed to save sticker packages:', e);
+        }
+    }
+
+    // Load from localStorage
+    load() {
+        try {
+            const data = localStorage.getItem(this.STORAGE_KEY);
+            if (data) {
+                this.installed = JSON.parse(data) || [];
+            }
+        } catch (e) {
+            console.warn('Failed to load sticker packages:', e);
+            this.installed = [];
+        }
+    }
+
+    // Render marketplace UI
+    render(category = 'all') {
+        const grid = document.getElementById('pkgGrid');
+        if (!grid) return;
+
+        const packages = this.getPackagesByCategory(category);
+
+        grid.innerHTML = packages.map(pkg => `
+            <div class="pkg-card" data-id="${pkg.id}">
+                <div class="pkg-preview">${pkg.stickers.join(' ')}</div>
+                <div class="pkg-name">${pkg.name}</div>
+                <div class="pkg-meta">
+                    <span class="pkg-category-badge">${this.getCategoryName(pkg.category)}</span>
+                    <span class="pkg-author">${pkg.author}</span>
+                </div>
+                <button class="pkg-install-btn ${pkg.installed ? 'installed' : ''}"
+                    onclick="${pkg.installed ? `stickerMarketplace.uninstall('${pkg.id}')` : `stickerMarketplace.install('${pkg.id}')`}">
+                    ${pkg.installed ? '已安装 ✓' : '安装'}
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Get category display name
+    getCategoryName(category) {
+        const names = {
+            'animals': '动物',
+            'food': '食物',
+            'holiday': '节日',
+            'nature': '自然',
+            'vehicles': '交通',
+            'emoji': '表情'
+        };
+        return names[category] || category;
+    }
+}
+
+// Global instance
+let stickerMarketplace = null;
+
+// Initialize V66
+function initStickerMarketplace() {
+    stickerMarketplace = new StickerMarketplace();
+
+    // Set up marketplace button
+    const marketBtn = document.getElementById('marketplaceBtn');
+    const marketPanel = document.getElementById('marketplacePanel');
+    const marketClose = document.getElementById('marketplaceClose');
+
+    if (marketBtn && marketPanel) {
+        marketBtn.addEventListener('click', () => {
+            marketPanel.classList.toggle('active');
+            marketBtn.classList.toggle('active', marketPanel.classList.contains('active'));
+
+            if (marketPanel.classList.contains('active')) {
+                stickerMarketplace.render();
+            }
+        });
+    }
+
+    if (marketClose && marketPanel) {
+        marketClose.addEventListener('click', () => {
+            marketPanel.classList.remove('active');
+            marketBtn.classList.remove('active');
+        });
+    }
+
+    // Set up category tabs
+    const tabs = document.querySelectorAll('#marketplaceTabs .pkg-category-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            stickerMarketplace.render(tab.dataset.category);
+        });
+    });
+
+    // Initial render if panel is visible
+    if (marketPanel && marketPanel.classList.contains('active')) {
+        stickerMarketplace.render();
+    }
+
+    // Add "更多" tab to stamp panel
+    addMoreStickerTab();
+}
+
+// Add "更多" (More) tab to stamp category tabs
+function addMoreStickerTab() {
+    const tabsContainer = document.getElementById('stampCategoryTabs');
+    if (!tabsContainer) return;
+
+    // Check if more tab already exists
+    if (tabsContainer.querySelector('.more-tab')) return;
+
+    const moreTab = document.createElement('button');
+    moreTab.className = 'stamp-category-tab more-tab';
+    moreTab.textContent = '更多';
+    moreTab.dataset.category = '_marketplace';
+
+    moreTab.addEventListener('click', () => {
+        // Open marketplace panel
+        const marketPanel = document.getElementById('marketplacePanel');
+        const marketBtn = document.getElementById('marketplaceBtn');
+        if (marketPanel && marketBtn) {
+            marketPanel.classList.add('active');
+            marketBtn.classList.add('active');
+            stickerMarketplace.render();
+        }
+    });
+
+    tabsContainer.appendChild(moreTab);
+}
+
+// Switch to "已安装" (Installed) stamp category
+function switchToInstalledStickers() {
+    const tabsContainer = document.getElementById('stampCategoryTabs');
+    if (!tabsContainer) return;
+
+    // Check if installed tab exists
+    let installedTab = tabsContainer.querySelector('[data-category="installed"]');
+
+    // If not, add it
+    if (!installedTab) {
+        // Find position to insert (before "我的贴纸" or at end)
+        const customTab = tabsContainer.querySelector('[data-category="custom"]');
+        installedTab = document.createElement('button');
+        installedTab.className = 'stamp-category-tab';
+        installedTab.textContent = '已安装';
+        installedTab.dataset.category = 'installed';
+
+        installedTab.addEventListener('click', () => {
+            document.querySelectorAll('.stamp-category-tab').forEach(t => t.classList.remove('active'));
+            installedTab.classList.add('active');
+            renderInstalledStickers();
+        });
+
+        if (customTab) {
+            tabsContainer.insertBefore(installedTab, customTab);
+        } else {
+            tabsContainer.appendChild(installedTab);
+        }
+    }
+
+    // Click the installed tab
+    installedTab.click();
+}
+
+// Render installed stickers panel
+function renderInstalledStickers() {
+    const grid = document.getElementById('stampGrid');
+    if (!grid) return;
+
+    if (!stickerMarketplace) return;
+
+    const stickers = stickerMarketplace.getInstalledStickers();
+
+    if (stickers.length === 0) {
+        grid.innerHTML = '<div class="empty-state">暂未安装任何贴纸包<br>点击"更多"前往市场安装</div>';
+        return;
+    }
+
+    grid.innerHTML = stickers.map(sticker => `
+        <div class="panel-item" onclick="selectInstalledSticker('${sticker}')">
+            <span style="font-size: 2rem;">${sticker}</span>
+        </div>
+    `).join('');
+}
+
+// Select an installed sticker
+function selectInstalledSticker(emoji) {
+    // Create a stamp object from emoji
+    const stamp = {
+        id: 'installed_' + emoji.codePointAt(0).toString(16),
+        name: '已安装贴纸',
+        emoji: emoji
+    };
+
+    if (typeof selectStamp === 'function') {
+        selectStamp(stamp);
+    }
+}
+
+// Override renderStampPanelByCategory to handle installed stickers
+function patchRenderStampPanelByCategory() {
+    const originalFn = typeof renderStampPanelByCategory === 'function' ? renderStampPanelByCategory : null;
+
+    if (originalFn) {
+        // Store original for reference
+        window._originalRenderStampPanelByCategory = originalFn;
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initStickerMarketplace, 200));
+} else {
+    setTimeout(initStickerMarketplace, 200);
+}
+
+// === V66 END ===
 
 // === V65 END ===
 
