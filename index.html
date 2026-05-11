@@ -31217,6 +31217,639 @@ performFloodFill = function(startX, startY) {
 
 // === V62 END ===
 
+// === V64: Layer & Brush Enhancement ===
+
+// ----- V64: CSS Styles -----
+const v64Styles = document.createElement('style');
+v64Styles.textContent = `
+.brush-preset-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 2px solid #adb5bd;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    padding: 12px;
+    display: none;
+    min-width: 220px;
+}
+.brush-preset-panel.open { display: block; }
+.brush-preset-section { margin-bottom: 10px; }
+.brush-preset-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 4px;
+}
+.brush-shape-btns {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+.brush-shape-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.brush-shape-btn:hover { background: #e9ecef; }
+.brush-shape-btn.selected { background: #d3f9d8; border-color: #40c057; }
+.brush-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+    font-size: 0.7rem;
+}
+.brush-slider-label { min-width: 50px; color: #868e96; }
+.brush-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #dee2e6;
+    border-radius: 3px;
+}
+.brush-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #4DABF7;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.brush-anim-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.brush-anim-btn {
+    padding: 4px 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+}
+.brush-anim-btn:hover { background: #e9ecef; }
+.brush-anim-btn.selected { background: #fff3bf; border-color: #fab005; }
+.brush-preset-btns {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+.brush-preset-btn {
+    flex: 1;
+    padding: 6px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.brush-preset-btn:hover { background: #e9ecef; }
+.brush-preset-btn.save { background: #d3f9d8; border-color: #40c057; }
+.brush-preset-btn.load { background: #e7f5ff; border-color: #1971c2; }
+.blend-select {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    background: white;
+    cursor: pointer;
+}
+.layer-blend-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 0.7rem;
+}
+.layer-blend-row span { color: #868e96; min-width: 36px; }
+.layer-thumb {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: white;
+    float: right;
+    margin-left: 4px;
+}
+.layer-thumb canvas { width: 48px; height: 48px; }
+`;
+document.head.appendChild(v64Styles);
+
+// ----- V64: LayerManager -----
+class LayerManager {
+    constructor() {
+        this.layers = [];
+        this.activeLayerId = null;
+    }
+    addLayer() {
+        const id = 'layer_' + Date.now();
+        const c = document.createElement('canvas');
+        c.width = drawingCanvas.width;
+        c.height = drawingCanvas.height;
+        c.style.position = 'absolute';
+        c.style.top = '0';
+        c.style.left = '0';
+        c.style.pointerEvents = 'none';
+        const container = document.getElementById('layerContainer');
+        if (container) container.appendChild(c);
+        const layer = {
+            id,
+            name: '图层 ' + (this.layers.length + 1),
+            visible: true,
+            locked: false,
+            blendMode: 'source-over',
+            opacity: 1,
+            canvas: c
+        };
+        this.layers.push(layer);
+        layerCanvases[id] = c;
+        layerContexts[id] = c.getContext('2d');
+        this.activeLayerId = id;
+        return layer;
+    }
+    removeLayer(id) {
+        const idx = this.layers.findIndex(l => l.id === id);
+        if (idx === -1 || this.layers.length <= 1) return false;
+        const layer = this.layers[idx];
+        if (layerCanvases[id]) {
+            layerCanvases[id].remove();
+            delete layerCanvases[id];
+            delete layerContexts[id];
+        }
+        this.layers.splice(idx, 1);
+        if (this.activeLayerId === id) {
+            const newIdx = Math.min(idx, this.layers.length - 1);
+            this.activeLayerId = this.layers[newIdx].id;
+        }
+        return true;
+    }
+    composite(ctx) {
+        ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        this.layers.forEach(layer => {
+            if (layer.visible && layerCanvases[layer.id]) {
+                ctx.save();
+                ctx.globalAlpha = layer.opacity;
+                ctx.globalCompositeOperation = layer.blendMode || 'source-over';
+                ctx.drawImage(layerCanvases[layer.id], 0, 0);
+                ctx.restore();
+            }
+        });
+    }
+}
+
+// ----- V64: BrushPreset -----
+const BrushPreset = {
+    current: {
+        id: 'default',
+        name: '默认',
+        shape: 'circle',
+        size: 20,
+        spacing: 1.0,
+        opacity: 1,
+        blendMode: 'source-over',
+        animation: 'none',
+        jitter: 0
+    },
+    presets: [],
+    save(name) {
+        const preset = { ...this.current, id: 'preset_' + Date.now(), name };
+        this.presets.push(preset);
+        this.saveToStorage();
+        return preset;
+    },
+    load(id) {
+        const preset = this.presets.find(p => p.id === id);
+        if (preset) this.current = { ...preset };
+    },
+    saveToStorage() {
+        try { localStorage.setItem('cdb_brush_presets', JSON.stringify(this.presets)); } catch(e) {}
+    },
+    loadFromStorage() {
+        try {
+            const data = localStorage.getItem('cdb_brush_presets');
+            if (data) this.presets = JSON.parse(data);
+        } catch(e) { this.presets = []; }
+    }
+};
+BrushPreset.loadFromStorage();
+
+// ----- V64: BrushAnimator -----
+const BrushAnimator = {
+    drawWithAnimation(ctx, x, y, prevX, prevY, animation, color) {
+        if (!ctx || animation === 'none') return;
+        const dist = Math.hypot(x - prevX, y - prevY);
+        const steps = Math.max(1, Math.floor(dist / 8));
+        for (let i = 0; i < steps; i++) {
+            const t = i / steps;
+            const px = prevX + (x - prevX) * t;
+            const py = prevY + (y - prevY) * t;
+            if (animation === 'star') this.drawStar(ctx, px, py, color);
+            else if (animation === 'bubble') this.drawBubble(ctx, px, py);
+            else if (animation === 'rainbow') {
+                const hue = (px + py) % 360;
+                this.drawBubble(ctx, px, py, `hsl(${hue},80%,60%)`);
+            }
+            else if (animation === 'sparkle' && i === steps - 1) this.drawSparkle(ctx, x, y, color);
+        }
+    },
+    drawStar(ctx, x, y, color) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const size = 4 + Math.random() * 6;
+        const spikes = 4 + Math.floor(Math.random() * 3);
+        const outerR = size;
+        const innerR = size / 2;
+        ctx.fillStyle = color || '#FFD700';
+        ctx.beginPath();
+        for (let i = 0; i < spikes * 2; i++) {
+            const r = i % 2 === 0 ? outerR : innerR;
+            const angle = (i * Math.PI / spikes) - Math.PI / 2;
+            const sx = x + Math.cos(angle) * r;
+            const sy = y + Math.sin(angle) * r;
+            i === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    },
+    drawBubble(ctx, x, y, color) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const r = 3 + Math.random() * 5;
+        const hue = Math.random() * 360;
+        const c = color || `hsl(${hue},70%,60%)`;
+        const ox = (Math.random() - 0.5) * 10;
+        const oy = (Math.random() - 0.5) * 10;
+        ctx.beginPath();
+        ctx.arc(x + ox, y + oy, r, 0, Math.PI * 2);
+        ctx.fillStyle = c;
+        ctx.globalAlpha = 0.6;
+        ctx.fill();
+        ctx.restore();
+    },
+    drawSparkle(ctx, x, y, color) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.5;
+            const len = 5 + Math.random() * 10;
+            const sx = x + Math.cos(angle) * len;
+            const sy = y + Math.sin(angle) * len;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(sx, sy);
+            ctx.strokeStyle = Math.random() > 0.5 ? '#FFD700' : '#FF6B6B';
+            ctx.lineWidth = 1 + Math.random() * 2;
+            ctx.globalAlpha = 0.8;
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+};
+
+// ----- V64: Draw brush shape -----
+function drawBrushShape(ctx, x, y, preset) {
+    const { shape, size, opacity, blendMode } = preset;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.globalCompositeOperation = blendMode || 'source-over';
+    ctx.fillStyle = currentColor;
+    if (shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (shape === 'square') {
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+    } else if (shape === 'star') {
+        drawStarPath(ctx, x, y, size);
+    } else if (shape === 'heart') {
+        drawHeartPath(ctx, x, y, size);
+    }
+    ctx.restore();
+}
+
+function drawStarPath(ctx, cx, cy, size) {
+    const spikes = 5;
+    const outerR = size / 2;
+    const innerR = outerR * 0.4;
+    ctx.beginPath();
+    for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const angle = (i * Math.PI / spikes) - Math.PI / 2;
+        const sx = cx + Math.cos(angle) * r;
+        const sy = cy + Math.sin(angle) * r;
+        i === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+    }
+    ctx.closePath();
+    ctx.fill();
+}
+
+function drawHeartPath(ctx, cx, cy, size) {
+    const s = size / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + s * 0.3);
+    ctx.bezierCurveTo(cx, cy - s * 0.3, cx - s, cy - s * 0.3, cx - s, cy + s * 0.1);
+    ctx.bezierCurveTo(cx - s, cy + s * 0.6, cx, cy + s, cx, cy + s);
+    ctx.bezierCurveTo(cx, cy + s, cx + s, cy + s * 0.6, cx + s, cy + s * 0.1);
+    ctx.bezierCurveTo(cx + s, cy - s * 0.3, cx, cy - s * 0.3, cx, cy + s * 0.3);
+    ctx.fill();
+}
+
+// ----- V64: Enhanced drawing with brush presets -----
+const originalDrawMove = drawMove;
+drawMove = function(e) {
+    const pos = getPos(e);
+    const ctx = getActiveContext();
+    const tool = currentTool;
+    if (tool === 'brush' && BrushPreset.current.shape !== 'circle') {
+        // Custom brush shape drawing
+        if (isDrawing) {
+            const spacing = BrushPreset.current.spacing * BrushPreset.current.size;
+            const dist = Math.hypot(pos.x - lastX, pos.y - lastY);
+            if (dist >= spacing) {
+                const steps = Math.floor(dist / spacing);
+                for (let i = 1; i <= steps; i++) {
+                    const t = i / steps;
+                    const px = lastX + (pos.x - lastX) * t;
+                    const py = lastY + (pos.y - lastY) * t;
+                    drawBrushShape(ctx, px, py, BrushPreset.current);
+                    BrushAnimator.drawWithAnimation(ctx, px, py, lastX, lastY, BrushPreset.current.animation, currentColor);
+                }
+            }
+            BrushAnimator.drawWithAnimation(ctx, pos.x, pos.y, lastX, lastY, BrushPreset.current.animation, currentColor);
+            lastX = pos.x; lastY = pos.y;
+            return;
+        }
+    }
+    originalDrawMove.call(this, e);
+};
+
+// ----- V64: Brush Preset Panel UI -----
+let brushPresetPanelOpen = false;
+
+function toggleBrushPresetPanel() {
+    brushPresetPanelOpen = !brushPresetPanelOpen;
+    const panel = document.getElementById('brushPresetPanel');
+    if (panel) panel.classList.toggle('open', brushPresetPanelOpen);
+}
+
+function selectBrushShape(shape) {
+    BrushPreset.current.shape = shape;
+    document.querySelectorAll('.brush-shape-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.shape === shape);
+    });
+}
+
+function selectBrushAnimation(anim) {
+    BrushPreset.current.animation = anim;
+    document.querySelectorAll('.brush-anim-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.anim === anim);
+    });
+}
+
+function saveBrushPreset() {
+    const name = prompt('输入预设名称:', '我的笔刷');
+    if (name) {
+        BrushPreset.save(name);
+        showToast('预设已保存: ' + name);
+        renderBrushPresetLoadList();
+    }
+}
+
+function loadBrushPreset(id) {
+    BrushPreset.load(id);
+    updateBrushPresetUI();
+    showToast('已加载: ' + BrushPreset.current.name);
+}
+
+function updateBrushPresetUI() {
+    // Update shape buttons
+    document.querySelectorAll('.brush-shape-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.shape === BrushPreset.current.shape);
+    });
+    // Update animation buttons
+    document.querySelectorAll('.brush-anim-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.anim === BrushPreset.current.animation);
+    });
+    // Update sliders
+    const sizeSlider = document.getElementById('brushSizeSlider');
+    if (sizeSlider) sizeSlider.value = BrushPreset.current.size;
+    const spacingSlider = document.getElementById('brushSpacingSlider');
+    if (spacingSlider) spacingSlider.value = BrushPreset.current.spacing * 100;
+    const opacitySlider = document.getElementById('brushOpacitySlider');
+    if (opacitySlider) opacitySlider.value = BrushPreset.current.opacity * 100;
+    const blendSelect = document.getElementById('brushBlendSelect');
+    if (blendSelect) blendSelect.value = BrushPreset.current.blendMode;
+}
+
+function renderBrushPresetLoadList() {
+    const list = document.getElementById('brushPresetLoadList');
+    if (!list) return;
+    list.innerHTML = '';
+    BrushPreset.presets.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'brush-preset-load-item';
+        item.textContent = p.name;
+        item.style.cssText = 'padding:4px 8px;cursor:pointer;font-size:0.7rem;border-bottom:1px solid #dee2e6;';
+        item.onclick = () => loadBrushPreset(p.id);
+        list.appendChild(item);
+    });
+}
+
+// ----- V64: Create brush preset panel -----
+function createBrushPresetPanel() {
+    const selector = document.getElementById('brushStyleSelector');
+    if (!selector) return;
+    const panel = document.createElement('div');
+    panel.className = 'brush-preset-panel';
+    panel.id = 'brushPresetPanel';
+    panel.innerHTML = `
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">形状</div>
+            <div class="brush-shape-btns">
+                <button class="brush-shape-btn selected" data-shape="circle" onclick="selectBrushShape('circle')" title="圆形">●</button>
+                <button class="brush-shape-btn" data-shape="square" onclick="selectBrushShape('square')" title="方形">■</button>
+                <button class="brush-shape-btn" data-shape="star" onclick="selectBrushShape('star')" title="星形">★</button>
+                <button class="brush-shape-btn" data-shape="heart" onclick="selectBrushShape('heart')" title="心形">♥</button>
+            </div>
+        </div>
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">大小: <span id="brushSizeVal">${BrushPreset.current.size}px</span></div>
+            <input type="range" class="brush-slider" id="brushSizeSlider" min="5" max="100" value="${BrushPreset.current.size}"
+                oninput="BrushPreset.current.size=parseInt(this.value);document.getElementById('brushSizeVal').textContent=this.value+'px'">
+        </div>
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">间距: <span id="brushSpacingVal">${BrushPreset.current.spacing * 100}%</span></div>
+            <input type="range" class="brush-slider" id="brushSpacingSlider" min="10" max="200" value="${BrushPreset.current.spacing * 100}"
+                oninput="BrushPreset.current.spacing=parseInt(this.value)/100;document.getElementById('brushSpacingVal').textContent=this.value+'%'">
+        </div>
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">透明度: <span id="brushOpacityVal">${BrushPreset.current.opacity * 100}%</span></div>
+            <input type="range" class="brush-slider" id="brushOpacitySlider" min="10" max="100" value="${BrushPreset.current.opacity * 100}"
+                oninput="BrushPreset.current.opacity=parseInt(this.value)/100;document.getElementById('brushOpacityVal').textContent=this.value+'%'">
+        </div>
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">动态效果</div>
+            <div class="brush-anim-btns">
+                <button class="brush-anim-btn selected" data-anim="none" onclick="selectBrushAnimation('none')">无</button>
+                <button class="brush-anim-btn" data-anim="star" onclick="selectBrushAnimation('star')">星星</button>
+                <button class="brush-anim-btn" data-anim="bubble" onclick="selectBrushAnimation('bubble')">泡泡</button>
+                <button class="brush-anim-btn" data-anim="rainbow" onclick="selectBrushAnimation('rainbow')">彩虹</button>
+                <button class="brush-anim-btn" data-anim="sparkle" onclick="selectBrushAnimation('sparkle')">火花</button>
+            </div>
+        </div>
+        <div class="brush-preset-section">
+            <div class="brush-preset-label">混合模式</div>
+            <select class="blend-select" id="brushBlendSelect" onchange="BrushPreset.current.blendMode=this.value">
+                <option value="source-over">正常</option>
+                <option value="multiply">正片叠底</option>
+                <option value="screen">滤色</option>
+                <option value="overlay">叠加</option>
+                <option value="difference">差值</option>
+                <option value="soft-light">柔光</option>
+            </select>
+        </div>
+        <div class="brush-preset-section" id="brushPresetLoadListContainer" style="max-height:100px;overflow-y:auto;">
+            <div class="brush-preset-label">已保存的预设</div>
+            <div id="brushPresetLoadList"></div>
+        </div>
+        <div class="brush-preset-btns">
+            <button class="brush-preset-btn save" onclick="saveBrushPreset()">💾 保存</button>
+            <button class="brush-preset-btn load" onclick="renderBrushPresetLoadList()">📂 加载</button>
+        </div>
+    `;
+    selector.appendChild(panel);
+    renderBrushPresetLoadList();
+    // Toggle on brush style button click
+    const btn = document.getElementById('brushStyleBtn');
+    if (btn) {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            toggleBrushPresetPanel();
+        };
+    }
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (brushPresetPanelOpen && !panel.contains(e.target) && !document.getElementById('brushStyleBtn').contains(e.target)) {
+            brushPresetPanelOpen = false;
+            panel.classList.remove('open');
+        }
+    });
+}
+
+// ----- V64: Enhance layer panel with blend mode and thumbnails -----
+const originalCompositeLayers = compositeLayers;
+compositeLayers = function() {
+    originalCompositeLayers();
+    updateLayerThumbnails();
+};
+
+function updateLayerThumbnails() {
+    document.querySelectorAll('.layer-thumb').forEach(el => {
+        const id = el.dataset.layerId;
+        if (!id || !layerCanvases[id]) return;
+        const thumb = el.querySelector('canvas');
+        if (!thumb) return;
+        const ctx = thumb.getContext('2d');
+        thumb.width = 48;
+        thumb.height = 48;
+        ctx.clearRect(0, 0, 48, 48);
+        ctx.drawImage(layerCanvases[id], 0, 0, 48, 48);
+    });
+}
+
+function addBlendModeToLayerItem(layer) {
+    return `
+        <div class="layer-blend-row">
+            <span>混合:</span>
+            <select class="blend-select" onchange="changeLayerBlendMode('${layer.id}', this.value)">
+                <option value="source-over" ${(layer.blendMode || 'source-over') === 'source-over' ? 'selected' : ''}>正常</option>
+                <option value="multiply" ${layer.blendMode === 'multiply' ? 'selected' : ''}>正片叠底</option>
+                <option value="screen" ${layer.blendMode === 'screen' ? 'selected' : ''}>滤色</option>
+                <option value="overlay" ${layer.blendMode === 'overlay' ? 'selected' : ''}>叠加</option>
+                <option value="difference" ${layer.blendMode === 'difference' ? 'selected' : ''}>差值</option>
+                <option value="soft-light" ${layer.blendMode === 'soft-light' ? 'selected' : ''}>柔光</option>
+            </select>
+        </div>
+    `;
+}
+
+function changeLayerBlendMode(id, mode) {
+    const layer = layerSystem.layers.find(l => l.id === id);
+    if (layer) {
+        layer.blendMode = mode;
+        compositeLayers();
+    }
+}
+
+// Override renderLayerList to include blend mode and thumbnails
+const originalRenderLayerList = renderLayerList;
+renderLayerList = function() {
+    originalRenderLayerList();
+    // Add blend mode selectors after opacity rows
+    document.querySelectorAll('.layer-item').forEach(item => {
+        const id = item.dataset.layerId;
+        if (!id) return;
+        const layer = layerSystem.layers.find(l => l.id === id);
+        if (!layer) return;
+        const opacityRow = item.querySelector('.layer-opacity-row');
+        if (opacityRow && !item.querySelector('.layer-blend-row')) {
+            opacityRow.insertAdjacentHTML('afterend', addBlendModeToLayerItem(layer));
+        }
+        // Add thumbnail
+        const header = item.querySelector('.layer-header');
+        if (header && !item.querySelector('.layer-thumb')) {
+            const thumbDiv = document.createElement('div');
+            thumbDiv.className = 'layer-thumb';
+            thumbDiv.dataset.layerId = id;
+            thumbDiv.innerHTML = '<canvas></canvas>';
+            header.appendChild(thumbDiv);
+        }
+    });
+    updateLayerThumbnails();
+};
+
+// ----- V64: Override addNewLayer to support blendMode -----
+const originalAddNewLayer = addNewLayer;
+addNewLayer = function() {
+    originalAddNewLayer();
+    const newLayer = layerSystem.layers[layerSystem.layers.length - 1];
+    if (newLayer) newLayer.blendMode = 'source-over';
+};
+
+// ----- V64: Initialize -----
+function initV64() {
+    createBrushPresetPanel();
+    // Add blend mode to existing layers
+    layerSystem.layers.forEach(l => {
+        if (!l.blendMode) l.blendMode = 'source-over';
+    });
+}
+
+// Run after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initV64, 100));
+} else {
+    setTimeout(initV64, 100);
+}
+
+// === V64 END ===
+
     </script>
 </body>
 </html>
