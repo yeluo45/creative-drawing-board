@@ -8890,6 +8890,440 @@
             background: linear-gradient(180deg, #FF8A95 0%, #FF6B7A 100%);
         }
 
+        /* V68: Trigger System */
+        .trigger-btn {
+            background: linear-gradient(180deg, #A8E6CF 0%, #56C596 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .trigger-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .trigger-btn.active {
+            background: linear-gradient(180deg, #56C596 0%, #3DA97A 100%);
+        }
+
+        /* Trigger Panel */
+        .trigger-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            z-index: 3000;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid #495057;
+        }
+
+        .trigger-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: linear-gradient(180deg, #A8E6CF 0%, #56C596 100%);
+            border-bottom: 3px solid #495057;
+        }
+
+        .trigger-panel-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+
+        .trigger-panel-close {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid #495057;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .trigger-panel-close:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .trigger-panel-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .trigger-stats-bar {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .trigger-stat-item {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 2px solid #dee2e6;
+        }
+
+        .trigger-chain-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trigger-chain-item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+
+        .trigger-chain-item.enabled {
+            border-color: #56C596;
+            background: #f0fff4;
+        }
+
+        .trigger-chain-item.disabled {
+            opacity: 0.6;
+        }
+
+        .trigger-chain-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .trigger-chain-name {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .trigger-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .trigger-toggle input {
+            cursor: pointer;
+        }
+
+        .trigger-chain-conditions,
+        .trigger-chain-effects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+
+        .trigger-label {
+            color: #666;
+        }
+
+        .trigger-tag {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .trigger-tag.effect {
+            background: #d3f9d8;
+        }
+
+        .trigger-chain-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .trigger-action-btn {
+            padding: 4px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            background: white;
+            transition: all 0.1s;
+        }
+
+        .trigger-action-btn:hover {
+            background: #e9ecef;
+        }
+
+        .trigger-action-btn.delete:hover {
+            background: #ffe3e3;
+        }
+
+        .trigger-empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .trigger-panel-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .trigger-footer-btn {
+            padding: 8px 16px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.1s;
+        }
+
+        .trigger-new-btn {
+            background: linear-gradient(180deg, #A8E6CF 0%, #56C596 100%);
+            color: white;
+        }
+
+        .trigger-import-btn {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+        }
+
+        .trigger-export-btn {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            color: white;
+        }
+
+        /* Trigger Editor Modal */
+        .trigger-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 4000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .trigger-editor-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 4px solid #495057;
+        }
+
+        .trigger-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: linear-gradient(180deg, #A8E6CF 0%, #56C596 100%);
+            border-bottom: 3px solid #495057;
+        }
+
+        .trigger-editor-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .trigger-editor-close {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid #495057;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: white;
+        }
+
+        .trigger-editor-body {
+            padding: 16px;
+        }
+
+        .trigger-editor-field {
+            margin-bottom: 16px;
+        }
+
+        .trigger-editor-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .trigger-editor-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .trigger-editor-input:focus {
+            outline: none;
+            border-color: #56C596;
+        }
+
+        .trigger-editor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .trigger-editor-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .trigger-cond-type,
+        .trigger-effect-type {
+            flex: 1;
+            padding: 6px 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+
+        .trigger-cond-op {
+            width: 70px;
+            padding: 6px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .trigger-cond-value {
+            width: 60px;
+            padding: 6px 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .trigger-effect-params {
+            flex: 1;
+            padding: 6px 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .trigger-remove-btn {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ff6b6b;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #ff6b6b;
+        }
+
+        .trigger-remove-btn:hover {
+            background: #ffe3e3;
+        }
+
+        .trigger-add-btn {
+            padding: 6px 16px;
+            border: 2px dashed #56C596;
+            background: #f0fff4;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #56C596;
+            margin-bottom: 16px;
+        }
+
+        .trigger-add-btn:hover {
+            background: #d3f9d8;
+        }
+
+        .trigger-editor-options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .trigger-option-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trigger-editor-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .trigger-cancel-btn {
+            padding: 10px 20px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+        }
+
+        .trigger-save-btn {
+            padding: 10px 20px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(180deg, #A8E6CF 0%, #56C596 100%);
+            color: white;
+        }
+
+        .trigger-save-btn:hover {
+            background: linear-gradient(180deg, #8ED9BE 0%, #46B588 100%);
+        }
+
         /* Challenge Selection Panel */
         .challenge-panel {
             position: fixed;
@@ -9403,6 +9837,7 @@
             <button class="guided-btn" id="guidedBtn" title="Guided Teaching">🎯</button>
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="challenge-btn" id="challengeBtn" title="Daily Challenge">🔔<span class="unread-dot" id="unreadDot"></span></button>
+            <button class="trigger-btn" id="triggerBtn" title="效果链">🔗</button>
             <button class="learning-btn" id="learningBtn" title="学习轨迹">📊 学习</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
@@ -14998,6 +15433,8 @@
         function selectColor(color) {
             recordAction(ACTION_TYPES.COLOR_CHANGE, { color });
             currentColor = color;
+            // V68: Trigger on color change
+            if (window.triggerSystem) window.triggerSystem.onColorChange(color);
             document.querySelectorAll('.color-btn').forEach(btn => {
                 btn.classList.toggle('selected', btn.dataset.color === color);
             });
@@ -16446,6 +16883,9 @@
             // V27: Record stroke start
             recordAction(ACTION_TYPES.STROKE_START, { x: pos.x, y: pos.y, color: currentColor, size: currentSize, tool: currentTool });
 
+            // V68: Trigger on stroke start
+            if (window.triggerSystem) window.triggerSystem.onStrokeStart();
+
             if (currentTool === 'fill') {
                 performFloodFill(pos.x, pos.y);
                 isDrawing = false;
@@ -16547,6 +16987,8 @@
         function stopDrawing() {
             // V27: Record stroke end
             recordAction(ACTION_TYPES.STROKE_END, {});
+            // V68: Trigger on stroke end
+            if (window.triggerSystem) window.triggerSystem.onStrokeEnd();
             // V16: Smart Shapes - finalize shape
             if (isDrawingShape && shapeType !== 'free') {
                 // Get final position from lastX, lastY
@@ -20056,6 +20498,8 @@
             saveChallengeData();
             saveShopData();
             updateAchievementStats();
+            // V68: Trigger on challenge complete
+            if (window.triggerSystem) window.triggerSystem.onChallengeComplete();
 
             var localEntry = challengeLeaderboard.find(function(e) { return e.id === 'local'; });
             if (localEntry) {
@@ -21418,6 +21862,7 @@
             initColoringGame();
             initStatsButton();
             initChallengeButton();
+            initTriggerButton(); // V68
             initGalleryButton();
             initExportButton(); // V11
             initShareButton(); // V11
@@ -21461,6 +21906,25 @@
             generateDailyChallenge();
             // Update unread dot
             updateUnreadDot();
+        }
+
+        // Init trigger button (V68)
+        function initTriggerButton() {
+            const triggerBtn = document.getElementById('triggerBtn');
+            const triggerPanel = document.getElementById('triggerPanel');
+            const triggerPanelClose = document.getElementById('triggerPanelClose');
+            if (triggerBtn) {
+                triggerBtn.addEventListener('click', () => {
+                    if (triggerPanel.style.display === 'flex') {
+                        closeTriggerPanel();
+                    } else {
+                        openTriggerPanel();
+                    }
+                });
+            }
+            if (triggerPanelClose) {
+                triggerPanelClose.addEventListener('click', closeTriggerPanel);
+            }
         }
 
         // Init gallery button
@@ -32567,6 +33031,8 @@ class LayerManager {
         layerCanvases[id] = c;
         layerContexts[id] = c.getContext('2d');
         this.activeLayerId = id;
+        // V68: Trigger on layer add
+        if (window.triggerSystem) window.triggerSystem.onLayerAdd();
         return layer;
     }
     removeLayer(id) {
@@ -32599,7 +33065,949 @@ class LayerManager {
     }
 }
 
-// ----- V64: BrushPreset -----
+// ----- V68: Trigger System -----
+// Trigger Condition Types
+window.CONDITION_TYPES = {
+    TIME_ELAPSED: 'time_elapsed',
+    STROKE_COUNT: 'stroke_count',
+    COLOR_USED: 'color_used',
+    LAYER_COUNT: 'layer_count',
+    ACHIEVEMENT_UNLOCK: 'achievement',
+    CHALLENGE_COMPLETE: 'challenge',
+    AREA_FILLED: 'area_filled',
+};
+
+// Trigger Effect Types
+window.EFFECT_TYPES = {
+    PARTICLE_BURST: 'particle_burst',
+    SCREEN_SHAKE: 'screen_shake',
+    COLOR_SHIFT: 'color_shift',
+    BRUSH_CHANGE: 'brush_change',
+    LAYER_ADD: 'layer_add',
+    STICKER_DROP: 'sticker_drop',
+    FLASH: 'flash',
+    ZOOM_PULSE: 'zoom_pulse',
+    TOAST_MESSAGE: 'toast_message',
+};
+
+// Trigger Registry
+window.triggerRegistry = {
+    chains: [],
+};
+
+// TriggerSystem Class
+class TriggerSystem {
+    constructor() {
+        this.chains = [];
+        this.stats = {
+            strokeCount: 0,
+            timeElapsed: 0,
+            colorsUsed: new Set(),
+            layersCreated: 0,
+            areaFilled: 0
+        };
+        this.cooldowns = {};
+        this._load();
+        this._initDefaultChains();
+    }
+
+    _initDefaultChains() {
+        if (this.chains.length === 0) {
+            const defaults = [
+                {
+                    id: 'chain_welcome',
+                    name: '初次画画欢迎',
+                    enabled: true,
+                    conditions: [{ type: 'stroke_count', operator: '>', value: 1 }],
+                    effects: [
+                        { type: 'flash', params: { duration: 300, color: '#FFFFFF' } },
+                        { type: 'toast_message', params: { message: '欢迎来到创意画板！', duration: 3000, style: 'celebration' } }
+                    ],
+                    once: true,
+                    cooldown: 0
+                },
+                {
+                    id: 'chain_color_explorer',
+                    name: '颜色探索者',
+                    enabled: true,
+                    conditions: [{ type: 'color_used', operator: 'count>=', value: 5 }],
+                    effects: [
+                        { type: 'particle_burst', params: { count: 50, colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181'] } },
+                        { type: 'toast_message', params: { message: '颜色大师！', duration: 3000, style: 'celebration' } }
+                    ],
+                    once: false,
+                    cooldown: 60
+                },
+                {
+                    id: 'chain_layer_master',
+                    name: '图层达人',
+                    enabled: true,
+                    conditions: [{ type: 'layer_count', operator: '>=', value: 5 }],
+                    effects: [
+                        { type: 'screen_shake', params: { duration: 500, intensity: 8 } }
+                    ],
+                    once: false,
+                    cooldown: 30
+                },
+                {
+                    id: 'chain_challenge_complete',
+                    name: '挑战完成庆祝',
+                    enabled: true,
+                    conditions: [{ type: 'challenge_complete', operator: '==', value: true }],
+                    effects: [
+                        { type: 'particle_burst', params: { count: 80, colors: ['#FFD700', '#FF69B4', '#00CED1', '#98FB98'] } },
+                        { type: 'sticker_drop', params: { count: 15, emojis: ['🎉', '⭐', '🌟', '✨', '🏆', '🎊'] } }
+                    ],
+                    once: false,
+                    cooldown: 10
+                },
+                {
+                    id: 'chain_hidden_egg',
+                    name: '隐藏彩蛋',
+                    enabled: true,
+                    conditions: [
+                        { type: 'stroke_count', operator: '>=', value: 100 },
+                        { type: 'time_elapsed', operator: '>=', value: 300 }
+                    ],
+                    effects: [
+                        { type: 'zoom_pulse', params: { duration: 1500, scale: 1.3 } },
+                        { type: 'color_shift', params: { duration: 2000, hueShift: 30 } }
+                    ],
+                    once: true,
+                    cooldown: 0
+                }
+            ];
+            defaults.forEach(d => {
+                if (!this.chains.find(c => c.id === d.id)) {
+                    this.chains.push(d);
+                }
+            });
+            this._save();
+        }
+    }
+
+    registerChain(chain) {
+        chain.id = 'chain_' + Date.now();
+        this.chains.push(chain);
+        this._save();
+    }
+
+    removeChain(id) {
+        const idx = this.chains.findIndex(c => c.id === id);
+        if (idx !== -1) {
+            this.chains.splice(idx, 1);
+            delete this.cooldowns[id];
+            this._save();
+            return true;
+        }
+        return false;
+    }
+
+    enableChain(id) {
+        const chain = this.chains.find(c => c.id === id);
+        if (chain) {
+            chain.enabled = true;
+            this._save();
+        }
+    }
+
+    disableChain(id) {
+        const chain = this.chains.find(c => c.id === id);
+        if (chain) {
+            chain.enabled = false;
+            this._save();
+        }
+    }
+
+    updateChain(id, updates) {
+        const chain = this.chains.find(c => c.id === id);
+        if (chain) {
+            Object.assign(chain, updates);
+            this._save();
+        }
+    }
+
+    onStrokeStart() {
+        this.stats.strokeCount++;
+        this._checkAll();
+    }
+
+    onStrokeEnd() {
+        this._checkAll();
+    }
+
+    onColorChange(color) {
+        if (color && typeof color === 'string') {
+            const normalizedColor = color.toLowerCase();
+            if (normalizedColor.startsWith('#')) {
+                this.stats.colorsUsed.add(normalizedColor);
+            }
+        }
+        this._checkAll();
+    }
+
+    onLayerAdd() {
+        this.stats.layersCreated++;
+        this._checkAll();
+    }
+
+    onChallengeComplete() {
+        this._checkByType('CHALLENGE_COMPLETE', true);
+    }
+
+    onAchievementUnlock(achievement) {
+        this._checkByType('ACHIEVEMENT_UNLOCK', achievement);
+    }
+
+    onTimeUpdate(seconds) {
+        this.stats.timeElapsed = seconds;
+        this._checkByType('TIME_ELAPSED');
+    }
+
+    onAreaFilled(percent) {
+        this.stats.areaFilled = percent;
+        this._checkByType('AREA_FILLED');
+    }
+
+    _checkAll() {
+        this.chains.forEach(chain => {
+            if (!chain.enabled) return;
+            if (chain.once && chain.triggered) return;
+            if (this._isOnCooldown(chain)) return;
+
+            const allConditionsMet = chain.conditions.every(cond => this._evaluateCondition(cond));
+            if (allConditionsMet) {
+                this._triggerChain(chain);
+            }
+        });
+    }
+
+    _checkByType(type, extra) {
+        this.chains.forEach(chain => {
+            if (!chain.enabled) return;
+            if (chain.once && chain.triggered) return;
+            if (this._isOnCooldown(chain)) return;
+
+            const matchingCond = chain.conditions.find(c => c.type === type);
+            if (matchingCond) {
+                const cond = { ...matchingCond };
+                if (extra !== undefined) cond.value = extra;
+                if (this._evaluateCondition(cond)) {
+                    const otherConditions = chain.conditions.filter(c => c.type !== type);
+                    if (otherConditions.length === 0 || otherConditions.every(c => this._evaluateCondition(c))) {
+                        this._triggerChain(chain);
+                    }
+                }
+            }
+        });
+    }
+
+    _evaluateCondition(cond) {
+        const { type, operator, value } = cond;
+        switch (type) {
+            case 'time_elapsed':
+                return this._compare(this.stats.timeElapsed, operator, parseInt(value));
+            case 'stroke_count':
+                return this._compare(this.stats.strokeCount, operator, parseInt(value));
+            case 'color_used':
+                if (operator === 'count>=') return this.stats.colorsUsed.size >= parseInt(value);
+                if (operator === 'count>') return this.stats.colorsUsed.size > parseInt(value);
+                if (operator === 'count==') return this.stats.colorsUsed.size === parseInt(value);
+                if (operator === 'contains') return this.stats.colorsUsed.has(value.toLowerCase());
+                return false;
+            case 'layer_count':
+                return this._compare(this.stats.layersCreated, operator, parseInt(value));
+            case 'achievement':
+                return value ? true : false;
+            case 'challenge_complete':
+                return value === true || value === 'true';
+            case 'area_filled':
+                return this._compare(this.stats.areaFilled, operator, parseFloat(value));
+            default:
+                return false;
+        }
+    }
+
+    _compare(a, op, b) {
+        switch (op) {
+            case '>': return a > b;
+            case '>=': return a >= b;
+            case '<': return a < b;
+            case '<=': return a <= b;
+            case '==': return a === b;
+            case '!=': return a !== b;
+            default: return false;
+        }
+    }
+
+    _isOnCooldown(chain) {
+        if (!this.cooldowns[chain.id]) return false;
+        const elapsed = (Date.now() - this.cooldowns[chain.id]) / 1000;
+        return elapsed < chain.cooldown;
+    }
+
+    _triggerChain(chain) {
+        chain.triggered = true;
+        this.cooldowns[chain.id] = Date.now();
+        this._executeEffects(chain.effects);
+        this._save();
+    }
+
+    _executeEffects(effects) {
+        if (!effects || !Array.isArray(effects)) return;
+        effects.forEach(effect => {
+            switch (effect.type) {
+                case 'particle_burst':
+                    this._playParticleBurst(effect.params || {});
+                    break;
+                case 'screen_shake':
+                    this._playScreenShake(effect.params || {});
+                    break;
+                case 'color_shift':
+                    this._playColorShift(effect.params || {});
+                    break;
+                case 'brush_change':
+                    this._playBrushChange(effect.params || {});
+                    break;
+                case 'layer_add':
+                    this._playLayerAdd(effect.params || {});
+                    break;
+                case 'sticker_drop':
+                    this._playStickerDrop(effect.params || {});
+                    break;
+                case 'flash':
+                    this._playFlash(effect.params || {});
+                    break;
+                case 'zoom_pulse':
+                    this._playZoomPulse(effect.params || {});
+                    break;
+                case 'toast_message':
+                    this._playToastMessage(effect.params || {});
+                    break;
+            }
+        });
+    }
+
+    _playParticleBurst(params) {
+        const count = params.count || 30;
+        const colors = params.colors || ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181'];
+        const canvas = document.createElement('canvas');
+        canvas.id = 'particleBurstCanvas';
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+            const speed = 5 + Math.random() * 10;
+            particles.push({
+                x: cx, y: cy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                decay: 0.015 + Math.random() * 0.01,
+                size: 4 + Math.random() * 6,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let alive = false;
+            particles.forEach(p => {
+                if (p.life <= 0) return;
+                alive = true;
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2;
+                p.life -= p.decay;
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            if (alive) {
+                requestAnimationFrame(animate);
+            } else {
+                canvas.remove();
+            }
+        }
+        animate();
+    }
+
+    _playScreenShake(params) {
+        const duration = params.duration || 500;
+        const intensity = params.intensity || 5;
+        const container = document.getElementById('canvasContainer') || document.querySelector('.canvas-container') || document.getElementById('drawingBoard');
+        if (!container) return;
+
+        container.style.animation = 'none';
+        container.offsetHeight;
+        container.style.animation = `triggerShake ${duration}ms ease-out`;
+
+        const style = document.createElement('style');
+        style.id = 'shakeStyle';
+        const keyframes = `
+            @keyframes triggerShake {
+                0%, 100% { transform: translate(0, 0); }
+                10% { transform: translate(-${intensity}px, ${intensity}px); }
+                20% { transform: translate(${intensity}px, -${intensity}px); }
+                30% { transform: translate(-${intensity}px, -${intensity}px); }
+                40% { transform: translate(${intensity}px, ${intensity}px); }
+                50% { transform: translate(-${intensity/2}px, ${intensity/2}px); }
+                60% { transform: translate(${intensity/2}px, -${intensity/2}px); }
+                70% { transform: translate(-${intensity/2}px, -${intensity/2}px); }
+                80% { transform: translate(${intensity/2}px, ${intensity/2}px); }
+                90% { transform: translate(-${intensity/4}px, ${intensity/4}px); }
+            }
+        `;
+        style.textContent = keyframes;
+        document.head.appendChild(style);
+        setTimeout(() => {
+            style.remove();
+            container.style.animation = '';
+        }, duration);
+    }
+
+    _playColorShift(params) {
+        const duration = params.duration || 2000;
+        const hueShift = params.hueShift || 30;
+        const hueShiftClass = 'colorShiftActive';
+
+        const style = document.createElement('style');
+        style.id = 'colorShiftStyle';
+        style.textContent = `
+            .${hueShiftClass} {
+                filter: hue-rotate(${hueShift}deg) saturate(1.2);
+                transition: filter 0.5s ease-out;
+            }
+        `;
+        document.head.appendChild(style);
+
+        const target = document.getElementById('drawingBoard') || document.querySelector('.drawing-area') || document.body;
+        target.classList.add(hueShiftClass);
+
+        setTimeout(() => {
+            target.classList.remove(hueShiftClass);
+            setTimeout(() => style.remove(), 500);
+        }, duration);
+    }
+
+    _playBrushChange(params) {
+        if (typeof BrushPreset !== 'undefined' && params.preset) {
+            const preset = BrushPreset.presets ? BrushPreset.presets.find(p => p.id === params.preset) : null;
+            if (preset) {
+                BrushPreset.current = { ...preset };
+                if (typeof updateBrushPreview === 'function') updateBrushPreview();
+                if (typeof applyBrushPreset === 'function') applyBrushPreset(params.preset);
+            }
+        }
+    }
+
+    _playLayerAdd(params) {
+        if (typeof layerSystem !== 'undefined' && layerSystem.addLayer) {
+            const layer = layerSystem.addLayer();
+            if (params.name && layer) {
+                layer.name = params.name;
+            }
+            if (typeof renderLayerList === 'function') renderLayerList();
+            showToast('✨ 触发器添加了新图层');
+        }
+    }
+
+    _playStickerDrop(params) {
+        const count = params.count || 10;
+        const emojis = params.emojis || ['🎉', '⭐', '✨', '🌟', '💫'];
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const sticker = document.createElement('div');
+                sticker.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                sticker.style.cssText = `
+                    position: fixed;
+                    top: -50px;
+                    left: ${10 + Math.random() * 80}%;
+                    font-size: ${24 + Math.random() * 24}px;
+                    z-index: 10000;
+                    pointer-events: none;
+                    animation: stickerDrop 3s ease-out forwards;
+                `;
+                document.body.appendChild(sticker);
+                setTimeout(() => sticker.remove(), 3000);
+            }, i * 100);
+        }
+        if (!document.getElementById('stickerDropStyle')) {
+            const s = document.createElement('style');
+            s.id = 'stickerDropStyle';
+            s.textContent = `
+                @keyframes stickerDrop {
+                    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                    100% { transform: translateY(${window.innerHeight + 100}px) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(s);
+        }
+    }
+
+    _playFlash(params) {
+        const duration = params.duration || 200;
+        const color = params.color || '#FFFFFF';
+        const flash = document.createElement('div');
+        flash.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: ${color};
+            z-index: 99999;
+            pointer-events: none;
+            animation: triggerFlash ${duration}ms ease-out forwards;
+        `;
+        document.body.appendChild(flash);
+        if (!document.getElementById('flashStyle')) {
+            const s = document.createElement('style');
+            s.id = 'flashStyle';
+            s.textContent = `
+                @keyframes triggerFlash {
+                    0% { opacity: 0.9; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(s);
+        }
+        setTimeout(() => flash.remove(), duration);
+    }
+
+    _playZoomPulse(params) {
+        const duration = params.duration || 1500;
+        const scale = params.scale || 1.3;
+        const target = document.getElementById('drawingBoard') || document.querySelector('.drawing-area') || document.getElementById('drawingCanvas');
+        if (!target) return;
+
+        target.style.transition = 'transform 0.3s ease-out';
+        target.style.transform = `scale(${scale})`;
+
+        setTimeout(() => {
+            target.style.transform = 'scale(1)';
+            setTimeout(() => {
+                target.style.transition = '';
+            }, 300);
+        }, duration * 0.6);
+    }
+
+    _playToastMessage(params) {
+        const message = params.message || '';
+        const dur = params.duration || 3000;
+        const style = params.style || 'normal';
+        if (typeof showToast === 'function') {
+            showToast(message);
+        } else {
+            alert(message);
+        }
+    }
+
+    _save() {
+        try {
+            const data = this.chains.map(c => ({ ...c, colorsUsed: undefined }));
+            localStorage.setItem('triggerChains', JSON.stringify(data));
+        } catch (e) { }
+    }
+
+    _load() {
+        try {
+            const data = localStorage.getItem('triggerChains');
+            if (data) {
+                const parsed = JSON.parse(data);
+                if (Array.isArray(parsed)) {
+                    this.chains = parsed;
+                }
+            }
+        } catch (e) { }
+    }
+
+    exportJSON() {
+        return JSON.stringify(this.chains, null, 2);
+    }
+
+    importJSON(json) {
+        try {
+            const parsed = JSON.parse(json);
+            if (Array.isArray(parsed)) {
+                this.chains = parsed;
+                this._save();
+                return true;
+            }
+        } catch (e) { }
+        return false;
+    }
+
+    getStats() {
+        return {
+            strokeCount: this.stats.strokeCount,
+            timeElapsed: this.stats.timeElapsed,
+            colorsUsed: Array.from(this.stats.colorsUsed),
+            colorsUsedCount: this.stats.colorsUsed.size,
+            layersCreated: this.stats.layersCreated
+        };
+    }
+
+    resetStats() {
+        this.stats.strokeCount = 0;
+        this.stats.timeElapsed = 0;
+        this.stats.colorsUsed.clear();
+        this.stats.layersCreated = 0;
+        this.stats.areaFilled = 0;
+    }
+}
+
+// Global trigger system instance
+let triggerSystem;
+
+function initTriggerSystem() {
+    triggerSystem = new TriggerSystem();
+    window.triggerSystem = triggerSystem;
+    console.log('[V68] TriggerSystem initialized with', triggerSystem.chains.length, 'chains');
+}
+
+// Trigger System UI
+function openTriggerPanel() {
+    closeAllPanels();
+    const panel = document.getElementById('triggerPanel');
+    if (panel) {
+        panel.style.display = 'flex';
+        renderTriggerChainList();
+    }
+}
+
+function closeTriggerPanel() {
+    const panel = document.getElementById('triggerPanel');
+    if (panel) {
+        panel.style.display = 'none';
+    }
+}
+
+function renderTriggerChainList() {
+    const list = document.getElementById('triggerChainList');
+    if (!list || !triggerSystem) return;
+
+    const html = triggerSystem.chains.map(chain => `
+        <div class="trigger-chain-item ${chain.enabled ? 'enabled' : 'disabled'}">
+            <div class="trigger-chain-header">
+                <span class="trigger-chain-name">${chain.name}</span>
+                <label class="trigger-toggle">
+                    <input type="checkbox" ${chain.enabled ? 'checked' : ''} onchange="toggleTriggerChain('${chain.id}')">
+                    <span>启用</span>
+                </label>
+            </div>
+            <div class="trigger-chain-conditions">
+                <span class="trigger-label">条件:</span>
+                ${chain.conditions.map(c => `<span class="trigger-tag">${formatConditionTag(c)}</span>`).join('')}
+            </div>
+            <div class="trigger-chain-effects">
+                <span class="trigger-label">效果:</span>
+                ${chain.effects.map(e => `<span class="trigger-tag effect">${e.type}</span>`).join('')}
+            </div>
+            <div class="trigger-chain-actions">
+                <button class="trigger-action-btn edit" onclick="editTriggerChain('${chain.id}')">✏️ 编辑</button>
+                <button class="trigger-action-btn delete" onclick="deleteTriggerChain('${chain.id}')">🗑️ 删除</button>
+            </div>
+        </div>
+    `).join('');
+
+    list.innerHTML = html || '<div class="trigger-empty">暂无效果链</div>';
+
+    const stats = triggerSystem.getStats();
+    const statsEl = document.getElementById('triggerStats');
+    if (statsEl) {
+        statsEl.innerHTML = `
+            <div class="trigger-stat-item">笔画: ${stats.strokeCount}</div>
+            <div class="trigger-stat-item">颜色: ${stats.colorsUsedCount}</div>
+            <div class="trigger-stat-item">图层: ${stats.layersCreated}</div>
+            <div class="trigger-stat-item">时间: ${Math.floor(stats.timeElapsed)}s</div>
+        `;
+    }
+}
+
+function formatConditionTag(cond) {
+    const labels = {
+        time_elapsed: '时间',
+        stroke_count: '笔画',
+        color_used: '颜色',
+        layer_count: '图层',
+        achievement: '成就',
+        challenge_complete: '挑战',
+        area_filled: '填充'
+    };
+    const ops = {
+        '>': '>',
+        '>=': '≥',
+        '<': '<',
+        '<=': '≤',
+        '==': '=',
+        '!=': '≠',
+        'count>=': '≥',
+        'count>': '>',
+        'contains': '含'
+    };
+    return `${labels[cond.type] || cond.type} ${ops[cond.operator] || cond.operator} ${cond.value}`;
+}
+
+function toggleTriggerChain(id) {
+    const chain = triggerSystem.chains.find(c => c.id === id);
+    if (chain) {
+        chain.enabled = !chain.enabled;
+        triggerSystem._save();
+        renderTriggerChainList();
+    }
+}
+
+function editTriggerChain(id) {
+    const chain = triggerSystem.chains.find(c => c.id === id);
+    if (!chain) return;
+    openTriggerEditor(chain);
+}
+
+function deleteTriggerChain(id) {
+    if (confirm('确定要删除这个效果链吗？')) {
+        triggerSystem.removeChain(id);
+        renderTriggerChainList();
+    }
+}
+
+function openTriggerEditor(chain) {
+    const modal = document.getElementById('triggerEditorModal');
+    if (!modal) return;
+
+    document.getElementById('triggerEditorTitle').textContent = chain ? '编辑效果链' : '新建效果链';
+    document.getElementById('triggerChainId').value = chain ? chain.id : '';
+    document.getElementById('triggerChainName').value = chain ? chain.name : '';
+
+    renderConditionList(chain ? chain.conditions : []);
+    renderEffectList(chain ? chain.effects : []);
+
+    document.getElementById('triggerOnce').checked = chain ? chain.once : false;
+    document.getElementById('triggerCooldown').value = chain ? chain.cooldown : 0;
+
+    modal.style.display = 'flex';
+}
+
+function closeTriggerEditor() {
+    const modal = document.getElementById('triggerEditorModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function renderConditionList(conditions) {
+    const container = document.getElementById('conditionList');
+    if (!container) return;
+
+    const html = conditions.map((cond, idx) => `
+        <div class="trigger-editor-row" data-idx="${idx}">
+            <select class="trigger-cond-type" onchange="updateCondition(${idx}, 'type', this.value)">
+                ${Object.entries(window.CONDITION_TYPES).map(([k, v]) =>
+                    `<option value="${v}" ${cond.type === v ? 'selected' : ''}>${formatCondType(k)}</option>`
+                ).join('')}
+            </select>
+            <select class="trigger-cond-op" onchange="updateCondition(${idx}, 'operator', this.value)">
+                <option value=">" ${cond.operator === '>' ? 'selected' : ''}>&gt;</option>
+                <option value=">=" ${cond.operator === '>=' ? 'selected' : ''}>&gt;=</option>
+                <option value="<" ${cond.operator === '<' ? 'selected' : ''}>&lt;</option>
+                <option value="<=" ${cond.operator === '<=' ? 'selected' : ''}>&lt;=</option>
+                <option value="==" ${cond.operator === '==' ? 'selected' : ''}>=</option>
+                <option value="!=" ${cond.operator === '!=' ? 'selected' : ''}>!=</option>
+                <option value="count>=" ${cond.operator === 'count>=' ? 'selected' : ''}>数量≥</option>
+                <option value="count>" ${cond.operator === 'count>' ? 'selected' : ''}>数量&gt;</option>
+                <option value="contains" ${cond.operator === 'contains' ? 'selected' : ''}>包含</option>
+            </select>
+            <input type="text" class="trigger-cond-value" value="${cond.value || ''}" placeholder="值" onchange="updateCondition(${idx}, 'value', this.value)">
+            <button class="trigger-remove-btn" onclick="removeCondition(${idx})">-</button>
+        </div>
+    `).join('');
+
+    container.innerHTML = html;
+}
+
+function renderEffectList(effects) {
+    const container = document.getElementById('effectList');
+    if (!container) return;
+
+    const html = effects.map((eff, idx) => `
+        <div class="trigger-editor-row" data-idx="${idx}">
+            <select class="trigger-effect-type" onchange="updateEffect(${idx}, 'type', this.value)">
+                ${Object.entries(window.EFFECT_TYPES).map(([k, v]) =>
+                    `<option value="${v}" ${eff.type === v ? 'selected' : ''}>${formatEffectType(k)}</option>`
+                ).join('')}
+            </select>
+            <input type="text" class="trigger-effect-params" value='${JSON.stringify(eff.params || {})}' placeholder="参数" onchange="updateEffect(${idx}, 'params', this.value)">
+            <button class="trigger-remove-btn" onclick="removeEffect(${idx})">-</button>
+        </div>
+    `).join('');
+
+    container.innerHTML = html;
+}
+
+function formatCondType(type) {
+    const labels = {
+        TIME_ELAPSED: '⏱️ 绘画时间(秒)',
+        STROKE_COUNT: '✏️ 笔画数量',
+        COLOR_USED: '🎨 使用颜色',
+        LAYER_COUNT: '📑 图层数量',
+        ACHIEVEMENT_UNLOCK: '🏆 成就解锁',
+        CHALLENGE_COMPLETE: '🎯 挑战完成',
+        AREA_FILLED: '🖌️ 区域填充率'
+    };
+    return labels[type] || type;
+}
+
+function formatEffectType(type) {
+    const labels = {
+        PARTICLE_BURST: '✨ 粒子爆炸',
+        SCREEN_SHAKE: '📳 画面震动',
+        COLOR_SHIFT: '🌈 色调变化',
+        BRUSH_CHANGE: '🖌️ 笔刷变化',
+        LAYER_ADD: '📑 添加图层',
+        STICKER_DROP: '🎊 贴纸掉落',
+        FLASH: '💥 屏幕闪白',
+        ZOOM_PULSE: '🔍 缩放脉冲',
+        TOAST_MESSAGE: '💬 提示消息'
+    };
+    return labels[type] || type;
+}
+
+let tempConditions = [];
+let tempEffects = [];
+
+function addCondition() {
+    tempConditions.push({ type: 'stroke_count', operator: '>', value: 1 });
+    renderConditionList(tempConditions);
+}
+
+function removeCondition(idx) {
+    tempConditions.splice(idx, 1);
+    renderConditionList(tempConditions);
+}
+
+function updateCondition(idx, field, value) {
+    if (tempConditions[idx]) {
+        tempConditions[idx][field] = value;
+    }
+}
+
+function addEffect() {
+    tempEffects.push({ type: 'particle_burst', params: { count: 30 } });
+    renderEffectList(tempEffects);
+}
+
+function removeEffect(idx) {
+    tempEffects.splice(idx, 1);
+    renderEffectList(tempEffects);
+}
+
+function updateEffect(idx, field, value) {
+    if (tempEffects[idx]) {
+        if (field === 'params') {
+            try {
+                tempEffects[idx].params = JSON.parse(value);
+            } catch (e) {
+                tempEffects[idx].params = {};
+            }
+        } else {
+            tempEffects[idx][field] = value;
+        }
+    }
+}
+
+function saveTriggerChain() {
+    const id = document.getElementById('triggerChainId').value;
+    const name = document.getElementById('triggerChainName').value.trim();
+    const once = document.getElementById('triggerOnce').checked;
+    const cooldown = parseInt(document.getElementById('triggerCooldown').value) || 0;
+
+    if (!name) {
+        alert('请输入效果链名称');
+        return;
+    }
+
+    const chain = {
+        id: id || 'chain_' + Date.now(),
+        name,
+        enabled: true,
+        conditions: tempConditions,
+        effects: tempEffects,
+        once,
+        cooldown,
+        triggered: false
+    };
+
+    if (id) {
+        const existing = triggerSystem.chains.find(c => c.id === id);
+        if (existing) {
+            Object.assign(existing, chain);
+        }
+    } else {
+        triggerSystem.chains.push(chain);
+    }
+
+    triggerSystem._save();
+    closeTriggerEditor();
+    renderTriggerChainList();
+    showToast('效果链已保存');
+}
+
+function exportTriggerChains() {
+    const json = triggerSystem.exportJSON();
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'trigger-chains.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('已导出效果链配置');
+}
+
+function importTriggerChains() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            if (triggerSystem.importJSON(ev.target.result)) {
+                renderTriggerChainList();
+                showToast('导入成功');
+            } else {
+                showToast('导入失败：无效的JSON格式');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+function newTriggerChain() {
+    tempConditions = [{ type: 'stroke_count', operator: '>', value: 1 }];
+    tempEffects = [{ type: 'particle_burst', params: { count: 30 } }];
+    openTriggerEditor(null);
+}
+
+function closeAllTriggerEditors() {
+    closeTriggerEditor();
+}
+
+// Init trigger system
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initTriggerSystem, 500));
+} else {
+    setTimeout(initTriggerSystem, 500);
+}
+
+// ----- V64: BrushPreset ---
 const BrushPreset = {
     current: {
         id: 'default',
@@ -34319,6 +35727,71 @@ if (document.readyState === 'loading') {
 // === V64 END ===
 
     </script>
+
+    <!-- V68: Trigger System Panel -->
+    <div class="trigger-panel" id="triggerPanel">
+        <div class="trigger-panel-header">
+            <div class="trigger-panel-title">🔗 效果链</div>
+            <button class="trigger-panel-close" id="triggerPanelClose">✕</button>
+        </div>
+        <div class="trigger-panel-body">
+            <div class="trigger-stats-bar" id="triggerStats"></div>
+            <div class="trigger-chain-list" id="triggerChainList"></div>
+        </div>
+        <div class="trigger-panel-footer">
+            <button class="trigger-footer-btn trigger-new-btn" onclick="newTriggerChain()">+ 新建效果链</button>
+            <div style="display:flex;gap:8px;">
+                <button class="trigger-footer-btn trigger-import-btn" onclick="importTriggerChains()">📥 导入</button>
+                <button class="trigger-footer-btn trigger-export-btn" onclick="exportTriggerChains()">📤 导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trigger Editor Modal -->
+    <div class="trigger-editor-modal" id="triggerEditorModal">
+        <div class="trigger-editor-content">
+            <div class="trigger-editor-header">
+                <div class="trigger-editor-title" id="triggerEditorTitle">编辑效果链</div>
+                <button class="trigger-editor-close" onclick="closeTriggerEditor()">✕</button>
+            </div>
+            <div class="trigger-editor-body">
+                <div class="trigger-editor-field">
+                    <label class="trigger-editor-label">效果链名称</label>
+                    <input type="hidden" id="triggerChainId">
+                    <input type="text" class="trigger-editor-input" id="triggerChainName" placeholder="输入效果链名称">
+                </div>
+
+                <div class="trigger-editor-field">
+                    <label class="trigger-editor-label">触发条件</label>
+                    <div class="trigger-editor-list" id="conditionList"></div>
+                    <button class="trigger-add-btn" onclick="addCondition()">+ 添加条件</button>
+                </div>
+
+                <div class="trigger-editor-field">
+                    <label class="trigger-editor-label">执行效果</label>
+                    <div class="trigger-editor-list" id="effectList"></div>
+                    <button class="trigger-add-btn" onclick="addEffect()">+ 添加效果</button>
+                </div>
+
+                <div class="trigger-editor-options">
+                    <label class="trigger-option-item">
+                        <input type="checkbox" id="triggerOnce">
+                        <span>只触发一次</span>
+                    </label>
+                    <label class="trigger-option-item">
+                        <span>冷却:</span>
+                        <input type="number" id="triggerCooldown" value="0" min="0" style="width:60px;padding:4px;border:2px solid #dee2e6;border-radius:6px;">
+                        <span>秒</span>
+                    </label>
+                </div>
+
+                <div class="trigger-editor-footer">
+                    <button class="trigger-cancel-btn" onclick="closeTriggerEditor()">取消</button>
+                    <button class="trigger-save-btn" onclick="saveTriggerChain()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- V67: Challenge Panels -->
     <div class="challenge-panel" id="challengePanel">
