@@ -1,0 +1,25 @@
+{
+  "identifier": "default",
+  "description": "Default capabilities for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:window:allow-unmaximize",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-title",
+    "fs:default",
+    "fs:allow-read",
+    "fs:allow-write",
+    "dialog:default",
+    "dialog:allow-save",
+    "notification:default",
+    "notification:allow-notify",
+    "clipboard-manager:default",
+    "clipboard-manager:allow-write-image",
+    "clipboard-manager:allow-read-image"
+  ]
+}

@@ -1,0 +1,24 @@
+[package]
+name = "creative-drawing-board"
+version = "1.0.0"
+description = "A creative drawing board for toddlers with guided teaching, drawing, coloring, and bubble games"
+authors = ["yeluo45"]
+edition = "2021"
+
+[lib]
+name = "creative_drawing_board_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-fs = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-clipboard-manager = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+env_logger = "0.11"

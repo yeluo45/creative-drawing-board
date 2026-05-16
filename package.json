@@ -1,0 +1,19 @@
+{
+  "name": "creative-drawing-board",
+  "version": "1.0.0",
+  "description": "A creative drawing board for toddlers with guided teaching, drawing, coloring, and bubble games",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri dev": "tauri dev",
+    "tauri build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.11.0",
+    "@tauri-apps/cli": "^2.11.1",
+    "vite": "^5.0.0"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Creative Drawing Board",
+  "version": "1.0.0",
+  "identifier": "com.yeluo45.creative-drawing-board",
+  "build": {
+    "frontendDist": "../",
+    "devUrl": "../index.html",
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devtools": true
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Creative Drawing Board",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "minWidth": 800,
+        "minHeight": 600
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper"
+      }
+    }
+  },
+  "plugins": {
+    "fs": {
+      "all": true,
+      "scope": ["**"]
+    },
+    "notification": {
+      "all": true
+    },
+    "clipboard-manager": {
+      "all": true
+    },
+    "dialog": {
+      "all": true
+    }
+  }
+}
