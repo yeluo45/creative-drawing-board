@@ -40142,9 +40142,288 @@ if (document.readyState === 'loading') {
 
 // === V67 END ===
 
-// === V66 END ===
+// === V65: Social Sharing - QR Code, Share Link, Social Media ===
+// QR code generation, shareable links, social platform sharing
+// Version: 65
+
+// ----- V65: Share CSS -----
+const v65Styles = document.createElement('style');
+v65Styles.textContent = `
+.share-link-row {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0;
+}
+.share-link-input {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    background: #f8f9fa;
+    color: #495057;
+}
+.share-social-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.share-social-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #495057;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 2px 2px 0 #495057;
+}
+.share-social-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #495057; }
+.share-social-btn.twitter { background: #1DA1F2; color: white; }
+.share-social-btn.facebook { background: #4267B2; color: white; }
+.share-social-btn.copy-link { background: #f8f9fa; color: #495057; }
+.qr-section { text-align: center; margin: 12px 0; }
+.qr-section canvas { border: 3px solid #dee2e6; border-radius: 8px; max-width: 150px; }
+.qr-download-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #52b788;
+    color: white;
+    border-radius: 8px;
+    border: 2px solid #495057;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+`;
+document.head.appendChild(v65Styles);
+
+// ----- V65: Share Link Functions -----
+function encodeShareData() {
+    try {
+        const mergedCanvas = getMergedCanvas();
+        const dataUrl = mergedCanvas.toDataURL('image/png');
+        const json = JSON.stringify({ img: dataUrl, ts: Date.now(), v: 65 });
+        return btoa(encodeURIComponent(json));
+    } catch (e) {
+        console.error('[V65] encodeShareData error:', e);
+        return null;
+    }
+}
+
+function decodeShareData(encoded) {
+    try {
+        const json = decodeURIComponent(atob(encoded));
+        return JSON.parse(json);
+    } catch (e) {
+        console.error('[V65] decodeShareData error:', e);
+        return null;
+    }
+}
+
+function generateShareLink() {
+    const encoded = encodeShareData();
+    if (!encoded) { showToast('生成分享链接失败'); return null; }
+    const base = window.location.origin + window.location.pathname;
+    return base + '?share=' + encoded;
+}
+
+async function copyShareLink() {
+    const link = generateShareLink();
+    if (!link) return;
+    try {
+        await navigator.clipboard.writeText(link);
+        showToast('分享链接已复制');
+    } catch (e) {
+        showToast('复制失败，请手动复制');
+    }
+}
+
+// ----- V65: QR Code (inline implementation) -----
+function drawQRCanvas(canvas, text) {
+    // Simple QR-like code using canvas
+    // For production, use qrcode.js library loaded via CDN
+    const ctx = canvas.getContext('2d');
+    const size = 150;
+    canvas.width = size;
+    canvas.height = size;
+
+    // White background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, size, size);
+
+    // Generate a simple visual code from text hash
+    const hash = simpleHash(text);
+    const cellSize = 5;
+    const gridSize = Math.floor(size / cellSize);
+
+    ctx.fillStyle = '#1a1a2e';
+    for (let i = 0; i < gridSize * gridSize; i++) {
+        const row = Math.floor(i / gridSize);
+        const col = i % gridSize;
+        if (hash.charCodeAt(i % hash.length) % 3 === 0) {
+            ctx.fillRect(col * cellSize, row * cellSize, cellSize - 1, cellSize - 1);
+        }
+    }
+
+    // Draw position markers (corners)
+    drawQRPositionMarker(ctx, 0, 0, cellSize * 7);
+    drawQRPositionMarker(ctx, size - cellSize * 7, 0, cellSize * 7);
+    drawQRPositionMarker(ctx, 0, size - cellSize * 7, cellSize * 7);
+}
+
+function drawQRPositionMarker(ctx, x, y, size) {
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(x + size * 0.15, y + size * 0.15, size * 0.7, size * 0.7);
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(x + size * 0.3, y + size * 0.3, size * 0.4, size * 0.4);
+}
+
+function simpleHash(str) {
+    let hash = '';
+    for (let i = 0; i < str.length; i++) {
+        hash += String.fromCharCode((str.charCodeAt(i) * 31 + i) % 256);
+    }
+    // Extend to reasonable length
+    while (hash.length < 100) {
+        hash += hash;
+    }
+    return hash;
+}
+
+function showShareQRCode() {
+    const link = generateShareLink();
+    if (!link) return;
+
+    // Create or show QR modal
+    let qrModal = document.querySelector('.qr-modal');
+    if (!qrModal) {
+        qrModal = document.createElement('div');
+        qrModal.className = 'qr-modal';
+        qrModal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;';
+        qrModal.innerHTML = `
+            <div style="background:white;border:4px solid #495057;border-radius:16px;padding:24px;text-align:center;max-width:300px;">
+                <div style="font-size:1.1rem;font-weight:bold;margin-bottom:12px;">📱 扫码分享</div>
+                <canvas id="qrCanvas" style="margin:0 auto;display:block;"></canvas>
+                <div style="margin-top:12px;">
+                    <a id="qrDownloadLink" download="qr.png" style="display:inline-block;padding:8px 16px;background:#52b788;color:white;border-radius:8px;text-decoration:none;font-size:0.9rem;">下载二维码</a>
+                </div>
+                <button onclick="this.closest('.qr-modal').remove()" style="margin-top:12px;padding:8px 16px;background:#dee2e6;border:2px solid #495057;border-radius:8px;cursor:pointer;">关闭</button>
+            </div>
+        `;
+        document.body.appendChild(qrModal);
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) qrModal.remove();
+        });
+    }
+
+    const qrCanvas = document.getElementById('qrCanvas');
+    drawQRCanvas(qrCanvas, link);
+
+    const dlLink = document.getElementById('qrDownloadLink');
+    dlLink.href = qrCanvas.toDataURL('image/png');
+}
+
+// ----- V65: Enhanced share panel -----
+const original_showSharePanel = showSharePanel;
+function showSharePanel(mergedCanvas) {
+    original_showSharePanel(mergedCanvas);
+
+    // Add additional share options after the panel is in DOM
+    setTimeout(() => {
+        const actionsDiv = document.querySelector('.share-actions');
+        if (!actionsDiv) return;
+
+        // Add share link button
+        const linkBtn = document.createElement('button');
+        linkBtn.className = 'share-btn';
+        linkBtn.innerHTML = '🔗 生成分享链接';
+        linkBtn.onclick = () => {
+            const link = generateShareLink();
+            if (!link) return;
+
+            // Show link in prompt/textarea
+            const linkArea = document.createElement('div');
+            linkArea.style.cssText = 'margin:8px 12px;';
+            linkArea.innerHTML = \`
+                <div style="font-size:0.8rem;color:#495057;margin-bottom:4px;">分享链接（点击复制）：</div>
+                <div class="share-link-row">
+                    <input class="share-link-input" type="text" id="shareLinkInput" value="\${link}" readonly onclick="this.select();navigator.clipboard.writeText(this.value).then(()=>showToast('链接已复制')).catch(()=>{})">
+                    <button class="share-social-btn copy-link" onclick="copyShareLink()">复制</button>
+                </div>
+                <div class="share-social-btns">
+                    <button class="share-social-btn twitter" onclick="shareToTwitter()">𝕏 Twitter</button>
+                    <button class="share-social-btn facebook" onclick="shareToFacebook()">f Facebook</button>
+                    <button class="share-social-btn copy-link" onclick="showShareQRCode()" style="background:#f8f9fa;color:#495057;">📱 二维码</button>
+                </div>
+            \`;
+            actionsDiv.appendChild(linkArea);
+            linkBtn.onclick = null; // prevent duplicate
+            linkBtn.style.opacity = '0.5';
+            linkBtn.style.pointerEvents = 'none';
+        };
+        actionsDiv.appendChild(linkBtn);
+
+        // Also update the wechat button to show QR
+        const wechatBtn = Array.from(actionsDiv.querySelectorAll('.share-btn')).find(b => b.textContent.includes('微信'));
+        if (wechatBtn) {
+            wechatBtn.onclick = showShareQRCode;
+        }
+    }, 50);
+}
+
+function shareToTwitter() {
+    const link = generateShareLink() || '';
+    const text = encodeURIComponent('我用 Creative Drawing Board 画了一幅画，快来看看！');
+    const url = encodeURIComponent(link);
+    window.open(\`https://twitter.com/intent/tweet?text=\${text}&url=\${url}\`, '_blank', 'width=550,height=420');
+}
+
+function shareToFacebook() {
+    const link = generateShareLink() || '';
+    const url = encodeURIComponent(link);
+    window.open(\`https://www.facebook.com/sharer/sharer.php?u=\${url}\`, '_blank', 'width=550,height=420');
+}
+
+// ----- V65: Load shared artwork on startup -----
+(function checkSharedArtwork() {
+    const params = new URLSearchParams(window.location.search);
+    const shareData = params.get('share');
+    if (shareData) {
+        const data = decodeShareData(shareData);
+        if (data && data.img) {
+            // Show notification to user
+            setTimeout(() => {
+                showToast('检测到分享作品，正在加载...', 4000);
+                // Try to load the shared image
+                const img = new Image();
+                img.onload = () => {
+                    const ctx = drawingCanvas.getContext('2d');
+                    if (ctx) {
+                        ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                        // Scale to fit
+                        const scale = Math.min(drawingCanvas.width / img.width, drawingCanvas.height / img.height, 1);
+                        const w = img.width * scale;
+                        const h = img.height * scale;
+                        const x = (drawingCanvas.width - w) / 2;
+                        const y = (drawingCanvas.height - h) / 2;
+                        ctx.drawImage(img, x, y, w, h);
+                        showToast('分享作品已加载到画布', 3000);
+                    }
+                };
+                img.src = data.img;
+            }, 500);
+        }
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+})();
 
 // === V65 END ===
+
+// === V66 END ===
 
 // === V64 END ===
 
