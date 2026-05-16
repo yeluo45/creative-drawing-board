@@ -1,14 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Creative Drawing Board",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "identifier": "com.yeluo45.creative-drawing-board",
   "build": {
     "frontendDist": "../",
-    "devUrl": "../index.html",
     "beforeBuildCommand": "",
-    "beforeDevCommand": "",
-    "devtools": true
+    "beforeDevCommand": ""
   },
   "app": {
     "windows": [
@@ -39,12 +37,6 @@
     "windows": {
       "webviewInstallMode": {
         "type": "embedBootstrapper"
-      },
-      "nsis": {
-        "oneClick": false,
-        "allowToChangeInstallationDirectory": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true
       }
     }
   },
