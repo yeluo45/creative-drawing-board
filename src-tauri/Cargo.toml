@@ -1,6 +1,6 @@
 [package]
 name = "creative-drawing-board"
-version = "1.0.0"
+version = "1.1.0"
 description = "A creative drawing board for toddlers with guided teaching, drawing, coloring, and bubble games"
 authors = ["yeluo45"]
 edition = "2021"
