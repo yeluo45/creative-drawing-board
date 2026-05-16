@@ -11205,6 +11205,7 @@
             <button class="marketplace-btn" id="marketplaceBtn" title="贴纸市场">🏪</button>
             <button class="plugin-btn" id="pluginBtn" title="插件市场">🔌</button>
             <button class="collab-btn" id="collabBtn" title="协作绘画">🤝 协作</button>
+            <button class="cloud-sync-btn" id="cloudSyncBtn" title="云同步">☁️ 云</button>
             <div class="ai-menu" id="aiMenu">
                 <div class="ai-menu-title">🤖 AI 辅助绘画</div>
                 <div class="ai-menu-item">
@@ -38395,6 +38396,875 @@ if (document.readyState === 'loading') {
 
 // === V66 END ===
 
+// === V60: Cloud Sync Account System ===
+// Cloud Sync: Anonymous account + GitHub Gist sync + Auto-sync
+// Version: 60
+
+// ----- V60: Cloud Sync CSS -----
+const v60Styles = document.createElement('style');
+v60Styles.textContent = `
+.cloud-sync-btn {
+    background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+    border: 3px solid #495057;
+    border-radius: 16px;
+    padding: 8px 14px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #495057;
+    transition: transform 0.1s, box-shadow 0.1s;
+    min-width: 70px;
+    min-height: 44px;
+    font-family: inherit;
+}
+.cloud-sync-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #495057;
+}
+.cloud-sync-btn.syncing {
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+.cloud-panel {
+    position: fixed;
+    top: 0;
+    left: -420px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+    z-index: 1500;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease;
+}
+.cloud-panel.open { left: 0; }
+.cloud-panel-header {
+    padding: 16px;
+    background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+    border-bottom: 3px solid #495057;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cloud-panel-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+}
+.cloud-panel-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    padding: 4px 8px;
+}
+.cloud-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+.cloud-account-section {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.cloud-account-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cloud-account-anonymous {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cloud-account-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #495057;
+}
+.cloud-account-badge {
+    background: #e9ecef;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+}
+.cloud-account-badge.linked {
+    background: #d3f9d8;
+    color: #2f9e44;
+}
+.cloud-github-section {
+    margin-top: 12px;
+}
+.cloud-github-token-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.cloud-github-token-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.cloud-github-token-input:focus {
+    outline: none;
+    border-color: #7C3AED;
+}
+.cloud-github-link-btn {
+    background: #24292e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.cloud-github-link-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.cloud-sync-section {
+    margin-top: 16px;
+}
+.cloud-sync-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+.cloud-sync-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #868e96;
+}
+.cloud-sync-dot.connected { background: #40c057; }
+.cloud-sync-dot.syncing { background: #fab005; animation: pulse 1s infinite; }
+.cloud-sync-dot.error { background: #fa5252; }
+.cloud-sync-info {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #495057;
+}
+.cloud-sync-time {
+    font-size: 0.75rem;
+    color: #868e96;
+}
+.cloud-sync-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cloud-sync-btn-row {
+    display: flex;
+    gap: 8px;
+}
+.cloud-sync-primary-btn {
+    flex: 1;
+    background: linear-gradient(180deg, #A855F7 0%, #7C3AED 100%);
+    color: white;
+    border: 2px solid #495057;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+.cloud-sync-primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.cloud-sync-secondary-btn {
+    flex: 1;
+    background: #e9ecef;
+    color: #495057;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+.cloud-auto-sync-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid #dee2e6;
+    margin-top: 8px;
+}
+.cloud-auto-sync-label {
+    font-size: 0.9rem;
+    color: #495057;
+}
+.cloud-auto-sync-toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+}
+.cloud-auto-sync-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.cloud-auto-sync-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #ccc;
+    border-radius: 26px;
+    transition: 0.3s;
+}
+.cloud-auto-sync-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+.cloud-auto-sync-toggle input:checked + .cloud-auto-sync-slider {
+    background: #40c057;
+}
+.cloud-auto-sync-toggle input:checked + .cloud-auto-sync-slider:before {
+    transform: translateX(22px);
+}
+.cloud-sync-interval-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+.cloud-sync-interval-select {
+    padding: 6px 10px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+.cloud-sync-projects-list {
+    margin-top: 16px;
+}
+.cloud-sync-projects-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 8px;
+}
+.cloud-sync-project-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+.cloud-sync-project-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #e9ecef;
+    object-fit: cover;
+}
+.cloud-sync-project-info {
+    flex: 1;
+}
+.cloud-sync-project-name {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #212529;
+}
+.cloud-sync-project-date {
+    font-size: 0.75rem;
+    color: #868e96;
+}
+.cloud-sync-project-status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+.cloud-sync-project-status.synced { background: #d3f9d8; color: #2f9e44; }
+.cloud-sync-project-status.local { background: #fff3bf; color: #f08c00; }
+.cloud-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #212529;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s;
+}
+.cloud-toast.show { opacity: 1; transform: translateY(0); }
+.cloud-toast.success { background: #2f9e44; }
+.cloud-toast.error { background: #c92a2a; }
+`;
+document.head.appendChild(v60Styles);
+
+// ----- V60: Cloud Account State -----
+const CloudSync = {
+    // State
+    userId: null,
+    deviceId: null,
+    githubToken: null,
+    gistId: null,
+    isAnonymous: true,
+    isLinked: false,
+    lastSyncTime: null,
+    autoSyncEnabled: false,
+    autoSyncInterval: 30000, // 30 seconds default
+    syncTimer: null,
+    isSyncing: false,
+
+    // Storage keys
+    STORAGE_KEYS: {
+        USER_ID: 'cloud_user_id',
+        DEVICE_ID: 'cloud_device_id',
+        GITHUB_TOKEN: 'cloud_github_token',
+        GIST_ID: 'cloud_gist_id',
+        LAST_SYNC: 'cloud_last_sync',
+        AUTO_SYNC: 'cloud_auto_sync',
+        AUTO_SYNC_INTERVAL: 'cloud_auto_sync_interval'
+    },
+
+    // Initialize cloud sync
+    init() {
+        this.loadAccount();
+        if (!this.userId) {
+            this.createAnonymousAccount();
+        }
+        this.initCloudSyncPanel();
+        this.initAutoSync();
+        console.log('[CloudSync] Initialized, userId:', this.userId, 'deviceId:', this.deviceId);
+    },
+
+    // Load account from localStorage
+    loadAccount() {
+        this.userId = localStorage.getItem(this.STORAGE_KEYS.USER_ID);
+        this.deviceId = localStorage.getItem(this.STORAGE_KEYS.DEVICE_ID);
+        this.githubToken = localStorage.getItem(this.STORAGE_KEYS.GITHUB_TOKEN);
+        this.gistId = localStorage.getItem(this.STORAGE_KEYS.GIST_ID);
+        this.lastSyncTime = localStorage.getItem(this.STORAGE_KEYS.LAST_SYNC);
+        const autoSync = localStorage.getItem(this.STORAGE_KEYS.AUTO_SYNC);
+        this.autoSyncEnabled = autoSync === 'true';
+        const interval = localStorage.getItem(this.STORAGE_KEYS.AUTO_SYNC_INTERVAL);
+        if (interval) this.autoSyncInterval = parseInt(interval);
+        this.isLinked = !!this.githubToken;
+        this.isAnonymous = !this.githubToken;
+    },
+
+    // Create anonymous account
+    createAnonymousAccount() {
+        this.userId = 'user_' + this.generateId();
+        this.deviceId = 'device_' + this.generateId();
+        localStorage.setItem(this.STORAGE_KEYS.USER_ID, this.userId);
+        localStorage.setItem(this.STORAGE_KEYS.DEVICE_ID, this.deviceId);
+        console.log('[CloudSync] Anonymous account created:', this.userId);
+        this.showToast('匿名账号已创建', 'success');
+    },
+
+    // Generate random ID
+    generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    },
+
+    // Link GitHub account
+    async linkGitHubAccount(token) {
+        if (!token || token.length < 10) {
+            this.showToast('无效的 GitHub Token', 'error');
+            return false;
+        }
+        try {
+            // Validate token by getting user info
+            const response = await fetch('https://api.github.com/user', {
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Invalid token');
+            }
+            const userData = await response.json();
+            this.githubToken = token;
+            this.isLinked = true;
+            this.isAnonymous = false;
+            localStorage.setItem(this.STORAGE_KEYS.GITHUB_TOKEN, token);
+            this.showToast('GitHub 账号关联成功: ' + userData.login, 'success');
+            this.updateAccountDisplay();
+            this.updateSyncStatus();
+            // Create or get gist
+            await this.ensureGist();
+            return true;
+        } catch (error) {
+            console.error('[CloudSync] GitHub link error:', error);
+            this.showToast('GitHub Token 验证失败', 'error');
+            return false;
+        }
+    },
+
+    // Unlink GitHub account
+    unlinkGitHubAccount() {
+        this.githubToken = null;
+        this.gistId = null;
+        this.isLinked = false;
+        this.isAnonymous = true;
+        localStorage.removeItem(this.STORAGE_KEYS.GITHUB_TOKEN);
+        localStorage.removeItem(this.STORAGE_KEYS.GIST_ID);
+        this.showToast('已取消 GitHub 关联', 'success');
+        this.updateAccountDisplay();
+        this.updateSyncStatus();
+    },
+
+    // Ensure gist exists
+    async ensureGist() {
+        if (this.gistId) {
+            // Verify gist exists
+            try {
+                const response = await fetch('https://api.github.com/gists/' + this.gistId, {
+                    headers: { 'Authorization': 'token ' + this.githubToken }
+                });
+                if (!response.ok) {
+                    this.gistId = null;
+                }
+            } catch (e) {
+                this.gistId = null;
+            }
+        }
+        if (!this.gistId) {
+            // Create new gist
+            try {
+                const gistData = {
+                    description: 'Creative Drawing Board - Cloud Sync Data',
+                    public: false,
+                    files: {
+                        'cloud_sync_meta.json': {
+                            content: JSON.stringify({
+                                userId: this.userId,
+                                deviceId: this.deviceId,
+                                version: '1.0.0',
+                                createdAt: new Date().toISOString()
+                            })
+                        },
+                        'projects.json': {
+                            content: JSON.stringify({ projects: [] })
+                        }
+                    }
+                };
+                const response = await fetch('https://api.github.com/gists', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'token ' + this.githubToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gistData)
+                });
+                if (response.ok) {
+                    const gist = await response.json();
+                    this.gistId = gist.id;
+                    localStorage.setItem(this.STORAGE_KEYS.GIST_ID, this.gistId);
+                    console.log('[CloudSync] Gist created:', this.gistId);
+                }
+            } catch (e) {
+                console.error('[CloudSync] Create gist error:', e);
+            }
+        }
+        return this.gistId;
+    },
+
+    // Sync to cloud (upload)
+    async syncToCloud() {
+        if (!this.isLinked) {
+            this.showToast('请先关联 GitHub 账号', 'error');
+            return false;
+        }
+        if (this.isSyncing) return false;
+        this.isSyncing = true;
+        this.updateSyncStatus('syncing');
+        try {
+            await this.ensureGist();
+            // Get local projects
+            const projects = this.getLocalProjects();
+            const metaData = {
+                userId: this.userId,
+                deviceId: this.deviceId,
+                syncedAt: new Date().toISOString(),
+                projectCount: projects.length,
+                version: '1.0.0'
+            };
+            // Update gist
+            const response = await fetch('https://api.github.com/gists/' + this.gistId, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'token ' + this.githubToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: 'Creative Drawing Board - Cloud Sync (' + new Date().toLocaleString() + ')',
+                    files: {
+                        'cloud_sync_meta.json': {
+                            content: JSON.stringify(metaData)
+                        },
+                        'projects.json': {
+                            content: JSON.stringify({ projects: projects })
+                        }
+                    }
+                })
+            });
+            if (response.ok) {
+                this.lastSyncTime = new Date().toISOString();
+                localStorage.setItem(this.STORAGE_KEYS.LAST_SYNC, this.lastSyncTime);
+                this.updateSyncStatus('connected');
+                this.showToast('同步成功 (' + projects.length + ' 个作品)', 'success');
+                this.isSyncing = false;
+                return true;
+            } else {
+                throw new Error('Gist update failed');
+            }
+        } catch (error) {
+            console.error('[CloudSync] Sync to cloud error:', error);
+            this.updateSyncStatus('error');
+            this.showToast('同步失败: ' + error.message, 'error');
+            this.isSyncing = false;
+            return false;
+        }
+    },
+
+    // Sync from cloud (download)
+    async syncFromCloud() {
+        if (!this.isLinked) {
+            this.showToast('请先关联 GitHub 账号', 'error');
+            return null;
+        }
+        if (this.isSyncing) return null;
+        this.isSyncing = true;
+        this.updateSyncStatus('syncing');
+        try {
+            if (!this.gistId) {
+                await this.ensureGist();
+            }
+            const response = await fetch('https://api.github.com/gists/' + this.gistId, {
+                headers: { 'Authorization': 'token ' + this.githubToken }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch gist');
+            }
+            const gist = await response.json();
+            const projectsFile = gist.files['projects.json'];
+            if (projectsFile) {
+                const content = JSON.parse(projectsFile.content);
+                this.isSyncing = false;
+                this.updateSyncStatus('connected');
+                return content.projects || [];
+            }
+            this.isSyncing = false;
+            this.updateSyncStatus('connected');
+            return [];
+        } catch (error) {
+            console.error('[CloudSync] Sync from cloud error:', error);
+            this.updateSyncStatus('error');
+            this.showToast('获取云端数据失败', 'error');
+            this.isSyncing = false;
+            return null;
+        }
+    },
+
+    // Merge projects (local + cloud)
+    async mergeProjects() {
+        const cloudProjects = await this.syncFromCloud();
+        if (!cloudProjects) return;
+        const localProjects = this.getLocalProjects();
+        // Merge by project ID, prefer newer version
+        const merged = [...localProjects];
+        cloudProjects.forEach(cp => {
+            const existingIndex = merged.findIndex(lp => lp.id === cp.id);
+            if (existingIndex === -1) {
+                merged.push(cp);
+            } else {
+                const lp = merged[existingIndex];
+                if (new Date(cp.updatedAt) > new Date(lp.updatedAt)) {
+                    merged[existingIndex] = cp;
+                }
+            }
+        });
+        this.showToast('合并完成: ' + merged.length + ' 个作品', 'success');
+        return merged;
+    },
+
+    // Get local projects from IndexedDB or localStorage
+    getLocalProjects() {
+        try {
+            // Try to get from localStorage projects
+            const savedProjects = localStorage.getItem('drawing_board_projects');
+            if (savedProjects) {
+                return JSON.parse(savedProjects);
+            }
+        } catch (e) {
+            console.error('[CloudSync] Get local projects error:', e);
+        }
+        return [];
+    },
+
+    // Enable auto sync
+    enableAutoSync(interval) {
+        if (interval) this.autoSyncInterval = interval;
+        this.autoSyncEnabled = true;
+        localStorage.setItem(this.STORAGE_KEYS.AUTO_SYNC, 'true');
+        localStorage.setItem(this.STORAGE_KEYS.AUTO_SYNC_INTERVAL, this.autoSyncInterval.toString());
+        this.startAutoSyncTimer();
+        this.showToast('自动同步已开启', 'success');
+    },
+
+    // Disable auto sync
+    disableAutoSync() {
+        this.autoSyncEnabled = false;
+        localStorage.setItem(this.STORAGE_KEYS.AUTO_SYNC, 'false');
+        this.stopAutoSyncTimer();
+        this.showToast('自动同步已关闭', 'success');
+    },
+
+    // Start auto sync timer
+    startAutoSyncTimer() {
+        this.stopAutoSyncTimer();
+        if (this.autoSyncEnabled && this.isLinked) {
+            this.syncTimer = setInterval(() => {
+                if (!this.isSyncing && this.isLinked) {
+                    this.syncToCloud();
+                }
+            }, this.autoSyncInterval);
+        }
+    },
+
+    // Stop auto sync timer
+    stopAutoSyncTimer() {
+        if (this.syncTimer) {
+            clearInterval(this.syncTimer);
+            this.syncTimer = null;
+        }
+    },
+
+    // Initialize auto sync on load
+    initAutoSync() {
+        if (this.autoSyncEnabled && this.isLinked) {
+            this.startAutoSyncTimer();
+        }
+    },
+
+    // Initialize cloud sync panel
+    initCloudSyncPanel() {
+        const btn = document.getElementById('cloudSyncBtn');
+        const panel = document.getElementById('cloudPanel');
+        const closeBtn = document.getElementById('cloudPanelClose');
+        const githubLinkBtn = document.getElementById('githubLinkBtn');
+        const githubUnlinkBtn = document.getElementById('githubUnlinkBtn');
+        const syncNowBtn = document.getElementById('syncNowBtn');
+        const toggleAutoSync = document.getElementById('toggleAutoSync');
+        const intervalSelect = document.getElementById('syncIntervalSelect');
+
+        if (btn) {
+            btn.addEventListener('click', () => this.togglePanel());
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closePanel());
+        }
+        if (githubLinkBtn) {
+            githubLinkBtn.addEventListener('click', async () => {
+                const token = document.getElementById('githubTokenInput').value.trim();
+                if (token) {
+                    await this.linkGitHubAccount(token);
+                }
+            });
+        }
+        if (githubUnlinkBtn) {
+            githubUnlinkBtn.addEventListener('click', () => this.unlinkGitHubAccount());
+        }
+        if (syncNowBtn) {
+            syncNowBtn.addEventListener('click', () => this.syncToCloud());
+        }
+        if (toggleAutoSync) {
+            toggleAutoSync.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    const interval = intervalSelect ? parseInt(intervalSelect.value) : 30000;
+                    this.enableAutoSync(interval);
+                } else {
+                    this.disableAutoSync();
+                }
+            });
+        }
+        if (intervalSelect) {
+            intervalSelect.addEventListener('change', (e) => {
+                const interval = parseInt(e.target.value);
+                if (this.autoSyncEnabled) {
+                    this.autoSyncInterval = interval;
+                    localStorage.setItem(this.STORAGE_KEYS.AUTO_SYNC_INTERVAL, interval.toString());
+                    this.startAutoSyncTimer();
+                }
+            });
+        }
+        this.updateAccountDisplay();
+        this.updateSyncStatus();
+    },
+
+    // Toggle cloud panel
+    togglePanel() {
+        const panel = document.getElementById('cloudPanel');
+        if (panel) {
+            panel.classList.toggle('open');
+        }
+    },
+
+    // Close cloud panel
+    closePanel() {
+        const panel = document.getElementById('cloudPanel');
+        if (panel) {
+            panel.classList.remove('open');
+        }
+    },
+
+    // Update account display
+    updateAccountDisplay() {
+        const accountSection = document.getElementById('cloudAccountSection');
+        if (!accountSection) return;
+        if (this.isLinked) {
+            accountSection.innerHTML = `
+                <div class="cloud-account-title">☁️ 云端账号</div>
+                <div class="cloud-account-info">
+                    <span class="cloud-account-badge linked">已关联 GitHub</span>
+                </div>
+                <div class="cloud-account-info" style="margin-top:8px;">
+                    <span>📅 创建于: ${this.userId.substring(0, 12)}...</span>
+                </div>
+            `;
+        } else {
+            accountSection.innerHTML = `
+                <div class="cloud-account-title">☁️ 云端账号</div>
+                <div class="cloud-account-anonymous">
+                    <div class="cloud-account-info">
+                        <span class="cloud-account-badge">匿名账号</span>
+                    </div>
+                    <div class="cloud-account-info">
+                        <span>👤 User: ${this.userId ? this.userId.substring(0, 16) : 'N/A'}</span>
+                    </div>
+                    <div class="cloud-account-info">
+                        <span>📱 Device: ${this.deviceId ? this.deviceId.substring(0, 16) : 'N/A'}</span>
+                    </div>
+                </div>
+                <div class="cloud-github-section">
+                    <div style="font-size:0.85rem;color:#495057;margin-bottom:8px;">关联 GitHub 账号以启用云同步</div>
+                    <div class="cloud-github-token-row">
+                        <input type="password" class="cloud-github-token-input" id="githubTokenInput" placeholder="GitHub Personal Access Token">
+                        <button class="cloud-github-link-btn" id="githubLinkBtn">关联</button>
+                    </div>
+                </div>
+            `;
+            // Re-bind the new button
+            const githubLinkBtn = document.getElementById('githubLinkBtn');
+            if (githubLinkBtn) {
+                githubLinkBtn.addEventListener('click', async () => {
+                    const token = document.getElementById('githubTokenInput').value.trim();
+                    if (token) {
+                        await this.linkGitHubAccount(token);
+                    }
+                });
+            }
+        }
+    },
+
+    // Update sync status display
+    updateSyncStatus(status) {
+        const statusDot = document.getElementById('cloudSyncDot');
+        const statusInfo = document.getElementById('cloudSyncInfo');
+        const statusTime = document.getElementById('cloudSyncTime');
+        const syncNowBtn = document.getElementById('syncNowBtn');
+        const toggleAutoSync = document.getElementById('toggleAutoSync');
+        if (!statusDot) return;
+        if (status === 'syncing') {
+            statusDot.className = 'cloud-sync-dot syncing';
+            if (statusInfo) statusInfo.textContent = '同步中...';
+            if (syncNowBtn) syncNowBtn.disabled = true;
+        } else if (status === 'error') {
+            statusDot.className = 'cloud-sync-dot error';
+            if (statusInfo) statusInfo.textContent = '同步失败';
+            if (syncNowBtn) syncNowBtn.disabled = false;
+        } else if (this.isLinked) {
+            statusDot.className = 'cloud-sync-dot connected';
+            if (statusInfo) statusInfo.textContent = '已连接';
+            if (syncNowBtn) syncNowBtn.disabled = false;
+            if (toggleAutoSync) toggleAutoSync.checked = this.autoSyncEnabled;
+        } else {
+            statusDot.className = 'cloud-sync-dot';
+            if (statusInfo) statusInfo.textContent = '未连接';
+            if (syncNowBtn) syncNowBtn.disabled = true;
+        }
+        if (statusTime && this.lastSyncTime) {
+            statusTime.textContent = '上次同步: ' + new Date(this.lastSyncTime).toLocaleString();
+        }
+    },
+
+    // Show toast notification
+    showToast(message, type = 'info') {
+        let toast = document.getElementById('cloudToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'cloudToast';
+            toast.className = 'cloud-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.className = 'cloud-toast show ' + type;
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+};
+
+// ----- V60: Initialize Cloud Sync on DOM ready -----
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(() => CloudSync.init(), 500));
+} else {
+    setTimeout(() => CloudSync.init(), 500);
+}
+
+// Expose global functions
+window.CloudSync = CloudSync;
+window.initCloudSync = () => CloudSync.init();
+window.createAnonymousAccount = () => CloudSync.createAnonymousAccount();
+window.linkGitHubAccount = (token) => CloudSync.linkGitHubAccount(token);
+window.syncToCloud = () => CloudSync.syncToCloud();
+window.syncFromCloud = () => CloudSync.syncFromCloud();
+window.mergeProjects = () => CloudSync.mergeProjects();
+window.enableAutoSync = (interval) => CloudSync.enableAutoSync(interval);
+window.disableAutoSync = () => CloudSync.disableAutoSync();
+window.initCloudSyncPanel = () => CloudSync.initCloudSyncPanel();
+
+// === V60 END ===
+
 // === V67: Challenge System ===
 
 // ChallengePackage data structure
@@ -40141,6 +41011,55 @@ if (document.readyState === 'loading') {
     <div class="collab-indicator" id="collabIndicator">
         <span class="collab-indicator-dot"></span>
         <span id="collabIndicatorText">1人在画</span>
+    </div>
+
+    <!-- V60: Cloud Sync Panel -->
+    <div class="cloud-panel" id="cloudPanel">
+        <div class="cloud-panel-header">
+            <div class="cloud-panel-title">☁️ 云同步</div>
+            <button class="cloud-panel-close" id="cloudPanelClose">✕</button>
+        </div>
+        <div class="cloud-panel-body">
+            <div class="cloud-account-section" id="cloudAccountSection">
+                <!-- Populated by JS -->
+            </div>
+            <div class="cloud-sync-section">
+                <div class="cloud-sync-status">
+                    <div class="cloud-sync-dot" id="cloudSyncDot"></div>
+                    <div class="cloud-sync-info" id="cloudSyncInfo">未连接</div>
+                </div>
+                <div class="cloud-sync-time" id="cloudSyncTime"></div>
+                <div class="cloud-sync-actions">
+                    <div class="cloud-sync-btn-row">
+                        <button class="cloud-sync-primary-btn" id="syncNowBtn" disabled>🔄 立即同步</button>
+                        <button class="cloud-sync-secondary-btn" id="mergeBtn" onclick="mergeProjects()">📥 合并</button>
+                    </div>
+                    <div class="cloud-auto-sync-row">
+                        <span class="cloud-auto-sync-label">自动同步</span>
+                        <label class="cloud-auto-sync-toggle">
+                            <input type="checkbox" id="toggleAutoSync">
+                            <span class="cloud-auto-sync-slider"></span>
+                        </label>
+                    </div>
+                    <div class="cloud-sync-interval-row">
+                        <span style="font-size:0.85rem;color:#495057;">同步间隔:</span>
+                        <select class="cloud-sync-interval-select" id="syncIntervalSelect">
+                            <option value="15000">15秒</option>
+                            <option value="30000" selected>30秒</option>
+                            <option value="60000">1分钟</option>
+                            <option value="300000">5分钟</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="githubUnlinkBtnContainer"></div>
+            </div>
+            <div class="cloud-sync-projects-list">
+                <div class="cloud-sync-projects-title">📁 同步项目</div>
+                <div id="cloudProjectsList">
+                    <div style="font-size:0.85rem;color:#868e96;text-align:center;padding:20px;">关联 GitHub 后查看同步项目</div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
