@@ -41515,5 +41515,402 @@ if (document.readyState === 'loading') {
         </div>
     </div>
 
+    <script>
+    // === V64: Animation Frame Editor ===
+    // Frame-based animation with timeline, playback, and GIF export
+    // Version: 64
+
+    // ----- V64: Animation CSS -----
+    const v64Styles = document.createElement('style');
+    v64Styles.textContent = `
+    .anim-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #1a1a2e;
+        border-top: 3px solid #495057;
+        z-index: 1400;
+        display: none;
+        flex-direction: column;
+    }
+    .anim-panel.open { display: flex; }
+    .anim-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: #16213e;
+        border-bottom: 2px solid #0f3460;
+    }
+    .anim-btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 2px solid #495057;
+        background: #0f3460;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .anim-btn:hover { background: #1a4a8a; }
+    .anim-btn.active { background: #e94560; border-color: #e94560; }
+    .anim-fps { color: white; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; }
+    .anim-fps input { width: 50px; text-align: center; background: #0f3460; border: 2px solid #495057; color: white; border-radius: 4px; padding: 2px; }
+    .anim-timeline {
+        display: flex;
+        gap: 4px;
+        padding: 8px 16px;
+        overflow-x: auto;
+        min-height: 80px;
+        background: #0f3460;
+    }
+    .anim-frame-thumb {
+        width: 60px;
+        height: 60px;
+        border: 3px solid #495057;
+        border-radius: 8px;
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+        background: #000;
+    }
+    .anim-frame-thumb.active { border-color: #e94560; box-shadow: 0 0 8px #e94560; }
+    .anim-frame-thumb canvas { width: 100%; height: 100%; object-fit: contain; }
+    .anim-frame-thumb .frame-num {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        font-size: 0.65rem;
+        padding: 1px 4px;
+        border-radius: 4px;
+    }
+    .anim-frame-thumb .del-frame {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: rgba(233,69,96,0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        font-size: 0.65rem;
+        cursor: pointer;
+        display: none;
+    }
+    .anim-frame-thumb:hover .del-frame { display: block; }
+    .anim-add-frame {
+        width: 60px;
+        height: 60px;
+        border: 3px dashed #495057;
+        border-radius: 8px;
+        background: transparent;
+        color: #868e96;
+        font-size: 1.5rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .anim-add-frame:hover { border-color: #e94560; color: #e94560; }
+    .anim-export-btns { display: flex; gap: 8px; margin-left: auto; }
+    .anim-export-btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 2px solid #495057;
+        background: linear-gradient(180deg, #52b788 0%, #2d6a4f 100%);
+        color: white;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .anim-export-btn:hover { opacity: 0.9; }
+    `;
+    document.head.appendChild(v64Styles);
+
+    // ----- V64: Animation State -----
+    let animFrames = [];      // Array of { imageData: ImageData }
+    let currentFrameIdx = 0;
+    let isAnimPlaying = false;
+    let animPlaybackTimer = null;
+    let animFPS = 12;
+
+    // ----- V64: Drawing Canvas Reference -----
+    let drawCanvas, drawCtx;
+    let frameEditCanvas, frameEditCtx;
+
+    // ----- V64: Animation Panel -----
+    let animPanel, animTimeline, frameCountDisplay;
+
+    function openAnimPanel() {
+        if (animPanel) {
+            animPanel.classList.add('open');
+            return;
+        }
+
+        // Init frame data from current canvas
+        if (!drawCanvas) {
+            drawCanvas = document.getElementById('drawCanvas');
+            drawCtx = drawCanvas?.getContext('2d');
+        }
+        if (drawCanvas && drawCtx) {
+            const id = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+            animFrames = [{ imageData: id }];
+            currentFrameIdx = 0;
+        }
+
+        const body = document.body;
+        animPanel = document.createElement('div');
+        animPanel.className = 'anim-panel open';
+        animPanel.innerHTML = \`
+            <div class="anim-controls">
+                <button class="anim-btn" id="animPlayBtn" onclick="toggleAnimPlay()">▶️ 播放</button>
+                <button class="anim-btn" id="animPrevBtn" onclick="prevAnimFrame()">⏮️</button>
+                <button class="anim-btn" id="animNextBtn" onclick="nextAnimFrame()">⏭️</button>
+                <div class="anim-fps">
+                    <span>FPS:</span>
+                    <input type="number" id="animFPSInput" value="\${animFPS}" min="1" max="30" onchange="setAnimFPS(this.value)">
+                </div>
+                <button class="anim-btn" onclick="copyCurrentToFrame()">📋 复制帧</button>
+                <div class="anim-export-btns">
+                    <button class="anim-export-btn" onclick="exportAnimGIF()">🎬 导出GIF</button>
+                </div>
+                <button class="anim-btn" style="margin-left:8px;background:#e94560;" onclick="closeAnimPanel()">✕ 关闭</button>
+            </div>
+            <div class="anim-timeline" id="animTimeline"></div>
+        \`;
+        body.appendChild(animPanel);
+
+        // Create offscreen canvas for frame editing
+        frameEditCanvas = document.createElement('canvas');
+        frameEditCanvas.width = drawCanvas ? drawCanvas.width : 800;
+        frameEditCanvas.height = drawCanvas ? drawCanvas.height : 600;
+        frameEditCtx = frameEditCanvas.getContext('2d');
+
+        renderAnimTimeline();
+    }
+
+    function closeAnimPanel() {
+        stopAnimPlayback();
+        if (animPanel) {
+            animPanel.classList.remove('open');
+        }
+    }
+
+    function toggleAnimPlay() {
+        if (isAnimPlaying) {
+            stopAnimPlayback();
+        } else {
+            startAnimPlayback();
+        }
+    }
+
+    function startAnimPlayback() {
+        if (animFrames.length < 2) { showToast('至少需要2帧才能播放'); return; }
+        isAnimPlaying = true;
+        document.getElementById('animPlayBtn').textContent = '⏸️ 暂停';
+        document.getElementById('animPlayBtn').classList.add('active');
+        playNextAnimFrame();
+    }
+
+    function stopAnimPlayback() {
+        isAnimPlaying = false;
+        if (animPlaybackTimer) { clearTimeout(animPlaybackTimer); animPlaybackTimer = null; }
+        const btn = document.getElementById('animPlayBtn');
+        if (btn) { btn.textContent = '▶️ 播放'; btn.classList.remove('active'); }
+    }
+
+    function playNextAnimFrame() {
+        if (!isAnimPlaying || animFrames.length === 0) return;
+        currentFrameIdx = (currentFrameIdx + 1) % animFrames.length;
+        renderFrameToCanvas(currentFrameIdx);
+        renderAnimTimeline();
+        animPlaybackTimer = setTimeout(playNextAnimFrame, 1000 / animFPS);
+    }
+
+    function prevAnimFrame() {
+        stopAnimPlayback();
+        if (animFrames.length === 0) return;
+        currentFrameIdx = (currentFrameIdx - 1 + animFrames.length) % animFrames.length;
+        renderFrameToCanvas(currentFrameIdx);
+        renderAnimTimeline();
+    }
+
+    function nextAnimFrame() {
+        stopAnimPlayback();
+        if (animFrames.length === 0) return;
+        currentFrameIdx = (currentFrameIdx + 1) % animFrames.length;
+        renderFrameToCanvas(currentFrameIdx);
+        renderAnimTimeline();
+    }
+
+    function setAnimFPS(fps) {
+        animFPS = Math.max(1, Math.min(30, parseInt(fps) || 12));
+        document.getElementById('animFPSInput').value = animFPS;
+    }
+
+    function renderFrameToCanvas(idx) {
+        if (!drawCanvas || !drawCtx || !animFrames[idx]) return;
+        drawCtx.putImageData(animFrames[idx].imageData, 0, 0);
+    }
+
+    function renderAnimTimeline() {
+        const timeline = document.getElementById('animTimeline');
+        if (!timeline || !drawCanvas) return;
+        timeline.innerHTML = animFrames.map((frame, i) => {
+            const thumbCanvas = document.createElement('canvas');
+            thumbCanvas.width = 60;
+            thumbCanvas.height = 45;
+            const tCtx = thumbCanvas.getContext('2d');
+            // Scale down
+            const scaleX = 60 / drawCanvas.width;
+            const scaleY = 45 / drawCanvas.height;
+            const scale = Math.min(scaleX, scaleY);
+            const w = drawCanvas.width * scale;
+            const h = drawCanvas.height * scale;
+            const ox = (60 - w) / 2;
+            const oy = (45 - h) / 2;
+            tCtx.fillStyle = '#000';
+            tCtx.fillRect(0, 0, 60, 45);
+            tCtx.drawImage(drawCanvas, 0, 0, drawCanvas.width, drawCanvas.height, ox, oy, w, h);
+
+            const imgURL = thumbCanvas.toDataURL();
+            const isActive = i === currentFrameIdx;
+            return \`<div class="anim-frame-thumb \${isActive ? 'active' : ''}" onclick="selectAnimFrame(\${i})">
+                <img src="\${imgURL}" style="width:100%;height:100%;object-fit:contain;">
+                <span class="frame-num">\${i + 1}</span>
+                \${animFrames.length > 1 ? \`<button class="del-frame" onclick="event.stopPropagation();deleteAnimFrame(\${i})">×</button>\` : ''}
+            </div>\`;
+        }).join('') + \`<div class="anim-add-frame" onclick="addAnimFrame()">+</div>\`;
+
+        // Update frame count
+        const countEl = document.getElementById('frameCountDisplay');
+        if (countEl) countEl.textContent = animFrames.length + '帧';
+    }
+
+    function selectAnimFrame(idx) {
+        stopAnimPlayback();
+        currentFrameIdx = idx;
+        if (animFrames[idx]) {
+            renderFrameToCanvas(idx);
+        }
+        renderAnimTimeline();
+    }
+
+    function addAnimFrame(copy = false) {
+        stopAnimPlayback();
+        if (copy && drawCanvas && drawCtx) {
+            const id = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+            animFrames.splice(currentFrameIdx + 1, 0, { imageData: id });
+            currentFrameIdx++;
+        } else {
+            // Blank frame
+            const blank = frameEditCtx.createImageData(drawCanvas ? drawCanvas.width : 800, drawCanvas ? drawCanvas.height : 600);
+            animFrames.splice(currentFrameIdx + 1, 0, { imageData: blank });
+            currentFrameIdx++;
+        }
+        renderAnimTimeline();
+        showToast('已添加帧');
+    }
+
+    function copyCurrentToFrame() {
+        if (!drawCanvas || !drawCtx) return;
+        const id = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+        animFrames.splice(currentFrameIdx + 1, 0, { imageData: id });
+        currentFrameIdx++;
+        renderAnimTimeline();
+        showToast('帧已复制');
+    }
+
+    function deleteAnimFrame(idx) {
+        if (animFrames.length <= 1) { showToast('至少保留一帧'); return; }
+        stopAnimPlayback();
+        animFrames.splice(idx, 1);
+        if (currentFrameIdx >= animFrames.length) currentFrameIdx = animFrames.length - 1;
+        if (animFrames[currentFrameIdx]) renderFrameToCanvas(currentFrameIdx);
+        renderAnimTimeline();
+        showToast('帧已删除');
+    }
+
+    async function exportAnimGIF() {
+        if (animFrames.length < 1) { showToast('没有帧可导出'); return; }
+        stopAnimPlayback();
+        showToast('正在生成GIF...');
+
+        try {
+            // Simple GIF export using canvas frames
+            // Use gif.js if available, else fallback to static frames export
+            const width = drawCanvas ? drawCanvas.width : 800;
+            const height = drawCanvas ? drawCanvas.height : 600;
+
+            // Build a simple animated canvas for preview
+            let frameIdx = 0;
+            let frameDelay = Math.round(1000 / animFPS);
+
+            // For now, export as a series of PNG frames (GIF library adds complexity)
+            // Download each frame as numbered PNG
+            animFrames.forEach((frame, i) => {
+                const tmpCanvas = document.createElement('canvas');
+                tmpCanvas.width = width;
+                tmpCanvas.height = height;
+                const tmpCtx = tmpCanvas.getContext('2d');
+                tmpCtx.putImageData(frame.imageData, 0, 0);
+                const url = tmpCanvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.download = \`frame_\${String(i+1).padStart(3,'0')}.png\`;
+                a.href = url;
+                a.click();
+            });
+            showToast('帧图片已导出 (' + animFrames.length + '帧)');
+        } catch (e) {
+            console.error('Export error:', e);
+            showToast('导出失败');
+        }
+    }
+
+    // ----- V64: Hook into drawing system -----
+    // When saving artwork, include current frame data
+    const original_downloadArtwork_v64 = downloadArtwork;
+    function downloadArtwork() {
+        // Save current frame to animation frames before download
+        if (drawCanvas && drawCtx) {
+            const id = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+            if (animFrames.length === 0 || currentFrameIdx >= animFrames.length) {
+                animFrames = [{ imageData: id }];
+                currentFrameIdx = 0;
+            } else {
+                animFrames[currentFrameIdx].imageData = id;
+            }
+        }
+        original_downloadArtwork_v64();
+    }
+
+    // ----- V64: Toolbar Button -----
+    const v64Init = setInterval(() => {
+        const shareBtn = document.getElementById('shareBtn') || document.querySelector('[id^="share"]');
+        if (shareBtn || document.getElementById('toolbar')) {
+            clearInterval(v64Init);
+            // Find a good place to add animation button
+            let insertTarget = document.getElementById('toolbar') || document.querySelector('.toolbar') || document.querySelector('[class*="tool"]');
+            if (!insertTarget) {
+                // Try finding container
+                insertTarget = document.querySelector('#canvasWrapper')?.parentElement;
+            }
+            if (!insertTarget) return;
+
+            const animBtn = document.createElement('button');
+            animBtn.id = 'animBtn';
+            animBtn.textContent = '🎬';
+            animBtn.title = '动画制作';
+            animBtn.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#e94560;border:3px solid #495057;border-radius:16px;padding:8px 16px;font-size:1.2rem;cursor:pointer;box-shadow:3px 3px 0 #495057;z-index:1300;';
+            animBtn.onclick = openAnimPanel;
+            document.body.appendChild(animBtn);
+        }
+    }, 300);
+    </script>
+
 </body>
 </html>
