@@ -17615,6 +17615,9 @@
                     <button class="share-btn" onclick="downloadArtwork()">
                         💾 保存到本地
                     </button>
+                    <button class="share-btn" onclick="copyArtworkImage()">
+                        🖼️ 复制图片
+                    </button>
                     <button class="share-btn" onclick="copyArtworkLink()">
                         🔗 复制链接
                     </button>
@@ -38396,6 +38399,103 @@ if (document.readyState === 'loading') {
 
 // === V66 END ===
 
+// === V62: Tauri Native Integration ===
+// Integrate Tauri native capabilities: save dialog, clipboard, notifications
+// Version: 62
+
+// ----- V62: Tauri Detection -----
+const isTauri = typeof window !== 'undefined' && (window.__TAURI__ || window.tauri);
+
+// ----- V62: Tauri Native Save -----
+async function tauriSaveFile(data, filename) {
+    if (isTauri && window.__TAURI__) {
+        try {
+            await window.__TAURI__.core.invoke('save_file_to_disk', {
+                data: Array.from(data),
+                filename: filename
+            });
+            return true;
+        } catch (e) {
+            console.warn('[Tauri] save_file_to_disk failed, falling back to web:', e);
+        }
+    }
+    // Fallback: web download
+    const blob = new Blob([data], { type: 'image/png' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+    return true;
+}
+
+// ----- V62: Tauri Copy Image -----
+async function tauriCopyImage(imageData) {
+    if (isTauri && window.__TAURI__) {
+        try {
+            await window.__TAURI__.core.invoke('copy_image_to_clipboard', {
+                data: Array.from(imageData)
+            });
+            return true;
+        } catch (e) {
+            console.warn('[Tauri] copy_image_to_clipboard failed, falling back to web:', e);
+        }
+    }
+    // Fallback: navigator.clipboard
+    try {
+        const blob = new Blob([imageData], { type: 'image/png' });
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+        ]);
+        return true;
+    } catch (e) {
+        console.warn('[Tauri] clipboard fallback failed:', e);
+        return false;
+    }
+}
+
+// ----- V62: Tauri Notification -----
+async function tauriNotify(title, body) {
+    if (isTauri && window.__TAURI__) {
+        try {
+            await window.__TAURI__.core.invoke('show_notification', { title, body });
+            return true;
+        } catch (e) {
+            console.warn('[Tauri] show_notification failed:', e);
+        }
+    }
+    return false;
+}
+
+// ----- V62: Modified downloadArtwork -----
+const original_downloadArtwork = downloadArtwork;
+function downloadArtwork() {
+    const mergedCanvas = getMergedCanvas();
+    const filename = 'my-artwork-' + Date.now() + '.png';
+    const dataUrl = mergedCanvas.toDataURL('image/png');
+    const base64 = dataUrl.split(',')[1];
+    const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    tauriSaveFile(bytes, filename).then(() => {
+        showToast('图片已保存');
+        closeSharePanel();
+    });
+}
+
+// ----- V62: Copy Artwork Image (not just link) -----
+async function copyArtworkImage() {
+    const mergedCanvas = getMergedCanvas();
+    const dataUrl = mergedCanvas.toDataURL('image/png');
+    const base64 = dataUrl.split(',')[1];
+    const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    const ok = await tauriCopyImage(bytes);
+    if (ok) {
+        showToast('图片已复制到剪贴板');
+    } else {
+        showToast('复制失败，请手动保存');
+    }
+}
+
 // === V60: Cloud Sync Account System ===
 // Cloud Sync: Anonymous account + GitHub Gist sync + Auto-sync
 // Version: 60
@@ -38942,6 +39042,7 @@ const CloudSync = {
                 localStorage.setItem(this.STORAGE_KEYS.LAST_SYNC, this.lastSyncTime);
                 this.updateSyncStatus('connected');
                 this.showToast('同步成功 (' + projects.length + ' 个作品)', 'success');
+                tauriNotify('Cloud Sync', '同步成功 (' + projects.length + ' 个作品)');
                 this.isSyncing = false;
                 return true;
             } else {
