@@ -11498,7 +11498,13 @@
         <div class="panel" id="fillPanel">
             <button class="panel-close" onclick="closeAllPanels()">×</button>
             <div style="text-align:center;padding:8px;font-weight:bold;color:#495057;">
-                Tap canvas to fill area with selected color
+                点击画布填充区域
+            </div>
+            <div style="padding:8px;">
+                <div style="font-size:0.85rem;color:#495057;margin-bottom:6px;">智能填色容差</div>
+                <input type="range" id="fillTolerance" min="10" max="64" value="32" 
+                    style="width:100%;" onchange="updateFillTolerance(this.value)">
+                <div style="font-size:0.75rem;color:#868e96;text-align:center;" id="fillToleranceValue">32</div>
             </div>
         </div>
         
@@ -15898,6 +15904,12 @@
         let shapePreviewCanvas = null;
         let shapePreviewCtx = null;
 
+        // V58: Stroke Completion - track points for auto-completion
+        let strokePoints = [];
+        let strokeCompletionEnabled = true;
+        let smartFillEnabled = false;
+        let fillTolerance = 32; // tolerance for smart fill
+
         // V16: Canvas Zoom
         let currentZoom = 1;
         let lastPinchDistance = 0;
@@ -18277,6 +18289,10 @@
             if (currentTool === 'brush' || currentTool === 'eraser' || currentTool === 'highlighter') {
                 saveUndoState();
                 trackDrawing();
+                // V58: Add stroke point for completion detection
+                if (strokeCompletionEnabled) {
+                    strokePoints = [{ x: lastX, y: lastY }];
+                }
                 // V16: Track path points for session eraser
                 if (eraserOnlyOwn) {
                     currentSessionPaths.push({x: lastX, y: lastY});
@@ -18352,6 +18368,10 @@
 
             lastX = pos.x;
             lastY = pos.y;
+            // V58: Add stroke point for completion detection
+            if (strokeCompletionEnabled && strokePoints.length > 0) {
+                strokePoints.push({ x: pos.x, y: pos.y });
+            }
             // V27: Record stroke move
             recordAction(ACTION_TYPES.STROKE_MOVE, { x: pos.x, y: pos.y });
         }
@@ -18370,6 +18390,11 @@
             }
             // V23: Composite layers after drawing
             compositeLayers();
+            // V58: Stroke completion - detect shape and complete it
+            if (strokeCompletionEnabled && strokePoints.length >= 10) {
+                completeStroke();
+            }
+            strokePoints = [];
             // V60: Save to history after drawing
             if (currentTool !== 'stamp' && currentTool !== 'text' && currentTool !== 'shape') {
                 saveToHistory('绘制');
@@ -18435,7 +18460,7 @@
                 const dr = Math.abs(data[idx] - startR);
                 const dg = Math.abs(data[idx + 1] - startG);
                 const db = Math.abs(data[idx + 2] - startB);
-                return dr < 50 && dg < 50 && db < 50;
+                return dr < fillTolerance && dg < fillTolerance && db < fillTolerance;
             }
 
             function matchesFill(idx) {
@@ -18484,6 +18509,264 @@
             closeAllPanels();
             playSound(playStampPlace);
             stampBtn.classList.add('selected');
+        }
+
+        // V58: Update fill tolerance from UI
+        function updateFillTolerance(value) {
+            fillTolerance = parseInt(value);
+            document.getElementById('fillToleranceValue').textContent = value;
+        }
+
+        // ===== V58: Stroke Completion =====
+        function addStrokePoint(x, y) {
+            strokePoints.push({ x, y });
+        }
+
+        function getBoundingBox(points) {
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            for (const p of points) {
+                minX = Math.min(minX, p.x);
+                minY = Math.min(minY, p.y);
+                maxX = Math.max(maxX, p.x);
+                maxY = Math.max(maxY, p.y);
+            }
+            return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
+        }
+
+        function isCircular(points, width, height) {
+            const bbox = getBoundingBox(points);
+            const cx = (bbox.minX + bbox.maxX) / 2;
+            const cy = (bbox.minY + bbox.maxY) / 2;
+            const avgRadius = (bbox.width + bbox.height) / 4;
+
+            // Check distance variance
+            let variance = 0;
+            for (const p of points) {
+                const dist = Math.sqrt((p.x - cx) ** 2 + (p.y - cy) ** 2);
+                variance += (dist - avgRadius) ** 2;
+            }
+            variance /= points.length;
+            const stdDev = Math.sqrt(variance);
+            const cv = stdDev / avgRadius; // coefficient of variation
+
+            return cv < 0.15 && bbox.width > 20 && bbox.height > 20;
+        }
+
+        function isRectangular(points, width, height) {
+            const bbox = getBoundingBox(points);
+            if (bbox.width < 20 || bbox.height < 20) return false;
+
+            // Detect 4 corners by finding high curvature points
+            const corners = [];
+            for (let i = 1; i < points.length - 1; i++) {
+                const p1 = points[i - 1];
+                const p2 = points[i];
+                const p3 = points[i + 1];
+
+                const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+                const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+
+                const angle = Math.abs(Math.atan2(v1.x * v2.y - v1.y * v2.x, v1.x * v2.x + v1.y * v2.y));
+                const deg = angle * 180 / Math.PI;
+
+                if (deg > 20 && deg < 160) {
+                    // Check if it's near a corner (within 15% of bbox)
+                    const nearLeft = Math.abs(p2.x - bbox.minX) < bbox.width * 0.15;
+                    const nearRight = Math.abs(p2.x - bbox.maxX) < bbox.width * 0.15;
+                    const nearTop = Math.abs(p2.y - bbox.minY) < bbox.height * 0.15;
+                    const nearBottom = Math.abs(p2.y - bbox.maxY) < bbox.height * 0.15;
+                    if ((nearLeft || nearRight) && (nearTop || nearBottom)) {
+                        corners.push(p2);
+                    }
+                }
+            }
+
+            return corners.length >= 4;
+        }
+
+        function isLine(points) {
+            if (points.length < 3) return false;
+            const start = points[0];
+            const end = points[points.length - 1];
+            const directDist = Math.sqrt((end.x - start.x) ** 2 + (end.y - start.y) ** 2);
+
+            // Calculate path length
+            let pathLen = 0;
+            for (let i = 1; i < points.length; i++) {
+                pathLen += Math.sqrt((points[i].x - points[i - 1].x) ** 2 + (points[i].y - points[i - 1].y) ** 2);
+            }
+
+            const ratio = directDist / pathLen;
+            return ratio > 0.9 && directDist > 20;
+        }
+
+        function drawEllipse(minX, minY, maxX, maxY) {
+            const ctx = drawingCanvas.getContext('2d');
+            const cx = (minX + maxX) / 2;
+            const cy = (minY + maxY) / 2;
+            const rx = (maxX - minX) / 2;
+            const ry = (maxY - minY) / 2;
+
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.stroke();
+
+            // Apply symmetry if enabled
+            if (symmetryMode !== 'none') {
+                const points = getSymmetryPoints(cx, cy);
+                const rx2 = (maxX - minX) / 2;
+                const ry2 = (maxY - minY) / 2;
+                points.forEach(p => {
+                    ctx.beginPath();
+                    ctx.ellipse(p.x, p.y, rx2, ry2, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+            }
+        }
+
+        function drawRect(minX, minY, maxX, maxY) {
+            const ctx = drawingCanvas.getContext('2d');
+            const w = maxX - minX;
+            const h = maxY - minY;
+
+            ctx.beginPath();
+            ctx.rect(minX, minY, w, h);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.stroke();
+
+            // Apply symmetry if enabled
+            if (symmetryMode !== 'none') {
+                const points = getSymmetryPoints(minX, minY);
+                const ep = getSymmetryPoints(maxX, maxY);
+                points.forEach((sp, i) => {
+                    ctx.beginPath();
+                    ctx.rect(sp.x, sp.y, ep[i].x - sp.x, ep[i].y - sp.y);
+                    ctx.stroke();
+                });
+            }
+        }
+
+        function drawStraightLine(points) {
+            const ctx = drawingCanvas.getContext('2d');
+            const start = points[0];
+            const end = points[points.length - 1];
+
+            ctx.beginPath();
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(end.x, end.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.stroke();
+
+            // Apply symmetry if enabled
+            if (symmetryMode !== 'none') {
+                const spoints = getSymmetryPoints(start.x, start.y);
+                const epoints = getSymmetryPoints(end.x, end.y);
+                spoints.forEach((sp, i) => {
+                    ctx.beginPath();
+                    ctx.moveTo(sp.x, sp.y);
+                    ctx.lineTo(epoints[i].x, epoints[i].y);
+                    ctx.stroke();
+                });
+            }
+        }
+
+        function completeStroke() {
+            if (strokePoints.length < 10) return;
+
+            const bbox = getBoundingBox(strokePoints);
+            const { minX, minY, maxX, maxY, width, height } = bbox;
+
+            // Try to detect shape type
+            if (isCircular(strokePoints, width, height)) {
+                // Save current state before completing
+                saveUndoState();
+                drawEllipse(minX, minY, maxX, maxY);
+                compositeLayers();
+                saveToHistory('智能补全圆形');
+            } else if (isRectangular(strokePoints, width, height)) {
+                saveUndoState();
+                drawRect(minX, minY, maxX, maxY);
+                compositeLayers();
+                saveToHistory('智能补全矩形');
+            } else if (isLine(strokePoints)) {
+                saveUndoState();
+                drawStraightLine(strokePoints);
+                compositeLayers();
+                saveToHistory('智能补全直线');
+            }
+        }
+
+        // ===== V58: Smart Fill (Enhanced Flood Fill) =====
+        function getPixel(imageData, x, y) {
+            const idx = (y * imageData.width + x) * 4;
+            return [
+                imageData.data[idx],
+                imageData.data[idx + 1],
+                imageData.data[idx + 2],
+                imageData.data[idx + 3]
+            ];
+        }
+
+        function setPixel(imageData, x, y, color) {
+            const idx = (y * imageData.width + x) * 4;
+            imageData.data[idx] = color[0];
+            imageData.data[idx + 1] = color[1];
+            imageData.data[idx + 2] = color[2];
+            imageData.data[idx + 3] = 255;
+        }
+
+        function colorMatch(c1, c2, tolerance) {
+            return Math.abs(c1[0] - c2[0]) <= tolerance &&
+                   Math.abs(c1[1] - c2[1]) <= tolerance &&
+                   Math.abs(c1[2] - c2[2]) <= tolerance;
+        }
+
+        function smartFill(startX, startY, fillColor, tolerance) {
+            const ctx = drawingCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+
+            const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            const targetColor = getPixel(imageData, Math.floor(startX), Math.floor(startY));
+
+            const stack = [[Math.floor(startX), Math.floor(startY)]];
+            const visited = new Set();
+            const fillR = parseInt(fillColor.slice(1, 3), 16);
+            const fillG = parseInt(fillColor.slice(3, 5), 16);
+            const fillB = parseInt(fillColor.slice(5, 7), 16);
+            const fillColorArr = [fillR, fillG, fillB];
+
+            while (stack.length > 0) {
+                const [x, y] = stack.pop();
+                const key = `${x},${y}`;
+
+                if (visited.has(key)) continue;
+                if (x < 0 || x >= imageData.width || y < 0 || y >= imageData.height) continue;
+
+                const currentColor = getPixel(imageData, x, y);
+                if (!colorMatch(currentColor, targetColor, tolerance)) continue;
+
+                visited.add(key);
+                setPixel(imageData, x, y, fillColorArr);
+
+                stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function initSmartFillTool() {
+            // Smart fill is used when fill tool is selected
+            // It enhances the basic flood fill with tolerance control
+        }
+
+        function initStrokeCompletion() {
+            // Initialize stroke completion feature
+            strokePoints = [];
+            strokeCompletionEnabled = true;
         }
 
         // ===== P1: DOM-based Stamp Editing =====
