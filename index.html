@@ -221,6 +221,418 @@
             color: #495057;
         }
 
+        /* V54: Save/Projects Panel Styles */
+        .save-btn, .projects-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 70px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .save-btn:active, .projects-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .projects-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+            z-index: 1500;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s ease;
+        }
+
+        .projects-panel.open {
+            right: 0;
+        }
+
+        .projects-panel-header {
+            padding: 16px;
+            background: linear-gradient(180deg, #FF9A9E 0%, #FECFEF 100%);
+            border-bottom: 3px solid #495057;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .projects-panel-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .projects-panel-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #495057;
+            padding: 4px 8px;
+        }
+
+        .projects-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .projects-storage-bar {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .storage-warning {
+            background: #fff3bf;
+            border: 2px solid #fab005;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 8px 12px;
+            font-size: 0.85rem;
+            color: #e67700;
+        }
+
+        .new-project-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(180deg, #d3f9d8 0%, #b2f2bb 100%);
+            border: 3px solid #40c057;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2b8a3e;
+            cursor: pointer;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        .new-project-btn:hover {
+            background: linear-gradient(180deg, #b2f2bb 0%, #96f29d 100%);
+        }
+
+        .project-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: #adb5bd;
+            background: #e9ecef;
+        }
+
+        .project-card.selected {
+            border-color: #40c057;
+            background: #d3f9d8;
+        }
+
+        .project-card-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .project-thumbnail {
+            width: 80px;
+            height: 60px;
+            background: #fff;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .project-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #495057;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .project-meta {
+            font-size: 0.8rem;
+            color: #868e96;
+        }
+
+        .project-versions-count {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            color: #495057;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .project-action-btn {
+            flex: 1;
+            padding: 6px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .project-action-btn.restore {
+            border-color: #4dabf7;
+            color: #1971c2;
+            background: #e7f5ff;
+        }
+
+        .project-action-btn.restore:hover {
+            background: #d0ebff;
+        }
+
+        .project-action-btn.delete {
+            border-color: #ff6b6b;
+            color: #c92a2a;
+            background: #fff5f5;
+        }
+
+        .project-action-btn.delete:hover {
+            background: #ffe3e3;
+        }
+
+        .versions-history {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #dee2e6;
+            display: none;
+        }
+
+        .versions-history.open {
+            display: block;
+        }
+
+        .versions-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .version-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+
+        .version-item.current {
+            border-color: #40c057;
+            background: #d3f9d8;
+        }
+
+        .version-thumb {
+            width: 40px;
+            height: 30px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .version-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .version-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .version-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .version-time {
+            font-size: 0.7rem;
+            color: #868e96;
+        }
+
+        .version-item-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .version-restore-btn {
+            padding: 4px 8px;
+            border: 1px solid #4dabf7;
+            border-radius: 4px;
+            background: #e7f5ff;
+            color: #1971c2;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .version-restore-btn:hover {
+            background: #d0ebff;
+        }
+
+        .version-delete-btn {
+            padding: 4px 8px;
+            border: 1px solid #ff6b6b;
+            border-radius: 4px;
+            background: #fff5f5;
+            color: #c92a2a;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .version-delete-btn:hover {
+            background: #ffe3e3;
+        }
+
+        .projects-panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 1499;
+            display: none;
+        }
+
+        .projects-panel-overlay.open {
+            display: block;
+        }
+
+        .save-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 2000;
+            width: 320px;
+            padding: 20px;
+        }
+
+        .save-modal-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .save-modal-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        .save-modal-input:focus {
+            outline: none;
+            border-color: #4dabf7;
+        }
+
+        .save-modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .save-modal-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .save-modal-btn.cancel {
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            color: #495057;
+        }
+
+        .save-modal-btn.confirm {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 2px solid #495057;
+            color: white;
+        }
+
+        .save-success-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #d3f9d8;
+            border: 2px solid #40c057;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            color: #2b8a3e;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-success-toast.show {
+            opacity: 1;
+        }
+
         /* V53: Brush Style Selector */
         .brush-style-selector {
             position: relative;
@@ -10042,6 +10454,8 @@
             <button class="stats-btn" id="statsBtn" title="Stats & Achievements">📊</button>
             <button class="challenge-btn" id="challengeBtn" title="Daily Challenge">🔔<span class="unread-dot" id="unreadDot"></span></button>
             <button class="trigger-btn" id="triggerBtn" title="效果链">🔗</button>
+            <button class="save-btn" id="saveBtn" title="保存">💾 保存</button>
+            <button class="projects-btn" id="projectsBtn" title="作品">📁 作品</button>
             <button class="learning-btn" id="learningBtn" title="学习轨迹">📊 学习</button>
             <button class="bubbles-btn" id="bubblesBtn">Bubbles</button>
             <button class="coloring-btn" id="coloringBtn">Coloring</button>
@@ -36576,6 +36990,663 @@ if (document.readyState === 'loading') {
 // === V65 END ===
 
 // === V64 END ===
+
+// === V54: Local Persistence + Version History ===
+// LocalStorage Key: 'cdb_projects'
+// Data: { projects: [{ id, title, createdAt, updatedAt, thumbnail, size, currentVersionId, versions: [{id, createdAt, dataUrl, size}] }] }
+
+(function() {
+    // ===== Constants =====
+    const STORAGE_KEY = 'cdb_projects';
+    const MAX_VERSIONS = 10;
+    const THUMBNAIL_WIDTH = 200;
+    const THUMBNAIL_HEIGHT = 150;
+    const STORAGE_WARNING_THRESHOLD = 4 * 1024 * 1024; // 4MB
+
+    // ===== State =====
+    let currentProjectId = null;
+    let autoSaveTimer = null;
+    let autoSaveInterval = 30000; // 30 seconds
+
+    // ===== Utility Functions =====
+    function generateId() {
+        return 'proj_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function generateVersionId() {
+        return 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+    }
+
+    function formatTimeAgo(timestamp) {
+        const now = Date.now();
+        const diff = now - timestamp;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+        
+        if (minutes < 1) return '刚刚';
+        if (minutes < 60) return minutes + '分钟前';
+        if (hours < 24) return hours + '小时前';
+        if (days < 7) return days + '天前';
+        return new Date(timestamp).toLocaleDateString('zh-CN');
+    }
+
+    // ===== Storage Functions =====
+    function getAllProjects() {
+        try {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : { projects: [] };
+        } catch (e) {
+            console.warn('V54: Failed to load projects:', e);
+            return { projects: [] };
+        }
+    }
+
+    function saveAllProjects(data) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            return true;
+        } catch (e) {
+            console.warn('V54: Failed to save projects:', e);
+            return false;
+        }
+    }
+
+    function estimateStorageUsage() {
+        let total = 0;
+        try {
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    total += localStorage[key].length * 2; // UTF-16
+                }
+            }
+        } catch (e) {}
+        return total;
+    }
+
+    // ===== Thumbnail Generation =====
+    function generateThumbnail() {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = THUMBNAIL_WIDTH;
+        tempCanvas.height = THUMBNAIL_HEIGHT;
+        const ctx = tempCanvas.getContext('2d');
+        
+        // Get combined canvas data
+        const combinedUrl = getCanvasDataUrl();
+        const img = new Image();
+        img.src = combinedUrl;
+        
+        // Calculate aspect-ratio-preserving scaling
+        const scale = Math.min(THUMBNAIL_WIDTH / img.width, THUMBNAIL_HEIGHT / img.height);
+        const x = (THUMBNAIL_WIDTH - img.width * scale) / 2;
+        const y = (THUMBNAIL_HEIGHT - img.height * scale) / 2;
+        
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        
+        return tempCanvas.toDataURL('image/jpeg', 0.7);
+    }
+
+    function getCanvasDataUrl() {
+        // Get combined canvas image
+        const tempCanvas = document.createElement('canvas');
+        const dims = getCanvasDimensions();
+        tempCanvas.width = dims.width;
+        tempCanvas.height = dims.height;
+        const ctx = tempCanvas.getContext('2d');
+        
+        ctx.fillStyle = currentBackground === 'white' ? '#FFFFFF' :
+                        currentBackground === 'sky' ? '#A5D8FF' :
+                        currentBackground === 'grass' ? '#69DB7C' :
+                        currentBackground === 'beach' ? '#FFE066' :
+                        currentBackground === 'night' ? '#1A1A2E' : '#FFFFFF';
+        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        
+        ctx.drawImage(bgCanvas, 0, 0);
+        ctx.drawImage(drawingCanvas, 0, 0);
+        
+        return tempCanvas.toDataURL('image/png');
+    }
+
+    function hasCanvasContent() {
+        const ctx = drawingCanvas.getContext('2d');
+        const data = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height).data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (data[i] !== 255 || data[i+1] !== 255 || data[i+2] !== 255 || data[i+3] !== 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ===== Version Management =====
+    function pruneOldVersions(projectId) {
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === projectId);
+        if (!project) return;
+        
+        if (project.versions.length > MAX_VERSIONS) {
+            // Sort by createdAt descending (newest first)
+            project.versions.sort((a, b) => b.createdAt - a.createdAt);
+            // Keep only MAX_VERSIONS
+            project.versions = project.versions.slice(0, MAX_VERSIONS);
+            saveAllProjects(data);
+        }
+    }
+
+    // ===== Core Functions =====
+    function autoSaveCanvas() {
+        if (!hasCanvasContent()) return;
+        
+        if (currentProjectId) {
+            updateCurrentProject();
+        }
+    }
+
+    function saveProject(name) {
+        const thumbnail = generateThumbnail();
+        const dataUrl = getCanvasDataUrl();
+        const dims = getCanvasDimensions();
+        
+        const newProject = {
+            id: generateId(),
+            title: name || '我的画作 ' + new Date().toLocaleDateString('zh-CN'),
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            thumbnail: thumbnail,
+            size: { width: dims.width, height: dims.height },
+            currentVersionId: null,
+            versions: []
+        };
+        
+        // Create first version
+        const versionId = generateVersionId();
+        newProject.versions.push({
+            id: versionId,
+            createdAt: Date.now(),
+            dataUrl: dataUrl,
+            size: dataUrl.length
+        });
+        newProject.currentVersionId = versionId;
+        
+        const data = getAllProjects();
+        data.projects.unshift(newProject); // Add to beginning
+        saveAllProjects(data);
+        
+        currentProjectId = newProject.id;
+        
+        // Show success toast
+        showSaveSuccessToast();
+        
+        // Refresh panel if open
+        if (document.getElementById('projectsPanel').classList.contains('open')) {
+            renderProjectsList();
+        }
+        
+        return newProject.id;
+    }
+
+    function updateCurrentProject() {
+        if (!currentProjectId) return;
+        
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === currentProjectId);
+        if (!project) return;
+        
+        const thumbnail = generateThumbnail();
+        const dataUrl = getCanvasDataUrl();
+        const versionId = generateVersionId();
+        
+        project.versions.push({
+            id: versionId,
+            createdAt: Date.now(),
+            dataUrl: dataUrl,
+            size: dataUrl.length
+        });
+        project.currentVersionId = versionId;
+        project.updatedAt = Date.now();
+        project.thumbnail = thumbnail;
+        
+        pruneOldVersions(currentProjectId);
+        saveAllProjects(data);
+    }
+
+    function loadProject(id) {
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === id);
+        if (!project) return false;
+        
+        const version = project.versions.find(v => v.id === project.currentVersionId);
+        if (!version) return false;
+        
+        // Load canvas from dataUrl
+        const img = new Image();
+        img.onload = function() {
+            const ctx = drawingCanvas.getContext('2d');
+            ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            ctx.drawImage(img, 0, 0);
+            
+            // Clear undo/redo stacks
+            undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
+            
+            currentProjectId = id;
+            
+            // Refresh panel if open
+            if (document.getElementById('projectsPanel').classList.contains('open')) {
+                renderProjectsList();
+            }
+        };
+        img.src = version.dataUrl;
+        
+        return true;
+    }
+
+    function deleteProject(id) {
+        const data = getAllProjects();
+        const idx = data.projects.findIndex(p => p.id === id);
+        if (idx === -1) return;
+        
+        data.projects.splice(idx, 1);
+        saveAllProjects(data);
+        
+        if (currentProjectId === id) {
+            currentProjectId = null;
+        }
+        
+        renderProjectsList();
+    }
+
+    function deleteVersion(projectId, versionId) {
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === projectId);
+        if (!project) return;
+        
+        if (project.versions.length <= 1) {
+            // Don't delete last version
+            return;
+        }
+        
+        const idx = project.versions.findIndex(v => v.id === versionId);
+        if (idx === -1) return;
+        
+        project.versions.splice(idx, 1);
+        
+        if (project.currentVersionId === versionId) {
+            // Set to newest version
+            project.versions.sort((a, b) => b.createdAt - a.createdAt);
+            project.currentVersionId = project.versions[0].id;
+        }
+        
+        saveAllProjects(data);
+        renderProjectsList();
+    }
+
+    // ===== Import/Export =====
+    function exportProject(id, format) {
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === id);
+        if (!project) return;
+        
+        const version = project.versions.find(v => v.id === project.currentVersionId);
+        if (!version) return;
+        
+        const link = document.createElement('a');
+        link.download = project.title + '.' + format;
+        link.href = version.dataUrl;
+        link.click();
+    }
+
+    function importProject(dataUrl) {
+        const img = new Image();
+        img.onload = function() {
+            // Create new project with imported image
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = img.width;
+            tempCanvas.height = img.height;
+            const ctx = tempCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const newDataUrl = tempCanvas.toDataURL('image/png');
+            
+            const newProject = {
+                id: generateId(),
+                title: '导入作品 ' + new Date().toLocaleDateString('zh-CN'),
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                thumbnail: newDataUrl,
+                size: { width: img.width, height: img.height },
+                currentVersionId: null,
+                versions: []
+            };
+            
+            const versionId = generateVersionId();
+            newProject.versions.push({
+                id: versionId,
+                createdAt: Date.now(),
+                dataUrl: newDataUrl,
+                size: newDataUrl.length
+            });
+            newProject.currentVersionId = versionId;
+            
+            const data = getAllProjects();
+            data.projects.unshift(newProject);
+            saveAllProjects(data);
+            
+            // Load it
+            loadProject(newProject.id);
+            
+            renderProjectsList();
+        };
+        img.src = dataUrl;
+    }
+
+    // ===== UI Functions =====
+    function showSaveSuccessToast() {
+        const toast = document.getElementById('saveSuccessToast');
+        if (!toast) return;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function openSaveModal() {
+        closeAllPanels();
+        const modal = document.getElementById('saveModal');
+        if (modal) {
+            modal.style.display = 'block';
+            const input = modal.querySelector('.save-modal-input');
+            if (input) input.focus();
+        }
+    }
+
+    function closeSaveModal() {
+        const modal = document.getElementById('saveModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function confirmSave() {
+        const modal = document.getElementById('saveModal');
+        const input = modal ? modal.querySelector('.save-modal-input') : null;
+        const name = input ? input.value.trim() : '';
+        closeSaveModal();
+        saveProject(name || '我的画作');
+        input && (input.value = '');
+    }
+
+    function openProjectsPanel() {
+        closeAllPanels();
+        document.getElementById('projectsPanelOverlay').classList.add('open');
+        document.getElementById('projectsPanel').classList.add('open');
+        renderProjectsList();
+    }
+
+    function closeProjectsPanel() {
+        document.getElementById('projectsPanelOverlay').classList.remove('open');
+        document.getElementById('projectsPanel').classList.remove('open');
+    }
+
+    function renderProjectsList() {
+        const data = getAllProjects();
+        const body = document.getElementById('projectsPanelBody');
+        if (!body) return;
+        
+        // Update storage bar
+        const storageBar = document.getElementById('projectsStorageBar');
+        const usage = estimateStorageUsage();
+        if (storageBar) {
+            storageBar.textContent = '存储: ' + (usage / 1024 / 1024).toFixed(1) + ' MB';
+        }
+        
+        // Show warning if over threshold
+        let warningEl = document.querySelector('.storage-warning');
+        if (usage > STORAGE_WARNING_THRESHOLD) {
+            if (!warningEl) {
+                warningEl = document.createElement('div');
+                warningEl.className = 'storage-warning';
+                warningEl.textContent = '⚠️ 存储空间即将用尽，建议导出或删除旧作品';
+                body.insertBefore(warningEl, body.firstChild);
+            }
+        } else if (warningEl) {
+            warningEl.remove();
+        }
+        
+        if (data.projects.length === 0) {
+            body.innerHTML = '<div style="text-align:center;color:#868e96;padding:40px 0;">暂无作品<br>点击上方按钮保存第一幅画作</div>';
+            return;
+        }
+        
+        let html = '<button class="new-project-btn" onclick="openSaveModal()">+ 新建作品</button>';
+        
+        data.projects.forEach(project => {
+            const isSelected = project.id === currentProjectId;
+            const versionCount = project.versions.length;
+            const currentVer = project.versions.find(v => v.id === project.currentVersionId);
+            
+            html += '<div class="project-card' + (isSelected ? ' selected' : '') + '" onclick="toggleVersionHistory(\'' + project.id + '\')">';
+            html += '<div class="project-card-header">';
+            html += '<div class="project-thumbnail"><img src="' + project.thumbnail + '" alt=""></div>';
+            html += '<div class="project-info">';
+            html += '<div class="project-title">' + project.title + '</div>';
+            html += '<div class="project-meta">' + formatTimeAgo(project.updatedAt) + ' · v' + versionCount + '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="project-actions" onclick="event.stopPropagation()">';
+            html += '<button class="project-action-btn restore" onclick="doRestoreProject(\'' + project.id + '\')">恢复</button>';
+            html += '<button class="project-action-btn delete" onclick="doDeleteProject(\'' + project.id + '\')">删除</button>';
+            html += '</div>';
+            
+            // Version history
+            html += '<div class="versions-history" id="versions-' + project.id + '">';
+            html += '<div class="versions-title" onclick="event.stopPropagation()">▼ 历史版本 (' + versionCount + ')</div>';
+            html += '<div class="versions-list">';
+            
+            const sortedVersions = [...project.versions].sort((a, b) => b.createdAt - a.createdAt);
+            sortedVersions.forEach((ver, idx) => {
+                const isCurrent = ver.id === project.currentVersionId;
+                html += '<div class="version-item' + (isCurrent ? ' current' : '') + '">';
+                html += '<div class="version-thumb"><img src="' + ver.dataUrl + '" alt=""></div>';
+                html += '<div class="version-info">';
+                html += '<div class="version-label">v' + (idx + 1) + (isCurrent ? ' (当前)' : '') + '</div>';
+                html += '<div class="version-time">' + formatTimeAgo(ver.createdAt) + '</div>';
+                html += '</div>';
+                if (!isCurrent) {
+                    html += '<div class="version-item-actions">';
+                    html += '<button class="version-restore-btn" onclick="doRestoreVersion(\'' + project.id + '\',\'' + ver.id + '\')">恢复</button>';
+                    html += '<button class="version-delete-btn" onclick="doDeleteVersion(\'' + project.id + '\',\'' + ver.id + '\')">删除</button>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            });
+            
+            html += '</div></div>';
+            html += '</div>';
+        });
+        
+        body.innerHTML = html;
+    }
+
+    function toggleVersionHistory(projectId) {
+        const el = document.getElementById('versions-' + projectId);
+        if (el) {
+            el.classList.toggle('open');
+        }
+    }
+
+    // Global functions for onclick handlers
+    window.doRestoreProject = function(id) {
+        loadProject(id);
+        closeProjectsPanel();
+        playSound(playBtnClick);
+    };
+
+    window.doDeleteProject = function(id) {
+        if (confirm('确定要删除这个作品吗？此操作不可恢复。')) {
+            deleteProject(id);
+            playSound(playBtnClick);
+        }
+    };
+
+    window.doRestoreVersion = function(projectId, versionId) {
+        const data = getAllProjects();
+        const project = data.projects.find(p => p.id === projectId);
+        if (project) {
+            project.currentVersionId = versionId;
+            saveAllProjects(data);
+            loadProject(projectId);
+            renderProjectsList();
+        }
+        playSound(playBtnClick);
+    };
+
+    window.doDeleteVersion = function(projectId, versionId) {
+        deleteVersion(projectId, versionId);
+        playSound(playBtnClick);
+    };
+
+    // ===== Init =====
+    function initProjectsSystem() {
+        // Create UI elements
+        createProjectsPanel();
+        
+        // Bind header buttons
+        const saveBtn = document.getElementById('saveBtn');
+        const projectsBtn = document.getElementById('projectsBtn');
+        
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                initAudio();
+                playSound(playBtnClick);
+                openSaveModal();
+            });
+        }
+        
+        if (projectsBtn) {
+            projectsBtn.addEventListener('click', () => {
+                initAudio();
+                playSound(playBtnClick);
+                openProjectsPanel();
+            });
+        }
+        
+        // Auto-save timer
+        autoSaveTimer = setInterval(() => {
+            if (hasCanvasContent()) {
+                autoSaveCanvas();
+            }
+        }, autoSaveInterval);
+        
+        // Inject save modal if not exists
+        if (!document.getElementById('saveModal')) {
+            const modal = document.createElement('div');
+            modal.id = 'saveModal';
+            modal.className = 'save-modal';
+            modal.style.display = 'none';
+            modal.innerHTML = '<div class="save-modal-header">保存作品</div>' +
+                '<input type="text" class="save-modal-input" placeholder="输入作品名称...">' +
+                '<div class="save-modal-actions">' +
+                '<button class="save-modal-btn cancel" onclick="closeSaveModal()">取消</button>' +
+                '<button class="save-modal-btn confirm" onclick="confirmSave()">保存</button></div>';
+            document.body.appendChild(modal);
+        }
+        
+        // Inject toast if not exists
+        if (!document.getElementById('saveSuccessToast')) {
+            const toast = document.createElement('div');
+            toast.id = 'saveSuccessToast';
+            toast.className = 'save-success-toast';
+            toast.textContent = '✓ 保存成功';
+            document.body.appendChild(toast);
+        }
+        
+        // Handle Enter key in save modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.getElementById('saveModal').style.display === 'block') {
+                confirmSave();
+            }
+            if (e.key === 'Escape') {
+                closeSaveModal();
+                closeProjectsPanel();
+            }
+        });
+    }
+
+    function createProjectsPanel() {
+        // Remove existing if any
+        const existing = document.getElementById('projectsPanel');
+        if (existing) existing.remove();
+        const existingOverlay = document.getElementById('projectsPanelOverlay');
+        if (existingOverlay) existingOverlay.remove();
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'projectsPanelOverlay';
+        overlay.className = 'projects-panel-overlay';
+        overlay.onclick = closeProjectsPanel;
+        document.body.appendChild(overlay);
+        
+        // Create panel
+        const panel = document.createElement('div');
+        panel.id = 'projectsPanel';
+        panel.className = 'projects-panel';
+        panel.innerHTML = '<div class="projects-panel-header">' +
+            '<span class="projects-panel-title">📁 我的作品</span>' +
+            '<button class="projects-panel-close" onclick="closeProjectsPanel()">×</button></div>' +
+            '<div class="projects-storage-bar" id="projectsStorageBar">存储: 0 MB</div>' +
+            '<div class="projects-panel-body" id="projectsPanelBody"></div>';
+        document.body.appendChild(panel);
+    }
+
+    // ===== Hook into existing functions =====
+    // Override selectTool, selectColor to trigger autoSave
+    const originalSelectTool = window.selectTool;
+    window.selectTool = function(tool) {
+        if (originalSelectTool) originalSelectTool(tool);
+        autoSaveCanvas();
+    };
+
+    const originalSelectColor = window.selectColor;
+    window.selectColor = function(color) {
+        if (originalSelectColor) originalSelectColor(color);
+        autoSaveCanvas();
+    };
+
+    // Override selectSize if exists
+    if (window.selectSize) {
+        const originalSelectSize = window.selectSize;
+        window.selectSize = function(size) {
+            originalSelectSize(size);
+            autoSaveCanvas();
+        };
+    }
+
+    // Expose functions globally
+    window.autoSaveCanvas = autoSaveCanvas;
+    window.saveProject = saveProject;
+    window.updateCurrentProject = updateCurrentProject;
+    window.loadProject = loadProject;
+    window.deleteProject = deleteProject;
+    window.pruneOldVersions = pruneOldVersions;
+    window.exportProject = exportProject;
+    window.importProject = importProject;
+    window.generateThumbnail = generateThumbnail;
+    window.estimateStorageUsage = estimateStorageUsage;
+    window.openProjectsPanel = openProjectsPanel;
+    window.closeProjectsPanel = closeProjectsPanel;
+    window.openSaveModal = openSaveModal;
+    window.closeSaveModal = closeSaveModal;
+    window.confirmSave = confirmSave;
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProjectsSystem);
+    } else {
+        initProjectsSystem();
+    }
+})();
+
+// === V54 END ===
 
     </script>
 
