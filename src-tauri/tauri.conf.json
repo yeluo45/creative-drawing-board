@@ -4,8 +4,8 @@
   "version": "1.1.0",
   "identifier": "com.yeluo45.creative-drawing-board",
   "build": {
-    "frontendDist": "../",
-    "beforeBuildCommand": "",
+    "frontendDist": "../dist/",
+    "beforeBuildCommand": "npm run build",
     "beforeDevCommand": ""
   },
   "app": {
