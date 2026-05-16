@@ -1477,6 +1477,381 @@
             display: block;
         }
 
+        /* V56: Parent Console Button */
+        .parent-console-btn {
+            background: linear-gradient(180deg, #FF9A9E 0%, #FECFEF 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 44px;
+            min-height: 44px;
+        }
+        .parent-console-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        /* V56: Parent Console Modal */
+        .parent-console-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .parent-console-overlay.active {
+            display: flex;
+        }
+        .parent-console-modal {
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 24px;
+            width: 92%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0 #495057;
+            animation: popIn 0.3s ease-out;
+        }
+        .pcm-header {
+            background: linear-gradient(180deg, #CC5DE8 0%, #9C36B5 100%);
+            border-bottom: 3px solid #495057;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 20px 20px 0 0;
+        }
+        .pcm-header-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 0 #495057;
+        }
+        .pcm-close {
+            width: 32px; height: 32px;
+            border-radius: 50%; border: 2px solid #495057;
+            background: #FF6B6B; color: white;
+            font-size: 1.2rem; font-weight: bold;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pcm-tabs {
+            display: flex;
+            border-bottom: 3px solid #dee2e6;
+            background: #f8f9fa;
+        }
+        .pcm-tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #868e96;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: all 0.2s;
+        }
+        .pcm-tab.active {
+            color: #9c36b5;
+            background: white;
+            border-bottom: 3px solid #9c36b5;
+            margin-bottom: -3px;
+        }
+        .pcm-body {
+            padding: 16px;
+            min-height: 300px;
+        }
+        .pcm-tab-content {
+            display: none;
+        }
+        .pcm-tab-content.active {
+            display: block;
+        }
+
+        /* Stats Tab */
+        .pcm-stats-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .pcm-stat-card {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4EC 100%);
+            border: 2px solid #495057;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .pcm-stat-num {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .pcm-stat-label {
+            font-size: 0.75rem;
+            color: #868e96;
+        }
+        .pcm-tool-usage {
+            margin: 16px 0;
+        }
+        .pcm-tool-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        .pcm-tool-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .pcm-tool-name {
+            width: 60px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+        .pcm-tool-bar-bg {
+            flex: 1;
+            height: 16px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pcm-tool-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #74c0fc, #4dabf7);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+        .pcm-tool-count {
+            width: 50px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+        .pcm-trend-chart {
+            margin-top: 16px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .pcm-trend-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        .pcm-trend-canvas {
+            width: 100%;
+            height: 120px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .pcm-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .pcm-action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #495057;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pcm-action-btn.danger {
+            background: linear-gradient(180deg, #FF6B6B 0%, #F03E3E 100%);
+            color: white;
+        }
+        .pcm-action-btn.primary {
+            background: linear-gradient(180deg, #74C0FC 0%, #4DABF7 100%);
+            color: white;
+        }
+
+        /* Projects Tab */
+        .pcm-projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .pcm-projects-count {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .pcm-projects-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .pcm-select-all-btn, .pcm-delete-selected-btn {
+            padding: 6px 12px;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: white;
+        }
+        .pcm-select-all-btn.selected {
+            background: #4dabf7;
+            color: white;
+        }
+        .pcm-delete-selected-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        .pcm-project-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .pcm-project-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: white;
+        }
+        .pcm-project-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .pcm-project-thumb {
+            width: 60px;
+            height: 45px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+        .pcm-project-info {
+            flex: 1;
+        }
+        .pcm-project-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+        }
+        .pcm-project-time {
+            font-size: 0.75rem;
+            color: #868e96;
+        }
+        .pcm-project-btns {
+            display: flex;
+            gap: 6px;
+        }
+        .pcm-project-btn {
+            padding: 4px 8px;
+            border: 1px solid #495057;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            background: white;
+        }
+        .pcm-project-btn.export-btn {
+            background: #4dabf7;
+            color: white;
+        }
+        .pcm-project-btn.delete-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        .pcm-empty {
+            text-align: center;
+            padding: 40px;
+            color: #868e96;
+        }
+        .pcm-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* Storage Tab */
+        .pcm-storage-meter {
+            margin-bottom: 16px;
+        }
+        .pcm-storage-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+        .pcm-storage-bar-bg {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #495057;
+        }
+        .pcm-storage-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #69DB7C, #40C057);
+            transition: width 0.5s ease;
+        }
+        .pcm-storage-bar.warning {
+            background: linear-gradient(90deg, #FFE066, #FFD43B);
+        }
+        .pcm-storage-bar.danger {
+            background: linear-gradient(90deg, #FF6B6B, #F03E3E);
+        }
+        .pcm-storage-info {
+            margin: 16px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .pcm-storage-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.85rem;
+        }
+        .pcm-storage-row:last-child {
+            border-bottom: none;
+        }
+        .pcm-storage-row-label {
+            color: #868e96;
+        }
+        .pcm-storage-row-value {
+            font-weight: bold;
+            color: #495057;
+        }
+        .pcm-clear-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(180deg, #FF6B6B 0%, #F03E3E 100%);
+            color: white;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.8; }
@@ -10405,6 +10780,7 @@
             <button class="sound-btn" id="soundBtn" title="Sound On">🔊</button>
             <button class="bgm-btn" id="bgmBtn" title="Music On">🎵</button>
             <button class="challenge-btn" id="challengeBtn" title="绘画挑战">🎯 挑战</button>
+            <button class="parent-console-btn" id="parentConsoleBtn" title="家长控制台">👨‍👩‍👧</button>
             <div class="bgm-volume-panel" id="bgmVolumePanel">
                 <!-- V51: Music Style Selector -->
                 <div class="music-style-section">
@@ -10665,6 +11041,77 @@
             <div class="ws-content" id="wsContent"></div>
             <div class="ws-footer" data-i18n="keepGoing">💪 下周继续加油！</div>
             <button class="guided-continue-btn" id="wsCloseBtn" style="margin-top:16px;width:100%;" data-i18n="close">关闭</button>
+        </div>
+    </div>
+
+    <!-- V56: Parent Console Modal -->
+    <div class="parent-console-overlay" id="parentConsoleOverlay">
+        <div class="parent-console-modal">
+            <div class="pcm-header">
+                <div class="pcm-header-title">👨‍👩‍👧 家长控制台</div>
+                <button class="pcm-close" id="pcmCloseBtn">×</button>
+            </div>
+            <div class="pcm-tabs">
+                <button class="pcm-tab active" data-tab="stats">📊 使用统计</button>
+                <button class="pcm-tab" data-tab="projects">📁 作品管理</button>
+                <button class="pcm-tab" data-tab="storage">💾 存储</button>
+            </div>
+            <div class="pcm-body">
+                <!-- Stats Tab -->
+                <div class="pcm-tab-content active" id="pcmStatsTab">
+                    <div class="pcm-stats-summary">
+                        <div class="pcm-stat-card">
+                            <div class="pcm-stat-num" id="pcmTodayDuration">0分钟</div>
+                            <div class="pcm-stat-label">今日时长</div>
+                        </div>
+                        <div class="pcm-stat-card">
+                            <div class="pcm-stat-num" id="pcmWeekDuration">0分钟</div>
+                            <div class="pcm-stat-label">本周时长</div>
+                        </div>
+                        <div class="pcm-stat-card">
+                            <div class="pcm-stat-num" id="pcmTotalProjects">0</div>
+                            <div class="pcm-stat-label">总作品数</div>
+                        </div>
+                    </div>
+                    <div class="pcm-tool-usage">
+                        <div class="pcm-tool-title">🎨 工具使用排行</div>
+                        <div id="pcmToolList"></div>
+                    </div>
+                    <div class="pcm-trend-chart">
+                        <div class="pcm-trend-title">📈 使用趋势（本周）</div>
+                        <canvas class="pcm-trend-canvas" id="pcmTrendCanvas"></canvas>
+                    </div>
+                    <div class="pcm-actions">
+                        <button class="pcm-action-btn danger" onclick="clearAllStats()">清除统计数据</button>
+                        <button class="pcm-action-btn primary" onclick="exportAllProjects()">导出所有作品ZIP</button>
+                    </div>
+                </div>
+                <!-- Projects Tab -->
+                <div class="pcm-tab-content" id="pcmProjectsTab">
+                    <div class="pcm-projects-header">
+                        <div class="pcm-projects-count">📁 作品列表 (<span id="pcmProjectCount">0</span>)</div>
+                        <div class="pcm-projects-actions">
+                            <button class="pcm-select-all-btn" id="pcmSelectAllBtn" onclick="toggleSelectAllProjects()">全选</button>
+                            <button class="pcm-delete-selected-btn" id="pcmDeleteSelectedBtn" onclick="deleteSelectedProjects()">删除</button>
+                        </div>
+                    </div>
+                    <div class="pcm-project-list" id="pcmProjectList"></div>
+                </div>
+                <!-- Storage Tab -->
+                <div class="pcm-tab-content" id="pcmStorageTab">
+                    <div class="pcm-storage-meter">
+                        <div class="pcm-storage-label">
+                            <span>存储使用</span>
+                            <span id="pcmStoragePercent">0%</span>
+                        </div>
+                        <div class="pcm-storage-bar-bg">
+                            <div class="pcm-storage-bar" id="pcmStorageBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="pcm-storage-info" id="pcmStorageInfo"></div>
+                    <button class="pcm-clear-btn" onclick="clearAllData()">🗑️ 清除所有数据（不可恢复）</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -37572,6 +38019,13 @@ if (document.readyState === 'loading') {
             currentProjectId = null;
         }
         
+        // V56: Update stats
+        try {
+            const stats = JSON.parse(localStorage.getItem('cdb_stats') || '{}');
+            stats.totalProjects = data.projects.length;
+            localStorage.setItem('cdb_stats', JSON.stringify(stats));
+        } catch(e) {}
+        
         renderProjectsList();
     }
 
@@ -37963,6 +38417,501 @@ if (document.readyState === 'loading') {
 })();
 
 // === V54 END ===
+
+// === V56: Parent Console (Usage Stats / Project Management) ===
+(function() {
+    const STATS_KEY = 'cdb_stats';
+    const LOCAL_STORAGE_LIMIT = 5 * 1024 * 1024; // 5MB
+
+    let sessionStartTime = null;
+    let sessionTimer = null;
+    let selectedProjectIds = new Set();
+
+    // ===== Stats Data Functions =====
+    function getDefaultStats() {
+        return {
+            dailyStats: [],
+            toolUsage: { brush: 0, eraser: 0, stamp: 0, shape: 0, highlighter: 0, text: 0 },
+            totalDuration: 0,
+            totalProjects: 0,
+            lastSessionAt: null
+        };
+    }
+
+    function loadStats() {
+        try {
+            const data = localStorage.getItem(STATS_KEY);
+            if (data) {
+                const parsed = JSON.parse(data);
+                return { ...getDefaultStats(), ...parsed };
+            }
+        } catch (e) {
+            console.warn('V56: Failed to load stats:', e);
+        }
+        return getDefaultStats();
+    }
+
+    function saveStats(stats) {
+        try {
+            localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+        } catch (e) {
+            console.warn('V56: Failed to save stats:', e);
+        }
+    }
+
+    function getTodayDate() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function getWeekStart() {
+        const now = new Date();
+        const day = now.getDay();
+        const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+        return new Date(now.setDate(diff)).toISOString().split('T')[0];
+    }
+
+    // ===== Session Timer =====
+    function startSessionTimer() {
+        if (sessionStartTime) return;
+        sessionStartTime = Date.now();
+        sessionTimer = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+            // Auto-save every minute
+            if (elapsed > 0 && elapsed % 60 === 0) {
+                pauseSessionTimer();
+                startSessionTimer();
+            }
+        }, 1000);
+    }
+
+    function pauseSessionTimer() {
+        if (!sessionStartTime) return;
+        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+        sessionStartTime = null;
+        if (sessionTimer) {
+            clearInterval(sessionTimer);
+            sessionTimer = null;
+        }
+        if (elapsed > 0) {
+            const stats = loadStats();
+            const today = getTodayDate();
+            let todayEntry = stats.dailyStats.find(d => d.date === today);
+            if (!todayEntry) {
+                todayEntry = { date: today, duration: 0, 作品数: 0 };
+                stats.dailyStats.push(todayEntry);
+            }
+            todayEntry.duration += elapsed;
+            stats.totalDuration += elapsed;
+            stats.lastSessionAt = Date.now();
+            // Keep only last 90 days
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - 90);
+            stats.dailyStats = stats.dailyStats.filter(d => new Date(d.date) >= cutoff);
+            saveStats(stats);
+        }
+    }
+
+    // ===== Tool Usage Tracking =====
+    function trackToolUsage(toolId) {
+        const stats = loadStats();
+        if (!stats.toolUsage[toolId]) {
+            stats.toolUsage[toolId] = 0;
+        }
+        stats.toolUsage[toolId]++;
+        saveStats(stats);
+    }
+
+    function getToolUsageStats() {
+        const stats = loadStats();
+        const sorted = Object.entries(stats.toolUsage)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+        return sorted;
+    }
+
+    function getDailyTrend(days) {
+        const stats = loadStats();
+        const result = [];
+        const today = new Date();
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            const entry = stats.dailyStats.find(s => s.date === dateStr);
+            result.push({
+                date: dateStr,
+                duration: entry ? entry.duration : 0,
+                label: ['日', '一', '二', '三', '四', '五', '六'][d.getDay()]
+            });
+        }
+        return result;
+    }
+
+    // ===== Storage Meter =====
+    function updateStorageMeter() {
+        let total = 0;
+        const breakdown = [];
+        try {
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    const size = localStorage[key].length * 2;
+                    total += size;
+                    breakdown.push({ key, size });
+                }
+            }
+        } catch (e) {}
+        
+        const percent = Math.min((total / LOCAL_STORAGE_LIMIT) * 100, 100);
+        const totalMB = (total / (1024 * 1024)).toFixed(2);
+        const limitMB = (LOCAL_STORAGE_LIMIT / (1024 * 1024)).toFixed(0);
+        
+        document.getElementById('pcmStoragePercent').textContent = percent.toFixed(1) + '%';
+        const bar = document.getElementById('pcmStorageBar');
+        bar.style.width = percent + '%';
+        bar.className = 'pcm-storage-bar' + (percent > 80 ? ' danger' : percent > 50 ? ' warning' : '');
+        
+        const info = document.getElementById('pcmStorageInfo');
+        breakdown.sort((a, b) => b.size - a.size);
+        let html = '';
+        breakdown.slice(0, 10).forEach(item => {
+            const mb = (item.size / (1024 * 1024)).toFixed(2);
+            const label = item.key.length > 20 ? item.key.substring(0, 20) + '...' : item.key;
+            html += `<div class="pcm-storage-row"><span class="pcm-storage-row-label">${label}</span><span class="pcm-storage-row-value">${mb} MB</span></div>`;
+        });
+        if (breakdown.length > 10) {
+            html += `<div class="pcm-storage-row"><span class="pcm-storage-row-label">其他 ${breakdown.length - 10} 项</span><span class="pcm-storage-row-value">...</span></div>`;
+        }
+        html += `<div class="pcm-storage-row"><span class="pcm-storage-row-label">总计</span><span class="pcm-storage-row-value">${totalMB} MB / ${limitMB} MB</span></div>`;
+        info.innerHTML = html;
+    }
+
+    // ===== Project Management =====
+    function renderProjectList() {
+        const projects = getAllProjects();
+        const list = document.getElementById('pcmProjectList');
+        const countEl = document.getElementById('pcmProjectCount');
+        countEl.textContent = projects.projects.length;
+        
+        if (projects.projects.length === 0) {
+            list.innerHTML = '<div class="pcm-empty"><div class="pcm-empty-icon">📭</div>暂无保存的作品</div>';
+            return;
+        }
+        
+        let html = '';
+        projects.projects.forEach(p => {
+            const checked = selectedProjectIds.has(p.id) ? 'checked' : '';
+            const timeAgo = formatTimeAgo(p.updatedAt);
+            const thumb = p.thumbnail || '';
+            html += `<div class="pcm-project-item">
+                <input type="checkbox" class="pcm-project-checkbox" data-id="${p.id}" ${checked} onchange="toggleProjectSelection('${p.id}')">
+                <img class="pcm-project-thumb" src="${thumb}" alt="${p.title}" onerror="this.style.display='none'">
+                <div class="pcm-project-info">
+                    <div class="pcm-project-name">${p.title}</div>
+                    <div class="pcm-project-time">${timeAgo}</div>
+                </div>
+                <div class="pcm-project-btns">
+                    <button class="pcm-project-btn export-btn" onclick="exportSingleProject('${p.id}')">导出</button>
+                    <button class="pcm-project-btn delete-btn" onclick="deleteSingleProject('${p.id}')">删除</button>
+                </div>
+            </div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    function toggleProjectSelection(id) {
+        if (selectedProjectIds.has(id)) {
+            selectedProjectIds.delete(id);
+        } else {
+            selectedProjectIds.add(id);
+        }
+    }
+
+    function toggleSelectAllProjects() {
+        const projects = getAllProjects();
+        const btn = document.getElementById('pcmSelectAllBtn');
+        if (selectedProjectIds.size === projects.projects.length) {
+            selectedProjectIds.clear();
+            btn.textContent = '全选';
+            btn.classList.remove('selected');
+        } else {
+            projects.projects.forEach(p => selectedProjectIds.add(p.id));
+            btn.textContent = '取消全选';
+            btn.classList.add('selected');
+        }
+        renderProjectList();
+    }
+
+    function deleteSelectedProjects() {
+        if (selectedProjectIds.size === 0) {
+            alert('请先选择要删除的作品');
+            return;
+        }
+        if (!confirm(`确定要删除选中的 ${selectedProjectIds.size} 个作品吗？`)) return;
+        const data = getAllProjects();
+        data.projects = data.projects.filter(p => !selectedProjectIds.has(p.id));
+        saveAllProjects(data);
+        const stats = loadStats();
+        stats.totalProjects = data.projects.length;
+        saveStats(stats);
+        selectedProjectIds.clear();
+        renderProjectList();
+        updateStorageMeter();
+    }
+
+    function deleteSingleProject(id) {
+        if (!confirm('确定要删除这个作品吗？')) return;
+        const data = getAllProjects();
+        data.projects = data.projects.filter(p => p.id !== id);
+        saveAllProjects(data);
+        const stats = loadStats();
+        stats.totalProjects = data.projects.length;
+        saveStats(stats);
+        selectedProjectIds.delete(id);
+        renderProjectList();
+        updateStorageMeter();
+    }
+
+    function exportSingleProject(id) {
+        const projects = getAllProjects();
+        const project = projects.projects.find(p => p.id === id);
+        if (!project) return;
+        const version = project.versions.find(v => v.id === project.currentVersionId) || project.versions[0];
+        if (!version) return;
+        const link = document.createElement('a');
+        link.download = (project.title || 'drawing') + '.png';
+        link.href = version.dataUrl;
+        link.click();
+    }
+
+    // ===== ZIP Export =====
+    function exportAllProjects() {
+        const projects = getAllProjects();
+        if (projects.projects.length === 0) {
+            alert('没有可导出的作品');
+            return;
+        }
+        
+        // Check if JSZip is available
+        if (typeof JSZip === 'undefined') {
+            // Fallback: export first project
+            if (projects.projects.length > 0) {
+                exportSingleProject(projects.projects[0].id);
+            }
+            return;
+        }
+        
+        const zip = new JSZip();
+        let count = 0;
+        projects.projects.forEach(p => {
+            const version = p.versions.find(v => v.id === p.currentVersionId) || p.versions[0];
+            if (version && version.dataUrl) {
+                const base64 = version.dataUrl.split(',')[1];
+                if (base64) {
+                    const safeName = (p.title || 'drawing').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
+                    zip.file(safeName + '_' + count + '.png', base64, { base64: true });
+                    count++;
+                }
+            }
+        });
+        
+        zip.generateAsync({ type: 'blob' }).then(content => {
+            const link = document.createElement('a');
+            link.download = 'creative_drawings_' + Date.now() + '.zip';
+            link.href = URL.createObjectURL(content);
+            link.click();
+        });
+    }
+
+    // ===== Stats Functions =====
+    function clearAllStats() {
+        if (!confirm('确定要清除所有统计数据吗？')) return;
+        localStorage.removeItem(STATS_KEY);
+        updateStatsDisplay();
+    }
+
+    function clearAllData() {
+        if (!confirm('确定要清除所有数据吗？此操作不可恢复！')) return;
+        localStorage.clear();
+        selectedProjectIds.clear();
+        updateStatsDisplay();
+        updateStorageMeter();
+        renderProjectList();
+    }
+
+    // ===== Trend Chart Rendering =====
+    function drawTrendChart() {
+        const canvas = document.getElementById('pcmTrendCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        const w = rect.width;
+        const h = rect.height;
+        const data = getDailyTrend(7);
+        const maxDur = Math.max(...data.map(d => d.duration), 60);
+        
+        ctx.clearRect(0, 0, w, h);
+        
+        // Draw bars
+        const barWidth = (w - 40) / data.length;
+        data.forEach((d, i) => {
+            const barH = maxDur > 0 ? (d.duration / maxDur) * (h - 40) : 0;
+            const x = 20 + i * barWidth;
+            const y = h - 20 - barH;
+            
+            const gradient = ctx.createLinearGradient(x, y, x, h - 20);
+            gradient.addColorStop(0, '#74C0FC');
+            gradient.addColorStop(1, '#4DABF7');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(x + 2, y, barWidth - 4, barH, 4);
+            ctx.fill();
+            
+            // Label
+            ctx.fillStyle = '#868E96';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(d.label, x + barWidth / 2, h - 4);
+            
+            // Duration label
+            if (d.duration > 0) {
+                ctx.fillStyle = '#495057';
+                ctx.fillText(formatDuration(d.duration), x + barWidth / 2, y - 4);
+            }
+        });
+    }
+
+    function formatDuration(seconds) {
+        if (seconds < 60) return seconds + '秒';
+        if (seconds < 3600) return Math.floor(seconds / 60) + '分';
+        return Math.floor(seconds / 3600) + '时' + Math.floor((seconds % 3600) / 60) + '分';
+    }
+
+    // ===== Update Display =====
+    function updateStatsDisplay() {
+        const stats = loadStats();
+        const today = getTodayDate();
+        const weekStart = getWeekStart();
+        
+        const todayEntry = stats.dailyStats.find(d => d.date === today);
+        const todayDur = todayEntry ? todayEntry.duration : 0;
+        
+        let weekDur = 0;
+        stats.dailyStats.forEach(d => {
+            if (d.date >= weekStart) weekDur += d.duration;
+        });
+        
+        document.getElementById('pcmTodayDuration').textContent = formatDuration(todayDur);
+        document.getElementById('pcmWeekDuration').textContent = formatDuration(weekDur);
+        document.getElementById('pcmTotalProjects').textContent = stats.totalProjects;
+        
+        // Tool usage
+        const toolList = document.getElementById('pcmToolList');
+        const tools = getToolUsageStats();
+        const maxCount = Math.max(...tools.map(t => t.count), 1);
+        let html = '';
+        const toolNames = { brush: '画笔', eraser: '橡皮', stamp: '印章', shape: '形状', highlighter: '荧光笔', text: '文字' };
+        tools.forEach(t => {
+            const name = toolNames[t.name] || t.name;
+            const pct = (t.count / maxCount) * 100;
+            html += `<div class="pcm-tool-item">
+                <span class="pcm-tool-name">${name}</span>
+                <div class="pcm-tool-bar-bg"><div class="pcm-tool-bar" style="width:${pct}%"></div></div>
+                <span class="pcm-tool-count">${t.count}次</span>
+            </div>`;
+        });
+        if (html === '') html = '<div style="color:#868e96;font-size:0.85rem;">暂无工具使用记录</div>';
+        toolList.innerHTML = html;
+        
+        drawTrendChart();
+    }
+
+    // ===== Tab Switching =====
+    function initTabSwitching() {
+        const tabs = document.querySelectorAll('.pcm-tab');
+        const contents = document.querySelectorAll('.pcm-tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('pcm' + target.charAt(0).toUpperCase() + target.slice(1) + 'Tab').classList.add('active');
+                if (target === 'projects') renderProjectList();
+                if (target === 'storage') updateStorageMeter();
+                if (target === 'stats') updateStatsDisplay();
+            });
+        });
+    }
+
+    // ===== Open/Close =====
+    function openParentConsole() {
+        document.getElementById('parentConsoleOverlay').classList.add('active');
+        updateStatsDisplay();
+    }
+
+    function closeParentConsole() {
+        document.getElementById('parentConsoleOverlay').classList.remove('active');
+    }
+
+    // ===== Event Bindings =====
+    function initParentConsole() {
+        document.getElementById('parentConsoleBtn').addEventListener('click', openParentConsole);
+        document.getElementById('pcmCloseBtn').addEventListener('click', closeParentConsole);
+        document.getElementById('parentConsoleOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'parentConsoleOverlay') closeParentConsole();
+        });
+        initTabSwitching();
+        updateStorageMeter();
+        
+        // Hook into drawing events
+        if (typeof startDrawing === 'function') {
+            const origStart = startDrawing;
+            window.startDrawing = function(e) {
+                startSessionTimer();
+                return origStart.apply(this, arguments);
+            };
+        }
+        if (typeof stopDrawing === 'function') {
+            const origStop = stopDrawing;
+            window.stopDrawing = function(e) {
+                pauseSessionTimer();
+                return origStop.apply(this, arguments);
+            };
+        }
+    }
+
+    // ===== Expose Global Functions =====
+    window.initParentConsole = initParentConsole;
+    window.startSessionTimer = startSessionTimer;
+    window.pauseSessionTimer = pauseSessionTimer;
+    window.saveStats = saveStats;
+    window.loadStats = loadStats;
+    window.getToolUsageStats = getToolUsageStats;
+    window.getDailyTrend = getDailyTrend;
+    window.exportAllProjects = exportAllProjects;
+    window.deleteSelectedProjects = deleteSelectedProjects;
+    window.clearAllStats = clearAllStats;
+    window.updateStorageMeter = updateStorageMeter;
+    window.toggleProjectSelection = toggleProjectSelection;
+    window.toggleSelectAllProjects = toggleSelectAllProjects;
+    window.deleteSingleProject = deleteSingleProject;
+    window.exportSingleProject = exportSingleProject;
+    window.clearAllData = clearAllData;
+
+    // Auto-init on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(initParentConsole, 500));
+    } else {
+        setTimeout(initParentConsole, 500);
+    }
+})();
+
+// === V56 END ===
 
     </script>
 
