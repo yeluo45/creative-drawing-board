@@ -2463,6 +2463,360 @@
             color: white;
         }
 
+        /* V59: Collab Button */
+        .collab-btn {
+            background: linear-gradient(180deg, #FF8787 0%, #FA5252 100%);
+            border: 3px solid #495057;
+            border-radius: 16px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            transition: transform 0.1s, box-shadow 0.1s;
+            min-width: 80px;
+            min-height: 44px;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .collab-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .collab-btn.in-room {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 3px 3px 0 #495057; }
+            50% { box-shadow: 3px 3px 0 #495057, 0 0 12px rgba(64, 192, 87, 0.6); }
+        }
+
+        /* V59: Collab Panel Modal */
+        .collab-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 4px solid #495057;
+            border-radius: 20px;
+            padding: 0;
+            z-index: 2000;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+            min-width: 360px;
+            max-width: 420px;
+            font-family: inherit;
+        }
+
+        .collab-panel.active { display: block; animation: popIn 0.3s ease-out; }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .collab-panel-header {
+            background: linear-gradient(180deg, #FF8787 0%, #FA5252 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collab-panel-title { font-size: 1.3rem; font-weight: bold; }
+
+        .collab-panel-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .collab-panel-close:hover { transform: scale(1.2); }
+
+        .collab-panel-body { padding: 20px; }
+
+        .collab-section-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .collab-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .collab-create-btn, .collab-join-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .collab-create-btn {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            color: white;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .collab-join-btn {
+            background: linear-gradient(180deg, #A5D8FF 0%, #74C0FC 100%);
+            color: white;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .collab-create-btn:active, .collab-join-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .collab-room-info {
+            display: none;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .collab-room-info.active { display: block; }
+
+        .collab-room-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .collab-room-code {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .collab-code-display {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #212529;
+            font-family: monospace;
+        }
+
+        .collab-copy-btn {
+            background: linear-gradient(180deg, #FFE066 0%, #FFD43B 100%);
+            border: 2px solid #495057;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 2px 2px 0 #495057;
+        }
+
+        .collab-copy-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .collab-peers { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .collab-peer {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+        }
+
+        .collab-peer-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .collab-leave-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px;
+            background: linear-gradient(180deg, #FF8787 0%, #FA5252 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
+        .collab-leave-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #495057;
+        }
+
+        .collab-join-form { display: none; margin-bottom: 16px; }
+        .collab-join-form.active { display: block; }
+
+        .collab-join-input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-family: monospace;
+        }
+
+        .collab-join-input:focus { outline: none; border-color: #4DABF7; }
+
+        .collab-join-btns { display: flex; gap: 10px; }
+
+        .collab-join-submit {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
+        .collab-join-cancel {
+            flex: 1;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 3px solid #495057;
+            border-radius: 12px;
+            color: #495057;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #495057;
+            font-family: inherit;
+        }
+
+        /* V59: Peer Cursors */
+        .peer-cursor {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1000;
+            transition: left 0.05s linear, top 0.05s linear;
+        }
+
+        .peer-cursor-arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 14px solid currentColor;
+            transform: rotate(-45deg);
+        }
+
+        .peer-cursor-name {
+            position: absolute;
+            top: 16px;
+            left: 8px;
+            background: currentColor;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* V59: Toast Notification */
+        .collab-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #212529;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+            pointer-events: none;
+        }
+
+        .collab-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .collab-toast.success {
+            background: linear-gradient(180deg, #69DB7C 0%, #40C057 100%);
+        }
+
+        .collab-toast.error {
+            background: linear-gradient(180deg, #FF8787 0%, #FA5252 100%);
+        }
+
+        /* V59: Collab Indicator */
+        .collab-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            border: 3px solid #495057;
+            border-radius: 12px;
+            padding: 8px 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            z-index: 100;
+            box-shadow: 3px 3px 0 #495057;
+        }
+
+        .collab-indicator.active { display: flex; }
+
+        .collab-indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #40C057;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
         /* V63: Shape Preview for AI Completion */
         .shape-preview {
             position: absolute;
@@ -10850,6 +11204,7 @@
             <button class="view3d-btn" id="view3dBtn" title="3D作品展示">🖼️ 3D</button>
             <button class="marketplace-btn" id="marketplaceBtn" title="贴纸市场">🏪</button>
             <button class="plugin-btn" id="pluginBtn" title="插件市场">🔌</button>
+            <button class="collab-btn" id="collabBtn" title="协作绘画">🤝 协作</button>
             <div class="ai-menu" id="aiMenu">
                 <div class="ai-menu-title">🤖 AI 辅助绘画</div>
                 <div class="ai-menu-item">
@@ -18264,6 +18619,11 @@
             lastX = pos.x;
             lastY = pos.y;
 
+            // V59: Broadcast cursor on draw start
+            if (window.collab && collab.isInRoom) {
+                collab.broadcastCursor(pos.x, pos.y);
+            }
+
             // V27: Record stroke start
             recordAction(ACTION_TYPES.STROKE_START, { x: pos.x, y: pos.y, color: currentColor, size: currentSize, tool: currentTool });
 
@@ -18374,6 +18734,11 @@
             }
             // V27: Record stroke move
             recordAction(ACTION_TYPES.STROKE_MOVE, { x: pos.x, y: pos.y });
+
+            // V59: Broadcast cursor during drawing
+            if (window.collab && collab.isInRoom) {
+                collab.broadcastCursor(pos.x, pos.y);
+            }
         }
 
         function stopDrawing() {
@@ -21225,6 +21590,16 @@
             document.addEventListener('mouseup', stopStampDrag);
             document.addEventListener('touchmove', updateStampDrag, { passive: true });
             document.addEventListener('touchend', stopStampDrag);
+
+            // V59: Collab cursor tracking (for non-drawing cursor broadcast)
+            document.addEventListener('mousemove', (e) => {
+                if (window.collab && collab.isInRoom && !isDrawing) {
+                    const rect = drawingCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    collab.broadcastCursor(x, y);
+                }
+            });
 
             // Click on empty canvas area to deselect stamps
             drawingCanvas.addEventListener('click', (e) => {
@@ -28591,6 +28966,419 @@
         saveDrawing = function() {
             originalSaveDrawing();
         };
+
+        // ===== V59: Collaborative Drawing System =====
+        // Collab: Room system, real-time sync via BroadcastChannel, peer cursors
+        // Version: 59
+
+        // ===== V59: Collab System =====
+        const collab = {
+            roomId: null,
+            roomName: '',
+            peerId: null,
+            peerName: '',
+            peerColor: '#FF8787',
+            peers: {},
+            channel: null,
+            isInRoom: false,
+            cursorThrottle: null,
+
+            peerColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'],
+
+            init() {
+                this.peerId = 'peer_' + Math.random().toString(36).substr(2, 8);
+                this.peerName = ['小画家', '小天才', '绘画达人', '创意王', '小艺术家'][Math.floor(Math.random() * 5)];
+                this.peerColor = this.peerColors[Math.floor(Math.random() * this.peerColors.length)];
+
+                this.bindEvents();
+                this.loadRoomState();
+            },
+
+            bindEvents() {
+                document.getElementById('collabBtn').addEventListener('click', () => this.togglePanel());
+                document.getElementById('collabPanelClose').addEventListener('click', () => this.closePanel());
+                document.getElementById('collabCreateBtn').addEventListener('click', () => this.createRoom());
+                document.getElementById('collabJoinBtn').addEventListener('click', () => this.showJoinForm());
+                document.getElementById('collabJoinCancel').addEventListener('click', () => this.hideJoinForm());
+                document.getElementById('collabJoinSubmit').addEventListener('click', () => this.joinRoom());
+                document.getElementById('collabLeaveBtn').addEventListener('click', () => this.leaveRoom());
+                document.getElementById('collabCopyBtn').addEventListener('click', () => this.copyCode());
+
+                const joinInput = document.getElementById('collabJoinInput');
+                joinInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') this.joinRoom();
+                });
+
+                document.getElementById('collabJoinInput').addEventListener('input', function() {
+                    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                });
+            },
+
+            togglePanel() {
+                const panel = document.getElementById('collabPanel');
+                if (panel.classList.contains('active')) {
+                    this.closePanel();
+                } else {
+                    this.openPanel();
+                }
+            },
+
+            openPanel() {
+                document.getElementById('collabPanel').classList.add('active');
+            },
+
+            closePanel() {
+                document.getElementById('collabPanel').classList.remove('active');
+                this.hideJoinForm();
+            },
+
+            generateInviteCode() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                let code = '';
+                for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                code += '-';
+                for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                return code;
+            },
+
+            createRoom() {
+                const code = this.generateInviteCode();
+                this.roomId = code;
+                this.roomName = this.peerName + '的房间';
+                this.isInRoom = true;
+                this.peers = {};
+                this.peers[this.peerId] = { id: this.peerId, name: this.peerName, color: this.peerColor, cursor: null };
+
+                this.setupChannel();
+                this.saveRoomState();
+                this.updateUI();
+
+                this.showToast('房间创建成功！邀请码: ' + code, 'success');
+                this.broadcastPeers();
+            },
+
+            showJoinForm() {
+                document.getElementById('collabJoinForm').classList.add('active');
+            },
+
+            hideJoinForm() {
+                document.getElementById('collabJoinForm').classList.remove('active');
+                document.getElementById('collabJoinInput').value = '';
+            },
+
+            joinRoom() {
+                const input = document.getElementById('collabJoinInput');
+                const code = input.value.trim().toUpperCase();
+
+                if (!code || code.length < 9) {
+                    this.showToast('请输入有效的邀请码', 'error');
+                    return;
+                }
+
+                this.roomId = code;
+                this.roomName = '协作房间';
+                this.isInRoom = true;
+                this.peers = {};
+                this.peers[this.peerId] = { id: this.peerId, name: this.peerName, color: this.peerColor, cursor: null };
+
+                this.setupChannel();
+                this.saveRoomState();
+                this.updateUI();
+                this.hideJoinForm();
+
+                this.showToast('加入房间成功！', 'success');
+                this.broadcastPeers();
+            },
+
+            leaveRoom() {
+                if (this.channel) {
+                    this.broadcast({ type: 'leave', peerId: this.peerId });
+                    this.channel.close();
+                    this.channel = null;
+                }
+
+                this.roomId = null;
+                this.roomName = '';
+                this.isInRoom = false;
+                this.peers = {};
+
+                this.clearPeerCursors();
+                localStorage.removeItem('collabRoom');
+
+                document.getElementById('collabRoomInfo').classList.remove('active');
+                document.getElementById('collabIndicator').classList.remove('active');
+                document.getElementById('collabBtn').classList.remove('in-room');
+
+                this.showToast('已离开房间', 'success');
+            },
+
+            setupChannel() {
+                if (this.channel) {
+                    this.channel.close();
+                }
+
+                const channelName = 'collab_' + this.roomId.replace(/-/g, '');
+                this.channel = new BroadcastChannel(channelName);
+
+                this.channel.onmessage = (e) => this.handleMessage(e.data);
+
+                this.channel.onmessageerror = () => {
+                    console.warn('Collab channel message error');
+                };
+            },
+
+            handleMessage(msg) {
+                if (!msg || msg.peerId === this.peerId) return;
+
+                switch (msg.type) {
+                    case 'draw':
+                        this.applyRemoteDraw(msg);
+                        break;
+                    case 'cursor':
+                        this.updatePeerCursor(msg);
+                        break;
+                    case 'peers':
+                        this.syncPeers(msg);
+                        break;
+                    case 'leave':
+                        this.removePeer(msg.peerId);
+                        break;
+                }
+            },
+
+            broadcast(msg) {
+                if (!this.channel || !this.isInRoom) return;
+                msg.roomId = this.roomId;
+                msg.peerId = this.peerId;
+                msg.peerName = this.peerName;
+                msg.peerColor = this.peerColor;
+                this.channel.postMessage(msg);
+            },
+
+            broadcastDraw(op) {
+                if (!this.isInRoom) return;
+                this.broadcast({
+                    type: 'draw',
+                    tool: op.tool,
+                    points: op.points,
+                    color: op.color,
+                    size: op.size
+                });
+            },
+
+            broadcastCursor(x, y) {
+                if (!this.isInRoom || this.cursorThrottle) return;
+                this.cursorThrottle = setTimeout(() => { this.cursorThrottle = null; }, 50);
+                this.broadcast({ type: 'cursor', x, y });
+            },
+
+            applyRemoteDraw(op) {
+                if (!op || !op.points || op.points.length < 2) return;
+
+                ctx.beginPath();
+                ctx.strokeStyle = op.color || currentColor;
+                ctx.lineWidth = op.size || brushSize;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                const points = op.points;
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                ctx.stroke();
+
+                if (op.isSymmetry && symmetryMode !== 'none') {
+                    this.drawSymmetric(ctx, points, op.color || currentColor, op.size || brushSize);
+                }
+            },
+
+            drawSymmetric(ctx, points, color, size) {
+                const w = canvas.width;
+                const h = canvas.height;
+
+                ctx.save();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (symmetryMode === 'vertical' || symmetryMode === 'quad') {
+                    ctx.beginPath();
+                    points.forEach(p => ctx.lineTo(w - p.x, p.y));
+                    ctx.stroke();
+                }
+                if (symmetryMode === 'horizontal' || symmetryMode === 'quad') {
+                    ctx.beginPath();
+                    points.forEach(p => ctx.lineTo(p.x, h - p.y));
+                    ctx.stroke();
+                }
+                if (symmetryMode === 'quad') {
+                    ctx.beginPath();
+                    points.forEach(p => ctx.lineTo(w - p.x, h - p.y));
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            },
+
+            updatePeerCursor(msg) {
+                if (!this.peers[msg.peerId]) return;
+
+                this.peers[msg.peerId].cursor = { x: msg.x, y: msg.y };
+                this.renderPeerCursors();
+            },
+
+            renderPeerCursors() {
+                this.clearPeerCursors();
+
+                Object.values(this.peers).forEach(peer => {
+                    if (!peer.cursor || peer.id === this.peerId) return;
+
+                    const cursor = document.createElement('div');
+                    cursor.className = 'peer-cursor';
+                    cursor.id = 'cursor_' + peer.id;
+                    cursor.style.color = peer.color;
+                    cursor.style.left = peer.cursor.x + 'px';
+                    cursor.style.top = peer.cursor.y + 'px';
+                    cursor.innerHTML = '<div class="peer-cursor-arrow"></div><div class="peer-cursor-name">' + peer.name + '</div>';
+                    document.body.appendChild(cursor);
+                });
+            },
+
+            clearPeerCursors() {
+                document.querySelectorAll('.peer-cursor').forEach(el => el.remove());
+            },
+
+            syncPeers(msg) {
+                if (msg.type === 'peers') {
+                    Object.keys(msg.peers).forEach(id => {
+                        if (id !== this.peerId && !this.peers[id]) {
+                            this.peers[id] = msg.peers[id];
+                        }
+                    });
+                }
+            },
+
+            broadcastPeers() {
+                this.broadcast({ type: 'peers', peers: this.peers });
+            },
+
+            removePeer(peerId) {
+                delete this.peers[peerId];
+                const cursor = document.getElementById('cursor_' + peerId);
+                if (cursor) cursor.remove();
+                this.updateUI();
+                this.showToast('有人离开了房间', 'success');
+            },
+
+            saveRoomState() {
+                if (!this.isInRoom) return;
+                localStorage.setItem('collabRoom', JSON.stringify({
+                    roomId: this.roomId,
+                    roomName: this.roomName,
+                    peerId: this.peerId,
+                    peerName: this.peerName,
+                    peerColor: this.peerColor
+                }));
+            },
+
+            loadRoomState() {
+                const saved = localStorage.getItem('collabRoom');
+                if (!saved) return;
+
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.roomId && data.peerId) {
+                        this.roomId = data.roomId;
+                        this.roomName = data.roomName || '协作房间';
+                        this.peerId = data.peerId;
+                        this.peerName = data.peerName || this.peerName;
+                        this.peerColor = data.peerColor || this.peerColor;
+                        this.isInRoom = false;
+                        this.peers = {};
+                        this.peers[this.peerId] = { id: this.peerId, name: this.peerName, color: this.peerColor, cursor: null };
+                    }
+                } catch (e) {
+                    localStorage.removeItem('collabRoom');
+                }
+            },
+
+            updateUI() {
+                const btn = document.getElementById('collabBtn');
+                const roomInfo = document.getElementById('collabRoomInfo');
+                const indicator = document.getElementById('collabIndicator');
+
+                if (this.isInRoom) {
+                    btn.classList.add('in-room');
+                    roomInfo.classList.add('active');
+                    indicator.classList.add('active');
+
+                    document.getElementById('collabRoomName').textContent = this.roomName;
+                    document.getElementById('collabCodeDisplay').textContent = this.roomId;
+
+                    this.renderPeers();
+                    this.updateIndicator();
+                } else {
+                    btn.classList.remove('in-room');
+                    roomInfo.classList.remove('active');
+                    indicator.classList.remove('active');
+                }
+            },
+
+            renderPeers() {
+                const container = document.getElementById('collabPeers');
+                container.innerHTML = '';
+
+                Object.values(this.peers).forEach(peer => {
+                    const div = document.createElement('div');
+                    div.className = 'collab-peer';
+                    div.innerHTML = '<span class="collab-peer-dot" style="background:' + peer.color + '"></span><span>' + peer.name + '</span>';
+                    container.appendChild(div);
+                });
+            },
+
+            updateIndicator() {
+                const count = Object.keys(this.peers).length;
+                document.getElementById('collabIndicatorText').textContent = count + '人在画';
+            },
+
+            copyCode() {
+                const code = this.roomId;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(code).then(() => {
+                        this.showToast('邀请码已复制！', 'success');
+                    }).catch(() => {
+                        this.fallbackCopy(code);
+                    });
+                } else {
+                    this.fallbackCopy(code);
+                }
+            },
+
+            fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                this.showToast('邀请码已复制！', 'success');
+            },
+
+            showToast(message, type = '') {
+                const toast = document.getElementById('collabToast');
+                toast.textContent = message;
+                toast.className = 'collab-toast show ' + type;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }
+        };
+
+        collab.init();
 
     </script>
 
@@ -39312,6 +40100,47 @@ if (document.readyState === 'loading') {
             </div>
             <button class="celebration-close-btn" id="celebrationCloseBtn">太棒了！</button>
         </div>
+    </div>
+
+    <!-- V59: Collab Panel Modal -->
+    <div class="collab-panel" id="collabPanel">
+        <div class="collab-panel-header">
+            <span class="collab-panel-title">🤝 协作绘画</span>
+            <button class="collab-panel-close" id="collabPanelClose">✕</button>
+        </div>
+        <div class="collab-panel-body">
+            <div class="collab-section-title">选择操作</div>
+            <div class="collab-btn-group">
+                <button class="collab-create-btn" id="collabCreateBtn">🚪 创建房间</button>
+                <button class="collab-join-btn" id="collabJoinBtn">📋 加入房间</button>
+            </div>
+            <div class="collab-join-form" id="collabJoinForm">
+                <input type="text" class="collab-join-input" id="collabJoinInput" placeholder="输入邀请码" maxlength="9">
+                <div class="collab-join-btns">
+                    <button class="collab-join-submit" id="collabJoinSubmit">加入</button>
+                    <button class="collab-join-cancel" id="collabJoinCancel">取消</button>
+                </div>
+            </div>
+            <div class="collab-room-info" id="collabRoomInfo">
+                <div class="collab-room-name" id="collabRoomName">我的房间</div>
+                <div class="collab-room-code">
+                    <span>邀请码:</span>
+                    <span class="collab-code-display" id="collabCodeDisplay">---- ------</span>
+                    <button class="collab-copy-btn" id="collabCopyBtn">📋 复制</button>
+                </div>
+                <div class="collab-peers" id="collabPeers"></div>
+                <button class="collab-leave-btn" id="collabLeaveBtn">🚪 离开房间</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- V59: Collab Toast -->
+    <div class="collab-toast" id="collabToast"></div>
+
+    <!-- V59: Collab Indicator -->
+    <div class="collab-indicator" id="collabIndicator">
+        <span class="collab-indicator-dot"></span>
+        <span id="collabIndicatorText">1人在画</span>
     </div>
 
 </body>
