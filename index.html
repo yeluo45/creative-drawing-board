@@ -14743,6 +14743,312 @@
             { name: '前景中景背景', description: '利用层次感增加深度', icon: '🏔️' }
         ];
 
+        // V55: Tool Registry System
+        const TOOL_REGISTRY = {
+            tools: new Map(),
+            stamps: new Map(),
+            effects: new Map(),
+            categories: ['basic', 'shape', 'stamp', 'effect']
+        };
+
+        // Built-in effect definitions
+        const BUILT_IN_EFFECTS = {
+            blur: { name: '模糊', filter: 'blur(4px)', icon: '🔵' },
+            sharpen: { name: '锐化', filter: 'contrast(150%) saturate(150%)', icon: '🔪' },
+            emboss: { name: '浮雕', filter: 'contrast(200%) brightness(120%)', icon: '🗿' },
+            levels: { name: '色阶', filter: 'contrast(120%)', icon: '📊' },
+            vintage: { name: '复古', filter: 'sepia(40%) contrast(110%) brightness(105%)', icon: '📷' }
+        };
+
+        // Initialize Tool Registry
+        function initToolRegistry() {
+            // Register built-in tools
+            registerTool('brush', {
+                id: 'brush',
+                name: '画笔',
+                icon: '✏️',
+                category: 'basic',
+                execute: (ctx, x1, y1, x2, y2, color, size) => drawLine(x1, y1, x2, y2, color, size)
+            });
+            registerTool('eraser', {
+                id: 'eraser',
+                name: '橡皮擦',
+                icon: '🧹',
+                category: 'basic',
+                execute: (ctx, x1, y1, x2, y2) => eraseAtPoint(x1, y1)
+            });
+            registerTool('highlighter', {
+                id: 'highlighter',
+                name: '荧光笔',
+                icon: '🖍️',
+                category: 'basic',
+                execute: (ctx, x1, y1, x2, y2, color, size) => drawLine(x1, y1, x2, y2, color, size)
+            });
+            registerTool('shape', {
+                id: 'shape',
+                name: '形状',
+                icon: '⬜',
+                category: 'shape',
+                execute: (ctx, startX, startY, endX, endY) => finalizeShape(endX, endY)
+            });
+            registerTool('stamp', {
+                id: 'stamp',
+                name: '印章',
+                icon: '🎨',
+                category: 'stamp',
+                execute: (ctx, x, y) => placeStamp(x, y)
+            });
+
+            // Register built-in effects
+            Object.entries(BUILT_IN_EFFECTS).forEach(([id, effect]) => {
+                registerEffect(id, effect);
+            });
+
+            // Register stamps from STAMPS array
+            if (typeof STAMPS !== 'undefined') {
+                STAMPS.forEach(stamp => {
+                    registerStamp(stamp.id, {
+                        id: stamp.id,
+                        name: stamp.name,
+                        svg: stamp.svg
+                    });
+                });
+            }
+
+            // Initialize stamp categories
+            initStampCategories();
+        }
+
+        // Register a tool
+        function registerTool(id, tool) {
+            TOOL_REGISTRY.tools.set(id, {
+                id: id,
+                name: tool.name || id,
+                icon: tool.icon || '🔧',
+                category: tool.category || 'basic',
+                execute: tool.execute || function() {},
+                ...tool
+            });
+        }
+
+        // Unregister a tool
+        function unregisterTool(id) {
+            TOOL_REGISTRY.tools.delete(id);
+        }
+
+        // Get a tool by ID
+        function getTool(id) {
+            return TOOL_REGISTRY.tools.get(id);
+        }
+
+        // List all tools
+        function listTools(category) {
+            if (!category) {
+                return Array.from(TOOL_REGISTRY.tools.values());
+            }
+            return Array.from(TOOL_REGISTRY.tools.values()).filter(t => t.category === category);
+        }
+
+        // Register a stamp
+        function registerStamp(id, stamp) {
+            TOOL_REGISTRY.stamps.set(id, {
+                id: id,
+                name: stamp.name || id,
+                svg: stamp.svg || '',
+                category: stamp.category || 'custom',
+                ...stamp
+            });
+        }
+
+        // Unregister a stamp
+        function unregisterStamp(id) {
+            TOOL_REGISTRY.stamps.delete(id);
+        }
+
+        // Get a stamp by ID
+        function getStamp(id) {
+            return TOOL_REGISTRY.stamps.get(id);
+        }
+
+        // List all stamps
+        function listStamps(category) {
+            if (!category) {
+                return Array.from(TOOL_REGISTRY.stamps.values());
+            }
+            return Array.from(TOOL_REGISTRY.stamps.values()).filter(s => s.category === category);
+        }
+
+        // Register an effect
+        function registerEffect(id, effect) {
+            TOOL_REGISTRY.effects.set(id, {
+                id: id,
+                name: effect.name || id,
+                filter: effect.filter || 'none',
+                icon: effect.icon || '✨',
+                ...effect
+            });
+        }
+
+        // Unregister an effect
+        function unregisterEffect(id) {
+            TOOL_REGISTRY.effects.delete(id);
+        }
+
+        // Get an effect by ID
+        function getEffect(id) {
+            return TOOL_REGISTRY.effects.get(id);
+        }
+
+        // List all effects
+        function listEffects() {
+            return Array.from(TOOL_REGISTRY.effects.values());
+        }
+
+        // Apply an effect to a canvas context
+        function applyEffect(ctx, effectId, duration) {
+            const effect = getEffect(effectId);
+            if (!effect) return;
+
+            const originalFilter = ctx.filter;
+            ctx.filter = effect.filter;
+
+            if (duration && duration > 0) {
+                setTimeout(() => {
+                    ctx.filter = originalFilter;
+                }, duration);
+            }
+
+            return ctx.filter;
+        }
+
+        // Initialize stamp categories with 7 categories
+        function initStampCategories() {
+            const categories = [
+                { id: 'animals', name: '🐾 动物', icon: '🐾' },
+                { id: 'nature', name: '🌿 自然', icon: '🌿' },
+                { id: 'food', name: '🍎 食物', icon: '🍎' },
+                { id: 'transport', name: '🚗 交通', icon: '🚗' },
+                { id: 'emotion', name: '😀 表情', icon: '😀' },
+                { id: 'star', name: '⭐ 星星', icon: '⭐' },
+                { id: 'holiday', name: '🎉 节日', icon: '🎉' }
+            ];
+
+            // Update STAMP_CATEGORIES if exists, otherwise create
+            if (typeof STAMP_CATEGORIES !== 'undefined') {
+                // Merge new categories
+                categories.forEach(cat => {
+                    if (!STAMP_CATEGORIES.find(c => c.id === cat.id)) {
+                        STAMP_CATEGORIES.push(cat);
+                    }
+                });
+            }
+
+            // Update STAMP_CATEGORY_MAP
+            const newMap = {
+                'animals': ['cat', 'dog', 'fish', 'bird', 'butterfly', 'rabbit', 'bear', 'frog'],
+                'nature': ['flower', 'tree', 'sun', 'moon', 'cloud', 'rainbow', 'leaf', 'star'],
+                'food': ['apple_food', 'banana_food', 'grape', 'strawberry', 'carrot', 'corn', 'pizza', 'donut'],
+                'transport': ['car', 'bus', 'bike', 'train', 'truck', 'ship', 'airplane', 'rocket'],
+                'emotion': ['smile', 'heart', 'sun', 'cloud', 'rain', 'snow'],
+                'star': ['star', 'moon', 'sun', 'rainbow', 'cloud'],
+                'holiday': ['cake', 'balloon', 'gift', 'star', 'heart']
+            };
+
+            // Update mapping if STAMP_CATEGORY_MAP exists
+            if (typeof STAMP_CATEGORY_MAP !== 'undefined') {
+                Object.assign(STAMP_CATEGORY_MAP, newMap);
+            }
+        }
+
+        // Initialize Plugin Panel
+        function initPluginPanel() {
+            // Add plugin panel to DOM if not exists
+            let pluginPanel = document.getElementById('pluginPanel');
+            if (!pluginPanel) {
+                pluginPanel = document.createElement('div');
+                pluginPanel.id = 'pluginPanel';
+                pluginPanel.className = 'panel';
+                pluginPanel.style.display = 'none';
+                pluginPanel.innerHTML = `
+                    <div class="panel-header">
+                        <span>插件管理</span>
+                        <button class="panel-close" onclick="closePluginPanel()">×</button>
+                    </div>
+                    <div class="plugin-content">
+                        <div class="plugin-section">
+                            <h4>已注册工具</h4>
+                            <div id="pluginToolList" class="plugin-list"></div>
+                        </div>
+                        <div class="plugin-section">
+                            <h4>可用效果</h4>
+                            <div id="pluginEffectList" class="plugin-list"></div>
+                        </div>
+                        <div class="plugin-section">
+                            <h4>印章数量</h4>
+                            <div id="pluginStampCount" class="plugin-count"></div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(pluginPanel);
+
+                // Add styles
+                const style = document.createElement('style');
+                style.textContent = `
+                    #pluginPanel { position: fixed; top: 80px; right: 20px; width: 300px; max-height: 500px; background: white; border: 3px solid #495057; border-radius: 12px; z-index: 1001; box-shadow: 3px 3px 0 #495057; }
+                    #pluginPanel .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 2px solid #dee2e6; font-weight: bold; }
+                    #pluginPanel .panel-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+                    #pluginPanel .plugin-content { padding: 12px; max-height: 400px; overflow-y: auto; }
+                    #pluginPanel .plugin-section { margin-bottom: 16px; }
+                    #pluginPanel .plugin-section h4 { font-size: 0.9rem; color: #495057; margin-bottom: 8px; }
+                    #pluginPanel .plugin-list { display: flex; flex-wrap: wrap; gap: 8px; }
+                    #pluginPanel .plugin-item { padding: 6px 12px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; font-size: 0.8rem; }
+                    #pluginPanel .plugin-count { font-size: 1.2rem; font-weight: bold; color: #495057; }
+                `;
+                document.head.appendChild(style);
+            }
+
+            updatePluginPanelContent();
+        }
+
+        // Update plugin panel content
+        function updatePluginPanelContent() {
+            const toolList = document.getElementById('pluginToolList');
+            const effectList = document.getElementById('pluginEffectList');
+            const stampCount = document.getElementById('pluginStampCount');
+
+            if (toolList) {
+                toolList.innerHTML = listTools().map(t =>
+                    `<span class="plugin-item">${t.icon} ${t.name}</span>`
+                ).join('');
+            }
+
+            if (effectList) {
+                effectList.innerHTML = listEffects().map(e =>
+                    `<span class="plugin-item">${e.icon} ${e.name}</span>`
+                ).join('');
+            }
+
+            if (stampCount) {
+                stampCount.textContent = TOOL_REGISTRY.stamps.size + ' 个印章';
+            }
+        }
+
+        // Toggle plugin panel
+        function togglePluginPanel() {
+            const panel = document.getElementById('pluginPanel');
+            if (!panel) {
+                initPluginPanel();
+            }
+            const p = document.getElementById('pluginPanel');
+            p.style.display = p.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close plugin panel
+        function closePluginPanel() {
+            const panel = document.getElementById('pluginPanel');
+            if (panel) panel.style.display = 'none';
+        }
+
         // V29: 3D State
         let isIn3DMode = false;
         let current3DShape = 'cube';
@@ -22476,6 +22782,7 @@
             initMusicStyleSelector(); // V51: Initialize music style selector
             initSFXPresetSelector(); // V52: Initialize SFX preset selector
             initBrushStyleSelector(); // V53: Initialize brush style selector
+            initToolRegistry(); // V55: Initialize tool registry system
             resizeCanvas();
             initEventListeners();
             initColoringGame();
@@ -22483,6 +22790,7 @@
             initChallengeButton();
             initTriggerButton(); // V68
             initGalleryButton();
+            initPluginButton(); // V55: Initialize plugin button
             initExportButton(); // V11
             initShareButton(); // V11
             initParentControls(); // V14
@@ -22549,6 +22857,14 @@
         // Init gallery button
         function initGalleryButton() {
             document.getElementById('galleryBtn').addEventListener('click', openGallery);
+        }
+
+        // V55: Init plugin button
+        function initPluginButton() {
+            const pluginBtn = document.getElementById('pluginBtn');
+            if (pluginBtn) {
+                pluginBtn.addEventListener('click', togglePluginPanel);
+            }
         }
 
         // V17: Init language button
