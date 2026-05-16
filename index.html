@@ -33418,10 +33418,10 @@
         initLearningSystem();
     }
 })();
-// === V63: AI辅助绘画 ===
+// === V57: AI辅助绘画增强 ===
 // CSS: .ai-menu, .ai-menu-item, .symmetry-guide, .shape-preview
 // JS: StrokeCompletion, SymmetryGuide, SmartFill, AIState
-// === V63 START ===
+// === V57 START ===
 
 // ===== V63: AI State =====
 const AIState = {
@@ -33975,7 +33975,7 @@ class SymmetryGuide {
 class SmartFill {
     constructor() {
         this.enabled = true;
-        this.tolerance = 30;
+        this.tolerance = 32;
     }
 
     floodFill(targetCtx, startX, startY, fillColor) {
@@ -34246,7 +34246,7 @@ performFloodFill = function(startX, startY) {
     originalPerformFloodFill(startX, startY);
 };
 
-// === V63 END ===
+// === V57 END ===
 
 // === V62 END ===
 
