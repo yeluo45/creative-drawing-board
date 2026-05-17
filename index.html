@@ -6459,15 +6459,84 @@
             box-shadow: 0 0 0 3px #495057, 0 0 0 6px white, 3px 3px 0 #495057;
         }
 
-        /* Tools */
+        /* Tools - Collapsible Groups */
         .tools {
-            height: 60px;
             background: linear-gradient(180deg, #FFE4EC 0%, #FFF8E7 100%);
             border-top: 3px solid #495057;
             display: flex;
-            align-items: center;
-            padding: 0 8px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            padding: 8px;
+            gap: 12px;
+            min-height: 60px;
+        }
+
+        .tool-group {
+            display: flex;
+            flex-direction: column;
             gap: 6px;
+        }
+
+        .tool-group-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #adb5bd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #495057;
+            font-family: inherit;
+            user-select: none;
+            transition: all 0.15s;
+        }
+
+        .tool-group-header:hover {
+            background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%);
+            border-color: #868e96;
+        }
+
+        .tool-group-header::before {
+            content: '▼';
+            font-size: 0.6rem;
+            transition: transform 0.2s;
+        }
+
+        .tool-group.collapsed .tool-group-header::before {
+            content: '▶';
+        }
+
+        .tool-group.collapsed .tool-group-header {
+            background: linear-gradient(180deg, #f1f3f5 0%, #e9ecef 100%);
+        }
+
+        .tool-group-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 4px;
+        }
+
+        .tool-group.collapsed .tool-group-content {
+            display: none;
+        }
+
+        .tool-group.core-tools .tool-group-header {
+            background: linear-gradient(180deg, #d3f9d8 0%, #b2f2bb 100%);
+            border-color: #40c057;
+            color: #2b8a3e;
+        }
+
+        .tool-group.core-tools .tool-group-header:hover {
+            background: linear-gradient(180deg, #b2f2bb 0%, #96f29d 100%);
+        }
+
+        .spacer {
+            flex: 1;
+            min-width: 20px;
         }
 
         .tool-btn {
@@ -12127,163 +12196,207 @@
     </div>
 
     <div class="tools">
-        <button class="tool-btn brush-btn selected" id="brushBtn">
-            <span class="tool-icon">✏️</span>
-            <span data-i18n="brush">Brush</span>
-        </button>
-        <!-- V53: Brush Style Selector -->
-        <div class="brush-style-selector" id="brushStyleSelector">
-            <button class="brush-style-btn" id="brushStyleBtn" onclick="toggleBrushStylePanel()">
-                <span id="brushStyleIcon">✏️</span>
-            </button>
-            <div class="brush-style-panel" id="brushStylePanel">
-                <div class="brush-style-item" data-style="normal" onclick="selectBrushStyle('normal')">
-                    <span class="bs-icon">✏️</span><span class="bs-name">普通</span>
+        <!-- Core Tools (Always Expanded) -->
+        <div class="tool-group core-tools" data-group="core" data-collapsed="false">
+            <div class="tool-group-content">
+                <button class="tool-btn brush-btn selected" id="brushBtn">
+                    <span class="tool-icon">✏️</span>
+                    <span data-i18n="brush">Brush</span>
+                </button>
+                <!-- V53: Brush Style Selector -->
+                <div class="brush-style-selector" id="brushStyleSelector">
+                    <button class="brush-style-btn" id="brushStyleBtn" onclick="toggleBrushStylePanel()">
+                        <span id="brushStyleIcon">✏️</span>
+                    </button>
+                    <div class="brush-style-panel" id="brushStylePanel">
+                        <div class="brush-style-item" data-style="normal" onclick="selectBrushStyle('normal')">
+                            <span class="bs-icon">✏️</span><span class="bs-name">普通</span>
+                        </div>
+                        <div class="brush-style-item" data-style="crayon" onclick="selectBrushStyle('crayon')">
+                            <span class="bs-icon">🖍️</span><span class="bs-name">蜡笔</span>
+                        </div>
+                        <div class="brush-style-item" data-style="watercolor" onclick="selectBrushStyle('watercolor')">
+                            <span class="bs-icon">🎨</span><span class="bs-name">水彩</span>
+                        </div>
+                        <div class="brush-style-item" data-style="marker" onclick="selectBrushStyle('marker')">
+                            <span class="bs-icon">🖊️</span><span class="bs-name">马克笔</span>
+                        </div>
+                        <div class="brush-style-item" data-style="neon" onclick="selectBrushStyle('neon')">
+                            <span class="bs-icon">💡</span><span class="bs-name">霓虹</span>
+                        </div>
+                        <div class="brush-style-item" data-style="galaxy" onclick="selectBrushStyle('galaxy')">
+                            <span class="bs-icon">🌌</span><span class="bs-name">银河</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="brush-style-item" data-style="crayon" onclick="selectBrushStyle('crayon')">
-                    <span class="bs-icon">🖍️</span><span class="bs-name">蜡笔</span>
+                <button class="tool-btn eraser-btn" id="eraserBtn" onclick="showEraserPanel()">
+                    <span class="tool-icon">🧹</span>
+                    <span data-i18n="eraser">Eraser</span>
+                </button>
+                <button class="tool-btn fill-btn" id="fillBtn">
+                    <span class="tool-icon">🪣</span>
+                    <span data-i18n="fill">Fill</span>
+                </button>
+                <button class="tool-btn" id="undoBtn" title="Undo">↩️</button>
+                <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
+            </div>
+        </div>
+
+        <!-- Drawing Tools -->
+        <div class="tool-group" data-group="drawing" data-collapsed="true">
+            <button class="tool-group-header" onclick="toggleToolGroup('drawing')">绘图工具</button>
+            <div class="tool-group-content">
+                <button class="tool-btn highlighter-btn" id="highlighterBtn">
+                    <span class="tool-icon">🖍️</span>
+                    <span data-i18n="highlighter">Highlighter</span>
+                </button>
+                <!-- V23: Gradient Fill Button -->
+                <button class="tool-btn gradient-btn" id="gradientBtn" title="渐变填充">
+                    <span class="tool-icon">🌈</span>
+                </button>
+                <!-- V23: Text Tool Button -->
+                <button class="tool-btn text-btn" id="textBtn" title="文字">
+                    <span class="tool-icon">T</span>
+                </button>
+                <!-- V23: Shape Library Button -->
+                <button class="tool-btn shape-library-btn" id="shapeLibraryBtn" title="形状库">
+                    <span class="tool-icon">⬜</span>
+                </button>
+                <!-- V23: Layer Button -->
+                <button class="tool-btn layer-btn" id="layerBtn" title="图层">
+                    <span class="tool-icon">📑</span>
+                </button>
+                <!-- V24: Animation Button -->
+                <button class="tool-btn animation-btn" id="animationBtn" title="动画制作">
+                    <span class="tool-icon">🎬</span>
+                </button>
+                <!-- V16: Shape selector -->
+                <div class="tool-dropdown" id="shapeDropdown">
+                    <button class="tool-btn" id="shapeBtn">
+                        <span class="tool-icon">📐</span>
+                        <span data-i18n="shape">Shape</span>
+                    </button>
+                    <div class="tool-dropdown-content" id="shapeOptions">
+                        <button class="dropdown-item selected" data-shape="free" data-i18n="shape_free">自由绘制</button>
+                        <button class="dropdown-item" data-shape="line" data-i18n="shape_line">直线</button>
+                        <button class="dropdown-item" data-shape="circle" data-i18n="shape_circle">圆形</button>
+                        <button class="dropdown-item" data-shape="rect" data-i18n="shape_rect">矩形</button>
+                        <button class="dropdown-item" data-shape="triangle" data-i18n="shape_triangle">三角形</button>
+                    </div>
                 </div>
-                <div class="brush-style-item" data-style="watercolor" onclick="selectBrushStyle('watercolor')">
-                    <span class="bs-icon">🎨</span><span class="bs-name">水彩</span>
+                <!-- V16: Symmetry selector -->
+                <div class="tool-dropdown" id="symmetryDropdown">
+                    <button class="tool-btn" id="symmetryBtn">
+                        <span class="tool-icon">⚡</span>
+                        <span data-i18n="symmetry">Sym</span>
+                    </button>
+                    <div class="tool-dropdown-content" id="symmetryOptions">
+                        <button class="dropdown-item selected" data-symmetry="none" data-i18n="sym_none">关闭</button>
+                        <button class="dropdown-item" data-symmetry="vertical" data-i18n="sym_vertical">左右对称</button>
+                        <button class="dropdown-item" data-symmetry="horizontal" data-i18n="sym_horizontal">上下对称</button>
+                        <button class="dropdown-item" data-symmetry="quad" data-i18n="sym_quad">四角对称</button>
+                    </div>
                 </div>
-                <div class="brush-style-item" data-style="marker" onclick="selectBrushStyle('marker')">
-                    <span class="bs-icon">🖊️</span><span class="bs-name">马克笔</span>
-                </div>
-                <div class="brush-style-item" data-style="neon" onclick="selectBrushStyle('neon')">
-                    <span class="bs-icon">💡</span><span class="bs-name">霓虹</span>
-                </div>
-                <div class="brush-style-item" data-style="galaxy" onclick="selectBrushStyle('galaxy')">
-                    <span class="bs-icon">🌌</span><span class="bs-name">银河</span>
+                <!-- V16: Zoom controls -->
+                <div class="zoom-controls" id="zoomControls">
+                    <button class="tool-btn zoom-btn" id="zoomOutBtn">🔍-</button>
+                    <span class="zoom-display" id="zoomDisplay">100%</span>
+                    <button class="tool-btn zoom-btn" id="zoomInBtn">🔍+</button>
                 </div>
             </div>
         </div>
-        <button class="tool-btn highlighter-btn" id="highlighterBtn">
-            <span class="tool-icon">🖍️</span>
-            <span data-i18n="highlighter">Highlighter</span>
-        </button>
-        <button class="tool-btn stamp-btn" id="stampBtn">
-            <span class="tool-icon">🎨</span>
-            <span data-i18n="stamps">Stickers</span>
-        </button>
-        <button class="tool-btn" id="customStickerBtn" title="Custom Sticker">
-            <span class="tool-icon">📐</span>
-            <span data-i18n="customSticker">My Sticker</span>
-        </button>
-        <button class="tool-btn fill-btn" id="fillBtn">
-            <span class="tool-icon">🪣</span>
-            <span data-i18n="fill">Fill</span>
-        </button>
-        <!-- V23: Gradient Fill Button -->
-        <button class="tool-btn gradient-btn" id="gradientBtn" title="渐变填充">
-            <span class="tool-icon">🌈</span>
-        </button>
-        <!-- V23: Text Tool Button -->
-        <button class="tool-btn text-btn" id="textBtn" title="文字">
-            <span class="tool-icon">T</span>
-        </button>
-        <!-- V23: Shape Library Button -->
-        <button class="tool-btn shape-library-btn" id="shapeLibraryBtn" title="形状库">
-            <span class="tool-icon">⬜</span>
-        </button>
-        <!-- V23: Layer Button -->
-        <button class="tool-btn layer-btn" id="layerBtn" title="图层">
-            <span class="tool-icon">📑</span>
-        </button>
-        <!-- V24: Animation Button -->
-        <button class="tool-btn animation-btn" id="animationBtn" title="动画制作">
-            <span class="tool-icon">🎬</span>
-        </button>
-        <!-- V25: Music Button -->
-        <button class="tool-btn music-btn" id="musicBtn" title="音乐中心">
-            <span class="tool-icon">🎵</span>
-        </button>
-        <!-- V29: 3D Button -->
-        <button class="tool-btn three-d-btn" id="threeDBtn" title="3D绘画">
-            <span class="tool-icon">🧊</span>
-        </button>
-        <!-- V30: Particle Button -->
-        <button class="tool-btn particle-btn" id="particleBtn" title="粒子特效">
-            <span class="tool-icon">✨</span>
-        </button>
-        <!-- V31: Visualizer Button -->
-        <button class="tool-btn visualizer-btn" id="visualizerBtn" title="音频可视化">
-            <span class="tool-icon">📊</span>
-        </button>
-        <!-- V32: AR Sticker Button -->
-        <button class="tool-btn ar-sticker-btn" id="arStickerBtn" title="AR贴纸">🎭</button>
-        <!-- V54: Share Button -->
-        <button class="tool-btn" id="shareBtn" onclick="shareArtwork()" title="分享">📤</button>
-        <!-- V33: Smart Suggestion Button -->
-        <button class="tool-btn" id="suggestionBtn" title="智能建议">💡</button>
-        <!-- V34: Gesture Button -->
-        <button class="tool-btn" id="gestureBtn" title="手势控制">🤚</button>
-        <!-- V50: Canvas Size Button -->
-        <button class="tool-btn canvas-size-btn" id="canvasSizeBtn" title="画布尺寸">📐</button>
-        <button class="tool-btn tracing-btn" id="tracingBtn">
-            <span class="tool-icon">📝</span>
-            <span data-i18n="tracing">Tracing</span>
-        </button>
-        <button class="tool-btn bg-btn" id="bgBtn">
-            <span class="tool-icon">🖼️</span>
-            <span data-i18n="background">BG</span>
-        </button>
-        <button class="tool-btn theme-btn" id="themeBtn">
-            <span class="tool-icon">🎨</span>
-            <span data-i18n="theme">Theme</span>
-        </button>
-        <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
-        <button class="tool-btn" id="bgSelectBtn" onclick="showBackgroundSelector()" title="背景选择">🎨</button>
-        <button class="tool-btn" id="tagBtn" onclick="showTagSelector()" title="作品标签">🏷️</button>
-        <button class="tool-btn" id="historyBtn" onclick="showHistoryPanel()" title="历史记录">📜</button>
-        <button class="tool-btn eraser-btn" id="eraserBtn" onclick="showEraserPanel()">
-            <span class="tool-icon">🧹</span>
-            <span data-i18n="eraser">Eraser</span>
-        </button>
-        <!-- V16: Shape selector -->
-        <div class="tool-dropdown" id="shapeDropdown">
-            <button class="tool-btn" id="shapeBtn">
-                <span class="tool-icon">📐</span>
-                <span data-i18n="shape">Shape</span>
-            </button>
-            <div class="tool-dropdown-content" id="shapeOptions">
-                <button class="dropdown-item selected" data-shape="free" data-i18n="shape_free">自由绘制</button>
-                <button class="dropdown-item" data-shape="line" data-i18n="shape_line">直线</button>
-                <button class="dropdown-item" data-shape="circle" data-i18n="shape_circle">圆形</button>
-                <button class="dropdown-item" data-shape="rect" data-i18n="shape_rect">矩形</button>
-                <button class="dropdown-item" data-shape="triangle" data-i18n="shape_triangle">三角形</button>
+
+        <!-- Material Tools -->
+        <div class="tool-group" data-group="material" data-collapsed="true">
+            <button class="tool-group-header" onclick="toggleToolGroup('material')">素材工具</button>
+            <div class="tool-group-content">
+                <button class="tool-btn stamp-btn" id="stampBtn">
+                    <span class="tool-icon">🎨</span>
+                    <span data-i18n="stamps">Stickers</span>
+                </button>
+                <button class="tool-btn" id="customStickerBtn" title="Custom Sticker">
+                    <span class="tool-icon">📐</span>
+                    <span data-i18n="customSticker">My Sticker</span>
+                </button>
+                <button class="tool-btn tracing-btn" id="tracingBtn">
+                    <span class="tool-icon">📝</span>
+                    <span data-i18n="tracing">Tracing</span>
+                </button>
+                <!-- V32: AR Sticker Button -->
+                <button class="tool-btn ar-sticker-btn" id="arStickerBtn" title="AR贴纸">🎭</button>
             </div>
         </div>
-        <!-- V16: Symmetry selector -->
-        <div class="tool-dropdown" id="symmetryDropdown">
-            <button class="tool-btn" id="symmetryBtn">
-                <span class="tool-icon">⚡</span>
-                <span data-i18n="symmetry">Sym</span>
-            </button>
-            <div class="tool-dropdown-content" id="symmetryOptions">
-                <button class="dropdown-item selected" data-symmetry="none" data-i18n="sym_none">关闭</button>
-                <button class="dropdown-item" data-symmetry="vertical" data-i18n="sym_vertical">左右对称</button>
-                <button class="dropdown-item" data-symmetry="horizontal" data-i18n="sym_horizontal">上下对称</button>
-                <button class="dropdown-item" data-symmetry="quad" data-i18n="sym_quad">四角对称</button>
+
+        <!-- Media Tools -->
+        <div class="tool-group" data-group="media" data-collapsed="true">
+            <button class="tool-group-header" onclick="toggleToolGroup('media')">媒体工具</button>
+            <div class="tool-group-content">
+                <!-- V25: Music Button -->
+                <button class="tool-btn music-btn" id="musicBtn" title="音乐中心">
+                    <span class="tool-icon">🎵</span>
+                </button>
+                <!-- V29: 3D Button -->
+                <button class="tool-btn three-d-btn" id="threeDBtn" title="3D绘画">
+                    <span class="tool-icon">🧊</span>
+                </button>
+                <!-- V30: Particle Button -->
+                <button class="tool-btn particle-btn" id="particleBtn" title="粒子特效">
+                    <span class="tool-icon">✨</span>
+                </button>
+                <!-- V31: Visualizer Button -->
+                <button class="tool-btn visualizer-btn" id="visualizerBtn" title="音频可视化">
+                    <span class="tool-icon">📊</span>
+                </button>
             </div>
         </div>
-        <!-- V16: Zoom controls -->
-        <div class="zoom-controls" id="zoomControls">
-            <button class="tool-btn zoom-btn" id="zoomOutBtn">🔍-</button>
-            <span class="zoom-display" id="zoomDisplay">100%</span>
-            <button class="tool-btn zoom-btn" id="zoomInBtn">🔍+</button>
+
+        <!-- Settings Tools -->
+        <div class="tool-group" data-group="settings" data-collapsed="true">
+            <button class="tool-group-header" onclick="toggleToolGroup('settings')">设置工具</button>
+            <div class="tool-group-content">
+                <button class="tool-btn bg-btn" id="bgBtn">
+                    <span class="tool-icon">🖼️</span>
+                    <span data-i18n="background">BG</span>
+                </button>
+                <button class="tool-btn theme-btn" id="themeBtn">
+                    <span class="tool-icon">🎨</span>
+                    <span data-i18n="theme">Theme</span>
+                </button>
+                <button class="tool-btn holiday-btn" id="holidayBtn" title="Holiday Themes">🎊</button>
+                <button class="tool-btn" id="bgSelectBtn" onclick="showBackgroundSelector()" title="背景选择">🎨</button>
+                <!-- V50: Canvas Size Button -->
+                <button class="tool-btn canvas-size-btn" id="canvasSizeBtn" title="画布尺寸">📐</button>
+                <button class="tool-btn" id="tagBtn" onclick="showTagSelector()" title="作品标签">🏷️</button>
+                <button class="tool-btn" id="historyBtn" onclick="showHistoryPanel()" title="历史记录">📜</button>
+                <!-- V54: Share Button -->
+                <button class="tool-btn" id="shareBtn" onclick="shareArtwork()" title="分享">📤</button>
+                <button class="tool-btn" id="saveBtn" title="Save">💾</button>
+                <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
+                <button class="tool-btn" id="galleryBtn" title="Gallery">🖼️</button>
+                <!-- V33: Smart Suggestion Button -->
+                <button class="tool-btn" id="suggestionBtn" title="智能建议">💡</button>
+                <!-- V34: Gesture Button -->
+                <button class="tool-btn" id="gestureBtn" title="手势控制">🤚</button>
+                <button class="tool-btn" id="langBtn" title="Language">🌐</button>
+            </div>
         </div>
-        <div class="spacer"></div>
-        <button class="tool-btn" id="undoBtn" title="Undo">↩️</button>
-        <button class="tool-btn" id="redoBtn" title="Redo">↪️</button>
-        <button class="tool-btn clear-btn" id="clearBtn" data-i18n="clear">Clear</button>
-        <button class="tool-btn" id="saveBtn" title="Save">💾</button>
-        <button class="tool-btn" id="printBtn" title="Print">🖨️</button>
-        <button class="tool-btn" id="galleryBtn" title="Gallery">🖼️</button>
-        <button class="tool-btn" id="arBtn" title="AR绘画">📷</button>
-        <button class="tool-btn" id="recordBtn" title="录制绘画">●</button>
-        <button class="tool-btn" id="recordingsBtn" title="我的录像">📹</button>
-        <button class="tool-btn" id="audioRecBtn" title="录音">🎙️</button>
-        <button class="tool-btn" id="audioListBtn" title="我的录音">🎤</button>
+
+        <!-- Special Features -->
+        <div class="tool-group" data-group="special" data-collapsed="true">
+            <button class="tool-group-header" onclick="toggleToolGroup('special')">特殊功能</button>
+            <div class="tool-group-content">
+                <button class="tool-btn" id="friendsBtn" title="好友系统">👥</button>
+                <button class="tool-btn" id="achievementBtn" title="成就中心">🏆</button>
+                <button class="tool-btn" id="shopBtn" title="主题商店">🛒</button>
+                <button class="ai-btn" id="aiBtn" title="AI辅助绘画">🤖 AI</button>
+                <button class="tool-btn" id="arBtn" title="AR绘画">📷</button>
+                <button class="collab-btn" id="collabBtn" title="协作绘画">🤝 协作</button>
+                <button class="cloud-sync-btn" id="cloudSyncBtn" title="云同步">☁️ 云</button>
+                <button class="marketplace-btn" id="marketplaceBtn" title="贴纸市场">🏪</button>
+                <button class="plugin-btn" id="pluginBtn" title="插件市场">🔌</button>
+                <button class="tool-btn clear-btn" id="clearBtn" data-i18n="clear">Clear</button>
+            </div>
+        </div>
     </div>
 
     <!-- V30: Particle Panel -->
@@ -17536,6 +17649,37 @@
             const panel = document.getElementById('brushStylePanel');
             panel.classList.toggle('open');
         }
+
+        // Tool Group Collapse Functions
+        function toggleToolGroup(groupName) {
+            const group = document.querySelector(`.tool-group[data-group="${groupName}"]`);
+            if (group) {
+                const isCollapsed = group.classList.toggle('collapsed');
+                group.dataset.collapsed = isCollapsed;
+                // Save preference
+                localStorage.setItem(`toolGroup_${groupName}`, isCollapsed ? 'collapsed' : 'expanded');
+            }
+        }
+
+        function initToolGroups() {
+            // Restore collapsed states from localStorage
+            document.querySelectorAll('.tool-group[data-group]').forEach(group => {
+                const groupName = group.dataset.group;
+                const savedState = localStorage.getItem(`toolGroup_${groupName}`);
+                if (savedState === 'collapsed') {
+                    group.classList.add('collapsed');
+                    group.dataset.collapsed = 'true';
+                }
+                // Core tools should never be collapsed
+                if (groupName === 'core') {
+                    group.classList.remove('collapsed');
+                    group.dataset.collapsed = 'false';
+                }
+            });
+        }
+
+        // Initialize tool groups on load
+        document.addEventListener('DOMContentLoaded', initToolGroups);
 
         function selectBrushStyle(style) {
             currentBrushStyle = style;
