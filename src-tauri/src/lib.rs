@@ -18,7 +18,7 @@ async fn save_file_to_disk(
 
     match file_path {
         Some(path) => {
-            std::fs::write(&path, data).map_err(|e| e.to_string())?;
+            std::fs::write(path.to_path(), data).map_err(|e| e.to_string())?;
             Ok(path.to_string())
         }
         None => Err("User cancelled file save".to_string()),
@@ -26,8 +26,11 @@ async fn save_file_to_disk(
 }
 
 #[tauri::command]
-async fn show_notification(title: String, body: String) -> Result<(), String> {
-    let app = tauri::AppHandle::new();
+async fn show_notification(
+    app: tauri::AppHandle,
+    title: String,
+    body: String,
+) -> Result<(), String> {
     app.notification()
         .builder()
         .title(&title)
@@ -43,8 +46,11 @@ async fn copy_image_to_clipboard(
     app: tauri::AppHandle,
     data: Vec<u8>,
 ) -> Result<(), String> {
+    use tauri::image::Image;
+
+    let img = Image::from_bytes(&data).map_err(|e| e.to_string())?;
     app.clipboard()
-        .write_image(&data)
+        .write_image(&img)
         .map_err(|e| e.to_string())?;
 
     Ok(())
