@@ -18,8 +18,12 @@ async fn save_file_to_disk(
 
     match file_path {
         Some(path) => {
-            std::fs::write(path.to_path(), data).map_err(|e| e.to_string())?;
-            Ok(path.to_string())
+            let path_str = match &path {
+                tauri_plugin_dialog::FilePath::Path(p) => p.to_string_lossy().to_string(),
+                _ => path.to_string(),
+            };
+            std::fs::write(&path_str, data).map_err(|e| e.to_string())?;
+            Ok(path_str)
         }
         None => Err("User cancelled file save".to_string()),
     }
@@ -46,8 +50,8 @@ async fn copy_image_to_clipboard(
     app: tauri::AppHandle,
     data: Vec<u8>,
 ) -> Result<(), String> {
-    // Write raw bytes to clipboard as fallback (text representation)
-    let base64_data = base64::Engine::encode(&base64::engine::general_purpose::STANDARD, &data);
+    use base64::Engine;
+    let base64_data = base64::engine::general_purpose::STANDARD.encode(&data);
     app.clipboard()
         .write_text(&base64_data)
         .map_err(|e| e.to_string())?;
