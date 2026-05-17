@@ -22,23 +22,16 @@ jobs:
 
       - name: Build frontend
         run: npm run build
-        env:
-          CI: true
-
-      - name: Verify dist exists
-        run: |
-          if (!(Test-Path "dist")) { throw "dist folder not found" }
-          if (!(Test-Path "dist/index.html")) { throw "dist/index.html not found" }
-          Write-Host "dist/ contents:"
-          Get-ChildItem dist | Select-Object Name, Length
 
       - name: Build Tauri app
+        run: npm run tauri build -- --no-bundle
+        env:
+          CI: true
+          RUST_BACKTRACE: full
+
+      - name: Build Tauri bundle
+        if: success()
         run: npm run tauri build
         env:
           CI: true
-          RUST_BACKTRACE: 1
-
-      - name: List build artifacts
-        run: |
-          Get-ChildItem src-tauri/target/release/bundle -Recurse -Filter "*.exe" | Select-Object FullName, Length
-          Get-ChildItem src-tauri/target/release/bundle -Recurse -Filter "*.msi" | Select-Object FullName, Length
+          RUST_BACKTRACE: full
