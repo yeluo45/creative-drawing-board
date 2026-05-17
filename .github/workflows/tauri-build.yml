@@ -17,20 +17,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies
-        run: npm ci
+      - name: Install deps
+        run: npm install
 
-      - name: Build frontend
-        run: npm run build
-
-      - name: Build Tauri app
-        run: npm run tauri build -- --no-bundle
-        env:
-          CI: true
-          RUST_BACKTRACE: full
-
-      - name: Build Tauri bundle
-        if: success()
+      - name: Build Tauri
         run: npm run tauri build
         env:
           CI: true
