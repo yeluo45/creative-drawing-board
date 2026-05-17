@@ -46,11 +46,10 @@ async fn copy_image_to_clipboard(
     app: tauri::AppHandle,
     data: Vec<u8>,
 ) -> Result<(), String> {
-    use tauri::image::Image;
-
-    let img = Image::from_bytes(&data).map_err(|e| e.to_string())?;
+    // Write raw bytes to clipboard as fallback (text representation)
+    let base64_data = base64::Engine::encode(&base64::engine::general_purpose::STANDARD, &data);
     app.clipboard()
-        .write_image(&img)
+        .write_text(&base64_data)
         .map_err(|e| e.to_string())?;
 
     Ok(())
