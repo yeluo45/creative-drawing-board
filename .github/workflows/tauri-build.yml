@@ -20,13 +20,25 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build Tauri app
-        uses: tauri-apps/tauri-action@v0
+      - name: Build frontend
+        run: npm run build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: v__VERSION__
-          releaseName: 'Creative Drawing Board v__VERSION__'
-          releaseBody: 'Creative Drawing Board - A fun drawing app for kids. See the assets to download and install.'
-          releaseDraft: true
-          prerelease: false
+          CI: true
+
+      - name: Verify dist exists
+        run: |
+          if (!(Test-Path "dist")) { throw "dist folder not found" }
+          if (!(Test-Path "dist/index.html")) { throw "dist/index.html not found" }
+          Write-Host "dist/ contents:"
+          Get-ChildItem dist | Select-Object Name, Length
+
+      - name: Build Tauri app
+        run: npm run tauri build
+        env:
+          CI: true
+          RUST_BACKTRACE: 1
+
+      - name: List build artifacts
+        run: |
+          Get-ChildItem src-tauri/target/release/bundle -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          Get-ChildItem src-tauri/target/release/bundle -Recurse -Filter "*.msi" | Select-Object FullName, Length
