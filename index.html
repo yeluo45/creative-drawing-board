@@ -10278,6 +10278,60 @@
             background: linear-gradient(180deg, #845EF7 0%, #7048E8 100%);
         }
 
+        /* V68: Plugin Market Styles */
+        .plugin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .plugin-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .plugin-card:hover { background: #e9ecef; }
+        .plugin-card.enabled { border: 2px solid #4CAF50; background: #e8f5e9; }
+        .plugin-icon { font-size: 2rem; margin-bottom: 4px; }
+        .plugin-name { font-weight: bold; font-size: 0.85rem; color: #343a40; margin-bottom: 4px; }
+        .plugin-desc { font-size: 0.7rem; color: #6c757d; margin: 4px 0; }
+        .plugin-category-tag {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            margin: 2px 0;
+        }
+        .plugin-toggle { font-size: 0.75rem; color: #495057; margin-top: 4px; }
+        .plugin-market-panel .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .plugin-market-panel .panel-title { font-weight: bold; font-size: 1.1rem; }
+        .plugin-market-panel .panel-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        .plugin-market-panel .panel-close:hover { color: #343a40; }
+        .plugin-market-panel .panel-footer {
+            padding: 12px;
+            border-top: 2px solid #dee2e6;
+            text-align: center;
+        }
+
         /* V67: Challenge System */
         .challenge-btn {
             background: linear-gradient(180deg, #FFB3BA 0%, #FF8A95 100%);
@@ -15841,6 +15895,465 @@
             }
 
             return ctx.filter;
+        }
+
+        // ===== V68: Plugin Marketplace System =====
+
+        // Plugin Categories Enum
+        const PLUGIN_CATEGORIES = {
+            STROKE: 'stroke',
+            STAMP: 'stamp',
+            FILTER: 'filter',
+            TEMPLATE: 'template',
+            SOUND: 'sound'
+        };
+
+        // Plugin Registry with lifecycle management
+        const PLUGIN_REGISTRY = {
+            plugins: new Map(),
+            enabledPlugins: new Set()
+        };
+
+        // Register a plugin
+        function registerPlugin(plugin) {
+            if (!plugin || !plugin.metadata || !plugin.metadata.id) {
+                console.warn('Invalid plugin: missing metadata or id');
+                return false;
+            }
+            const id = plugin.metadata.id;
+            PLUGIN_REGISTRY.plugins.set(id, {
+                metadata: plugin.metadata,
+                enabled: false,
+                hooks: plugin.hooks || {},
+                draw: plugin.draw || null,
+                apply: plugin.apply || null,
+                _instance: null
+            });
+            // Call onInit hook if exists
+            if (plugin.hooks && plugin.hooks.onInit) {
+                try {
+                    plugin.hooks.onInit();
+                } catch (e) {
+                    console.error(`Plugin ${id} onInit error:`, e);
+                }
+            }
+            return true;
+        }
+
+        // Unregister a plugin
+        function unregisterPlugin(id) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(id);
+            if (plugin && plugin.enabled) {
+                deactivatePlugin(id);
+            }
+            return PLUGIN_REGISTRY.plugins.delete(id);
+        }
+
+        // Get a plugin instance
+        function getPlugin(id) {
+            return PLUGIN_REGISTRY.plugins.get(id);
+        }
+
+        // List plugins, optionally filtered by category
+        function listPlugins(category) {
+            const all = Array.from(PLUGIN_REGISTRY.plugins.values());
+            if (!category) return all;
+            return all.filter(p => p.metadata.category === category);
+        }
+
+        // Activate a plugin
+        function activatePlugin(id) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(id);
+            if (!plugin) return false;
+            if (plugin.enabled) return true;
+            plugin.enabled = true;
+            PLUGIN_REGISTRY.enabledPlugins.add(id);
+            if (plugin.hooks && plugin.hooks.onActivate) {
+                try {
+                    plugin.hooks.onActivate();
+                } catch (e) {
+                    console.error(`Plugin ${id} onActivate error:`, e);
+                }
+            }
+            updatePluginMarketUI();
+            return true;
+        }
+
+        // Deactivate a plugin
+        function deactivatePlugin(id) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(id);
+            if (!plugin) return false;
+            if (!plugin.enabled) return true;
+            plugin.enabled = false;
+            PLUGIN_REGISTRY.enabledPlugins.delete(id);
+            if (plugin.hooks && plugin.hooks.onDeactivate) {
+                try {
+                    plugin.hooks.onDeactivate();
+                } catch (e) {
+                    console.error(`Plugin ${id} onDeactivate error:`, e);
+                }
+            }
+            updatePluginMarketUI();
+            return true;
+        }
+
+        // Apply plugin filter to ImageData
+        function applyPluginFilter(pluginId, imageData) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(pluginId);
+            if (!plugin || !plugin.enabled || !plugin.apply) return imageData;
+            try {
+                plugin.apply(imageData);
+            } catch (e) {
+                console.error(`Plugin ${pluginId} apply error:`, e);
+            }
+            return imageData;
+        }
+
+        // Sandbox execution with timeout protection
+        function executeInSandbox(fn, context, timeout = 100) {
+            const ctx = context.ctx;
+            const canvas = context.canvas;
+            const toolParams = context.toolParams || {};
+            const startTime = Date.now();
+            try {
+                const result = fn.call(null, ctx, toolParams);
+                if (Date.now() - startTime > timeout) {
+                    console.warn('Plugin execution timeout');
+                }
+                return result;
+            } catch (e) {
+                console.error('Sandbox execution error:', e);
+                return null;
+            }
+        }
+
+        // Built-in Official Plugins (V68)
+        const BUILT_IN_PLUGINS = [
+            {
+                metadata: {
+                    id: 'cartoon-stroke',
+                    name: '卡通画笔',
+                    category: PLUGIN_CATEGORIES.STROKE,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '边缘粗细变化，产生卡通描边效果'
+                },
+                draw: function(ctx, x, y, params) {
+                    ctx.save();
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    // Variable width simulation
+                    const baseSize = params.size || 10;
+                    ctx.lineWidth = baseSize * (0.5 + Math.random() * 0.5);
+                    ctx.strokeStyle = params.color || '#000';
+                    ctx.beginPath();
+                    ctx.moveTo(x - 2, y - 2);
+                    ctx.lineTo(x + 2, y + 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            },
+            {
+                metadata: {
+                    id: 'watercolor-brush',
+                    name: '水彩笔',
+                    category: PLUGIN_CATEGORIES.STROKE,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '半透明叠加，模拟水彩晕染'
+                },
+                draw: function(ctx, x, y, params) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.3;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.lineWidth = params.size || 20;
+                    ctx.strokeStyle = params.color || '#000';
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + 0.5, y + 0.5);
+                    ctx.stroke();
+                    // Add watercolor bloom effect
+                    for (let i = 0; i < 3; i++) {
+                        ctx.globalAlpha = 0.1;
+                        ctx.lineWidth = (params.size || 20) * (1 + i * 0.5);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            },
+            {
+                metadata: {
+                    id: 'particle-stamp',
+                    name: '粒子印章',
+                    category: PLUGIN_CATEGORIES.STAMP,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '随机粒子云团图案'
+                },
+                draw: function(ctx, x, y, params) {
+                    ctx.save();
+                    const size = params.size || 30;
+                    const color = params.color || '#ff6b6b';
+                    for (let i = 0; i < 12; i++) {
+                        const angle = (Math.PI * 2 / 12) * i;
+                        const dist = size * (0.3 + Math.random() * 0.7);
+                        const px = x + Math.cos(angle) * dist;
+                        const py = y + Math.sin(angle) * dist;
+                        const pSize = size * 0.1 * (0.5 + Math.random());
+                        ctx.globalAlpha = 0.6 + Math.random() * 0.4;
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(px, py, pSize, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            },
+            {
+                metadata: {
+                    id: 'neon-glow',
+                    name: '霓虹滤镜',
+                    category: PLUGIN_CATEGORIES.FILTER,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '高饱和度 + 发光描边'
+                },
+                apply: function(imageData) {
+                    const data = imageData.data;
+                    for (let i = 0; i < data.length; i += 4) {
+                        // Increase saturation
+                        const r = data[i], g = data[i+1], b = data[i+2];
+                        const max = Math.max(r, g, b);
+                        const min = Math.min(r, g, b);
+                        const boost = 1.4;
+                        data[i] = Math.min(255, r * boost);
+                        data[i+1] = Math.min(255, g * boost);
+                        data[i+2] = Math.min(255, b * boost);
+                    }
+                    return imageData;
+                }
+            },
+            {
+                metadata: {
+                    id: 'calligraphy-brush',
+                    name: '书法笔',
+                    category: PLUGIN_CATEGORIES.STROKE,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '压感模拟，笔锋效果'
+                },
+                draw: function(ctx, x, y, params) {
+                    ctx.save();
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    const baseSize = params.size || 8;
+                    // Pressure simulation via velocity
+                    const velocity = params.velocity || 1;
+                    const pressure = Math.min(1, Math.max(0.3, 1 - velocity * 0.1));
+                    ctx.lineWidth = baseSize * pressure;
+                    ctx.strokeStyle = params.color || '#000';
+                    ctx.beginPath();
+                    ctx.moveTo(x - 1, y - 1);
+                    ctx.lineTo(x + 1, y + 1);
+                    ctx.stroke();
+                    // Add calligraphy tail
+                    if (pressure > 0.7) {
+                        ctx.globalAlpha = 0.5;
+                        ctx.lineWidth = baseSize * 0.3;
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x - 3, y - 3);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            },
+            {
+                metadata: {
+                    id: 'vintage-filter',
+                    name: '复古滤镜',
+                    category: PLUGIN_CATEGORIES.FILTER,
+                    version: '1.0.0',
+                    author: 'Official',
+                    description: '泛黄纸张 + 噪点纹理'
+                },
+                apply: function(imageData) {
+                    const data = imageData.data;
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i], g = data[i+1], b = data[i+2];
+                        // Sepia tone
+                        const tr = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                        const tg = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                        const tb = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+                        // Add noise
+                        const noise = (Math.random() - 0.5) * 20;
+                        data[i] = Math.max(0, Math.min(255, tr + noise));
+                        data[i+1] = Math.max(0, Math.min(255, tg + noise));
+                        data[i+2] = Math.max(0, Math.min(255, tb + noise));
+                    }
+                    return imageData;
+                }
+            }
+        ];
+
+        // Initialize built-in plugins
+        function initBuiltinPlugins() {
+            BUILT_IN_PLUGINS.forEach(p => registerPlugin(p));
+        }
+
+        // Export plugin as JSON
+        function exportPlugin(id) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(id);
+            if (!plugin) return null;
+            return JSON.stringify({
+                metadata: plugin.metadata,
+                hooks: plugin.hooks,
+                draw: plugin.draw ? plugin.draw.toString() : null,
+                apply: plugin.apply ? plugin.apply.toString() : null
+            }, null, 2);
+        }
+
+        // Import plugin from JSON
+        function importPlugin(jsonStr) {
+            try {
+                const data = JSON.parse(jsonStr);
+                if (!data.metadata || !data.metadata.id) {
+                    throw new Error('Invalid plugin format');
+                }
+                const plugin = {
+                    metadata: data.metadata,
+                    hooks: data.hooks || {},
+                    draw: data.draw ? eval('(' + data.draw + ')') : null,
+                    apply: data.apply ? eval('(' + data.apply + ')') : null
+                };
+                registerPlugin(plugin);
+                updatePluginMarketUI();
+                showToast('插件安装成功');
+                return true;
+            } catch (e) {
+                console.error('Plugin import error:', e);
+                showToast('插件安装失败: ' + e.message);
+                return false;
+            }
+        }
+
+        // Import plugin via file dialog
+        function importPluginFromFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    importPlugin(e.target.result);
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Get active stroke plugins
+        function getActiveStrokePlugins() {
+            return Array.from(PLUGIN_REGISTRY.enabledPlugins).map(id => {
+                const p = PLUGIN_REGISTRY.plugins.get(id);
+                if (p && p.metadata.category === PLUGIN_CATEGORIES.STROKE && p.draw) {
+                    return { id, draw: p.draw };
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
+        // Get active filter plugins
+        function getActiveFilterPlugins() {
+            return Array.from(PLUGIN_REGISTRY.enabledPlugins).map(id => {
+                const p = PLUGIN_REGISTRY.plugins.get(id);
+                if (p && p.metadata.category === PLUGIN_CATEGORIES.FILTER && p.apply) {
+                    return { id, apply: p.apply };
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
+        // Open plugin market panel
+        function openPluginPanel() {
+            let panel = document.getElementById('plugin-market-panel');
+            if (!panel) {
+                panel = document.createElement('div');
+                panel.id = 'plugin-market-panel';
+                panel.className = 'side-panel';
+                panel.style.display = 'none';
+                panel.innerHTML = `
+                    <div class="panel-header">
+                        <span class="panel-title">🧩 插件市场</span>
+                        <button class="panel-close" onclick="closePluginPanel()">×</button>
+                    </div>
+                    <div id="plugin-grid" class="plugin-grid"></div>
+                    <div class="panel-footer">
+                        <button class="action-btn" onclick="importPluginFromFile()">📦 安装插件</button>
+                    </div>
+                `;
+                document.body.appendChild(panel);
+            }
+            panel.style.display = 'block';
+            updatePluginMarketUI();
+        }
+
+        // Close plugin panel
+        function closePluginPanel() {
+            const panel = document.getElementById('plugin-market-panel');
+            if (panel) panel.style.display = 'none';
+        }
+
+        // Update plugin market UI
+        function updatePluginMarketUI() {
+            const grid = document.getElementById('plugin-grid');
+            if (!grid) return;
+            const plugins = listPlugins();
+            grid.innerHTML = plugins.map(p => {
+                const catColors = {
+                    stroke: '#4DABF7',
+                    stamp: '#FF6B6B',
+                    filter: '#A855F7',
+                    template: '#20C997',
+                    sound: '#FFD43B'
+                };
+                const catColor = catColors[p.metadata.category] || '#868E96';
+                return `
+                    <div class="plugin-card ${p.enabled ? 'enabled' : ''}" onclick="togglePlugin('${p.metadata.id}')">
+                        <div class="plugin-icon">${getPluginIcon(p.metadata.category)}</div>
+                        <div class="plugin-name">${p.metadata.name}</div>
+                        <span class="plugin-category-tag" style="background:${catColor}">${p.metadata.category}</span>
+                        <div class="plugin-desc">${p.metadata.description || ''}</div>
+                        <div class="plugin-toggle">${p.enabled ? '✅ 已启用' : '⬜ 停用'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get plugin icon by category
+        function getPluginIcon(category) {
+            const icons = {
+                stroke: '✏️',
+                stamp: '🔖',
+                filter: '✨',
+                template: '📄',
+                sound: '🔊'
+            };
+            return icons[category] || '🔌';
+        }
+
+        // Toggle plugin enabled state
+        function togglePlugin(id) {
+            const plugin = PLUGIN_REGISTRY.plugins.get(id);
+            if (!plugin) return;
+            if (plugin.enabled) {
+                deactivatePlugin(id);
+            } else {
+                activatePlugin(id);
+            }
         }
 
         // Initialize stamp categories with 7 categories
@@ -24036,6 +24549,7 @@
             initSFXPresetSelector(); // V52: Initialize SFX preset selector
             initBrushStyleSelector(); // V53: Initialize brush style selector
             initToolRegistry(); // V55: Initialize tool registry system
+            initBuiltinPlugins(); // V68: Initialize plugin marketplace
             resizeCanvas();
             initEventListeners();
             initColoringGame();
@@ -24112,11 +24626,11 @@
             document.getElementById('galleryBtn').addEventListener('click', openGallery);
         }
 
-        // V55: Init plugin button
+        // V68: Init plugin button
         function initPluginButton() {
             const pluginBtn = document.getElementById('pluginBtn');
             if (pluginBtn) {
-                pluginBtn.addEventListener('click', togglePluginPanel);
+                pluginBtn.addEventListener('click', openPluginPanel);
             }
         }
 
