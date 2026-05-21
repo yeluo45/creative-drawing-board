@@ -42847,6 +42847,1253 @@ function shareToFacebook() {
             document.body.appendChild(animBtn);
         }
     }, 300);
+
+    // ============================================================
+    // V69: AI辅助绘画引擎 (AI-Assisted Drawing Engine)
+    // ============================================================
+
+    // ----- V69: AI State -----
+    let strokeCompletionMode = null; // null, 'straight', 'arc', 'curve'
+    let strokePoints = [];            // Current stroke points for completion
+    let currentStrokeCompletion = { enabled: false, mode: null };
+
+    // ----- V69: Smart Fill State -----
+    let smartFillEdgeAware = true;
+    let smartFillType = 'solid'; // solid, linear-gradient, radial-gradient, pattern
+    let smartFillPanel = null;
+
+    // ----- V69: Style Transfer State -----
+    let currentStyleFilter = null;
+    let stylePanel = null;
+
+    // ----- V69: Canvas Enhancement State -----
+    let canvasZoom = 1.0;
+    let canvasRotation = 0; // 0, 90, 180, 270
+
+    // ----- V69: Skill (SOP) Recording State -----
+    let isRecordingSkill = false;
+    let skillRecording = []; // Array of { type, data, timestamp }
+    let savedSkills = JSON.parse(localStorage.getItem('v69_skills') || '[]');
+    let skillPanel = null;
+
+    // ----- V69: AI Toolbar -----
+    function initAIToolbar() {
+        const existingToolbar = document.getElementById('ai-toolbar');
+        if (existingToolbar) return;
+
+        // Find insert location - after main toolbar or header
+        let insertTarget = document.querySelector('.canvas-container') || document.getElementById('canvasWrapper');
+        if (!insertTarget) return;
+
+        const toolbar = document.createElement('div');
+        toolbar.id = 'ai-toolbar';
+        toolbar.className = 'ai-toolbar';
+        toolbar.innerHTML = `
+            <button class="tool-btn" id="ai-stroke-btn" onclick="toggleStrokeComplete()" title="笔画补全">
+                <span class="tool-icon">✨</span>
+            </button>
+            <button class="tool-btn" id="ai-fill-btn" onclick="openSmartFillPanel()" title="智能填色">
+                <span class="tool-icon">🎨</span>
+            </button>
+            <button class="tool-btn" id="ai-style-btn" onclick="openStylePanel()" title="风格迁移">
+                <span class="tool-icon">🖼️</span>
+            </button>
+            <button class="tool-btn" id="ai-skill-btn" onclick="openSkillPanel()" title="绘画 SOP">
+                <span class="tool-icon">📝</span>
+            </button>
+            <div style="flex:1"></div>
+            <select id="canvas-zoom-select" onchange="zoomCanvas(this.value)" style="padding:4px;border-radius:4px;border:1px solid #ccc;font-size:0.8rem;">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+                <option value="4">4x</option>
+            </select>
+            <select id="canvas-rotate-select" onchange="rotateCanvas(this.value)" style="padding:4px;border-radius:4px;border:1px solid #ccc;font-size:0.8rem;">
+                <option value="0">0°</option>
+                <option value="90">90°</option>
+                <option value="180">180°</option>
+                <option value="270">270°</option>
+            </select>
+        `;
+
+        // Insert before canvas container
+        insertTarget.parentNode.insertBefore(toolbar, insertTarget);
+
+        // Add V69 CSS if not exists
+        if (!document.getElementById('v69-styles')) {
+            const v69Styles = document.createElement('style');
+            v69Styles.id = 'v69-styles';
+            v69Styles.textContent = `
+                .ai-toolbar {
+                    display: flex;
+                    gap: 4px;
+                    padding: 6px 12px;
+                    background: linear-gradient(180deg, #e8f4f8 0%, #d4e9f7 100%);
+                    border-bottom: 2px solid #495057;
+                    align-items: center;
+                }
+                .ai-toolbar .tool-btn {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 8px;
+                    background: white;
+                    border: 2px solid #adb5bd;
+                    cursor: pointer;
+                    font-size: 1.1rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                }
+                .ai-toolbar .tool-btn:hover {
+                    background: #f0f0f0;
+                    border-color: #868e96;
+                }
+                .ai-toolbar .tool-btn.active {
+                    background: #e3f2fd;
+                    border-color: #2196f3;
+                    box-shadow: 0 0 6px rgba(33,150,243,0.4);
+                }
+                .side-panel {
+                    position: fixed;
+                    top: 0;
+                    right: -320px;
+                    width: 300px;
+                    height: 100vh;
+                    background: white;
+                    box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+                    z-index: 1600;
+                    display: flex;
+                    flex-direction: column;
+                    transition: right 0.3s ease;
+                }
+                .side-panel.open { right: 0; }
+                .panel-header {
+                    padding: 14px 16px;
+                    background: linear-gradient(180deg, #a5d8ff 0%, #74c0fc 100%);
+                    border-bottom: 2px solid #495057;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .panel-title {
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                    color: #1c3a5f;
+                }
+                .panel-close {
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: #1c3a5f;
+                    line-height: 1;
+                }
+                .panel-body {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 16px;
+                }
+                .fill-options, .style-options, .skill-options {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+                .fill-options label, .style-options label, .skill-options label {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 0.9rem;
+                    color: #495057;
+                }
+                .fill-options select, .style-options select, .skill-options select {
+                    padding: 6px 10px;
+                    border: 2px solid #dee2e6;
+                    border-radius: 6px;
+                    font-size: 0.9rem;
+                    font-family: inherit;
+                }
+                .style-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                    margin-top: 10px;
+                }
+                .style-item {
+                    padding: 12px 8px;
+                    border: 2px solid #dee2e6;
+                    border-radius: 10px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    background: white;
+                }
+                .style-item:hover {
+                    border-color: #adb5bd;
+                    background: #f8f9fa;
+                }
+                .style-item.selected {
+                    border-color: #9c36b5;
+                    background: #ebe4f0;
+                }
+                .style-item-icon { font-size: 1.8rem; margin-bottom: 4px; }
+                .style-item-name { font-size: 0.85rem; font-weight: bold; color: #495057; }
+                .skill-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-top: 12px;
+                }
+                .skill-item {
+                    padding: 12px;
+                    border: 2px solid #dee2e6;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+                .skill-item:hover {
+                    border-color: #adb5bd;
+                    background: #e9ecef;
+                }
+                .skill-item-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 6px;
+                }
+                .skill-item-name {
+                    font-weight: bold;
+                    font-size: 0.95rem;
+                    color: #495057;
+                }
+                .skill-item-category {
+                    font-size: 0.75rem;
+                    background: #d3f9d8;
+                    color: #2b8a3e;
+                    padding: 2px 8px;
+                    border-radius: 10px;
+                }
+                .skill-item-actions {
+                    display: flex;
+                    gap: 8px;
+                }
+                .skill-action-btn {
+                    flex: 1;
+                    padding: 5px 10px;
+                    border: 1px solid #dee2e6;
+                    border-radius: 5px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    font-family: inherit;
+                    background: white;
+                }
+                .skill-action-btn.play {
+                    border-color: #4dabf7;
+                    color: #1971c2;
+                }
+                .skill-action-btn.play:hover { background: #e7f5ff; }
+                .skill-action-btn.delete {
+                    border-color: #ff6b6b;
+                    color: #c92a2a;
+                }
+                .skill-action-btn.delete:hover { background: #fff5f5; }
+                .new-skill-btn {
+                    width: 100%;
+                    padding: 12px;
+                    background: linear-gradient(180deg, #d0dfff 0%, #a5d8ff 100%);
+                    border: 2px solid #4dabf7;
+                    border-radius: 10px;
+                    font-size: 0.95rem;
+                    font-weight: bold;
+                    color: #1c3a5f;
+                    cursor: pointer;
+                    font-family: inherit;
+                    margin-bottom: 12px;
+                }
+                .new-skill-btn:hover { opacity: 0.9; }
+                .recording-indicator {
+                    position: fixed;
+                    top: 60px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #ff6b6b;
+                    color: white;
+                    padding: 6px 16px;
+                    border-radius: 20px;
+                    font-size: 0.9rem;
+                    font-weight: bold;
+                    z-index: 2000;
+                    display: none;
+                    animation: pulse 1s infinite;
+                }
+                .recording-indicator.active { display: flex; align-items: center; gap: 8px; }
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.6; }
+                }
+                .stroke-mode-indicator {
+                    position: fixed;
+                    bottom: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(33,150,243,0.9);
+                    color: white;
+                    padding: 6px 14px;
+                    border-radius: 16px;
+                    font-size: 0.85rem;
+                    z-index: 1300;
+                    display: none;
+                }
+                .stroke-mode-indicator.active { display: block; }
+                .panel-section {
+                    border-top: 1px dashed #dee2e6;
+                    padding-top: 12px;
+                    margin-top: 8px;
+                }
+                .panel-section-title {
+                    font-size: 0.85rem;
+                    font-weight: bold;
+                    color: #868e96;
+                    margin-bottom: 8px;
+                }
+            `;
+            document.head.appendChild(v69Styles);
+        }
+    }
+
+    // ----- V69: Stroke Completion -----
+    function toggleStrokeComplete() {
+        const btn = document.getElementById('ai-stroke-btn');
+        if (!currentStrokeCompletion.enabled) {
+            // Cycle through modes: straight -> arc -> curve -> off
+            const modes = ['straight', 'arc', 'curve', null];
+            const currentIdx = modes.indexOf(currentStrokeCompletion.mode);
+            const nextMode = modes[(currentIdx + 1) % modes.length];
+            enableStrokeCompletion(nextMode);
+        } else {
+            disableStrokeCompletion();
+        }
+    }
+
+    function enableStrokeCompletion(mode) {
+        if (!mode) {
+            disableStrokeCompletion();
+            return;
+        }
+        currentStrokeCompletion = { enabled: true, mode: mode };
+        strokeCompletionMode = mode;
+        strokePoints = [];
+
+        const btn = document.getElementById('ai-stroke-btn');
+        if (btn) btn.classList.add('active');
+
+        // Show mode indicator
+        showStrokeModeIndicator(mode);
+    }
+
+    function disableStrokeCompletion() {
+        currentStrokeCompletion = { enabled: false, mode: null };
+        strokeCompletionMode = null;
+        strokePoints = [];
+
+        const btn = document.getElementById('ai-stroke-btn');
+        if (btn) btn.classList.remove('active');
+
+        hideStrokeModeIndicator();
+    }
+
+    function showStrokeModeIndicator(mode) {
+        let indicator = document.getElementById('stroke-mode-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'stroke-mode-indicator';
+            indicator.className = 'stroke-mode-indicator';
+            document.body.appendChild(indicator);
+        }
+        const modeNames = { straight: '直线检测', arc: '圆弧推断', curve: '曲线优化' };
+        indicator.textContent = '✨ ' + (modeNames[mode] || mode);
+        indicator.classList.add('active');
+    }
+
+    function hideStrokeModeIndicator() {
+        const indicator = document.getElementById('stroke-mode-indicator');
+        if (indicator) indicator.classList.remove('active');
+    }
+
+    // Hook into drawing system for stroke completion
+    function processStrokeCompletion(points) {
+        if (!currentStrokeCompletion.enabled || !points || points.length < 2) {
+            return null;
+        }
+
+        const mode = currentStrokeCompletion.mode;
+
+        if (mode === 'straight') {
+            return optimizeStraightLine(points);
+        } else if (mode === 'arc') {
+            return detectArc(points);
+        } else if (mode === 'curve') {
+            return fitBezierCurve(points);
+        }
+        return null;
+    }
+
+    function optimizeStraightLine(points) {
+        // Detect if points form an approximate straight line
+        if (points.length < 3) return null;
+
+        const p1 = points[0];
+        const p2 = points[points.length - 1];
+
+        // Calculate total deviation from straight line
+        let maxDeviation = 0;
+        for (let i = 1; i < points.length - 1; i++) {
+            const deviation = pointLineDistance(points[i], p1, p2);
+            maxDeviation = Math.max(maxDeviation, deviation);
+        }
+
+        // If deviation is small, it's approximately a straight line
+        const lineLength = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+        const threshold = lineLength * 0.05; // 5% of line length
+
+        if (maxDeviation < threshold) {
+            // Return smoothed straight line
+            return {
+                type: 'straight',
+                points: [{ x: p1.x, y: p1.y }, { x: p2.x, y: p2.y }]
+            };
+        }
+        return null;
+    }
+
+    function detectArc(points) {
+        // Three-point arc detection
+        if (points.length < 5) return null;
+
+        // Sample 3 points: start, middle, end
+        const idx1 = 0;
+        const idx2 = Math.floor(points.length / 2);
+        const idx3 = points.length - 1;
+
+        const p1 = points[idx1];
+        const p2 = points[idx2];
+        const p3 = points[idx3];
+
+        // Check if three points define a valid arc
+        const arc =三点确定圆弧(p1, p2, p3);
+        if (arc && arc.radius > 10) {
+            return {
+                type: 'arc',
+                center: arc.center,
+                radius: arc.radius,
+                startAngle: arc.startAngle,
+                endAngle: arc.endAngle
+            };
+        }
+        return null;
+    }
+
+    function 三点确定圆弧(p1, p2, p3) {
+        // Calculate circle from three points
+        const ax = p1.x, ay = p1.y;
+        const bx = p2.x, by = p2.y;
+        const cx = p3.x, cy = p3.y;
+
+        const d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
+        if (Math.abs(d) < 0.001) return null;
+
+        const ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d;
+        const uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by) * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d;
+
+        const center = { x: ux, y: uy };
+        const radius = Math.hypot(ax - ux, ay - uy);
+
+        // Calculate angles
+        const startAngle = Math.atan2(ay - uy, ax - ux);
+        let endAngle = Math.atan2(cy - uy, cx - ux);
+
+        // Ensure arc goes through middle point
+        const midAngle = Math.atan2(by - uy, bx - ux);
+        let sweep = endAngle - startAngle;
+        if (sweep < 0) sweep += 2 * Math.PI;
+
+        return { center, radius, startAngle, endAngle: startAngle + sweep };
+    }
+
+    function fitBezierCurve(points) {
+        if (points.length < 4) return null;
+
+        // Reduce jitter with Douglas-Peucker-like simplification
+        const simplified = simplifyPoints(points, 2);
+
+        if (simplified.length < 4) return null;
+
+        // Calculate control points for cubic bezier
+        const p0 = simplified[0];
+        const p3 = simplified[simplified.length - 1];
+
+        // Use points at 1/3 and 2/3 positions as hints
+        const idx1 = Math.floor(simplified.length / 3);
+        const idx2 = Math.floor(2 * simplified.length / 3);
+        const p1Hint = simplified[idx1];
+        const p2Hint = simplified[idx2];
+
+        // Solve for control points to pass through hint points
+        const t1 = 1/3, t2 = 2/3;
+
+        // p(t) = (1-t)^3*p0 + 3*(1-t)^2*t*p1 + 3*(1-t)*t^2*p2 + t^3*p3
+        // For t1: p1 = (p(t1) - (1-t1)^3*p0 - t1^3*p3) / (3*(1-t1)^2*t1)
+        const t = t1;
+        const mt = 1 - t;
+        const denom = 3 * mt * mt * t;
+        if (Math.abs(denom) < 0.001) return null;
+
+        const p1 = {
+            x: (p1Hint.x - mt*mt*mt*p0.x - t*t*t*p3.x) / denom,
+            y: (p1Hint.y - mt*mt*mt*p0.y - t*t*t*p3.y) / denom
+        };
+
+        const p2 = {
+            x: (p2Hint.x - mt*mt*mt*p0.x - t*t*t*p3.x) / denom,
+            y: (p2Hint.y - mt*mt*mt*p0.y - t*t*t*p3.y) / denom
+        };
+
+        return {
+            type: 'bezier',
+            points: [p0, p1, p2, p3]
+        };
+    }
+
+    function simplifyPoints(points, tolerance) {
+        if (points.length < 3) return points;
+
+        const result = [points[0]];
+        let lastPoint = points[0];
+
+        for (let i = 1; i < points.length - 1; i++) {
+            if (Math.hypot(points[i].x - lastPoint.x, points[i].y - lastPoint.y) >= tolerance) {
+                result.push(points[i]);
+                lastPoint = points[i];
+            }
+        }
+        result.push(points[points.length - 1]);
+        return result;
+    }
+
+    function pointLineDistance(point, lineStart, lineEnd) {
+        const dx = lineEnd.x - lineStart.x;
+        const dy = lineEnd.y - lineStart.y;
+        const len = Math.hypot(dx, dy);
+        if (len < 0.001) return Math.hypot(point.x - lineStart.x, point.y - lineStart.y);
+
+        const t = Math.max(0, Math.min(1, ((point.x - lineStart.x) * dx + (point.y - lineStart.y) * dy) / (len * len)));
+        const projX = lineStart.x + t * dx;
+        const projY = lineStart.y + t * dy;
+
+        return Math.hypot(point.x - projX, point.y - projY);
+    }
+
+    // ----- V69: Smart Fill -----
+    function openSmartFillPanel() {
+        if (smartFillPanel) {
+            smartFillPanel.classList.add('open');
+            return;
+        }
+
+        const btn = document.getElementById('ai-fill-btn');
+        if (btn) btn.classList.add('active');
+
+        smartFillPanel = document.createElement('div');
+        smartFillPanel.id = 'smart-fill-panel';
+        smartFillPanel.className = 'side-panel open';
+        smartFillPanel.innerHTML = `
+            <div class="panel-header">
+                <span class="panel-title">智能填色</span>
+                <button class="panel-close" onclick="closeSmartFillPanel()">×</button>
+            </div>
+            <div class="panel-body">
+                <div class="fill-options">
+                    <label>
+                        <input type="checkbox" id="edge-aware-fill" ${smartFillEdgeAware ? 'checked' : ''} onchange="toggleEdgeAware(this.checked)">
+                        边缘感知填色
+                    </label>
+                    <label>填充类型:</label>
+                    <select id="fill-type-select" onchange="setFillType(this.value)">
+                        <option value="solid" ${smartFillType === 'solid' ? 'selected' : ''}>纯色</option>
+                        <option value="linear-gradient" ${smartFillType === 'linear-gradient' ? 'selected' : ''}>线性渐变</option>
+                        <option value="radial-gradient" ${smartFillType === 'radial-gradient' ? 'selected' : ''}>径向渐变</option>
+                        <option value="pattern" ${smartFillType === 'pattern' ? 'selected' : ''}>图案</option>
+                    </select>
+                    <div class="panel-section">
+                        <div class="panel-section-title">提示</div>
+                        <p style="font-size:0.85rem;color:#868e96;margin:0;">
+                            边缘感知填色会自动检测画布上的线条边界，防止颜色溢出到线条外。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(smartFillPanel);
+    }
+
+    function closeSmartFillPanel() {
+        if (smartFillPanel) {
+            smartFillPanel.classList.remove('open');
+        }
+        const btn = document.getElementById('ai-fill-btn');
+        if (btn) btn.classList.remove('active');
+    }
+
+    function toggleEdgeAware(enabled) {
+        smartFillEdgeAware = enabled;
+    }
+
+    function setFillType(type) {
+        smartFillType = type;
+    }
+
+    function smartFill(x, y, color, options) {
+        if (!drawingCanvas || !drawingCtx) return;
+
+        options = options || {};
+        const edgeAware = options.edgeAware !== undefined ? options.edgeAware : smartFillEdgeAware;
+        const fillType = options.fillType || smartFillType;
+
+        if (fillType === 'solid') {
+            if (edgeAware) {
+                return applyEdgeAwareFill(drawingCtx, drawingCanvas, x, y, color);
+            } else {
+                // Simple flood fill
+                return floodFill(drawingCtx, drawingCanvas, x, y, color);
+            }
+        } else if (fillType === 'linear-gradient') {
+            return applyGradientFill(drawingCtx, drawingCanvas, x, y, 'linear', color);
+        } else if (fillType === 'radial-gradient') {
+            return applyGradientFill(drawingCtx, drawingCanvas, x, y, 'radial', color);
+        } else if (fillType === 'pattern') {
+            return applyPatternFill(drawingCtx, drawingCanvas, x, y, color);
+        }
+    }
+
+    function applyEdgeAwareFill(ctx, canvas, startX, startY, fillColor) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const startIdx = (Math.floor(startY) * width + Math.floor(startX)) * 4;
+        const startR = data[startIdx];
+        const startG = data[startIdx + 1];
+        const startB = data[startIdx + 2];
+
+        const fill = hexToRgb(fillColor);
+        if (!fill) return false;
+
+        // Check if clicking on a line (dark pixel)
+        if (isDarkPixel(startR, startG, startB)) {
+            // Don't fill on lines
+            return false;
+        }
+
+        // Check if already filled with this color
+        if (startR === fill.r && startG === fill.g && startB === fill.b) {
+            return false;
+        }
+
+        // Find all lines on canvas (dark pixels)
+        const lineMap = new Set();
+        const threshold = 60;
+        for (let i = 0; i < data.length; i += 4) {
+            if (isDarkPixel(data[i], data[i+1], data[i+2])) {
+                lineMap.add(i / 4);
+            }
+        }
+
+        // Flood fill with edge detection
+        const stack = [[Math.floor(startX), Math.floor(startY)]];
+        const visited = new Set();
+        visited.add(Math.floor(startX) * height + Math.floor(startY));
+
+        const targetR = startR, targetG = startG, targetB = startB;
+        let filled = 0;
+
+        while (stack.length > 0) {
+            const [x, y] = stack.pop();
+            const idx = y * width + x;
+
+            if (x < 0 || x >= width || y < 0 || y >= height) continue;
+            if (lineMap.has(idx)) continue;
+
+            const pixelIdx = idx * 4;
+            if (data[pixelIdx] !== targetR || data[pixelIdx+1] !== targetG || data[pixelIdx+2] !== targetB) continue;
+
+            data[pixelIdx] = fill.r;
+            data[pixelIdx + 1] = fill.g;
+            data[pixelIdx + 2] = fill.b;
+            filled++;
+
+            // Add neighbors
+            const key = (x+1) * height + y; if (!visited.has(key)) { stack.push([x+1, y]); visited.add(key); }
+            const key2 = (x-1) * height + y; if (!visited.has(key2)) { stack.push([x-1, y]); visited.add(key2); }
+            const key3 = x * height + (y+1); if (!visited.has(key3)) { stack.push([x, y+1]); visited.add(key3); }
+            const key4 = x * height + (y-1); if (!visited.has(key4)) { stack.push([x, y-1]); visited.add(key4); }
+        }
+
+        if (filled > 0) {
+            ctx.putImageData(imageData, 0, 0);
+            return true;
+        }
+        return false;
+    }
+
+    function floodFill(ctx, canvas, startX, startY, fillColor) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const startIdx = (Math.floor(startY) * width + Math.floor(startX)) * 4;
+        const startR = data[startIdx];
+        const startG = data[startIdx + 1];
+        const startB = data[startIdx + 2];
+
+        const fill = hexToRgb(fillColor);
+        if (!fill) return false;
+
+        if (startR === fill.r && startG === fill.g && startB === fill.b) return false;
+
+        const stack = [[Math.floor(startX), Math.floor(startY)]];
+        const visited = new Set();
+
+        const targetR = startR, targetG = startG, targetB = startB;
+        let filled = 0;
+
+        while (stack.length > 0) {
+            const [x, y] = stack.pop();
+            const idx = y * width + x;
+
+            if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+            const pixelIdx = idx * 4;
+            if (data[pixelIdx] !== targetR || data[pixelIdx+1] !== targetG || data[pixelIdx+2] !== targetB) continue;
+
+            data[pixelIdx] = fill.r;
+            data[pixelIdx + 1] = fill.g;
+            data[pixelIdx + 2] = fill.b;
+            filled++;
+
+            stack.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
+        }
+
+        if (filled > 0) {
+            ctx.putImageData(imageData, 0, 0);
+            return true;
+        }
+        return false;
+    }
+
+    function applyGradientFill(ctx, canvas, x, y, type, color) {
+        const fill = hexToRgb(color);
+        if (!fill) return false;
+
+        let gradient;
+        if (type === 'linear') {
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, `rgba(${fill.r},${fill.g},${fill.b},0.3)`);
+            gradient.addColorStop(1, `rgba(${fill.r},${fill.g},${fill.b},1)`);
+        } else {
+            gradient = ctx.createRadialGradient(x, y, 0, x, y, Math.max(canvas.width, canvas.height) / 2);
+            gradient.addColorStop(0, `rgba(${fill.r},${fill.g},${fill.b},1)`);
+            gradient.addColorStop(1, `rgba(${fill.r},${fill.g},${fill.b},0.3)`);
+        }
+
+        // Apply gradient fill using edge detection
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const lineMap = new Set();
+        const threshold = 60;
+        for (let i = 0; i < data.length; i += 4) {
+            if (isDarkPixel(data[i], data[i+1], data[i+2])) {
+                lineMap.add(i / 4);
+            }
+        }
+
+        // For gradient, we need to fill from click point outward
+        const startIdx = (Math.floor(y) * width + Math.floor(x)) * 4;
+        const startR = data[startIdx];
+        const startG = data[startIdx + 1];
+        const startB = data[startIdx + 2];
+
+        if (isDarkPixel(startR, startG, startB)) return false;
+
+        const stack = [[Math.floor(x), Math.floor(y)]];
+        const visited = new Set();
+        visited.add(Math.floor(x) * height + Math.floor(y));
+
+        const targetR = startR, targetG = startG, targetB = startB;
+
+        while (stack.length > 0) {
+            const [px, py] = stack.pop();
+            const idx = py * width + px;
+
+            if (px < 0 || px >= width || py < 0 || py >= height) continue;
+            if (lineMap.has(idx)) continue;
+
+            const pixelIdx = idx * 4;
+            if (data[pixelIdx] !== targetR || data[pixelIdx+1] !== targetG || data[pixelIdx+2] !== targetB) continue;
+
+            // Calculate gradient color based on distance from click point
+            const dx = px - x;
+            const dy = py - y;
+            const dist = Math.hypot(dx, dy);
+            const maxDist = Math.max(canvas.width, canvas.height) / 2;
+
+            let t;
+            if (type === 'linear') {
+                t = Math.max(0, Math.min(1, px / canvas.width));
+            } else {
+                t = Math.max(0, Math.min(1, dist / maxDist));
+            }
+
+            const alpha = 0.3 + 0.7 * (1 - t);
+            data[pixelIdx] = fill.r;
+            data[pixelIdx + 1] = fill.g;
+            data[pixelIdx + 2] = fill.b;
+            data[pixelIdx + 3] = Math.round(alpha * 255);
+
+            stack.push([px+1, py], [px-1, py], [px, py+1], [px, py-1]);
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        return true;
+    }
+
+    function applyPatternFill(ctx, canvas, x, y, color) {
+        // Pattern fill: grid/dots/stripes
+        const fill = hexToRgb(color);
+        if (!fill) return false;
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const lineMap = new Set();
+        for (let i = 0; i < data.length; i += 4) {
+            if (isDarkPixel(data[i], data[i+1], data[i+2])) {
+                lineMap.add(i / 4);
+            }
+        }
+
+        const startIdx = (Math.floor(y) * width + Math.floor(x)) * 4;
+        const startR = data[startIdx];
+        const startG = data[startIdx + 1];
+        const startB = data[startIdx + 2];
+
+        if (isDarkPixel(startR, startG, startB)) return false;
+
+        const stack = [[Math.floor(x), Math.floor(y)]];
+        const visited = new Set();
+        visited.add(Math.floor(x) * height + Math.floor(y));
+
+        const targetR = startR, targetG = startG, targetB = startB;
+
+        // Pattern: alternating grid (checkered)
+        const patternSize = 20;
+
+        while (stack.length > 0) {
+            const [px, py] = stack.pop();
+            const idx = py * width + px;
+
+            if (px < 0 || px >= width || py < 0 || py >= height) continue;
+            if (lineMap.has(idx)) continue;
+
+            const pixelIdx = idx * 4;
+            if (data[pixelIdx] !== targetR || data[pixelIdx+1] !== targetG || data[pixelIdx+2] !== targetB) continue;
+
+            // Check pattern position
+            const gridX = Math.floor(px / patternSize);
+            const gridY = Math.floor(py / patternSize);
+            const isFilled = (gridX + gridY) % 2 === 0;
+
+            if (isFilled) {
+                data[pixelIdx] = fill.r;
+                data[pixelIdx + 1] = fill.g;
+                data[pixelIdx + 2] = fill.b;
+            }
+
+            stack.push([px+1, py], [px-1, py], [px, py+1], [px, py-1]);
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        return true;
+    }
+
+    function isDarkPixel(r, g, b) {
+        // Detect if a pixel is likely a line/edge (dark)
+        const threshold = 60;
+        const brightness = (r + g + b) / 3;
+        return brightness < threshold && r < 100 && g < 100 && b < 100;
+    }
+
+    function hexToRgb(hex) {
+        if (!hex) return null;
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    // ----- V69: Style Transfer -----
+    const STYLE_PRESETS = {
+        sketch: { name: '素描', icon: '✏️', filters: 'grayscale(1) contrast(1.1)' },
+        watercolor: { name: '水彩', icon: '🌸', filters: 'saturate(0.8) blur(0.3px)' },
+        oil: { name: '油画', icon: '🖼️', filters: 'saturate(1.3) contrast(1.2)' },
+        cartoon: { name: '卡通', icon: '🎨', filters: 'contrast(1.4) saturate(1.2)' },
+        vintage: { name: '复古', icon: '📷', filters: 'sepia(0.4) contrast(0.9)' },
+        neon: { name: '霓虹', icon: '💡', filters: 'saturate(1.5) hue-rotate(20deg)' }
+    };
+
+    function openStylePanel() {
+        if (stylePanel) {
+            stylePanel.classList.add('open');
+            return;
+        }
+
+        const btn = document.getElementById('ai-style-btn');
+        if (btn) btn.classList.add('active');
+
+        stylePanel = document.createElement('div');
+        stylePanel.id = 'style-panel';
+        stylePanel.className = 'side-panel open';
+        stylePanel.innerHTML = `
+            <div class="panel-header">
+                <span class="panel-title">风格迁移</span>
+                <button class="panel-close" onclick="closeStylePanel()">×</button>
+            </div>
+            <div class="panel-body">
+                <div class="style-options">
+                    <label>选择预设风格:</label>
+                    <div class="style-grid">
+                        ${Object.entries(STYLE_PRESETS).map(([key, style]) => `
+                            <div class="style-item ${currentStyleFilter === key ? 'selected' : ''}" onclick="applyStyleFilter('${key}')">
+                                <div class="style-item-icon">${style.icon}</div>
+                                <div class="style-item-name">${style.name}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="panel-section">
+                        <button onclick="resetStyleFilter()" style="width:100%;padding:8px;background:#e9ecef;border:2px solid #dee2e6;border-radius:6px;cursor:pointer;font-family:inherit;">
+                            重置风格
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(stylePanel);
+    }
+
+    function closeStylePanel() {
+        if (stylePanel) {
+            stylePanel.classList.remove('open');
+        }
+        const btn = document.getElementById('ai-style-btn');
+        if (btn) btn.classList.remove('active');
+    }
+
+    function applyStyleFilter(styleName) {
+        if (!STYLE_PRESETS[styleName]) return;
+
+        currentStyleFilter = styleName;
+        const preset = STYLE_PRESETS[styleName];
+
+        // Apply CSS filter to drawing canvas
+        drawingCanvas.style.filter = preset.filters;
+
+        // Update UI
+        document.querySelectorAll('.style-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        const selectedItem = document.querySelector(`.style-item[onclick="applyStyleFilter('${styleName}')"]`);
+        if (selectedItem) selectedItem.classList.add('selected');
+
+        showToast('已应用' + preset.name + '风格');
+    }
+
+    function resetStyleFilter() {
+        currentStyleFilter = null;
+        if (drawingCanvas) {
+            drawingCanvas.style.filter = '';
+        }
+        document.querySelectorAll('.style-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        showToast('风格已重置');
+    }
+
+    // ----- V69: Canvas Enhancement -----
+    function zoomCanvas(scale) {
+        canvasZoom = parseFloat(scale);
+        if (drawingCanvas) {
+            drawingCanvas.style.transform = `scale(${canvasZoom}) rotate(${canvasRotation}deg)`;
+        }
+    }
+
+    function rotateCanvas(degrees) {
+        canvasRotation = parseInt(degrees);
+        if (drawingCanvas) {
+            drawingCanvas.style.transform = `scale(${canvasZoom}) rotate(${canvasRotation}deg)`;
+        }
+    }
+
+    // ----- V69: Skill (SOP) Recording -----
+    function openSkillPanel() {
+        if (skillPanel) {
+            skillPanel.classList.add('open');
+            return;
+        }
+
+        const btn = document.getElementById('ai-skill-btn');
+        if (btn) btn.classList.add('active');
+
+        skillPanel = document.createElement('div');
+        skillPanel.id = 'skill-panel';
+        skillPanel.className = 'side-panel open';
+        renderSkillPanelContent();
+    }
+
+    function renderSkillPanelContent() {
+        skillPanel.innerHTML = `
+            <div class="panel-header">
+                <span class="panel-title">绘画 SOP</span>
+                <button class="panel-close" onclick="closeSkillPanel()">×</button>
+            </div>
+            <div class="panel-body">
+                <button class="new-skill-btn" onclick="toggleSkillRecording()">
+                    ${isRecordingSkill ? '⏹️ 停止录制' : '🔴 开始录制'}
+                </button>
+                <div class="skill-list">
+                    ${savedSkills.length === 0 ? '<p style="text-align:center;color:#868e96;font-size:0.9rem;">暂无保存的绘画 SOP</p>' :
+                        savedSkills.map((skill, idx) => `
+                            <div class="skill-item">
+                                <div class="skill-item-header">
+                                    <span class="skill-item-name">${skill.name}</span>
+                                    <span class="skill-item-category">${skill.category || '默认'}</span>
+                                </div>
+                                <div class="skill-item-actions">
+                                    <button class="skill-action-btn play" onclick="playbackSkill(${idx})">▶️ 回放</button>
+                                    <button class="skill-action-btn delete" onclick="deleteSkill(${idx})">🗑️ 删除</button>
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            </div>
+        `;
+    }
+
+    function closeSkillPanel() {
+        if (skillPanel) {
+            skillPanel.classList.remove('open');
+        }
+        const btn = document.getElementById('ai-skill-btn');
+        if (btn) btn.classList.remove('active');
+    }
+
+    function toggleSkillRecording() {
+        if (isRecordingSkill) {
+            stopRecordSkill();
+        } else {
+            recordSkill();
+        }
+    }
+
+    function recordSkill() {
+        isRecordingSkill = true;
+        skillRecording = [];
+
+        // Show recording indicator
+        let indicator = document.getElementById('recording-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'recording-indicator';
+            indicator.className = 'recording-indicator';
+            document.body.appendChild(indicator);
+        }
+        indicator.innerHTML = '🔴 正在录制绘画 SOP...';
+        indicator.classList.add('active');
+
+        renderSkillPanelContent();
+        showToast('开始录制绘画 SOP');
+    }
+
+    function stopRecordSkill() {
+        if (!isRecordingSkill) return;
+        isRecordingSkill = false;
+
+        // Hide recording indicator
+        const indicator = document.getElementById('recording-indicator');
+        if (indicator) indicator.classList.remove('active');
+
+        if (skillRecording.length < 3) {
+            showToast('录制太短，已取消');
+            skillRecording = [];
+            renderSkillPanelContent();
+            return;
+        }
+
+        // Prompt for name and save
+        const name = prompt('输入绘画 SOP 名称:', '我的 SOP ' + (savedSkills.length + 1));
+        if (name) {
+            const skill = {
+                name: name,
+                category: '默认',
+                steps: skillRecording,
+                createdAt: Date.now()
+            };
+            savedSkills.push(skill);
+            localStorage.setItem('v69_skills', JSON.stringify(savedSkills));
+            showToast('SOP "' + name + '" 已保存');
+        }
+
+        skillRecording = [];
+        renderSkillPanelContent();
+    }
+
+    function playbackSkill(skillId) {
+        if (skillId < 0 || skillId >= savedSkills.length) return;
+
+        const skill = savedSkills[skillId];
+        if (!skill || !skill.steps || skill.steps.length === 0) {
+            showToast('SOP 为空');
+            return;
+        }
+
+        showToast('正在回放 "' + skill.name + '"...');
+
+        // Replay each step with delays
+        let i = 0;
+        function playNextStep() {
+            if (i >= skill.steps.length) {
+                showToast('SOP 回放完成');
+                return;
+            }
+
+            const step = skill.steps[i];
+            applySkillStep(step);
+            i++;
+
+            setTimeout(playNextStep, step.delay || 200);
+        }
+
+        playNextStep();
+    }
+
+    function applySkillStep(step) {
+        switch (step.type) {
+            case 'color':
+                selectColor(step.data.color);
+                break;
+            case 'brushSize':
+                if (typeof setBrushSize === 'function') {
+                    setBrushSize(step.data.size);
+                }
+                break;
+            case 'tool':
+                selectTool(step.data.tool);
+                break;
+            case 'draw':
+                // Replay drawing stroke
+                if (step.data.points && drawingCtx) {
+                    drawingCtx.beginPath();
+                    drawingCtx.strokeStyle = step.data.color || currentColor;
+                    drawingCtx.lineWidth = step.data.size || currentBrushSize;
+                    drawingCtx.lineCap = 'round';
+                    drawingCtx.lineJoin = 'round';
+
+                    const points = step.data.points;
+                    if (points.length > 0) {
+                        drawingCtx.moveTo(points[0].x, points[0].y);
+                        for (let j = 1; j < points.length; j++) {
+                            drawingCtx.lineTo(points[j].x, points[j].y);
+                        }
+                        drawingCtx.stroke();
+                    }
+                }
+                break;
+        }
+    }
+
+    function deleteSkill(skillId) {
+        if (skillId < 0 || skillId >= savedSkills.length) return;
+
+        if (confirm('确定删除 "' + savedSkills[skillId].name + '"?')) {
+            savedSkills.splice(skillId, 1);
+            localStorage.setItem('v69_skills', JSON.stringify(savedSkills));
+            renderSkillPanelContent();
+            showToast('SOP 已删除');
+        }
+    }
+
+    // Record skill step helper
+    function recordSkillStep(type, data) {
+        if (!isRecordingSkill) return;
+        skillRecording.push({
+            type: type,
+            data: data,
+            timestamp: Date.now()
+        });
+    }
+
+    // ----- V69: Init -----
+    const v69Init = setInterval(() => {
+        if (document.getElementById('drawCanvas') || document.querySelector('.canvas-container')) {
+            clearInterval(v69Init);
+            initAIToolbar();
+
+            // Hook into drawing system
+            const origStartDrawing = window.startDrawing;
+            if (typeof origStartDrawing === 'function') {
+                window.startDrawing = function(e) {
+                    if (currentStrokeCompletion.enabled && strokeCompletionMode) {
+                        strokePoints = [];
+                    }
+                    return origStartDrawing.apply(this, arguments);
+                };
+            }
+
+            // Hook color changes
+            const origSelectColor = window.selectColor;
+            if (typeof origSelectColor === 'function') {
+                window.selectColor = function(color) {
+                    recordSkillStep('color', { color });
+                    return origSelectColor.apply(this, arguments);
+                };
+            }
+
+            // Hook tool selection
+            const origSelectTool = window.selectTool;
+            if (typeof origSelectTool === 'function') {
+                window.selectTool = function(tool) {
+                    recordSkillStep('tool', { tool });
+                    return origSelectTool.apply(this, arguments);
+                };
+            }
+
+            console.log('V69 AI辅助绘画引擎初始化完成');
+        }
+    }, 300);
+
+    // ============================================================
+    // End V69
+    // ============================================================
     </script>
 
 </body>
